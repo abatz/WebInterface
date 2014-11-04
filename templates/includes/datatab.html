@@ -1,0 +1,32 @@
+<!----------------------------->
+<!--      DATA  FORM         -->
+<!----------------------------->
+<table id="table" class="table table-striped table-bordered">
+          <tr>
+                <td>
+		 <input type="button"  class="btn btn-large btn-primary pull-right"
+                        value="DOWNLOAD DATA" onClick="">
+		</td>
+	</tr>
+</table>
+
+<!----------------------------->
+<!--      DATA               -->
+<!----------------------------->
+<table border="0" width="100%" height="100%">
+	<tr>
+	     <td style="text-align:left">
+			#Variable: {{ variable }} (units here)<br>
+			#Data Source: {{ product }} <br>
+			#Location: ({{ userLat }} N,{{ userLong }}E )<br>
+			#Time Period: date range here<br>
+			#Notes:
+			#<br>
+			#======================================================<br>
+			{% for x,y in timeSeriesData %}
+				{{ x }}, {{ y }} <br>
+			{% endfor %}
+			#======================================================<br>
+	      </td>
+	</tr>
+</table>

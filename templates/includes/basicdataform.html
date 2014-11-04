@@ -1,0 +1,66 @@
+<form action="#" method="post">
+	<table id="table" class="table table-striped" width="20%">
+	<tr>
+	   <td>
+		<h4><p style="text-align:left"><u><span style='color:blue'> Data:</span></u></p></h4>
+	   </td>
+	</tr>
+	<tr>
+	    <td>
+	       <!----------------------------->
+	       <!--    DATA SOURCE          -->
+	       <!----------------------------->
+		 <b>Source:</b><br>
+		  <select id="product" name="product" width="95%">
+		       {% for x,y in formProduct %}
+			    <option value="{{ x }}" {% if x == "landsat" %} selected{% endif %}>{{ y }}</option>
+			{% endfor %}
+		  </select>
+	  </td>
+	</tr>
+	<tr>
+	    <td>
+	       <!----------------------------->
+	       <!--           VARIABLE      -->
+	       <!----------------------------->
+		  <b>Variable:</b><br>
+		  <div class="variable">
+			<div class="landsatvariable">
+				<select id="variableLandsat" name="variable" width="95%">
+					{% for x,y in formVariableLandsat %}
+					    <option value="{{ x }}" {% if x == "NDVI" %} selected{% endif %}>{{ y }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	    </td>
+	</tr>
+	<tr>
+	   <td>
+			  <b>Time Period</b><br>
+			   <div class="timeperiod">
+				  Start Date:
+				  <input type="text" id="from" value="2013-04-01" name="dateStart">
+				  <br>
+				  End Date:
+				  <input type="text" id="to" value="2013-07-01" name="dateEnd">
+			   </div>
+	  </td>
+	</tr>
+	<tr>
+	   <td>
+			  <b>Domain:</b><br>
+			   <div class="domain">
+				  Lon, Lat:
+				  <input id="userLatLong" name="userLatLong" value="-119.8219,39.5272" />
+				  <!--<input id="userLatLong" name="userLatLong" value="{{ userLong }},{{ userLat }}" />-->
+			   </div>
+	  </td>
+	</tr>
+	<tr>
+	 <td>
+			   <input type="submit" value="RUN">
+	  </td>
+	</tr>
+	</table>
+</form>

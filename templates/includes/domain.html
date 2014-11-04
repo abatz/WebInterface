@@ -1,0 +1,64 @@
+<!----------------------------->
+<!--	  DOMAIN FOR TIME SERIES 	     -->
+<!----------------------------->
+<div class="domain">
+	<select id="DomainType" name="DomainType">
+		{% for x,y in formDomain %}
+		    <option value="{{ x }}">{{ y }}</option>
+		{% endfor %}
+	</select>
+</div>
+<div class="states">
+	<select id="states" name="states" >
+		{% for x,y in formStates %}
+		    <option value="{{ x }}">{{ y }}</option>
+		{% endfor %}
+	</select>
+</div>
+ <div class="stations">
+	<select id="stations" name="stations" >
+		{% for x,y in formStations %}
+		    <option value="{{ x }}">{{ y }}</option>
+		{% endfor %}
+	</select>
+</div>
+
+ <div class="divisions">
+	<select id="divisions" name="divisions" >
+		{% for x,y in formDivisions %}
+		    <option value="{{ x }}">{{ y }}</option>
+		{% endfor %}
+	</select>
+</div>
+
+<div class="psas">
+	<select id="psas" name="psas" >
+		{% for x,y in formPsas %}
+		    <option value="{{ x }}">{{ y }}</option>
+		{% endfor %}
+	</select>
+</div>
+<div class="hucs">
+	<select id="hucs" name="hucs" >
+		{% for x,y in formHucs %}
+		    <option value="{{ x }}">{{ y }}</option>
+		{% endfor %}
+	</select>
+</div>
+ <div class="counties">
+	<select id="counties" name="counties" >
+		{% for x,y in formCounties %}
+		    <option value="{{ x }}">{{ y }}</option>
+		{% endfor %}
+	</select>
+</div>
+
+<div class="points">
+	--select location--<br>	
+	<!--
+	<input id="latpoint" type="text" id="lat" name="lat" value="{{LatForm}}" maxlength="5" size="4">North Lat., 
+	<input id="lonpoint" type="text" id="lon" name="lon" value="{{LonForm}}" size="4">East Long.
+	-->
+	<input id="latpoint" type="text" name="lat" value="45" maxlength="5" size="4">North Lat., 
+	<input id="lonpoint" type="text" name="lon" value="120" size="4">East Long.
+</div>

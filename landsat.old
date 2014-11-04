@@ -1,0 +1,94 @@
+import ee
+import time
+import datetime
+import numpy
+def get_ndvi(UserLat,UserLong,startdate,enddate):
+	from functions import ndvi_calc_L5L7,ndvi_calc_L8
+
+	point = ee.Feature.Point(UserLong,UserLat);
+
+	######################################################
+	#### MERGE COLLECTIONS FOR TIME PERIOD AND LAT/LON POINT
+	######################################################
+        l5_coll = ee.ImageCollection('LT5_L1T_TOA').filterBounds(point).filterDate(startdate, enddate);
+        l5_coll_ndvi = l5_coll.map(ndvi_calc_L5L7)
+        l7_coll = ee.ImageCollection('LE7_L1T_TOA').filterBounds(point).filterDate(startdate, enddate);
+        l7_coll_ndvi = l7_coll.map(ndvi_calc_L5L7)
+        l8_coll = ee.ImageCollection('LC8_L1T_TOA').filterBounds(point).filterDate(startdate, enddate);
+        l8_coll_ndvi = l8_coll.map(ndvi_calc_L8)
+
+	######################################################
+        #### Merge NDVI image collections
+	######################################################
+        image_coll_ndvi_mrg_L5L7 = ee.ImageCollection(l5_coll_ndvi.merge(l7_coll_ndvi));
+        image_coll_ndvi_mrg_L5L7L8 = ee.ImageCollection(image_coll_ndvi_mrg_L5L7.merge(l8_coll_ndvi));
+
+	######################################################
+        #### Data in list format
+	######################################################
+        extract = image_coll_ndvi_mrg_L5L7L8.getRegion(point,1).getInfo();
+        extract.pop(0) #remove first row of list ["id","longitude","latitude","time","NDVI"]
+        # extractslice = [arr[i][0:2] for i in range(0,2)]
+        # extract = list(zip(*extract)[4])
+        # for sublist in extract:
+            # del sublist[3]
+        time_list = [row[3] for row in extract]
+        ndvilist = [row[4] for row in extract]
+        # time_list = [datetime.datetime.strptime(x, "%Y%m%d").strftime("%Y,%m,%d") for x in time_list]
+        temp_arr = zip(time_list,ndvilist)
+        newarray=[['Dates','NDVI']]
+        for x in temp_arr:
+            if x[1] is not None:
+                newarray.append([x[0],x[1]])
+
+	######################################################
+        #### CREATE TIME SERIES ARRAY WITH DATE IN COL 1 AND VALUE IN COL 2
+	######################################################
+        TimeSeries_array = []
+        for i in range(0,len(extract),1):
+            time_ms = (ee.Algorithms.Date(extract[i][3])).getInfo()['value']
+            # data11 = data1['value']
+            data1 = time.strftime('%m/%d/%Y',  time.gmtime(time_ms/1000))
+            #print data1
+            data2 = (extract[i][4])
+            #print data2
+            if data2 is not None:
+                TimeSeries_array.append([data1,data2])
+		
+	######################################################
+        #### SORT IN CHRONOLOGICAL ORDER
+	######################################################
+        TimeSeries_array.sort(key=lambda date: datetime.datetime.strptime(date[0], "%m/%d/%Y"))
+
+	######################################################
+        #### ADD HEADER TO SORTED LIST
+	######################################################
+        TimeSeries_array = [['Dates','NDVI']] + TimeSeries_array
+
+        #### FILTER OUT "None" VALUES
+        ndvilist_filt = [x for x in ndvilist if x is not None]
+
+	######################################################
+        #### CALCULATE NDVI STATS
+	######################################################
+        meanNDVI = numpy.mean(ndvilist_filt,axis=0)
+        medianNDVI = numpy.median(ndvilist_filt,axis=0)
+        maxNDVI = numpy.max(ndvilist_filt,axis=0)
+        minNDVI = numpy.min(ndvilist_filt,axis=0)
+
+	######################################################
+        #### COLOR MAP SPECTRUM
+	######################################################
+        viz_params = {
+            'min':0,
+            'max':0.4,
+            'palette':"000000,7F0000,FF0000,FFA500,F5F5DC,D2B38C,40E0D0,7FFF00,006400,0000FF,FF00FF"
+        }
+
+        #### GRAB MAPPING PARAMETER TO USE IN TEMPLATE VALUES
+        mapid = image_coll_ndvi_mrg_L5L7L8.median().getMapId(viz_params)
+
+	######################################################
+        #### RETURN 
+	######################################################
+	return (mapid,TimeSeries_array,viz_params) 

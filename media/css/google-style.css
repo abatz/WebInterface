@@ -1,0 +1,194 @@
+body {
+    background: #00688B;
+    font-family: Verdana, sans-serif;
+}
+
+.container {
+    margin: 0 auto;
+    width: 960px;
+    min-height:1000px;
+    color:#000000;
+    background-color: #E0EEEE;
+    padding: 0px;
+    /*
+    display:table-cell;
+    height:auto;*/
+}
+
+.content {
+    position:relative;
+    top:0px;
+}
+
+
+h1,h2 {
+    font-family: Georgia,serif;
+    color: #00688B;
+    margin: 0;
+    padding: 1px;
+}
+
+h3,h4,h5,h6 {
+    font-family: Georgia,serif;
+    color: #006666;
+    margin: 0;
+    padding: 1px;
+}
+
+p, li{
+    font-size: .9em;
+    margin-top: .5em;
+    margin-bottom: .5em;
+}
+
+table.form {
+    border:3px solid #00688B;
+    background-color:#CCE0E0;
+    width:280px;
+    margin:0px 10px 0px 10px;
+}
+
+
+table.form td {
+    margin: 0px 0px;
+    font-weight: bold;
+    font-size:16px;
+    color:#00688B;
+}
+
+table.sub-left {
+    border-right:3px solid #00688B;
+    background-color:#CCE0E0;
+    width:285px;
+    height:100px;
+    margin:0px;
+    padding:0px;
+}
+
+table.sub-mid {
+    border-right:3px solid #00688B;
+    border-left:3px solid #00688B;
+    background-color:#CCE0E0;
+    width:285px;
+    height:100px;
+    margin:0px 0px 0px 5px;
+    padding:0px;
+}
+
+table.top {
+    border:3px solid #00688B;
+    background-color:#CCE0E0;
+    margin:0px 5px 0px 5px;
+    width:947px;
+}
+
+table.left {
+    border:3px solid #00688B;
+    background-color:#CCE0E0;
+    margin:0px 0px 0px 3px;
+    width:290px;
+    min-height:485px;
+    padding:5px
+}
+
+table.main td{
+    padding:0px;
+}
+
+a:link { color: #0000FF;}
+a:hover {
+    color: #33CCFF;
+    text-decoration: none;
+}
+a:visited {color: #800080;}
+a:active { color:#FF0000;}
+
+input[type="text"]{
+    font-weight: bold;
+    border:1px solid #00688B;
+    background-color:#E0EEEE;
+}
+
+input[value="Run"] {
+    width:90px;
+    height:30px;
+    margin: 0px 0px 5px 10px;
+    background-color:#00688B;
+    color:#FFFFFF;
+    font-weight:bold;
+}
+
+input[value="Start Over"] {
+    width:90px;
+    height:30px;
+    margin: 0px 0px 5px 10px;
+    background-color:#00688B;
+    color:#FFFFFF;
+    font-weight:bold;
+}
+
+/* Classes */
+ 
+.map {
+    margin:0px 5px 0px 0px;
+    width: 650px;
+    height: 480px;
+    border:3px solid #00688B; 
+}
+
+
+.error {
+    color:#FF0000;
+    font-size:24px;
+}
+
+/*Calendar widget
+http://www.openjs.com/scripts/ui/calendar/
+*/
+.calendar-box {
+    display:none;
+    background-color:#E0EEEE;
+    border:1px solid #00688B;
+    position:absolute;
+    width:250px;
+    padding: 0 5px;
+    z-index:10;
+}
+.calendar-box select.calendar-month {
+    width:90px;
+    background-color:#00688B;
+    color:#FFFFFF;
+}
+.calendar-box select.calendar-year {
+    width:70px;
+    background-color:#00688B;
+    color:#FFFFFF;
+}
+.calendar-box .calendar-cancel {
+    width:100%;
+    background-color:#00688B;
+    color:#FFFFFF;
+}
+.calendar-box table td {
+    width:14%;
+}
+.calendar-box .calendar-title {
+    text-align:center;
+}
+.calendar-box a {
+    text-decoration:none;
+    color:#00688B;
+}
+.calendar-box .today a {
+    padding:0 5px;
+    margin-left:-5px;
+    background-color:#828282;
+    border: 1px solid #00688B;
+} 
+.calendar-box .selected a {
+    padding:0 5px;
+    margin-left:-5px;
+    background-color:#fff;
+    border: 1px solid #00688B;
+}
+

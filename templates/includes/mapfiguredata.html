@@ -1,0 +1,34 @@
+<div class="tabbable">
+	<!----------------------------->
+	<!--        NAVIGATION       -->
+	<!----------------------------->
+	<ul class="nav navbar-inverse nav-tabs">
+		<li class="active"><a href="#location" data-toggle="tab">Map</a></li>
+		<li><a href="#figures" data-toggle="tab">Figures</a></li>
+		<li><a href="#data" data-toggle="tab">Data</a></li>
+	</ul>
+
+	<div class="tab-content">
+		<!----------------------------->
+		<!--        GOOGLE MAP       -->
+		<!----------------------------->
+		<div class="tab-pane active" id="location">
+			{% include 'includes/map.html'%}
+		</div>
+
+		<!----------------------------->
+		<!--       FIGURES           -->
+		<!----------------------------->
+		<div class="tab-pane" id="figures">
+			  {% include 'includes/figuretab.html'%}
+		</div> 
+
+		<!----------------------------->
+		<!--       DATA              -->
+		<!----------------------------->
+		<div class="tab-pane" id="data">
+			 {% include 'includes/datatab.html'%}
+		</div>
+
+	</div>
+</div>

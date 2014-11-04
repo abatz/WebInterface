@@ -1,0 +1,38 @@
+application: khegewisch-test
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+
+handlers:
+- url: /images/team
+  static_dir: templates/images/team
+- url: /images
+  static_dir: templates/images
+- url: /media
+  static_dir: media
+- url: /contact
+  script: main.app
+- url: /aboutdata
+  script: main.app
+- url: /aboutmetrics
+  script: main.app
+- url: /droughttool
+  script: main.app
+- url: /oauth2callback
+  script: oauth2client.appengine.application
+- url: /.*
+  script: main.app
+
+libraries:
+- name: jinja2
+  version: "2.6"
+- name: webapp2
+  version: "2.5.2"
+- name: pycrypto
+  version: "2.6"
+- name: numpy
+  version: "1.6.1"
+- name: matplotlib
+  version: "1.2.0"

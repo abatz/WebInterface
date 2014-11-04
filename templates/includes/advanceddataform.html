@@ -1,0 +1,200 @@
+<!--<table id="table" class="table table-striped table-bordered" width="20%">-->
+<table id="table" class="table table-striped" width="20%">
+<tr>
+ <td>
+        <h4><p style="text-align:left"><u><span style='color:blue'> Data:</span></u></p></h4>
+  </td>
+</tr>
+<tr>
+   <td>
+       <!----------------------------->
+       <!--    DATA SOURCE          -->
+       <!----------------------------->
+                 <b>Source:</b><br>
+                  <select id="Product" name="Product" width="95%">
+                       {% for x,y in formProduct %}
+                            <option value="{{ x }}">{{ y }}</option>
+                        {% endfor %}
+                  </select>
+  </td>
+</tr>
+<tr>
+   <td>
+       <!----------------------------->
+       <!--           VARIABLE      -->
+       <!----------------------------->
+          <b>Variable:</b><br>
+          <div class="variable">
+                <div class="gridvariable">
+                        <select id="GridVariableName" name="GridVariableName"  width="95%'>
+                                {% for x,y in formVariableGrid %}
+                                    <option value="{{ x }}">{{ y }}</option>
+                                {% endfor %}
+                        </select>
+                </div>
+                <div class="landsatvariable">
+                        <select id="LandsatVariableName" name="LandsatVariableName" width="95%">
+                                {% for x,y in formVariableLandsat %}
+                                    <option value="{{ x }}">{{ y }}</option>
+                                {% endfor %}
+                        </select>
+                </div>
+                <div class="modisvariable">
+                        <select id="ModisVariableName" name="ModisVariableName" width="95%">
+                                {% for x,y in formVariableModis %}
+                                    <option value="{{ x }}">{{ y }}</option>
+                                {% endfor %}
+                        </select>
+                </div>
+        </div>
+    </td>
+</tr>
+<tr>
+   <td>
+        <b>Frequency:</b><br>
+         <div class="timefrequency">
+                <div class="gridtimespan">
+                        <select id="GridTimeSpan" name="GridTimeSpan" width="95%">
+                                {% for x,y in formGridTimeSpan %}
+                                    <option value="{{ x }}">{{ y }}</option>
+                                {% endfor %}
+                        </select>
+                </div>
+                <div class="landsattimespan">
+                        <select id="LandsatTimeSpan" name="LandsatTimeSpan" width="95%">
+                                {% for x,y in formLandsatTimeSpan %}
+                                    <option value="{{ x }}">{{ y }}</option>
+                                {% endfor %}
+                        </select>
+                </div>
+                <div class="modistimespan">
+                        <select id="ModisTimeSpan" name="ModisTimeSpan" width="95%">
+                                {% for x,y in formModisTimeSpan %}
+                                    <option value="{{ x }}">{{ y }}</option>
+                                {% endfor %}
+                        </select>
+                </div>
+        </div>
+
+   </td>
+</tr>
+<tr>
+   <td>
+        <b>Time Period: </b><br>
+         <div class='daytimechoice'>
+                <select id="DayTimeChoice" name="DayTimeChoice" width="95%">
+                        {% for x,y in formDayTimeChoice %}
+                            <option value="{{ x }}">{{ y }}</option>
+                        {% endfor %}
+                </select>
+        </div>
+         <div class='monthtimechoice'>
+                <select id="MonthTimeChoice" name="MonthTimeChoice" width="95%">
+                        {% for x,y in formMonthTimeChoice %}
+                            <option value="{{ x }}">{{ y }}</option>
+                        {% endfor %}
+                </select>
+        </div>
+        <div class='timerange'>
+                <div class='dailyCalAll'>
+                  <br>
+                         <li>Start: <input type="text" id="dailyfrom" name="dailyfrom"></li>
+                        <li>End: <input type="text" id="dailyto" name="dailyto"></li>
+                </div>
+                <div class='dailyCal'>
+                        <br>
+                        <li>Day Start:
+                        <select id="MonthStart" name="MonthStart" width="95%" >
+                                {% for x,y in formMonthStart %}
+                                    <option value="{{ x }}">{{ y }}</option>
+                                {% endfor %}
+                        </select>
+                        <select id="DayStart" name="DayStart width="95%">
+                                {% for x,y in formDayStart %}
+                                    <option value="{{ x }}">{{ y }}</option>
+                                {% endfor %}
+                        </select>
+                        </li>
+                        <li>
+                        Day End:
+                        <select id="MonthEnd" name="MonthEnd" width="95%">
+                                {% for x,y in formMonthEnd %}
+                                    <option value="{{ x }}">{{ y }}</option>
+                                {% endfor %}
+                        </select>
+                        <select id="DayEnd" name="DayEnd" width="95%">
+                                {% for x,y in formDayStart %}
+                                    <option value="{{ x }}">{{ y }}</option>
+                                {% endfor %}
+                        </select>
+                        </li>
+                        <li>
+                        Year Range:
+                        <select id="YearStart" name="YearStart" width="95%">
+                                {% for x,y in formYearStart %}
+                                    <option value="{{ x }}">{{ y }}</option>
+                                {% endfor %}
+                        </select> to
+                        <select id="YearStart" name="YearStart width="95%">
+                                {% for x,y in formYearStart %}
+                                    <option value="{{ x }}">{{ y }}</option>
+                                {% endfor %}
+                        </select>
+                        </li>
+
+                </div>
+                 <div class='monthlyCalAll'>
+                        <br>
+                        <li>Start:<input type="text" id="monthlyfrom" name="monthlyfrom"></li>
+                        <li>End:<input type="text" id="monthlyto" name="monthlyto"></li>
+                </div>
+                <div class='monthlyCal'>
+                        <br>
+                        <li>Months:<br>
+  			<select id="MonthStart" name="MonthStart" width="95%">
+                                {% for x,y in formMonthStart %}
+                                    <option value="{{ x }}">{{ y }}</option>
+                                {% endfor %}
+                        </select>
+                        -
+                        <select id="MonthEnd" name="MonthEnd" width="95%">
+                                {% for x,y in formMonthEnd %}
+                                    <option value="{{ x }}">{{ y }}</option>
+                                {% endfor %}
+                        </select>
+                        </li>
+                          <li>Years:
+                        <select id="YearStart" name="YearStart" width="95%">
+                                {% for x,y in formYearStart %}
+                                    <option value="{{ x }}">{{ y }}</option>
+                                {% endfor %}
+                        </select>
+                        -
+                        <select id="YearEnd" name="YearEnd width="95%">
+                                {% for x,y in formYearEnd %}
+                                    <option value="{{ x }}">{{ y }}</option>
+                                {% endfor %}
+                        </select>
+                        </li>
+                </div>
+                 <div class='yearlyCal'>
+                          <li>Years:
+                        <select id="YearStart" name="YearStart" width="95%">
+                                {% for x,y in formYearStart %}
+                                    <option value="{{ x }}">{{ y }}</option>
+                                {% endfor %}
+                        </select>
+                        -
+                        <select id="YearEnd" name="YearEnd width="95%">
+                                {% for x,y in formEndStart %}
+                                    <option value="{{ x }}">{{ y }}</option>
+                                {% endfor %}
+                        </select>
+                        </li>
+                </div>
+
+        </div>
+   </td>
+</tr>
+</table>
+
