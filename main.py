@@ -34,7 +34,8 @@ class MainPage(webapp2.RequestHandler):
 class DroughtTool(webapp2.RequestHandler):
     def get(self):                             # pylint: disable=g-bad-name
         ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
-	
+	ppost=0	
+
         template_values = {
 	    'formProduct': formProduct,
 	    'formVariableGrid': formVariableGrid,
@@ -55,6 +56,7 @@ class DroughtTool(webapp2.RequestHandler):
 	    'formDisplay': formDisplay,
 	    'formMetric': formMetric,
 	    'formStatistic': formStatistic,
+	    'ppost': ppost,
         }
         template = JINJA_ENVIRONMENT.get_template('droughttool.php')
         self.response.out.write(template.render(template_values))
@@ -86,6 +88,8 @@ class DroughtTool(webapp2.RequestHandler):
 	#minColorbar =self.request.get('minColorbar')
 	#maxColorbar =self.request.get('maxColorbar')
 
+	ppost=1
+
  	template_values = {
             'mapid': mapid['mapid'],
             'token': mapid['token'],
@@ -113,6 +117,7 @@ class DroughtTool(webapp2.RequestHandler):
 	    'userLong': userLong,
 	    'product': product,
 	    'variable': variable,
+	    'ppost': ppost,
         }
         template = JINJA_ENVIRONMENT.get_template('droughttool.php')
         self.response.out.write(template.render(template_values))

@@ -7,7 +7,7 @@
 		<!--     OPTIONS FORM        -->
 		<!----------------------------->
                 <td valign="top" width="25%" height="600px">
-                        <form  id="form_div" action="" target="form_target" method="post">
+                        <form  id="form_div" method="post">
                         {% include 'includes/dataform.html'%}
                         </form>
                 </td>
@@ -16,6 +16,7 @@
 		<!----------------------------->
                 <td valign="top" width="75%" height="600px">
                         {% include 'includes/mapfiguredata.html'%}
+       			<div id="map" style="width: 800x; height: 600px;"></div>
        			<div id="map" style="width: 800x; height: 600px;"></div>
                 </td>
         </tr>
