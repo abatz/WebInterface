@@ -7,6 +7,7 @@
 
 	<script type="text/javascript" src="/media/extjs/adapter/ext/ext-base.js"></script>
 	<script type="text/javascript" src="/media/extjs/ext-all.js"></script>
+
  	<!------------------------------------>
         <!-- Script for loading             -->
         <!------------------------------------>
@@ -18,6 +19,22 @@
         <!--		My SCRIPTS            -->
         <!------------------------------------>
 	<script type="text/javascript" src="media/myjs/get_colorbar.js"></script>
+	<script type="text/javascript" src="media/myjs/formListener.js"></script>
+
+
+ 	<!------------------------------------>
+        <!-- Script for progress bar        -->
+        <!------------------------------------>
+	<script type="text/javascript">
+	function progress(percent, $element) {
+
+	    var progressBarWidth = percent * $element.width() / 100;
+
+	    $element.find('div').animate({ width: progressBarWidth }, 500).html(percent + "%&nbsp;");
+
+	}
+	</script>
+
 
  	<!------------------------------------>
         <!-- Script for chart             -->
@@ -48,8 +65,9 @@
 	      *********************************/
 	      <!--var map;-->
 	      function initialize() {
-		var myCenter = new google.maps.LatLng(39.5272, -119.8219);
-		var myZoom =8;
+		<!--var myCenter = new google.maps.LatLng(39.5272, -119.8219);-->
+		var myCenter = new google.maps.LatLng({{ userLat }}, {{ userLong }});
+		var myZoom ={{ mapzoom }}
 		var mapOptions = {
 		  center: myCenter,
 		  zoom: myZoom,
@@ -66,7 +84,8 @@
                 //map.overlayMapTypes.push(null); 
                 //map.overlayMapTypes.setAt("0",mapType);
 
-                var marker = new google.maps.Marker({position:new google.maps.LatLng(39.5272,-119.8219),
+                //var marker = new google.maps.Marker({position:new google.maps.LatLng(39.5272,-119.8219),
+                var marker = new google.maps.Marker({position:new google.maps.LatLng({{ userLat }},{{ userLong }}),
                              map: map, draggable: true});
 		/*********************************	
 		*     LISTENER

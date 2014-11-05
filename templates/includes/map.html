@@ -11,6 +11,10 @@
 <!--      MAP                -->
 <!----------------------------->
 <div class="col-md-12 img-portfolio">
+	{% if ppost ==1 %}
+		<span style="font-size:18pt"><center>{{ title }}</center></span> 
+		<br>
+	{% endif %}
 	 <div id="map" style="width: 800x; height: 600px;"></div>
 	<a href="" name="form_colorbar" id="target_colorbar">
 	{% if ppost ==1 %}

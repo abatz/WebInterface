@@ -23,7 +23,7 @@ formProduct=[
         ('','--select source--'),
         ('gridded','gridMET gridded observations'),
         ('landsat','Landsat remote sensing'),
-        ('modis','MODIS remote sensing'),
+        #('modis','MODIS remote sensing'),
         ]
 
 #============================
@@ -40,28 +40,26 @@ formLocation=[
         ('ushcns','USHCN Station'),
         ]
 
-
 #============================
 #    formVariableGrid
 #============================
 formVariableGrid=[
         ('','--select variable--'),
-        ('','--select variable--'),
-        ('pdsi','PDSI (Palm. Drought Sev. Ind.)'),
-        ('spi','SPI (Stand. Prec. Ind.)'),
-        ('spei','SPEI (Stand. Prec-Evap. Ind.)'),
-        ('eto','ETo (Potential EvapTrans.)'),
-        ('eddi','EDDI (Evap Dem. Drought Ind.)'),
-        ('erc','ERC (Energy Release Component)'),
-        ('bi','BI (Burning Index)'),
-        ('tmmn','TMAX (Min Temperature)'),
-        ('tmmx','TMAX (Max Temperature)'),
-        ('rmax','RMIN (Min Rel. Humidity)'),
-        ('rmin','RMAX (Max Rel. Humidity)'),
+        #('pdsi','PDSI (Palm. Drought Sev. Ind.)'),
+        #('spi','SPI (Stand. Prec. Ind.)'),
+        #('spei','SPEI (Stand. Prec-Evap. Ind.)'),
+        #('eto','ETo (Potential EvapTrans.)'),
+        #('eddi','EDDI (Evap Dem. Drought Ind.)'),
+        #('erc','ERC (Energy Release Component)'),
+        #('bi','BI (Burning Index)'),
+        #('tmmn','TMAX (Min Temperature)'),
+        #('tmmx','TMAX (Max Temperature)'),
+        #('rmax','RMIN (Min Rel. Humidity)'),
+        #('rmin','RMAX (Max Rel. Humidity)'),
         ('pr','PPT (Precipitation)'),
-        ('srad','SRAD (Downward Radiation)'),
-        ('vs','VS (Wind Speed)'),
-        ('th','TH (Wind Direction)'),
+        #('srad','SRAD (Downward Radiation)'),
+        #('vs','VS (Wind Speed)'),
+        #('th','TH (Wind Direction)'),
         ]
 
 #============================
@@ -69,15 +67,15 @@ formVariableGrid=[
 #============================
 formVariableLandsat=[
         ('','--select variable--'),
-        ('eto','ETo (Potential Evapotranspiration)'),
-        ('eddi','EDDI (Evap. Demand Drought Index)'),
+        #('eto','ETo (Potential Evapotranspiration)'),
+        #('eddi','EDDI (Evap. Demand Drought Index)'),
         ('NDVI','NDVI (Norm. Diff. Veg. Index)'),
-        ('bi','BI (Burning Index)'),
-        ('evi','EVI (Enhanced Veg. Index)'),
-        ('ndsi','NDSI (Snow Index)'),
-        ('nbrt','NBRT (Norm. Burn Rat. Thm. Ind)'),
-        ('bai','BAI (Burning Area Index)'),
-        ('ndwi','NDWI (Water Index)'),
+        #('bi','BI (Burning Index)'),
+        #('evi','EVI (Enhanced Veg. Index)'),
+        #('ndsi','NDSI (Snow Index)'),
+        #('nbrt','NBRT (Norm. Burn Rat. Thm. Ind)'),
+        #('bai','BAI (Burning Area Index)'),
+        #('ndwi','NDWI (Water Index)'),
         ]
 #============================
 #    formVariableModis

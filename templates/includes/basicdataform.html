@@ -12,7 +12,8 @@
 		 <b>Source:</b><br>
 		  <select id="product" name="product" width="95%">
 			{% for x,y in formProduct %}
-			    <option value="{{ x }}" {% if x == "landsat" %} selected{% endif %}>{{ y }}</option>
+			    <!--<option value="{{ x }}" {% if x == "gridded" %} selected{% endif %}>{{ y }}</option>-->
+			    <option value="{{ x }}">{{ y }}</option>
 			{% endfor %}
 		  </select>
 	  </td>
@@ -23,11 +24,19 @@
 	       <!--           VARIABLE      -->
 	       <!----------------------------->
 		  <b>Variable:</b><br>
-		  <div class="variable">
-			<div class="landsatvariable">
-				<select id="variableLandsat" name="variable" width="95%">
+		  <div class="basicvariable">
+			<div class="variableLandsat">
+				<select id="variableLandsat" name="basicvariable" width="95%">
 					{% for x,y in formVariableLandsat %}
-					    <option value="{{ x }}" {% if x == "NDVI" %} selected{% endif %}>{{ y }}</option>
+					    <!--<option value="{{ x }}" {% if x == "NDVI" %} selected{% endif %}>{{ y }}</option>-->
+					    <option value="{{ x }}">{{ y }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="variableGrid">
+				<select id="variableGrid" name="basicvariable" width="95%">
+					{% for x,y in formVariableGrid %}
+					    <option value="{{ x }}" {% if x == "pr" %} selected{% endif %}>{{ y }}</option>
 					{% endfor %}
 				</select>
 			</div>
@@ -39,10 +48,11 @@
 			  <b>Time Period</b><br>
 			   <div class="timeperiod">
 				  Start Date:
-				  <input type="text" id="from" value="2013-04-01" name="dateStart">
+				  <!--<input type="text" id="from" value="2013-04-01" name="dateStart">-->
+				  <input type="text" id="from" value="2013-07-01" name="dateStart">
 				  <br>
 				  End Date:
-				  <input type="text" id="to" value="2013-07-01" name="dateEnd">
+				  <input type="text" id="to" value="2013-07-31" name="dateEnd">
 			   </div>
 	  </td>
 	</tr>

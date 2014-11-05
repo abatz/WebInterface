@@ -41,9 +41,8 @@ def map_collection(collection,minColorbar,maxColorbar):
  	colorbarPar = {
             'min':minColorbar,
             'max':maxColorbar,
-            #'palette':"000000,7F0000,FF0000,FFA500,F5F5DC,D2B38C,40E0D0,7FFF00,006400,0000FF,FF00FF"
             'palette':"FFFFE5,F7FCB9,D9F0A3,ADDD8E,93D284,78C679,41AB5D,238443,006837,004529",
-	    'opacity':".85", #number 0 to 1
+	    'opacity':".85", #range [0,1]
         }
         mapid = collection.median().getMapId(colorbarPar)
 

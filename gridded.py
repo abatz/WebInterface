@@ -2,27 +2,47 @@ import ee
 import time
 import datetime
 import numpy
-
+		
 def get_collection(product,variable,dateStart,dateEnd):
-	#from functions import ndvi_calc_L5L7,ndvi_calc_L8
+	#from functions import gridmet_ppt_func
+	from functions import get_ppt
 
 	######################################################
 	#### GET COLLECTION FOR LAT/LON POINT
 	######################################################
 	collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collection = ee.ImageCollection(collectionName).filterDate(dateStart,dateEnd);
-        collection= collection.map(gridmet_ppt_func)
+        #collection= collection.map(gridmet_ppt_func)
+        collection= collection.map(get_ppt)
 
 	return (collection);
+
+def get_climatologycollection(product,variable,dateStart,dateEnd):
+        from functions import get_ppt
+
+	dayStart = 1;
+	dayEnd = 31;
+	doy_filter = ee.Filter(ee.Filter.calendarRange(
+        dayStart, dayEnd, 'day_of_year'))
+	
+	yearStart = 2006
+	yearEnd=2010
+
+        collectionName = 'IDAHO_EPSCOR/GRIDMET';
+        collection = ee.ImageCollection(collectionName).filterDate(yearStart,yearEnd).filter(doy_filter);
+        collection= collection.map(get_ppt)
+
+        return (collection);
 
 def map_collection(collection,minColorbar,maxColorbar):
 
  	colorbarOptions = {
             'min':minColorbar,
             'max':maxColorbar,
-            'palette':"000000,7F0000,FF0000,FFA500,F5F5DC,D2B38C,40E0D0,7FFF00,006400,0000FF,FF00FF"
+            'palette':"FFFFD9,EDF8B1,C7E9B4,7FCDBB,41B6C4,1D91C0,225EA8,0C2C84",
+	    'opacity':".85", #range [0,1]
         }
-        mapid = collection.median().getMapId(colorbarOptions)
+        mapid = collection.sum().getMapId(colorbarOptions)
 
 	return mapid;
 
