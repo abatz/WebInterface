@@ -5,7 +5,6 @@
 #   formBasicVariable 
 #============================
 formBasicVariable=[
-        ('','--select variable--'),
         ('eto','ETo (Potential Evapotranspiration)'),
         ('eddi','EDDI (Evap. Demand Drought Index)'),
         ('NDVI','NDVI (Norm. Diff. Veg. Index)'),
@@ -20,7 +19,6 @@ formBasicVariable=[
 #   formProduct 
 #============================
 formProduct=[
-        ('','--select source--'),
         ('gridded','gridMET gridded observations'),
         ('landsat','Landsat remote sensing'),
         #('modis','MODIS remote sensing'),
@@ -44,7 +42,6 @@ formLocation=[
 #    formVariableGrid
 #============================
 formVariableGrid=[
-        ('','--select variable--'),
         #('pdsi','PDSI (Palm. Drought Sev. Ind.)'),
         #('spi','SPI (Stand. Prec. Ind.)'),
         #('spei','SPEI (Stand. Prec-Evap. Ind.)'),
@@ -57,6 +54,7 @@ formVariableGrid=[
         #('rmax','RMIN (Min Rel. Humidity)'),
         #('rmin','RMAX (Max Rel. Humidity)'),
         ('pr','PPT (Precipitation)'),
+        ('dpr','Change in PPT (Precipitation)'),
         #('srad','SRAD (Downward Radiation)'),
         #('vs','VS (Wind Speed)'),
         #('th','TH (Wind Direction)'),
@@ -66,10 +64,10 @@ formVariableGrid=[
 #    formVariableLandsat
 #============================
 formVariableLandsat=[
-        ('','--select variable--'),
         #('eto','ETo (Potential Evapotranspiration)'),
         #('eddi','EDDI (Evap. Demand Drought Index)'),
         ('NDVI','NDVI (Norm. Diff. Veg. Index)'),
+        ('dNDVI','Change in NDVI (Norm. Diff. Veg. Index)'),
         #('bi','BI (Burning Index)'),
         #('evi','EVI (Enhanced Veg. Index)'),
         #('ndsi','NDSI (Snow Index)'),

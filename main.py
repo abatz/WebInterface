@@ -44,7 +44,6 @@ class DroughtTool(webapp2.RequestHandler):
 	    'userLong': userLong,
 	    'ppost': ppost,
 	    'mapzoom': mapzoom,
-	    'formProduct': formProduct,
 	    'formVariableGrid': formVariableGrid,
 	    'formVariableLandsat': formVariableLandsat,
         }
@@ -60,12 +59,12 @@ class DroughtTool(webapp2.RequestHandler):
         userLatLongX = userLatLong.split(",")
         userLong = float(userLatLongX[0])
         userLat = float(userLatLongX[1])
-	product =self.request.get('product')
 	variable =self.request.get('basicvariable')
 
 	point = ee.Feature.Point(userLong,userLat);
 
-	if(product =='landsat' and variable=='NDVI'):
+	if(variable=='NDVI'):
+		product = 'landsat'
 		mapzoom=7
 		title='Average NDVI ('+dateStart+'-'+dateEnd+')';
 		minColorbar=-.1
@@ -88,8 +87,8 @@ class DroughtTool(webapp2.RequestHandler):
 		    'formVariableLandsat': formVariableLandsat,
 		    'timeSeriesData': timeSeriesData,
 		}
-	#elif(product=='gridded' and variable=='pr'): #this doesn't work because variable='' not 'pr' ??
-	else:
+	elif(variable=='pr'): #this doesn't work because variable='' not 'pr' ??
+		product = 'gridded'
 		mapzoom=4
 		title='Total Precipitation(mm) ('+dateStart+'-'+dateEnd+')';
 		variable = 'pr'
