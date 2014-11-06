@@ -18,21 +18,35 @@ def get_collection(product,variable,dateStart,dateEnd):
 	return (collection);
 
 def get_climatologycollection(product,variable,dateStart,dateEnd):
+	from functions import gridmet_ppt_func
         from functions import get_ppt
 
 	dayStart = 1;
 	dayEnd = 31;
 	doy_filter = ee.Filter(ee.Filter.calendarRange(
-        dayStart, dayEnd, 'day_of_year'))
+        	dayStart, dayEnd, 'day_of_year'))
 	
-	yearStart = 2006
+	yearStart = 2006 
 	yearEnd=2010
 
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collection = ee.ImageCollection(collectionName).filterDate(yearStart,yearEnd).filter(doy_filter);
-        collection= collection.map(get_ppt)
+        collection= collection.map(gridmet_ppt_func)
 
         return (collection);
+
+
+def get_anomalycollection(product,variable,dateStart,dateEnd):
+	collClim = get_climatologycollection(product,variable,dateStart,dateEnd)
+	coll = get_collection(product,variable,dateStart,dateEnd)
+
+
+#	def get_mean_difference(collection):
+#		return ppt_image.subtract(
+#            	ee.Image(ee.ImageCollection.fromImages(collection.get('doy_match')).mean()))
+#
+#    anomaly_coll = ee.ImageCollection(ppt_join_coll.map(anomaly_func))
+	
 
 def map_collection(collection,minColorbar,maxColorbar):
 

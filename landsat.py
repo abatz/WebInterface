@@ -3,47 +3,58 @@ import time
 import datetime
 import numpy
 
+# B1 = blue, B2=green, B3= red bands
 
-def get_collection(product,variable,point,dateStart,dateEnd):
-	from functions import ndvi_calc_L5L7,ndvi_calc_L8
+def get_collection(product,variable,dateStart,dateEnd,domain,point,state):
+	from functions import get_ndvi_L5L7,get_ndvi_L8
 
 	######################################################
 	#### GET COLLECTION FOR LAT/LON POINT
 	######################################################
-	collectionName = 'LT5_L1T_TOA';
-	band1='B4'
-	band2='B3'
-        l5_coll = ee.ImageCollection(collectionName).filterBounds(point).filterDate(dateStart,dateEnd);
-        l5_coll_ndvi = l5_coll.map(ndvi_calc_L5L7)
-	del l5_coll;
+	if(variable=='NDVI' and domain=='point'):
+		collectionName = 'LT5_L1T_TOA';
+		band1='B4'  #infrared
+		band2='B3' #red
+		l5_coll = ee.ImageCollection(collectionName).filterBounds(point).filterDate(dateStart,dateEnd);
+		l5_coll_ndvi = l5_coll.map(get_ndvi_L5L7)
+		del l5_coll;
 
-	collectionName = 'LE7_L1T_TOA';
-        l7_coll = ee.ImageCollection(collectionName).filterBounds(point).filterDate(dateStart, dateEnd);
-        l7_coll_ndvi = l7_coll.map(ndvi_calc_L5L7)
-	del l7_coll;
+		#Create a Landsat 7, median-pixel composite 
+		collectionName = 'LE7_L1T_TOA';
+		l7_coll = ee.ImageCollection(collectionName).filterBounds(point).filterDate(dateStart, dateEnd);
+		l7_coll_ndvi = l7_coll.map(get_ndvi_L5L7)
+		del l7_coll;
 
-	collectionName = 'LC8_L1T_TOA';
-        l8_coll = ee.ImageCollection(collectionName).filterBounds(point).filterDate(dateStart,dateEnd);
-        l8_coll_ndvi = l8_coll.map(ndvi_calc_L8)
-	del l8_coll;
-	######################################################
-        #### Merge image collections
-	######################################################
-        collection = ee.ImageCollection(l5_coll_ndvi.merge(l7_coll_ndvi));
-	del l7_coll_ndvi;
-        collection= ee.ImageCollection(collection.merge(l8_coll_ndvi));
-	del l8_coll_ndvi;
+		collectionName = 'LC8_L1T_TOA';
+		l8_coll = ee.ImageCollection(collectionName).filterBounds(point).filterDate(dateStart,dateEnd);
+		l8_coll_ndvi = l8_coll.map(get_ndvi_L8)
+		del l8_coll;
 
+        	#### Merge image collections
+		collection = ee.ImageCollection(l5_coll_ndvi.merge(l7_coll_ndvi));
+		del l7_coll_ndvi;
+		collection= ee.ImageCollection(collection.merge(l8_coll_ndvi));
+		del l8_coll_ndvi;
+#	elif(variable=='NDVI' and domain=='state'):
+#		var polygon = ee.Geometry.Polygon([[
+#			  [-109.05, 37.0], [-102.05, 37.0], [-102.05, 41.0],   // colorado
+#			  [-109.05, 41.0], [-111.05, 41.0], [-111.05, 42.0],   // utah
+#			  [-114.05, 42.0], [-114.05, 37.0], [-109.05, 37.0]]]);
+#                collectionName = 'LE7_L1T';
+#                collection= ee.ImageCollection(collectionName).filterDate(dateStart,dateEnd).filterBounds(polygon).select('B3','B2','B1');
+#		#collection = collection.filter(ee.Filter.eq('Name', state));
+#		#collection = collection.map(get_ndvi_L5L7);
 	return (collection);
 
-def map_collection(collection,minColorbar,maxColorbar):
+def map_collection(collection,minColorbar,maxColorbar,variable):
 
- 	colorbarPar = {
-            'min':minColorbar,
-            'max':maxColorbar,
-            'palette':"FFFFE5,F7FCB9,D9F0A3,ADDD8E,93D284,78C679,41AB5D,238443,006837,004529",
-	    'opacity':".85", #range [0,1]
-        }
+	if(variable=='NDVI'):
+		colorbarPar = {
+		    'min':minColorbar,
+		    'max':maxColorbar,
+		    'palette':"FFFFE5,F7FCB9,D9F0A3,ADDD8E,93D284,78C679,41AB5D,238443,006837,004529",
+		    'opacity':".85", #range [0,1]
+		}
         mapid = collection.median().getMapId(colorbarPar)
 
 	return mapid;

@@ -54,7 +54,7 @@ formVariableGrid=[
         #('rmax','RMIN (Min Rel. Humidity)'),
         #('rmin','RMAX (Max Rel. Humidity)'),
         ('pr','PPT (Precipitation)'),
-        ('dpr','Change in PPT (Precipitation)'),
+        #('dpr','Change in PPT (Precipitation)'),
         #('srad','SRAD (Downward Radiation)'),
         #('vs','VS (Wind Speed)'),
         #('th','TH (Wind Direction)'),
@@ -67,10 +67,10 @@ formVariableLandsat=[
         #('eto','ETo (Potential Evapotranspiration)'),
         #('eddi','EDDI (Evap. Demand Drought Index)'),
         ('NDVI','NDVI (Norm. Diff. Veg. Index)'),
-        ('dNDVI','Change in NDVI (Norm. Diff. Veg. Index)'),
+        #('dNDVI','Change in NDVI (Norm. Diff. Veg. Index)'),
         #('bi','BI (Burning Index)'),
-        #('evi','EVI (Enhanced Veg. Index)'),
-        #('ndsi','NDSI (Snow Index)'),
+        #('EVI','EVI (Enhanced Veg. Index)'),
+        #('NDSI','NDSI (Snow Index)'),
         #('nbrt','NBRT (Norm. Burn Rat. Thm. Ind)'),
         #('bai','BAI (Burning Area Index)'),
         #('ndwi','NDWI (Water Index)'),
@@ -248,3 +248,12 @@ formStatistic=[
         ('min','Minimum over Time Period'),
         ('stdev','Standard Deviation of Values'),
         ]
+
+
+formStates=[
+        ('California','California'),
+        ('Colorado','Colorado'),
+        ('Idaho','Idaho'),
+        ('Washington','Washington'),
+]
+

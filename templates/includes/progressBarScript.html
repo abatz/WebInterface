@@ -1,0 +1,46 @@
+<script> 
+
+    var intervalHandler = 0;
+
+    function refresh() 
+    {
+        $.ajax(
+        {
+            type: 'GET',
+            url: '/progress',
+            success: function(data) 
+            {   
+                var progressVal = $.parseJSON( data );
+                document.getElementById("dbg").innerHTML = progressVal;   
+
+                if( progressVal > 99 )
+                {
+                    $( "#progressbar" ).progressbar( { value: 100 });
+                    alert("Finish");
+
+                    clearInterval(intervalHandler); // stop the interval
+                    intervalHandler = null;
+
+                    //window.location.reload(true);// will perform a post request,  but we need a GET request
+                    var loc = window.location;
+                    window.location = loc.protocol + '//' + loc.host + loc.pathname + loc.search;
+                 }
+                else
+                {
+                    $( "#progressbar" ).progressbar( { value: progressVal });
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown)
+            {
+                alert("Request Error !!!!");
+            }
+        });
+    };
+
+{% if progressScriptActive %}
+    $(function()
+    {
+        intervalHandler = setInterval("refresh()", 2000);
+    });
+{% endif %}
+</script>

@@ -1,7 +1,7 @@
 (function($){
 	window.get_colorbar=function(){
 		
-	$.ajax( {   url : "/media/myjs/get_colorbar_options.php",
+	$.ajax( {   url : "/media/myjs/get_colorbar_url.php",
                dataType: 'json',
                 type    : 'post',
                data    : $('#form_div').serialize(),

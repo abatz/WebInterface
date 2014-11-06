@@ -13,9 +13,8 @@
 		  <div class="basicvariable">
 			<div class="variableLandsat">
 				<select id="variableLandsat" name="basicvariable" width="95%">
-					    <option value="">--select variable--</option>-->
+					<option value="">--select variable--</option>-->
 					{% for x,y in formVariableLandsat %}
-					    <!--<option value="{{ x }}" {% if x == "NDVI" %} selected{% endif %}>{{ y }}</option>-->
 					    <option value="{{ x }}">{{ y }}</option>
 					{% endfor %}
 					{% for x,y in formVariableGrid %}
@@ -46,19 +45,31 @@
 				  Lon, Lat:
 				  <input id="userLatLong" name="userLatLong" value="-119.8219,39.5272" />
 				  <!--<input id="userLatLong" name="userLatLong" value="{{ userLong }},{{ userLat }}" />-->
+				{% if 0 %}
+				  State:
+				<select id="state" name="state" width="95%">
+					<option value="">--select state--</option>-->
+					{% for x,y in formStates %}
+					    <option value="{{ x }}">{{ y }}</option>
+					{% endfor %}
+				</select>
+				{% endif %}
 			   </div>
+
 	  </td>
 	</tr>
 	<tr>
 	 <td>
 			   <input type="submit" class="btn btn-large ptn-primary pull-right" value="RUN" />
-		<div class="progress">
-	  		<div class="progress-bar progress-bar-striped active" 
-				role="progressbar" aria-valuenow="{{ progress }}" aria-valuemin="0" 
-				aria-valuemax="100" style="width: {{ progress }}%">
-	   			 <span class="sr-only">{{ progress }} Complete</span>
-	  		</div>
-		</div>
 	  </td>
 	</tr>
+	 {% if ppost==1 %}
+	<tr>
+           <td>
+                <h4><p style="text-align:left"><u><span style='color:blue'> Outputs:</span></u></p></h4>
+		<li>Map</li>
+		{% if variable=='NDVI' %}<li>Data</li>{% endif %}
+           </td>
+        </tr>
+	 {% endif %}
 	</table>
