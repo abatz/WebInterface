@@ -41,19 +41,30 @@
 	<tr>
 	   <td>
 			  <b>Domain:</b><br>
-			   <div class="domain">
-				  Lon, Lat:
-				  <input id="userLatLong" name="userLatLong" value="-119.8219,39.5272" />
-				  <!--<input id="userLatLong" name="userLatLong" value="{{ userLong }},{{ userLat }}" />-->
-				{% if 0 %}
-				  State:
+			   <div class="domainType">
+				Select Domain: 
+				<select id="domainType" name="domainType" width="95%">
+                                        <option value="">--select domain--</option>-->
+                                        {% for x,y in formLocation %}
+                                            <option value="{{ x }}">{{ y }}</option>
+                                        {% endfor %}
+                                </select>
+			 </div>
+			   <div class="subdomain">
+				<br>
+				<div class="points">
+				  Select a Point Location (Lon(E), Lat(N)):
+				  <input id="pointLatLong" name="pointLatLong" value="-119.8219,39.5272" />
+				  <!--<input id="userLatLong" name="userLatLong" value="{{ pointLong }},{{ pointLat }}" />-->
+				</div>
+				<div class="states">
+				  Select a State:
 				<select id="state" name="state" width="95%">
-					<option value="">--select state--</option>-->
 					{% for x,y in formStates %}
 					    <option value="{{ x }}">{{ y }}</option>
 					{% endfor %}
 				</select>
-				{% endif %}
+				</div>
 			   </div>
 
 	  </td>

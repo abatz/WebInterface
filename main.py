@@ -12,9 +12,7 @@ import numpy
 import json
 
 from forms import *
-from functions import *
-import gridded
-import landsat
+import collectionMethods
 
 template_dir = os.path.join(os.path.dirname(__file__),'templates')
 JINJA_ENVIRONMENT= jinja2.Environment(autoescape=True,
@@ -36,21 +34,22 @@ class DroughtTool(webapp2.RequestHandler):
         ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
 	ppost=0	
 	mapzoom=7
-	userLat = 39.5272
-	userLong = -119.8219
+	pointLat = 39.5272
+	pointLong = -119.8219
 
         template_values = {
-	    'userLat': userLat,
-	    'userLong': userLong,
+	    'pointLat': pointLat,
+	    'pointLong': pointLong,
 	    'ppost': ppost,
 	    'mapzoom': mapzoom,
 	    'formVariableGrid': formVariableGrid,
+	    'formLocation': formLocation,
 	    'formVariableLandsat': formVariableLandsat,
 	    'formStates': formStates,
-	     #'progressScriptActive':False,
         }
         template = JINJA_ENVIRONMENT.get_template('droughttool.php')
         self.response.out.write(template.render(template_values))
+
     def post(self):
 	ppost=1
         ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
@@ -58,71 +57,77 @@ class DroughtTool(webapp2.RequestHandler):
 	#Get data from form
         dateStart= cgi.escape(self.request.get('dateStart'))
         dateEnd = cgi.escape(self.request.get('dateEnd'))
-        userLatLong = cgi.escape(self.request.get('userLatLong'))
-        userLatLongX = userLatLong.split(",")
-        userLong = float(userLatLongX[0])
-        userLat = float(userLatLongX[1])
+        pointLatLong = cgi.escape(self.request.get('pointLatLong'))
+        pointLatLongX = pointLatLong.split(",")
+        pointLong = float(pointLatLongX[0])
+        pointLat = float(pointLatLongX[1])
 	variable =self.request.get('basicvariable')
-	#key =self.request.get('key')
+	domainType =self.request.get('domainType')
+	point = ee.Feature.Point(pointLong,pointLat);
+	state=self.request.get('state')
+	if(domainType=='points' or domainType=='conus'):
+		subdomain = point;
+	elif(domainType=='states'):
+		subdomain=state;
 
-	state =self.request.get('state')
-	point = ee.Feature.Point(userLong,userLat);
-	#taskqueue.add(url='/worker', params={'key': key})
-
+	template_values = {
+	}
 	if(variable=='NDVI' or variable=='NDSI'):
 		product = 'landsat'
-		mapzoom=7
-		title='Average NDVI ('+dateStart+'-'+dateEnd+')';
-		source='Landsat 5,7,8, median-pixel composite'
+		mapzoom=4 #was 7
 		minColorbar=-.1
 		maxColorbar=.9
-    		collection= landsat.get_collection(product, variable,dateStart, dateEnd,'point',point,state)
-    		#collection= landsat.get_collection(product, variable,dateStart, dateEnd,'state',point,state)
-		mapid =landsat.map_collection(collection,minColorbar,maxColorbar,variable)
-		timeSeriesData=landsat.get_timeseries(collection,point,variable)
+
+    		collection,collectionLongName= collectionMethods.get_collection(product, variable,dateStart, dateEnd);
+		collection = collectionMethods.get_statistic(collection,variable);
+		collection =collectionMethods.filter_domain(collection,domainType,subdomain)
+		mapid =collectionMethods.map_collection(collection,minColorbar,maxColorbar,variable)
+		#timeSeriesData=collectionMethods.get_timeseries(collection,point,variable)
+
+		title='Median '+variable;
+		source=collectionLongName+' from '+dateStart+'-'+dateEnd+''
+
 		template_values = {
-		    'userLat': userLat,
-		    'userLong': userLong,
-		    'product': product,
-		    'variable': variable,
-		    'ppost': ppost,
-		    'title': title,
-		    'source': source,
-		    'mapzoom': mapzoom,
-		    'mapid': mapid['mapid'],
-		    'token': mapid['token'],
-		    'formVariableGrid': formVariableGrid,
-		    'formVariableLandsat': formVariableLandsat,
-	    	    'formStates': formStates,
-		    'timeSeriesData': timeSeriesData,
-		}
+		    #'timeSeriesData': timeSeriesData,
+                }
+
 	elif(variable=='pr'): 
 		product = 'gridded'
 		mapzoom=4
-		title='Total Precipitation(mm) ('+dateStart+'-'+dateEnd+')';
-		source='gridMET 4-km observational dataset, University of Idaho'
-		variable = 'pr'
 		minColorbar=0
 		maxColorbar=400
-    		collection= gridded.get_collection(product, variable,dateStart, dateEnd)
-		mapid =gridded.map_collection(collection,minColorbar,maxColorbar)
+
+    		collection,collectionLongName= collectionMethods.get_collection(product, variable,dateStart, dateEnd);
+		collection = collectionMethods.get_statistic(collection,variable);
+		collection =collectionMethods.filter_domain(collection,domainType,subdomain)
+		mapid =collectionMethods.map_collection(collection,minColorbar,maxColorbar,variable)
+
+  		#collection= gridded.get_collection(product, variable,dateStart, dateEnd)
+		#mapid =gridded.map_collection(collection,minColorbar,maxColorbar)
 		#climatologycollection =gridded.get_climatologycollection(product,variable,dateStart,dateEnd)
 		#mapid =gridded.map_collection(climatologycollection,minColorbar,maxColorbar)
-		template_values = {
-		    'userLat': userLat,
-		    'userLong': userLong,
-		    'product': product,
-		    'variable': variable,
-		    'ppost': ppost,
-		    'title': title,
-		    'source': source,
-		    'mapzoom': mapzoom,
-		    'mapid': mapid['mapid'],
-		    'token': mapid['token'],
-		    'formVariableGrid': formVariableGrid,
-		    'formVariableLandsat': formVariableLandsat,
-	    	    'formStates': formStates,
-		}
+
+		title='Total Precipitation (mm) ('+dateStart+'-'+dateEnd+')';
+		source=collectionLongName+' from '+dateStart+'-'+dateEnd+''
+
+	extra_template_values = {
+	    'pointLat': pointLat,
+	    'pointLong': pointLong,
+	    'state': state,
+	    'variable': variable,
+	    'ppost': ppost,
+	    'title': title,
+	    'source': source,
+	    'mapzoom': mapzoom,
+	    'mapid': mapid['mapid'],
+	    'token': mapid['token'],
+	    'formVariableGrid': formVariableGrid,
+	    'formLocation': formLocation,
+	    'formVariableLandsat': formVariableLandsat,
+	    'formStates': formStates,
+	}
+	template_values = dict(template_values,**extra_template_values);
+
         template = JINJA_ENVIRONMENT.get_template('droughttool.php')
         self.response.out.write(template.render(template_values))
 
