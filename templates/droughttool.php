@@ -7,7 +7,7 @@
 		<!--     OPTIONS FORM        -->
 		<!----------------------------->
                 <td valign="top" width="25%" height="600px">
-                        <form  id="form_div" method="post">
+                        <form  id="form_div" method="post" onsubmit="showLoadingImage.show_loading()">
                         {% include 'includes/dataform.html'%}
                         </form>
                 </td>

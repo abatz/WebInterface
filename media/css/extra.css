@@ -1,3 +1,82 @@
-.points,.states,.divisions,.stations,.hucs,.psas,.counties,.timefrequency,.timeavgoptions,.timerange,.dailyCalAll,.dailyCal,.monthlyCalAll,.monthlyCal,.gridtimespan,.landsattimespan,.modistimespan,.processtimeseries,.timeseriesoptions,.metric,.climatology,.statistic,.daytimechoice,.monthtimechoice,.displaytype,.basictimescale,.variableGrid{
+.polygon,.points,.states,.divisions,.stations,.hucs,.psas,.counties,.timefrequency,.timeavgoptions,.timerange,.dailyCalAll,.dailyCal,.monthlyCalAll,.monthlyCal,.gridtimespan,.landsattimespan,.modistimespan,.processtimeseries,.timeseriesoptions,.metric,.climatology,.statistic,.daytimechoice,.monthtimechoice,.displaytype,.basictimescale,.variableGrid{
     display: none;
+}
+
+/*----------------------------
+for showLoadingImage.js
+----------------------*/
+#loading {
+#  width: 100%;
+#  height: 100%;
+#  top: 100px;
+#  left: 100px;
+#  position: fixed;
+#  display: block;
+#  z-index: 99;
+#  text-align: center;
+}
+
+/*----------------------------
+
+----------------------*/
+.fig {
+      font-family:Arial;
+      font-size:10pt;
+      color:darkgray;
+    }
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+/*----------------------------
+for mapToolbar.js
+----------------------*/
+#hand_b {
+  width:31px;
+  height:31px;
+  background-image: url(http://google.com/mapfiles/ms/t/Bsu.png);
+}
+#hand_b.selected {
+  background-image: url(http://google.com/mapfiles/ms/t/Bsd.png);
+}
+
+#placemark_b {
+  width:31px;
+  height:31px;
+  background-image: url(http://google.com/mapfiles/ms/t/Bmu.png);
+}
+#placemark_b.selected {
+  background-image: url(http://google.com/mapfiles/ms/t/Bmd.png);
+}
+
+#line_b {
+  width:31px;
+  height:31px;
+  background-image: url(http://google.com/mapfiles/ms/t/Blu.png);
+}
+#line_b.selected {
+  background-image: url(http://google.com/mapfiles/ms/t/Bld.png);
+}
+
+#shape_b {
+  width:31px;
+  height:31px;
+  background-image: url(http://google.com/mapfiles/ms/t/Bpu.png);
+}
+#shape_b.selected {
+  background-image: url(http://google.com/mapfiles/ms/t/Bpd.png);
 }

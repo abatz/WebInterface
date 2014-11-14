@@ -33,9 +33,15 @@ class DroughtTool(webapp2.RequestHandler):
     def get(self):                             # pylint: disable=g-bad-name
         ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
 	ppost=0	
-	mapzoom=7
-	pointLat = 39.5272
-	pointLong = -119.8219
+	mapzoom=4
+	pointLat = 39.0510 
+	pointLong = -98.0250
+	polygon ='[[ [-109.05, 37.0], [-102.05, 37.0], [-102.05, 41.0], [-109.05, 41.0], [-111.05, 41.0], [-111.05, 42.0], [-114.05, 42.0], [-114.05, 37.0], [-109.05, 37.0]]]';
+	state ='Washington'
+	variable = 'NDVI'
+	domainType = 'conus'
+	dateStart ='2013-01-01' 
+	dateEnd='2013-03-31'
 
         template_values = {
 	    'pointLat': pointLat,
@@ -46,6 +52,13 @@ class DroughtTool(webapp2.RequestHandler):
 	    'formLocation': formLocation,
 	    'formVariableLandsat': formVariableLandsat,
 	    'formStates': formStates,
+	    'variable': variable,
+	    'state': state,
+	    #'polygon': polygon,
+	    'domainType': domainType,
+	    'dateStart': dateStart,
+	    'dateEnd': dateEnd,
+	    #'timeSeriesGraphData': timeSeriesGraphData,
         }
         template = JINJA_ENVIRONMENT.get_template('droughttool.php')
         self.response.out.write(template.render(template_values))
@@ -63,58 +76,75 @@ class DroughtTool(webapp2.RequestHandler):
         pointLat = float(pointLatLongX[1])
 	variable =self.request.get('basicvariable')
 	domainType =self.request.get('domainType')
-	point = ee.Feature.Point(pointLong,pointLat);
 	state=self.request.get('state')
+	#polygon=self.request.get('polygon')
+	#polygon ='[[ [-109.05, 37.0], [-102.05, 37.0], [-102.05, 41.0], [-109.05, 41.0], [-111.05, 41.0], [-111.05, 42.0], [-114.05, 42.0], [-114.05, 37.0], [-109.05, 37.0]]]';
+
+
 	if(domainType=='points' or domainType=='conus'):
-		subdomain = point;
+		subdomain = ee.Feature.Point(pointLong,pointLat);
+		point = subdomain;
 	elif(domainType=='states'):
 		subdomain=state;
+	elif(domainType=='polygon'):
+		subdomain=ee.Feature.Polygon(polygon);
 
-	template_values = {
-	}
 	if(variable=='NDVI' or variable=='NDSI'):
 		product = 'landsat'
-		mapzoom=4 #was 7
+		productLongName = 'LANDSAT 7 L1T TOA'
+		notes="NDVI calculated from Norm. Diff. of Infrared and Red bands"
+		mapzoom=4 #was 4 
 		minColorbar=-.1
 		maxColorbar=.9
-
-    		collection,collectionLongName= collectionMethods.get_collection(product, variable,dateStart, dateEnd);
-		collection = collectionMethods.get_statistic(collection,variable);
-		collection =collectionMethods.filter_domain(collection,domainType,subdomain)
-		mapid =collectionMethods.map_collection(collection,minColorbar,maxColorbar,variable)
-		#timeSeriesData=collectionMethods.get_timeseries(collection,point,variable)
-
-		title='Median '+variable;
-		source=collectionLongName+' from '+dateStart+'-'+dateEnd+''
-
-		template_values = {
-		    #'timeSeriesData': timeSeriesData,
-                }
-
 	elif(variable=='pr'): 
 		product = 'gridded'
+		productLongName = 'GRIDMET 4-km (Abatzoglou)'
+		notes=""
 		mapzoom=4
 		minColorbar=0
 		maxColorbar=400
 
-    		collection,collectionLongName= collectionMethods.get_collection(product, variable,dateStart, dateEnd);
-		collection = collectionMethods.get_statistic(collection,variable);
-		collection =collectionMethods.filter_domain(collection,domainType,subdomain)
-		mapid =collectionMethods.map_collection(collection,minColorbar,maxColorbar,variable)
+	collection,collectionLongName= collectionMethods.get_collection(product, variable,dateStart, dateEnd);
+	collection =collectionMethods.filter_domain1(collection,domainType,subdomain)
 
-  		#collection= gridded.get_collection(product, variable,dateStart, dateEnd)
-		#mapid =gridded.map_collection(collection,minColorbar,maxColorbar)
-		#climatologycollection =gridded.get_climatologycollection(product,variable,dateStart,dateEnd)
-		#mapid =gridded.map_collection(climatologycollection,minColorbar,maxColorbar)
+	template_values = {
+	}
+	if(variable=='NDVI' or variable=='NDSI'):
+		if(domainType=='points'):
+			timeSeriesData=collectionMethods.get_timeseries(collection,point,variable)
 
-		title='Total Precipitation (mm) ('+dateStart+'-'+dateEnd+')';
+			timeSeriesGraphData = []	
+			n_rows = numpy.array(timeSeriesData).shape[0];
+			for i in range(2,n_rows):
+			  entry = {'count':timeSeriesData[i][1],'name':timeSeriesData[i][0]};
+			  timeSeriesGraphData.append(entry);
+
+			template_values = {
+			    'timeSeriesData': timeSeriesData,
+	    		    'timeSeriesGraphData': timeSeriesGraphData,
+			}
+		title='Median '+variable;
 		source=collectionLongName+' from '+dateStart+'-'+dateEnd+''
+	elif(variable=='pr'): 
+		title='Total Precipitation (mm)';
+		source=collectionLongName+' from '+dateStart+'-'+dateEnd+''
+
+	collection = collectionMethods.get_statistic(collection,variable);
+	collection =collectionMethods.filter_domain2(collection,domainType,subdomain)
+	mapid =collectionMethods.map_collection(collection,minColorbar,maxColorbar,variable)
 
 	extra_template_values = {
 	    'pointLat': pointLat,
 	    'pointLong': pointLong,
-	    'state': state,
+	    'product': product,
+	    'productLongName': productLongName,
+	    'notes': notes,
 	    'variable': variable,
+	    'state': state,
+	    #'polygon': polygon,
+	    'domainType': domainType,
+	    'dateStart': dateStart,
+	    'dateEnd': dateEnd,
 	    'ppost': ppost,
 	    'title': title,
 	    'source': source,

@@ -9,16 +9,15 @@
 	       <!----------------------------->
 	       <!--           VARIABLE      -->
 	       <!----------------------------->
-		  <b>Variable:</b><br>
+		  <b>Variable:</b><br> 
 		  <div class="basicvariable">
 			<div class="variableLandsat">
 				<select id="variableLandsat" name="basicvariable" width="95%">
-					<option value="">--select variable--</option>-->
 					{% for x,y in formVariableLandsat %}
-					    <option value="{{ x }}">{{ y }}</option>
+					    <option value="{{ x }}" {% if x == variable  %} selected {% endif %}>{{ y }}</option>
 					{% endfor %}
 					{% for x,y in formVariableGrid %}
-					    <option value="{{ x }}">{{ y }}</option>
+					    <option value="{{ x }}"{% if x == variable  %} selected {% endif %}>{{ y }}</option>
 					{% endfor %}
 				</select>
 			</div>
@@ -27,60 +26,111 @@
 	</tr>
 	<tr>
 	   <td>
-			  <b>Time Period</b><br>
-			   <div class="timeperiod">
-				  Start Date:
-				  <!--<input type="text" id="from" value="2013-04-01" name="dateStart">-->
-				  <input type="text" id="from" value="2013-07-01" name="dateStart">
-				  <br>
-				  End Date:
-				  <input type="text" id="to" value="2013-07-31" name="dateEnd">
-			   </div>
+	       <!----------------------------->
+	       <!--         TIME PERIOD     -->
+	       <!----------------------------->
+		  <b>Time Period</b><br>
+		   <div class="timeperiod">
+			  Start Date:
+			  <input type="text" id="from" value={{ dateStart }} name="dateStart">
+			  <br>
+			  End Date:
+			  <input type="text" id="to" value={{ dateEnd }} name="dateEnd">
+		   </div>
 	  </td>
 	</tr>
 	<tr>
 	   <td>
+	       <!----------------------------->
+	       <!--      DOMAIN             -->
+	       <!----------------------------->
 			  <b>Domain:</b><br>
 			   <div class="domainType">
 				Select Domain: 
 				<select id="domainType" name="domainType" width="95%">
-                                        <option value="">--select domain--</option>-->
                                         {% for x,y in formLocation %}
-                                            <option value="{{ x }}">{{ y }}</option>
+                                            <option value="{{ x }}"{% if x == domainType  %} selected {% endif %}>{{ y }}</option>
                                         {% endfor %}
                                 </select>
 			 </div>
+	</td>
+	</tr>
+	<tr>
+	<td>
+	
+		       <!----------------------------->
+		       <!--      SUBDOMAIN (Points,States)   -->
+		       <!----------------------------->
 			   <div class="subdomain">
-				<br>
+				<!--	
+				<table><tr>
+				<td><div id="hand_b"
+					 onclick="MapToolbar.stopEditing()"/></td>
+				<td><div id="placemark_b"
+				onclick="MapToolbar.initFeature('placemark')"/></td>
+				<td><div id="line_b"
+					 onclick="MapToolbar.initFeature('line')"/></td>
+				<td><div id="shape_b"
+					onclick="MapToolbar.initFeature('shape')"/></td>
+				<td style="display:none">
+					<div id="undo"
+					onclick="MapToolbar.undo()"/></td>
+				</tr></table>
+					<br>
+					<table id ="featuretable">
+					     <tbody id="featuretbody">
+					     </tbody>
+					</table>
+				-->
 				<div class="points">
-				  Select a Point Location (Lon(E), Lat(N)):
-				  <input id="pointLatLong" name="pointLatLong" value="-119.8219,39.5272" />
-				  <!--<input id="userLatLong" name="userLatLong" value="{{ pointLong }},{{ pointLat }}" />-->
+					<b>SubDomain:</b><br>
+					  Points (Longitude (East), Latitude (North))
+					  <img src="http://www.google.com/mapfiles/ms/micons/red.png">Point 1:
+					  <input id="pointLatLong" name="pointLatLong" value="{{ pointLong }},{{ pointLat }}" />
 				</div>
-				<div class="states">
-				  Select a State:
-				<select id="state" name="state" width="95%">
-					{% for x,y in formStates %}
-					    <option value="{{ x }}">{{ y }}</option>
-					{% endfor %}
-				</select>
-				</div>
-			   </div>
 
-	  </td>
+				<div class="states">
+					<b>SubDomain:</b><br>
+					  Select a State:
+					<select id="state" name="state" width="95%">
+						{% for x,y in formStates %}
+						    <option value="{{ x }}" {% if x == state  %} selected {% endif %}>{{ y }}</option>
+						{% endfor %}
+					</select>
+					<br>
+				</div>
+
+                                <div class="polygon">
+					<b>SubDomain:</b><br>
+					  Enter a Polygon (Lon(E), Lat(N)):
+					<textarea rows="5" cols="30" id="polygon" name="polygon" >{{ polygon }}</textarea>
+					<br>
+                                </div>
+		     </div>
+	</td>
 	</tr>
 	<tr>
-	 <td>
-			   <input type="submit" class="btn btn-large ptn-primary pull-right" value="RUN" />
+	  <td>
+	       <!----------------------------->
+	       <!--      BUTTON            -->
+	       <!----------------------------->
+			   <input type="submit" class="btn btn-large ptn-primary pull-right" value="RUN" 
+					form="form_div" />
+				 <div id="loading" style="display:none;">
+					<img id="loading-image" src="images/loading_image.gif" alt="Loading..." />
+			    	</div> 
 	  </td>
 	</tr>
+	       <!----------------------------->
+	       <!--      OUTPUT AREA       -->
+	       <!----------------------------->
 	 {% if ppost==1 %}
-	<tr>
-           <td>
-                <h4><p style="text-align:left"><u><span style='color:blue'> Outputs:</span></u></p></h4>
-		<li>Map</li>
-		{% if variable=='NDVI' %}<li>Data</li>{% endif %}
-           </td>
-        </tr>
+		<tr>
+		   <td>
+			<h4><p style="text-align:left"><u><span style='color:blue'> Outputs:</span></u></p></h4>
+			<li>Map</li>
+			{% if variable=='NDVI' %}<li>Data</li>{% endif %}
+		   </td>
+		</tr>
 	 {% endif %}
 	</table>

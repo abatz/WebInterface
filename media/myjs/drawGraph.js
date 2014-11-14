@@ -1,13 +1,11 @@
-var data={{ timeSeriesData }};
-var chart;
-
+//var chart;
+//var data;
 google.load("visualization", "1", {packages:["corechart"]});
 google.setOnLoadCallback(drawGraph);
 
 function drawGraph() {
-    timeSeriesData = data;
-
-    var data = google.visualization.arrayToDataTable(timeSeriesData);
+    var TimeSeriesArray = {{ timeSeriesData }};
+    var data = google.visualization.arrayToDataTable(TimeSeriesArray);
 
     var options = {
 	    title: 'NDVI',
@@ -15,8 +13,7 @@ function drawGraph() {
 	    vAxis: {title: 'NDVI', titleTextStyle: {color: 'blue'}}
     };
 
-    //var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-    var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+     var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
 
     chart.draw(data, options);
 }

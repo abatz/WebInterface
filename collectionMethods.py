@@ -8,24 +8,45 @@ import numpy
 def get_collection(product,variable,dateStart,dateEnd):
 
   	if(variable=='NDVI'):
-                #collectionName = 'LE7_L1T_32DAY_NDVI';
-		#collectionLongName = 'Landsat 7 L1T TOA 32-Day NDVI Composite'
+                collectionName = 'LE7_L1T_32DAY_NDVI';
+		collectionLongName = 'Landsat 7 L1T TOA 32-Day NDVI Composite'
 
-                collectionName = 'MCD43A4_NDVI';
-		collectionLongName = 'MODIS 16-day NDVI'
+                #collectionName = 'MCD43A4_NDVI';
+		#collectionLongName = 'MODIS 16-day NDVI'
+		def ndvi_calc_L5L7(refl_toa): 
+		    ndvi_img = refl_toa.select("B4", "B3").normalizedDifference().select([0],['NDVI'])
+		    return ee.Image(ndvi_img.copyProperties(refl_toa,['system:index','system:time_start','system_time_end']))
+
+                collectionName = 'LE7_L1T_TOA';
+		collectionLongName = 'Landsat 7 L1T TOA, ND of IR and R bands';
+		collection = ee.ImageCollection(collectionName).filterDate(dateStart,dateEnd).map(ndvi_calc_L5L7);
   	elif(variable=='NDSI'):
                 #collectionName = 'LC8_L1T_32DAY_NDSI';
 		#collectionLongName = 'Landsat 8 L1T TOA 32-Day NDSI Composite'
 
                 collectionName = 'MCD43A4_NDSI';
 		collectionLongName = 'MODIS 16-day NDSI Composite'
+		collection = ee.ImageCollection(collectionName).filterDate(dateStart,dateEnd).select([variable],[variable]);
   	elif(variable=='pr'):
 		collectionName = 'IDAHO_EPSCOR/GRIDMET';
 		collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
-
-	collection = ee.ImageCollection(collectionName).filterDate(dateStart,dateEnd).select([variable],[variable]);
+		collection = ee.ImageCollection(collectionName).filterDate(dateStart,dateEnd).select([variable],[variable]);
 
 	return (collection,collectionLongName);
+
+
+#===========================================
+#   FIRST_FILTER_DOMAIN(for filterBounds)
+#===========================================
+def filter_domain1(collection,domainType, subdomain):
+        if(domainType=='points'):
+                collection =collection.filterBounds(subdomain);
+        #elif(domainType=='states'):
+        #elif(domainType=='conus'):
+        #elif(domainType=='polygon'):
+                #collection =collection.filterBounds(subdomain);
+
+        return (collection);
 
 #===========================================
 #   GET_STATISTIC 
@@ -41,13 +62,12 @@ def get_statistic(collection,variable):
 	return (collection);
 
 #===========================================
-#   FILTER_DOMAIN 
+#   SECOND_FILTER_DOMAIN (for clipping/masking)
 #===========================================
-def filter_domain(collection,domainType, subdomain):
+def filter_domain2(collection,domainType, subdomain):
 	if(domainType=='points'):
-		#collection =collection.filterBounds(subdomain);
 		fc = ee.FeatureCollection('ft:1fRY18cjsHzDgGiJiS2nnpUU3v9JPDc2HNaR7Xk8');
-		collection= collection.clip(fc.geometry());
+		#collection= collection.clip(fc.geometry());
 	elif(domainType=='states'):
 		fc = ee.FeatureCollection('ft:1fRY18cjsHzDgGiJiS2nnpUU3v9JPDc2HNaR7Xk8').filter(ee.Filter.eq('Name', subdomain));
 		collection= collection.clip(fc.geometry());
@@ -129,7 +149,7 @@ def get_timeseries(collection,point,variable):
         #### CALCULATE NDVI STATS
 	######################################################
         #### FILTER OUT "None" VALUES
-        variableList_filt = [x for x in variableList if x is not None]
+        #variableList_filt = [x for x in variableList if x is not None]
         #meanNDVI = numpy.mean(variableList_filt,axis=0)
         #medianNDVI = numpy.median(variableList_filt,axis=0)
         #maxNDVI = numpy.max(variableList_filt,axis=0)

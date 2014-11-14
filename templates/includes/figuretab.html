@@ -19,9 +19,15 @@
 	<div class="tab-pane active" id="figure1">
 		<div class="row">
 		    <div class="col-md-12 img-portfolio">
-			<a href="#target_figure_1" id="target_figure_1" name="form_figure_1">
-			 <!--<div id="chart_div" style="width: 600px; height: 500px;"></div>-->
-			   <!-- <img class="img-responsive img-hover" src="images/climatology.png" alt="" id="target_image_1">-->
+
+{% if timeSeriesData%}
+	<script type="text/javascript">graph_utils.AndyChart('{{timeSeriesData}}');</script>
+{% endif %}
+
+			<div id="d3bargraph_div" style="width: 600px; height: 500px;"></div>
+
+			  <!-- <img class="img-responsive img-hover" src="images/climatology.png" alt="" id="target_image_1">-->
+			<!--<a href="#target_figure_1" id="target_figure_1" name="form_figure_1">-->
 			</a> 
 		    </div>
 		</div>
@@ -29,9 +35,11 @@
 	<div class="tab-pane" id="figure2">
 		<div class="row">
 		    <div class="col-md-12 img-portfolio">
-			<a href="#target_figure_2" id="target_figure_2" name="form_figure_2">
-			    <img class="img-responsive img-hover" src="images/pdsi_timeseries.png" alt="" id="target_image_2">
-			</a>
+			{% if timeSeriesGraphData %}
+				{{ timeSeriesData }}
+				<br><br>
+				{{ timeSeriesGraphData }}
+                        {%endif%}
 		    </div>
 		</div>
 	</div>

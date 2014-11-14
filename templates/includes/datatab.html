@@ -13,14 +13,15 @@
 <!----------------------------->
 <!--      DATA               -->
 <!----------------------------->
+
 <table border="0" width="100%" height="100%">
 	<tr>
 	     <td style="text-align:left">
-			#Variable: {{ variable }} (units here)<br>
-			#Data Source: {{ product }} <br>
-			#Location: ({{ userLat }} N,{{ userLong }}E )<br>
-			#Time Period: date range here<br>
-			#Notes:
+			#Variable: {{ variable }} <br>
+			#Data Source: {{ productLongName }} <br>
+			#Location: ({{ pointLat }} N,{{ pointLong }}E )<br>
+			#Time Period: {{ dateStart }} to  {{ dateEnd }}<br>
+			#Notes: {{ notes }}<br>
 			#<br>
 			#======================================================<br>
 			{% for x,y in timeSeriesData %}

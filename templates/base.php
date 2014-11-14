@@ -17,7 +17,27 @@
 	</div>
 	<!-- /.container -->
 
-	{% include 'includes/scripts.html'%}
+	{% include 'includes/scripts.php'%}
+<!--
+	<script type="text/javascript">
+	      google.load("visualization", "1", {packages:["corechart"]});
+	      google.setOnLoadCallback(drawChart);
+	      function drawChart() {
+		  var TimeSeries_array = {{ timeSeriesData }};
+		    
+		  var data = google.visualization.arrayToDataTable(TimeSeries_array);
+		  
+		  var options = {
+		    title: 'NDVI',
+		    hAxis: {title: 'Dates', titleTextStyle: {color: 'blue'}},
+		    vAxis: {title: 'NDVI', titleTextStyle: {color: 'blue'}}
+		  };
+		  
+		  var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+		  chart.draw(data, options);
+    }
+    </script>
+-->
 
 </body>
 
