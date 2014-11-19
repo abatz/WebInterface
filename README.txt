@@ -1,13 +1,10 @@
-This example shows how to build a simple Google App Engine web application that
-communicates with Google Earth Engine.  Upon successful deployment, you will see
-a webpage with a Google map showing the SRTM DEM zoomed into the east coast of
-Australia.
+This code is for a webpage for visualizing drought metrics utilizing the Google App Engine. 
 
-You can deploy this application to an App Engine instance, or run it in your
-local App Engine development environment.  Instructions for how to configure
-each are below.
 
-In all cases, the Python environment running the code will need to access
+*==================
+* CONFIGURING YOUR ENVIRONMENT TO RUN THIS CODE
+*==================
+In order to configure your environment to run this code, you will need to access
 the oauth2client, httplib2, pycrypto, and ee libraries.  When running locally,
 make sure your Python environment contains these libraries (yolk is a useful
 tool for this).  When running in App Engine, you will need to include the
