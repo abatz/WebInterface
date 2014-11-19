@@ -36,7 +36,7 @@ class DroughtTool(webapp2.RequestHandler):
 	#############################################
 	##      GET                                ##
 	#############################################
-    def get(self):                             # pylint: disable=g-bad-name
+    def get(self): 
 	ppost=0	
         ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
 
@@ -99,36 +99,32 @@ class DroughtTool(webapp2.RequestHandler):
 		subdomain=state;
 		mapzoom=4; #would like to zoom in on that state
 
-	product,productLongName,variableShortName,notes,statistic = collectionMethods.initializeFigure(variable)
+	product,variableShortName,notes,statistic = collectionMethods.initializeFigure(variable)
 	title=statistic +' ' +variableShortName;
-
-	collection,collectionName,collectionLongName= collectionMethods.get_collection(product, variable);
-	#collection =collectionMethods.filter_domain1(collection,domainType,subdomain);
-	#collection=collectionMethods.filter_time(collection,dateStart,dateEnd,0);
-	source=collectionLongName+' from '+dateStart+'-'+dateEnd+''
-
-	template_values = {
-	}
 	if(anomOrValue=='anom'):
 		title=title+' Anomaly from Climatology ';
 
+	collection,collectionName,collectionLongName= collectionMethods.get_collection(product, variable);
+	source=collectionLongName+' from '+dateStart+'-'+dateEnd+''
+
 	collection = ee.ImageCollection(collectionName).filterDate(dateStart,dateEnd).select([variable],[variable]);
 
-	#get timeseries before calculate statistic
-	#if(variable=='NDVI' or variable=='NDSI'):
-#		#timeSeriesData,timeSeriesGraphData,template_values = collectionMethods.callTimeseries(collection,variable,domainType,point)
-#		if(domainType=='points'):
-#			timeSeriesData=collectionMethods.get_timeseries(collection,point,variable)
-#			timeSeriesGraphData = []	
-#			n_rows = numpy.array(timeSeriesData).shape[0];
-#			for i in range(2,n_rows):
-#			  entry = {'count':timeSeriesData[i][1],'name':timeSeriesData[i][0]};
-#			  timeSeriesGraphData.append(entry);
-#
-#			template_values = {
-#			    'timeSeriesData': timeSeriesData,
-#	    		    'timeSeriesGraphData': timeSeriesGraphData,
-#			}
+	template_values = {
+	}
+	#if points selected, get timeseries before calculate statistic
+	if(domainType=='points'):
+		#timeSeriesData,timeSeriesGraphData,template_values = collectionMethods.callTimeseries(collection,variable,domainType,point)
+		timeSeriesData=collectionMethods.get_timeseries(collection,point,variable)
+		timeSeriesGraphData = []	
+		n_rows = numpy.array(timeSeriesData).shape[0];
+		for i in range(2,n_rows):
+		  entry = {'count':timeSeriesData[i][1],'name':timeSeriesData[i][0]};
+		  timeSeriesGraphData.append(entry);
+
+		template_values = {
+		    'timeSeriesData': timeSeriesData,
+		    'timeSeriesGraphData': timeSeriesGraphData,
+		}
 
  	collection = collectionMethods.get_statistic(collection,variable,statistic);
 	collection =collectionMethods.filter_domain2(collection,domainType,subdomain)
@@ -140,8 +136,6 @@ class DroughtTool(webapp2.RequestHandler):
 	mapid =collectionMethods.map_collection(collection,variable,anomOrValue)
 
 	extra_template_values = {
-	    #'doyStart':doyStart,
-	    #'doyEnd':doyEnd,
 	    'pointLat': pointLat,
 	    'pointLong': pointLong,
 	    'product': product,

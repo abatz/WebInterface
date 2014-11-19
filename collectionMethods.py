@@ -3,55 +3,47 @@ import time
 import datetime
 import numpy
 
-
 #===========================================
 #   INITIALIZE_FIGURE 
 #===========================================
 def initializeFigure(variable):
         if(variable=='NDVI'):
                 product = 'modis'
-                productLongName = 'MCD43A4_NDVI'
                 notes="NDVI calculated from Norm. Diff. of Infrared and Red bands"
 		statistic='Median'
 		variableShortName=variable;
         elif(variable=='NDSI'):
                 product = 'modis'
-                productLongName = 'MCD43A4_NDSI'
                 notes="NDSI calculated from Norm. Diff. of Green and mid-IR bands"
 		statistic='Median'
 		variableShortName=variable;
 	elif(variable=='EVI'):
                 product = 'modis'
-                productLongName = 'MCD43A4_EVI';
                 notes="EVI calculated from Near-IR,Red and Blue bands"
                 statistic='Median'
                 variableShortName=variable;
 	elif(variable=='BAI'):
                 product = 'modis'
-                productLongName = 'MYD09GA_BAI'
                 notes="BAI calculated from Red and Near-IR bands"
                 statistic='Median'
                 variableShortName=variable;
 	elif(variable=='NBRT'):
                 product = 'landsat'
-                productLongName = 'LE7_L1T_32DAY_NBRT'
                 notes="NBR calculated from Near-IR,mid-IR and thermal bands"
                 statistic='Median'
                 variableShortName=variable;
         elif(variable=='pr'):
                 product = 'gridded'
-                productLongName = 'gridMET 4-km (Abatzoglou)'
                 notes=""
 		statistic='Total'
 		variableShortName='Precipitation'
-	return (product,productLongName,variableShortName,notes,statistic);
+	return (product,variableShortName,notes,statistic);
 
 #===========================================
 #    GET_TIMESERIES
 #===========================================
-def callTimeseries(collection,collectionLongName,variable,domainType,point):
+def callTimeseries(collection,variable,domainType,point):
 	if(domainType=='points'):
-		#timeSeriesData=collectionMethods.get_timeseries(collection,point,variable)
 		timeSeriesData=get_timeseries(collection,point,variable)
 
 		timeSeriesGraphData = []
@@ -64,13 +56,7 @@ def callTimeseries(collection,collectionLongName,variable,domainType,point):
 		    'timeSeriesData': timeSeriesData,
 		    'timeSeriesGraphData': timeSeriesGraphData,
 		}
-	if(variable=='pr'):
-		title='Total ';
-	else:
-		title='Median ';
-	title=title +variable;
-	source=collectionLongName+' from '+dateStart+'-'+dateEnd+''
-	return (timeSeriesData,timeSeriesGraphData,template_values,title,source);
+	return (timeSeriesData,timeSeriesGraphData,template_values);
 
 #===========================================
 #    GET_ANOMALY
@@ -141,14 +127,6 @@ def get_collection(product,variable):
 
 	return (collection,collectionName,collectionLongName);
 
-def filter_time(collection,dateStart,dateEnd,CLIMATOLOGY):
-	if(CLIMATOLOGY==1):
-		collection = collection.filterDate(dateStart,dateEnd);
-	else:
-		collection = collection.filterDate(dateStart,dateEnd);
-
-	return(collection);
-
 #===========================================
 #   FIRST_FILTER_DOMAIN(for filterBounds)
 #===========================================
@@ -180,7 +158,7 @@ def get_statistic(collection,variable,statistic):
 def filter_domain2(collection,domainType, subdomain):
 	if(domainType=='points'):
 		fc = ee.FeatureCollection('ft:1fRY18cjsHzDgGiJiS2nnpUU3v9JPDc2HNaR7Xk8');
-		collection= collection.clip(fc.geometry());
+		#collection= collection.clip(fc.geometry());
 	elif(domainType=='states'):
 		fc = ee.FeatureCollection('ft:1fRY18cjsHzDgGiJiS2nnpUU3v9JPDc2HNaR7Xk8').filter(ee.Filter.eq('Name', subdomain));
 		collection= collection.clip(fc.geometry());
@@ -329,7 +307,7 @@ def get_timeseries(collection,point,variable):
 	######################################################
         #### ADD HEADER TO SORTED LIST
 	######################################################
-        timeSeries= [['Dates','NDVI']] + timeSeries
+        timeSeries= [['Dates','Values']] + timeSeries
 
 	######################################################
         #### CALCULATE NDVI STATS
