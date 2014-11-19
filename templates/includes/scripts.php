@@ -29,42 +29,46 @@
  	<!------------------------------------>
         <!-- Script for google map toolbar  -->
         <!------------------------------------>
-	
-	<script type="text/javascript" src="media/myjs/mapToolbar.js"></script>
+	<script type="text/javascript" src="media/myjs/MapToolbar.js"></script>
 
  	<!------------------------------------>
         <!-- Script for zooming to state level-->
 	<!-- from view-source:http://geocodezip.com/v3_zoom2stateselectlist.html -->
         <!------------------------------------>
-	 <script type="text/javascript">
-		function findAddress(address) {
-		  var addressStr=document.getElementById("stateselect").value;
-		  if (!address && (addressStr != '')) 
-		     address = "State of "+addressStr;
-		  else 
-		     address = addressStr;
-		  if ((address != '') && geocoder) {
-		   geocoder.geocode( { 'address': address}, function(results, status) {
-		   if (status == google.maps.GeocoderStatus.OK) {
-		     if (status != google.maps.GeocoderStatus.ZERO_RESULTS) {
-		       if (results && results[0]
-			   && results[0].geometry && results[0].geometry.viewport) 
-			 map.fitBounds(results[0].geometry.viewport);
-		     } else {
-		       alert("No results found");
-		     }
-		   } else {
-		    alert("Geocode was not successful for the following reason: " + status);
-		   }
-		   });
-		  }
-		}
-	</script>
+  	</script>
+    <script type="text/javascript">
+    	var geocoder = null;
 
-  	<!------------------------------------>
+  	function findAddress(address) {
+          var addressStr=document.getElementById("state").value;
+          if (!address && (addressStr != '')) 
+             address = "State of "+addressStr;
+	  else 
+             address = addressStr;
+          if ((address != '') && geocoder) {
+           geocoder.geocode( { 'address': address}, function(results, status) {
+           if (status == google.maps.GeocoderStatus.OK) {
+             if (status != google.maps.GeocoderStatus.ZERO_RESULTS) {
+               if (results && results[0]
+	           && results[0].geometry && results[0].geometry.viewport) 
+                 map.fitBounds(results[0].geometry.viewport);
+             } else {
+               alert("No results found");
+             }
+           } else {
+            alert("Geocode was not successful for the following reason: " + status);
+           }
+           });
+          }
+  	}
+
+</script>
+
+	<!------------------------------------>
         <!-- Google Earth Map -->
-        <!------------------------------------>
-	 <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+        <!------------------------------------
+	 <!--<script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>-->
+	 <script src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
 	 <script type="text/javascript">
  	      var MAPID = "{{ mapid }}";
 	      var TOKEN = "{{ token }}";
@@ -87,6 +91,7 @@
 	      var statemarkerLayer = null;
 	
 	      function initialize() {
+       		geocoder = new google.maps.Geocoder();
 		var myCenter = new google.maps.LatLng({{ pointLat }}, {{ pointLong }});
 		var myZoom ={{ mapzoom }}
 		var mapOptions = {
@@ -94,14 +99,15 @@
 		  zoom: myZoom,
 		  maxZoom: 10,
 		  streetViewControl: false,
-		  //mapTypeId: google.maps.MapTypeId.ROADMAP,
+                  mapTypeControl: true,
+                   navigationControl: true, 
+		  mapTypeId: google.maps.MapTypeId.ROADMAP,
                   mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
 		  clickable:true,
 		};
-		/*geocoder = new google.maps.Geocoder();
-                findAddress("United States");*/
 
 		window.map = new google.maps.Map(document.getElementById("map"),mapOptions);
+                //findAddress();
 
 		
 		/*********************************
@@ -149,8 +155,9 @@
                     suppressInfoWindows: false
                  }); //end KmlLayer
 		 google.maps.event.addListener(statemarkerLayer, 'click', function(kmlEvent) {
-			alert(kmlEvent.featureData.id);
-                        $('#states').val(kmlEvent.featureData.id);
+			//alert(kmlEvent.featureData.name);
+                        $('#state').val(kmlEvent.featureData.name);
+                	findAddress();
 	
                 //}
           	}); //end listener

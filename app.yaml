@@ -8,6 +8,10 @@ threadsafe: true
 handlers:
 - url: /images/team
   static_dir: templates/images/team
+- url: /images/colorbars
+  static_dir: templates/images/colorbars
+- url: /images/formulas
+  static_dir: templates/images/formulas
 - url: /images
   static_dir: templates/images
 - url: /media
@@ -19,6 +23,8 @@ handlers:
 - url: /aboutmetrics
   script: main.app
 - url: /droughttool
+  script: main.app
+- url: /droughttool/
   script: main.app
 - url: /oauth2callback
   script: oauth2client.appengine.application

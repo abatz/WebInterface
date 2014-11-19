@@ -1,0 +1,13 @@
+#python specific
+*.pyc
+## generic files to ignore
+*~
+*.lock
+*.DS_Store
+*.swp
+*.out
+*.old
+*.notused
+*.bak
+*.pem
+/OLD

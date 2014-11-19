@@ -20,6 +20,11 @@
 					    <option value="{{ x }}"{% if x == variable  %} selected {% endif %}>{{ y }}</option>
 					{% endfor %}
 				</select>
+				<select id="anomOrValue" name="anomOrValue" width="95%">
+					{% for x,y in formAnomOrValue %}
+					    <option value="{{ x }}" {% if x == anomOrValue  %} selected {% endif %}>{{ y }}</option>
+					{% endfor %}
+				</select>
 			</div>
 		</div>
 	    </td>
@@ -62,26 +67,6 @@
 		       <!--      SUBDOMAIN (Points,States)   -->
 		       <!----------------------------->
 			   <div class="subdomain">
-				<!--	
-				<table><tr>
-				<td><div id="hand_b"
-					 onclick="MapToolbar.stopEditing()"/></td>
-				<td><div id="placemark_b"
-				onclick="MapToolbar.initFeature('placemark')"/></td>
-				<td><div id="line_b"
-					 onclick="MapToolbar.initFeature('line')"/></td>
-				<td><div id="shape_b"
-					onclick="MapToolbar.initFeature('shape')"/></td>
-				<td style="display:none">
-					<div id="undo"
-					onclick="MapToolbar.undo()"/></td>
-				</tr></table>
-					<br>
-					<table id ="featuretable">
-					     <tbody id="featuretbody">
-					     </tbody>
-					</table>
-				-->
 				<div class="points">
 					<b>SubDomain:</b><br>
 					  Points (Longitude (East), Latitude (North))
@@ -92,7 +77,9 @@
 				<div class="states">
 					<b>SubDomain:</b><br>
 					  Select a State:
-					<select id="state" name="state" width="95%">
+					<select id="state" name="state" width="95%" class="textfeld"  
+						onclick="findAddress();return false"  
+						onchange="findAddress();return false" onfocus="">
 						{% for x,y in formStates %}
 						    <option value="{{ x }}" {% if x == state  %} selected {% endif %}>{{ y }}</option>
 						{% endfor %}
@@ -115,7 +102,7 @@
 	       <!--      BUTTON            -->
 	       <!----------------------------->
 			   <input type="submit" class="btn btn-large ptn-primary pull-right" value="RUN" 
-					form="form_div" />
+					form="form_div"/>
 				 <div id="loading" style="display:none;">
 					<img id="loading-image" src="images/loading_image.gif" alt="Loading..." />
 			    	</div> 

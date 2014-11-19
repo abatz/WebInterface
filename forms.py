@@ -30,13 +30,22 @@ formVariableLandsat=[
         #('eto','ETo (Potential Evapotranspiration)'),
         #('eddi','EDDI (Evap. Demand Drought Index)'),
         ('NDVI','NDVI (Norm. Diff. Veg. Index)'),
-        #('dNDVI','Change in NDVI (Norm. Diff. Veg. Index)'),
         #('bi','BI (Burning Index)'),
-        #('EVI','EVI (Enhanced Veg. Index)'),
+        ('EVI','EVI (Enhanced Veg. Index)'),
         ('NDSI','NDSI (Snow Index)'),
-        #('nbrt','NBRT (Norm. Burn Rat. Thm. Ind)'),
-        #('bai','BAI (Burning Area Index)'),
+        ('NBRT','NBRT (Norm. Burn Rat. Thm. Ind)'),
+        #('BAI','BAI (Burning Area Index)'),
         #('ndwi','NDWI (Water Index)'),
+        ]
+
+
+#============================
+#    formAnomOrValue
+#============================
+formAnomOrValue=[
+        ('value','Values'),
+        ('anom','Anomaly'),
+        ('clim','Climatology'),
         ]
 
 #============================
