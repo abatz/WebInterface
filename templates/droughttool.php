@@ -19,5 +19,6 @@
                 </td>
         </tr>
 </table>
+{% include 'includes/scripts.php'%}
 <!----------------------------->
 {% endblock %}

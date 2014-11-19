@@ -1,72 +1,23 @@
-         <script src="/media/js/jquery-1.11.0.js"></script>
-
+ 	<!------------------------------------>
+        <!-- JQUERY/JQUERY UI/AJAX          -->
+        <!------------------------------------>
 	<script type="text/javascript"
             src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
-        <script src="/media/js/bootstrap.min.js"></script>
-
-	<script type="text/javascript" src="/media/extjs/adapter/ext/ext-base.js"></script>
-	<script type="text/javascript" src="/media/extjs/ext-all.js"></script>
-
- 	<!------------------------------------>
-        <!-- Script for loading             -->
-        <!------------------------------------>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
 	<script type="text/javascript" src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
-	<script type="text/javascript" src="/media/myjs/dateRangePicker.js"></script>
 
  	<!------------------------------------>
-        <!--		My SCRIPTS            -->
+        <!--		MY SCRIPTS           -->
         <!------------------------------------>
-	<script type="text/javascript" src="media/myjs/get_colorbar.js"></script>
-	<script type="text/javascript" src="media/myjs/formListener.js"></script>
-
- 	<!------------------------------------>
-        <!-- Script for progress bar        -->
-        <!------------------------------------>
-	<script type="text/javascript" src="media/myjs/showLoadingImage.js"></script>
-
- 	<!------------------------------------>
-        <!-- Script for google map toolbar  -->
-        <!------------------------------------>
-	<script type="text/javascript" src="media/myjs/MapToolbar.js"></script>
-
- 	<!------------------------------------>
-        <!-- Script for zooming to state level-->
-	<!-- from view-source:http://geocodezip.com/v3_zoom2stateselectlist.html -->
-        <!------------------------------------>
-  	</script>
-    <script type="text/javascript">
-    	var geocoder = null;
-
-  	function findAddress(address) {
-          var addressStr=document.getElementById("state").value;
-          if (!address && (addressStr != '')) 
-             address = "State of "+addressStr;
-	  else 
-             address = addressStr;
-          if ((address != '') && geocoder) {
-           geocoder.geocode( { 'address': address}, function(results, status) {
-           if (status == google.maps.GeocoderStatus.OK) {
-             if (status != google.maps.GeocoderStatus.ZERO_RESULTS) {
-               if (results && results[0]
-	           && results[0].geometry && results[0].geometry.viewport) 
-                 map.fitBounds(results[0].geometry.viewport);
-             } else {
-               alert("No results found");
-             }
-           } else {
-            alert("Geocode was not successful for the following reason: " + status);
-           }
-           });
-          }
-  	}
-
-</script>
+	<script type="text/javascript" src="media/myjs/get_colorbar.js"></script> <!-- COLORBAR --> 
+	<script type="text/javascript" src="media/myjs/formListener.js"></script> <!-- FORM LISTENER -->
+	<script type="text/javascript" src="media/myjs/showLoadingImage.js"></script> <!-- PROGRESS BAR -->
+	<script type="text/javascript" src="media/myjs/zoomStates.js"></script> <!-- ZOOM TO STATE -->
+	<!--<script type="text/javascript" src="media/myjs/MapToolbar.js"></script>--><!-- GOOGLE MAP TOOLBAR-->
 
 	<!------------------------------------>
         <!-- Google Earth Map -->
-        <!------------------------------------
+        <!------------------------------------>
 	 <!--<script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>-->
 	 <script src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
 	 <script type="text/javascript">
@@ -107,31 +58,6 @@
 		};
 
 		window.map = new google.maps.Map(document.getElementById("map"),mapOptions);
-                //findAddress();
-
-		
-		/*********************************
-		*      MULTIPLE POINTS OR POLYGON DRAWING FEATURE                   *
-		*********************************/
-		/*
-		with(MapToolbar){
-		    with(buttons){
-					$hand = document.getElementById("hand_b");
-					$shape = document.getElementById("shape_b");
-					$line = document.getElementById("line_b");
-					$placemark = document.getElementById("placemark_b");
-		    }
-		    $featureTable = document.getElementById("featuretbody");
-		    select("hand_b");
-		}
-		
-		MapToolbar.polyClickEvent = google.maps.event.addListener(map, 'click',  function(event){
-		if( !MapToolbar.isSelected(MapToolbar.buttons.$shape) && !MapToolbar.isSelected(MapToolbar.buttons.$line) ) return;
-		    if(MapToolbar.currentFeature){
-			    MapToolbar.addPoint(event, MapToolbar.currentFeature);
-		    }
-		});
-		*/
 
 		/*********************************
 		*      POINTS                    *
@@ -161,6 +87,7 @@
 	
                 //}
           	}); //end listener
+		window.statemarkerLayer.setMap(null);
 		/*********************************
 		*      POLYGON                    *
 		*********************************/
@@ -168,8 +95,6 @@
 		/*********************************
 		*      MULTIPLE POINTS           *
 		*********************************/
-
-		window.statemarkerLayer.setMap(null);
 
 		/*********************************/
 		window.map.overlayMapTypes.push(mapType);
@@ -179,13 +104,10 @@
 	</script>
 
  	<!------------------------------------>
-        <!-- Script for charts            -->
+        <!-- Script for charts            (these D3 graphs have problems right now.. because of needing javascript array inputs.. not python array inputs-->
         <!------------------------------------>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript" src="/media/myjs/graph_utils.js"></script>
- 	<!------------------------------------>
-        <!-- Script for charts            -->
-        <!------------------------------------>
         <script src="http://d3js.org/d3.v3.min.js"></script>
 
 	 <!--<script type="text/javascript" src="media/myjs/d3Example.js"></script>-->
