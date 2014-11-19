@@ -1,4 +1,15 @@
 This code is for a webpage for visualizing drought metrics utilizing the Google App Engine. 
+This code is organized as follows: 
+
+ee 		-directory of libraties for interfacing with Google Earth Engine
+oauth2client 	-directory of libraries for authentication of Google Earth Engine
+httplib2 	- directory of libraries for ?
+
+-app.yaml 	- configuration file for webapp2 templating
+-main.py 	- python script that sets up the framework environment and defines classes for handling URL requests 
+-config.py 	- configuration file for setting up Google App Engine
+-main.py 	- python script that sets up the framework environment and defines classes for handling URL requests 
+-forms.py 	- python script which defines the dictionaries for the forms on the DroughtTool interface
 
 
 *==================
