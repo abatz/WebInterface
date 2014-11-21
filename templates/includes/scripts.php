@@ -40,7 +40,7 @@
 	      var map=null;
 	      var pointmarker = null;
 	      var statemarkerLayer = null;
-	
+	      var myZoom;	
 	      function initialize() {
        		geocoder = new google.maps.Geocoder();
 		var myCenter = new google.maps.LatLng({{ pointLat }}, {{ pointLong }});
@@ -64,11 +64,14 @@
 		*********************************/
 		window.pointmarker = new google.maps.Marker({position:new google.maps.LatLng({{ pointLat }},{{ pointLong }}),
 			     map: map, draggable: true});
+
 		google.maps.event.addListener(window.pointmarker, 'dragend', function(a) {
 			  var div = document.createElement('div');
 			  var longitude=a.latLng.lng().toFixed(4)
 			  var latitude=a.latLng.lat().toFixed(4)
 			  document.getElementById('pointLatLong').value = longitude+','+latitude;
+			  /*document.getElementById('pointLat').value = latitude;
+			  document.getElementById('pointLong').value = longitude;*/
 		});
 		window.pointmarker.setVisible(false); 
 
@@ -84,8 +87,15 @@
 			//alert(kmlEvent.featureData.name);
                         $('#state').val(kmlEvent.featureData.name);
                 	findAddress();
+			//var NewMapCenter = window.map.getCenter();
+			//var longitude = NewMapCenter.lng();
+			//var latitude = NewMapCenter.lat();
+			//document.getElementById('pointLatLong').value = longitude+','+latitude
+			//NewMapCenter = window.map.getCenter();
+			//window.pointmarker.latLng = window.map.getCenter();
+                	//jQuery('#pointLat').html(NewMapCenter.lat());
+                 	//jQuery('#pointLong').hmtl(NewMapCenter.lon());
 	
-                //}
           	}); //end listener
 		window.statemarkerLayer.setMap(null);
 		/*********************************
@@ -102,6 +112,9 @@
 	      google.maps.event.addDomListener(window, 'load', initialize);
 	      window.onload = initialize;
 	</script>
+
+	<!--<script type="text/javascript" src="media/myjs/pointMarkers.js"></script>--> <!-- POINT MARKER FUNCTIONS -->
+
 
  	<!------------------------------------>
         <!-- Script for charts            (these D3 graphs have problems right now.. because of needing javascript array inputs.. not python array inputs-->

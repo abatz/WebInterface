@@ -17,6 +17,11 @@ def initializeFigure(variable):
                 notes="NDSI calculated from Norm. Diff. of Green and mid-IR bands"
 		statistic='Median'
 		variableShortName=variable;
+        elif(variable=='NDWI'):
+                product = 'modis'
+                notes="NDWI calculated from near-IR and a second IR bands"
+		statistic='Median'
+		variableShortName=variable;
 	elif(variable=='EVI'):
                 product = 'modis'
                 notes="EVI calculated from Near-IR,Red and Blue bands"
@@ -85,9 +90,10 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
 			climatology = ee.Image(climatology.median());
 		elif(statistic=='Mean'):
 			climatology = ee.Image(climatology.mean());
-		mask = collection.gt(0);
+
 
 		if(anomOrValue=='clim'):
+			mask = collection.gt(-9999);
 			climatology = climatology.mask(mask);
 			collection=climatology;
 		elif(anomOrValue=='anom'):
@@ -111,6 +117,9 @@ def get_collection(product,variable):
   	elif(variable=='NDSI'):
                 collectionName = 'MCD43A4_NDSI';
 		collectionLongName = 'MODIS 16-day NDSI Composite'
+  	elif(variable=='NDWI'):
+                collectionName = 'MCD43A4_NDWI';
+		collectionLongName = 'MODIS 16-day NDWI Composite'
   	elif(variable=='EVI'):
                 collectionName = 'MCD43A4_EVI';
 		collectionLongName = 'MODIS 16-day EVI Composite'
@@ -171,7 +180,7 @@ def filter_domain2(collection,domainType, subdomain):
 #   MAP_COLLECTION 
 #===========================================
 def map_collection(collection,variable,anomOrValue):
-	if(variable=='NDVI' or variable=='EVI' or variable=='BAI'):
+	if(variable=='NDVI' or variable=='EVI'):
 		if(anomOrValue=='anom'):
 			minColorbar=-.4
 			maxColorbar=.4
@@ -190,7 +199,7 @@ def map_collection(collection,variable,anomOrValue):
 			    'palette':"FFFFE5,F7FCB9,D9F0A3,ADDD8E,93D284,78C679,41AB5D,238443,006837,004529",
 			    'opacity':".85", #range [0,1]
 			}
-	elif(variable=='NDSI'):
+	elif(variable=='NDSI' or variable=='NDWI'):
 		if(anomOrValue=='anom'):
 			minColorbar=-.5
 			maxColorbar=.5

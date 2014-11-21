@@ -10,9 +10,13 @@ import webapp2
 import datetime
 import numpy
 import json
+import httplib2 
 
 from forms import *
 import collectionMethods
+from google.appengine.api import urlfetch
+urlfetch.set_default_fetch_deadline(60)
+httplib2.Http(timeout=15)
 
 #############################################
 ##       SET DIRECTORY FOR PAGES          ##
@@ -72,32 +76,32 @@ class DroughtTool(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('droughttool.php')
         self.response.out.write(template.render(template_values))
 
-	#############################################
-	##      POST                               ##
-	#############################################
     def post(self):
 	ppost=1
         ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
 
 	#Get data from form
-        dateStart= cgi.escape(self.request.get('dateStart'))
-        dateEnd = cgi.escape(self.request.get('dateEnd'))
-        pointLatLong = cgi.escape(self.request.get('pointLatLong'))
-        pointLatLongX = pointLatLong.split(",")
-        pointLong = float(pointLatLongX[0])
-        pointLat = float(pointLatLongX[1])
+        dateStart= self.request.get('dateStart')
+        dateEnd = self.request.get('dateEnd')
 	variable =self.request.get('basicvariable')
 	domainType =self.request.get('domainType')
 	state=self.request.get('state')
 	anomOrValue=self.request.get('anomOrValue')
 
-	if(domainType=='points' or domainType=='conus'):
+        pointLatLong = self.request.get('pointLatLong')
+        pointLatLongX = pointLatLong.split(",")
+        pointLong = float(pointLatLongX[0])
+        pointLat = float(pointLatLongX[1])
+	#pointLong =float(self.request.get('pointLong'))
+	#pointLat=float(self.request.get('pointLat'))
+
+	if(domainType=='states'):
+		subdomain=state;
+		mapzoom=4; #would like to zoom in on that state
+	else:
 		subdomain = ee.Feature.Point(pointLong,pointLat);
 		point = subdomain;
 		mapzoom=4;
-	elif(domainType=='states'):
-		subdomain=state;
-		mapzoom=4; #would like to zoom in on that state
 
 	product,variableShortName,notes,statistic = collectionMethods.initializeFigure(variable)
 	title=statistic +' ' +variableShortName;
@@ -112,19 +116,19 @@ class DroughtTool(webapp2.RequestHandler):
 	template_values = {
 	}
 	#if points selected, get timeseries before calculate statistic
-	if(domainType=='points'):
-		#timeSeriesData,timeSeriesGraphData,template_values = collectionMethods.callTimeseries(collection,variable,domainType,point)
-		timeSeriesData=collectionMethods.get_timeseries(collection,point,variable)
-		timeSeriesGraphData = []	
-		n_rows = numpy.array(timeSeriesData).shape[0];
-		for i in range(2,n_rows):
-		  entry = {'count':timeSeriesData[i][1],'name':timeSeriesData[i][0]};
-		  timeSeriesGraphData.append(entry);
-
-		template_values = {
-		    'timeSeriesData': timeSeriesData,
-		    'timeSeriesGraphData': timeSeriesGraphData,
-		}
+#	if(domainType=='points'):
+#		#timeSeriesData,timeSeriesGraphData,template_values = collectionMethods.callTimeseries(collection,variable,domainType,point)
+#		timeSeriesData=collectionMethods.get_timeseries(collection,point,variable)
+#		timeSeriesGraphData = []	
+#		n_rows = numpy.array(timeSeriesData).shape[0];
+#		for i in range(2,n_rows):
+#		  entry = {'count':timeSeriesData[i][1],'name':timeSeriesData[i][0]};
+#		  timeSeriesGraphData.append(entry);
+#
+#		template_values = {
+#		    'timeSeriesData': timeSeriesData,
+#		    'timeSeriesGraphData': timeSeriesGraphData,
+#		}
 
  	collection = collectionMethods.get_statistic(collection,variable,statistic);
 	collection =collectionMethods.filter_domain2(collection,domainType,subdomain)
@@ -193,8 +197,8 @@ class MetricsPage(webapp2.RequestHandler):
 #############################################
 app = webapp2.WSGIApplication(
     [('/', MainPage),
-    ('/droughttool/', DroughtTool),
     ('/droughttool', DroughtTool),
+    ('/droughttool/', DroughtTool),
     ('/contact',ContactPage),
     ('/aboutdata',DataPage),
     ('/aboutmetrics',MetricsPage)],

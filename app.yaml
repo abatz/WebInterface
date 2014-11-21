@@ -24,8 +24,6 @@ handlers:
   script: main.app
 - url: /droughttool
   script: main.app
-- url: /droughttool/
-  script: main.app
 - url: /oauth2callback
   script: oauth2client.appengine.application
 - url: /.*

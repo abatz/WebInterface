@@ -33,9 +33,9 @@ formVariableLandsat=[
         #('bi','BI (Burning Index)'),
         ('EVI','EVI (Enhanced Veg. Index)'),
         ('NDSI','NDSI (Snow Index)'),
-        ('NBRT','NBRT (Norm. Burn Rat. Thm. Ind)'),
+        #('NBRT','NBRT (Norm. Burn Rat. Thm. Ind)'),
         #('BAI','BAI (Burning Area Index)'),
-        #('ndwi','NDWI (Water Index)'),
+        ('NDWI','NDWI (Water Index)'),
         ]
 
 
@@ -52,9 +52,10 @@ formAnomOrValue=[
 #    formLocation
 #============================
 formLocation=[
+        ('full','Full Domain'),
         ('conus','CONUS'),
-        ('points','Points'),
         ('states','States'),
+        ('points','Points'),
        # ('polygon','Polygon'),
         ]
 
