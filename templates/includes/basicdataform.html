@@ -81,10 +81,8 @@
                                                   Select Point(s):<br>
                                                   <img src="http://www.google.com/mapfiles/ms/micons/red.png">Point 1:
                                                   <input id="pointLatLong" name="pointLatLong" value="{{ pointLong }},{{ pointLat }}" />
-						<!--
-                                                  <input id="pointLat" name="pointLatLong" value="{{ pointLat }}" size=5/>N,
-                                                  <input id="pointLong" name="pointLatLong" value="{{ pointLong }}" size=5 />E
-						-->
+                                                  <!--<input id="pointLat" name="pointLatLong" value="{{ pointLat }}" size=5/>N,
+                                                  <input id="pointLong" name="pointLatLong" value="{{ pointLong }}" size=5 />E-->
 					</div>
 					<div class="polygon">
 						  Enter a Polygon (Lon(E), Lat(N)):
@@ -106,15 +104,23 @@
 	       <!----------------------------->
 	       <!--      OUTPUT AREA       -->
 	       <!----------------------------->
-<!--
-	 {% if ppost==1 %}
 		<tr>
 		   <td>
+			<h4><p style="text-align:left"><u><span style='color:blue'> Map Options:</span></u></p></h4>
+			Transparency:
+			<select id="opacity" name="opacity" width="95%">
+				{% for x,y in formOpacity %}
+				    <option value="{{ x }}" {% if x == opacity  %} selected {% endif %}>{{ y }}</option>
+				{% endfor %}
+			</select>
+	 {% if ppost==1 %}
+			<!--
 			<h4><p style="text-align:left"><u><span style='color:blue'> Outputs:</span></u></p></h4>
 			<li>Map</li>
 			{% if variable=='NDVI' %}<li>Data</li>{% endif %}
+			-->
+
+	 {% endif %}
 		   </td>
 		</tr>
-	 {% endif %}
--->
 	</table>

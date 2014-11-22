@@ -12,8 +12,8 @@ formVariableGrid=[
         #('eddi','EDDI (Evap Dem. Drought Ind.)'),
         #('erc','ERC (Energy Release Component)'),
         #('bi','BI (Burning Index)'),
-        #('tmmn','TMAX (Min Temperature)'),
-        #('tmmx','TMAX (Max Temperature)'),
+        ('tmmn','TMIN (Min Temperature)'),
+        ('tmmx','TMAX (Max Temperature)'),
         #('rmax','RMIN (Min Rel. Humidity)'),
         #('rmin','RMAX (Max Rel. Humidity)'),
         ('pr','PPT (Precipitation)'),
@@ -58,6 +58,11 @@ formLocation=[
         ('points','Points'),
        # ('polygon','Polygon'),
         ]
+
+#============================
+#    formOpacity
+#============================
+formOpacity=[(str(x*0.05),str(x*0.05)) for x in range(1,21)]
 
 #============================
 #    formStates

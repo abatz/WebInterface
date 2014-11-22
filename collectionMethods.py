@@ -4,45 +4,62 @@ import datetime
 import numpy
 
 #===========================================
-#   INITIALIZE_FIGURE 
+#    GET_COLLECTION
 #===========================================
-def initializeFigure(variable):
+def get_collection(variable):
         if(variable=='NDVI'):
-                product = 'modis'
+                collectionName = 'MCD43A4_NDVI';
+                collectionLongName = 'MODIS 16-day NDVI'
+		product = 'modis'
                 notes="NDVI calculated from Norm. Diff. of Infrared and Red bands"
-		statistic='Median'
-		variableShortName=variable;
+                statistic='Median'
+                variableShortName=variable;
         elif(variable=='NDSI'):
-                product = 'modis'
+                collectionName = 'MCD43A4_NDSI';
+                collectionLongName = 'MODIS 16-day NDSI Composite'
+		product = 'modis'
                 notes="NDSI calculated from Norm. Diff. of Green and mid-IR bands"
-		statistic='Median'
-		variableShortName=variable;
+                statistic='Median'
+                variableShortName=variable;
         elif(variable=='NDWI'):
-                product = 'modis'
+                collectionName = 'MCD43A4_NDWI';
+                collectionLongName = 'MODIS 16-day NDWI Composite'
+		product = 'modis'
                 notes="NDWI calculated from near-IR and a second IR bands"
-		statistic='Median'
-		variableShortName=variable;
-	elif(variable=='EVI'):
-                product = 'modis'
+                statistic='Median'
+                variableShortName=variable;
+        elif(variable=='EVI'):
+                collectionName = 'MCD43A4_EVI';
+                collectionLongName = 'MODIS 16-day EVI Composite'
+		product = 'modis'
                 notes="EVI calculated from Near-IR,Red and Blue bands"
                 statistic='Median'
                 variableShortName=variable;
-	elif(variable=='BAI'):
-                product = 'modis'
-                notes="BAI calculated from Red and Near-IR bands"
-                statistic='Median'
-                variableShortName=variable;
-	elif(variable=='NBRT'):
-                product = 'landsat'
-                notes="NBR calculated from Near-IR,mid-IR and thermal bands"
-                statistic='Median'
-                variableShortName=variable;
         elif(variable=='pr'):
+                collectionName = 'IDAHO_EPSCOR/GRIDMET';
+                collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
+		product = 'gridded'
+                notes=""
+                statistic='Total'
+                variableShortName='Precipitation'
+	elif(variable=='tmmx'):
+                collectionName = 'IDAHO_EPSCOR/GRIDMET';
+                collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
                 product = 'gridded'
                 notes=""
-		statistic='Total'
-		variableShortName='Precipitation'
-	return (product,variableShortName,notes,statistic);
+                statistic='Mean'
+                variableShortName='Maximum Temperature'
+	elif(variable=='tmmn'):
+                collectionName = 'IDAHO_EPSCOR/GRIDMET';
+                collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
+                product = 'gridded'
+                notes=""
+                statistic='Mean'
+                variableShortName='Minimum Temperature'
+
+        collection = ee.ImageCollection(collectionName).select([variable],[variable]);
+
+        return (collection,collectionName,collectionLongName,product,variableShortName,notes,statistic);
 
 #===========================================
 #    GET_TIMESERIES
@@ -71,7 +88,7 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
                 doyEnd = ee.Number(ee.Algorithms.Date(dateEnd).getRelative('day', 'year')).add(1);
                 doy_filter = ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year');
 		if(product=='gridded'):
-			yearStartClim ='1980';
+			yearStartClim ='1981';
 			yearEndClim='2010';
 		elif(product=='landsat'):
 			yearStartClim ='1999';
@@ -84,6 +101,7 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
 
 		#calculate climatology
                 climatology = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).select([variable],[variable]);
+
 		if(statistic=='Total'):
 			climatology = ee.Image(climatology.sum().divide(num_years));
 		elif(statistic=='Median'):
@@ -91,8 +109,9 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
 		elif(statistic=='Mean'):
 			climatology = ee.Image(climatology.mean());
 
-
 		if(anomOrValue=='clim'):
+			if((variable=='tmmx' or variable=='tmmn')):
+				climatology=climatology.subtract(273.15);
 			mask = collection.gt(-9999);
 			climatology = climatology.mask(mask);
 			collection=climatology;
@@ -106,35 +125,6 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
 				collection = ee.Image(collection.subtract(climatology));
 
   		return(collection,climatologyNote);
-
-#===========================================
-#    GET_COLLECTION
-#===========================================
-def get_collection(product,variable):
-  	if(variable=='NDVI'):
-                collectionName = 'MCD43A4_NDVI';
-		collectionLongName = 'MODIS 16-day NDVI'
-  	elif(variable=='NDSI'):
-                collectionName = 'MCD43A4_NDSI';
-		collectionLongName = 'MODIS 16-day NDSI Composite'
-  	elif(variable=='NDWI'):
-                collectionName = 'MCD43A4_NDWI';
-		collectionLongName = 'MODIS 16-day NDWI Composite'
-  	elif(variable=='EVI'):
-                collectionName = 'MCD43A4_EVI';
-		collectionLongName = 'MODIS 16-day EVI Composite'
-  	elif(variable=='BAI'):
-                collectionName = 'LC8_L1T_32DAY_BAI';
-		collectionLongName = 'Landsat 8 L1T TOA 32-day BAI Composite'
-  	elif(variable=='NBRT'):
-                collectionName = 'LE7_L1T_32DAY_NBRT';
-		collectionLongName = 'Landsat 7 L1T TOA 32-day BAI Composite'
-  	elif(variable=='pr'):
-		collectionName = 'IDAHO_EPSCOR/GRIDMET';
-		collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
-	collection = ee.ImageCollection(collectionName).select([variable],[variable]);
-
-	return (collection,collectionName,collectionLongName);
 
 #===========================================
 #   FIRST_FILTER_DOMAIN(for filterBounds)
@@ -151,13 +141,16 @@ def get_collection(product,variable):
 #===========================================
 #   GET_STATISTIC 
 #===========================================
-def get_statistic(collection,variable,statistic):
+def get_statistic(collection,variable,statistic,anomOrValue):
 	if(statistic=='Mean'):
 		collection = collection.mean();
 	elif(statistic=='Median'):
 		collection = collection.median();
 	elif(statistic=='Total'):
 		collection = collection.sum();
+
+	if((anomOrValue=='value' or anomOrValue=='clim') and (variable=='tmmx' or variable=='tmmn')):
+		collection=collection.subtract(273.15);
 
 	return (collection);
 
@@ -179,102 +172,72 @@ def filter_domain2(collection,domainType, subdomain):
 #===========================================
 #   MAP_COLLECTION 
 #===========================================
-def map_collection(collection,variable,anomOrValue):
+def map_collection(collection,variable,anomOrValue,opacity):
+	#opacity=".85";
 	if(variable=='NDVI' or variable=='EVI'):
 		if(anomOrValue=='anom'):
+			palette="A50026,D73027,F46D43,FDAE61,FEE08B,FFFFBF,D9EF8B,A6D96A,66BD63,1A9850,006837"
 			minColorbar=-.4
 			maxColorbar=.4
-			colorbarOptions = {
-			    'min':minColorbar,
-			    'max':maxColorbar,
-			    'palette':"A50026,D73027,F46D43,FDAE61,FEE08B,FFFFBF,D9EF8B,A6D96A,66BD63,1A9850,006837",
-			    'opacity':".85", #range [0,1]
-			}
 		else:
+			palette="FFFFE5,F7FCB9,D9F0A3,ADDD8E,93D284,78C679,41AB5D,238443,006837,004529"
 			minColorbar=-.1
 			maxColorbar=.9
-			colorbarOptions = {
-			    'min':minColorbar,
-			    'max':maxColorbar,
-			    'palette':"FFFFE5,F7FCB9,D9F0A3,ADDD8E,93D284,78C679,41AB5D,238443,006837,004529",
-			    'opacity':".85", #range [0,1]
-			}
 	elif(variable=='NDSI' or variable=='NDWI'):
 		if(anomOrValue=='anom'):
+			palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
 			minColorbar=-.5
 			maxColorbar=.5
-			colorbarOptions = {
-			    'min':minColorbar,
-			    'max':maxColorbar,
-			    'palette':"A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695",
-			    'opacity':".85", #range [0,1]
-			}
 		else:
+			palette="08306B,08519C,2171B5,4292C6,6BAED6,9ECAE1,C6DBEF,DEEBF7,F7FBFF"
 			minColorbar=-.1
 			maxColorbar=.9
-			colorbarOptions = {
-			    'min':minColorbar,
-			    'max':maxColorbar,
-			    'palette':"08306B,08519C,2171B5,4292C6,6BAED6,9ECAE1,C6DBEF,DEEBF7,F7FBFF",
-			    'opacity':".85", #range [0,1]
-			}
 	elif(variable=='BAI'):
                 if(anomOrValue=='anom'):
+			palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
                         minColorbar=-.5
                         maxColorbar=.5
-                        colorbarOptions = {
-                            'min':minColorbar,
-                            'max':maxColorbar,
-                            'palette':"A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695",
-                            'opacity':".85", #range [0,1]
-                        }
                 else:
+			palette="08306B,08519C,2171B5,4292C6,6BAED6,9ECAE1,C6DBEF,DEEBF7,F7FBFF"
                         minColorbar=-.1
                         maxColorbar=.9
-                        colorbarOptions = {
-                            'min':minColorbar,
-                            'max':maxColorbar,
-                            'palette':"08306B,08519C,2171B5,4292C6,6BAED6,9ECAE1,C6DBEF,DEEBF7,F7FBFF",
-                            'opacity':".85", #range [0,1]
-                        }
 	elif(variable=='NBRT'):
                 if(anomOrValue=='anom'):
+			palette="006837,1A9850,66BD63,A6D96A,D9EF8B,FFFFBF,FEE08B,FDAE61,F46D43,D73027,A50026"
                         minColorbar=-.02
                         maxColorbar=.02
-                        colorbarOptions = {
-                            'min':minColorbar,
-                            'max':maxColorbar,
-                            'palette':"006837,1A9850,66BD63,A6D96A,D9EF8B,FFFFBF,FEE08B,FDAE61,F46D43,D73027,A50026",
-                            'opacity':".85", #range [0,1]
-                        }
                 else:
+			palette="FFFFFF,F0F0F0,D9D9D9,BDBDBD,AAAAAA,969696,737373,525252,252525,000000"
                         minColorbar=.95;
                         maxColorbar=1.0;
-                        colorbarOptions = {
-                            'min':minColorbar,
-                            'max':maxColorbar,
-                            'palette':"FFFFFF,F0F0F0,D9D9D9,BDBDBD,AAAAAA,969696,737373,525252,252525,000000",
-                            'opacity':".85", #range [0,1]
-                        }
-
 	elif(variable=='pr'):
                 minColorbar=0
                 maxColorbar=200
 		if(anomOrValue=='anom'):
-		 	colorbarOptions = {
-			    'min':minColorbar,
-			    'max':maxColorbar,
-			    'palette':"67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061",
-			    'opacity':".85", #range [0,1]
-			}
+			palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
 		else:
-		 	colorbarOptions = {
-			    'min':minColorbar,
-			    'max':maxColorbar,
-			    'palette':"FFFFD9,EDF8B1,C7E9B4,7FCDBB,41B6C4,1D91C0,225EA8,0C2C84",
-			    'opacity':".85", #range [0,1]
-			}
+			palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,41B6C4,1D91C0,225EA8,0C2C84"
+	elif(variable=='tmmx' or variable=='tmmn'):
+                if(anomOrValue=='anom'):
+			palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
+			minColorbar=-5
+			maxColorbar=5
+                elif(variable=='tmmx'):
+			palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
+			minColorbar=-20
+			maxColorbar=30
+		elif(variable=='tmmn'):
+                        palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
+                        minColorbar=-30
+                        maxColorbar=20
 	
+
+	colorbarOptions = {
+		    'min':minColorbar,
+		    'max':maxColorbar,
+		    'palette':palette,
+		    'opacity':opacity, #range [0,1]
+		}
         mapid = collection.getMapId(colorbarOptions)
 
 	return mapid;

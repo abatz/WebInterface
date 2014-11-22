@@ -50,12 +50,14 @@ class DroughtTool(webapp2.RequestHandler):
 	pointLong = -98.0250
 	state ='Washington'
 	variable = 'NDVI'
-	domainType = 'conus'
+	domainType = 'full'
 	dateStart ='2013-01-01' 
 	dateEnd='2013-03-31'
 	anomOrValue='anom'
+	opacity=str(17*0.05);
 
         template_values = {
+	    'opacity': opacity,
 	    'pointLat': pointLat,
 	    'pointLong': pointLong,
 	    'ppost': ppost,
@@ -67,6 +69,7 @@ class DroughtTool(webapp2.RequestHandler):
 	    'dateStart': dateStart,
 	    'dateEnd': dateEnd,
 	    'anomOrValue': anomOrValue,
+	    'formOpacity': formOpacity,
 	    'formAnomOrValue': formAnomOrValue,
 	    'formVariableGrid': formVariableGrid,
 	    'formLocation': formLocation,
@@ -81,6 +84,7 @@ class DroughtTool(webapp2.RequestHandler):
         ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
 
 	#Get data from form
+        opacity= self.request.get('opacity')
         dateStart= self.request.get('dateStart')
         dateEnd = self.request.get('dateEnd')
 	variable =self.request.get('basicvariable')
@@ -92,24 +96,28 @@ class DroughtTool(webapp2.RequestHandler):
         pointLatLongX = pointLatLong.split(",")
         pointLong = float(pointLatLongX[0])
         pointLat = float(pointLatLongX[1])
-	#pointLong =float(self.request.get('pointLong'))
-	#pointLat=float(self.request.get('pointLat'))
+	#pointLong =float(cgi.escape(self.request.get('pointLong')))
+	#pointLat=float(cgi.escape(self.request.get('pointLat')))
 
-	if(domainType=='states'):
-		subdomain=state;
-		mapzoom=4; #would like to zoom in on that state
-	else:
-		subdomain = ee.Feature.Point(pointLong,pointLat);
-		point = subdomain;
-		mapzoom=4;
-
-	product,variableShortName,notes,statistic = collectionMethods.initializeFigure(variable)
+	collection,collectionName,collectionLongName,product,variableShortName,notes,statistic= collectionMethods.get_collection(variable);
 	title=statistic +' ' +variableShortName;
 	if(anomOrValue=='anom'):
 		title=title+' Anomaly from Climatology ';
-
-	collection,collectionName,collectionLongName= collectionMethods.get_collection(product, variable);
 	source=collectionLongName+' from '+dateStart+'-'+dateEnd+''
+
+   	if(domainType=='states'):
+                subdomain=state;
+                mapzoom=4; #would like to zoom in on that state
+        elif(domainType=='full' and product=='modis'):
+                subdomain = ee.Feature.Point(pointLong,pointLat);
+                point = subdomain;
+                mapzoom=2; 
+        else:
+                subdomain = ee.Feature.Point(pointLong,pointLat);
+                point = subdomain;
+                mapzoom=4;
+
+
 
 	collection = ee.ImageCollection(collectionName).filterDate(dateStart,dateEnd).select([variable],[variable]);
 
@@ -130,16 +138,18 @@ class DroughtTool(webapp2.RequestHandler):
 #		    'timeSeriesGraphData': timeSeriesGraphData,
 #		}
 
- 	collection = collectionMethods.get_statistic(collection,variable,statistic);
+ 	collection = collectionMethods.get_statistic(collection,variable,statistic,anomOrValue);
 	collection =collectionMethods.filter_domain2(collection,domainType,subdomain)
 
 	if(anomOrValue=='anom' or anomOrValue=='clim'):
 		collection,climatologyNotes = collectionMethods.get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,statistic,anomOrValue);
 	        template_values={'climatologyNotes': climatologyNotes,};
 
-	mapid =collectionMethods.map_collection(collection,variable,anomOrValue)
+	#the earth engine call
+	mapid =collectionMethods.map_collection(collection,variable,anomOrValue,opacity)
 
 	extra_template_values = {
+	    'opacity': opacity,
 	    'pointLat': pointLat,
 	    'pointLong': pointLong,
 	    'product': product,
@@ -157,6 +167,7 @@ class DroughtTool(webapp2.RequestHandler):
 	    'mapzoom': mapzoom,
 	    'mapid': mapid['mapid'],
 	    'token': mapid['token'],
+	    'formOpacity': formOpacity,
 	    'formAnomOrValue': formAnomOrValue,
 	    'formVariableGrid': formVariableGrid,
 	    'formLocation': formLocation,
