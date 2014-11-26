@@ -17,7 +17,8 @@
 	</div>
 	<!-- /.container -->
 
-	{% include 'includes/scripts.php'%}
+	
+	{% include 'includes/basicscripts.php'%}
 <!--
 	<script type="text/javascript">
 	      google.load("visualization", "1", {packages:["corechart"]});

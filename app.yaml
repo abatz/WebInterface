@@ -8,6 +8,10 @@ threadsafe: true
 handlers:
 - url: /images/team
   static_dir: templates/images/team
+- url: /images/colorbars
+  static_dir: templates/images/colorbars
+- url: /images/formulas
+  static_dir: templates/images/formulas
 - url: /images
   static_dir: templates/images
 - url: /media
@@ -22,6 +26,9 @@ handlers:
   script: main.app
 - url: /oauth2callback
   script: oauth2client.appengine.application
+- url: /favicon.ico 
+  static_files: favicon.ico 
+  upload: favicon.ico
 - url: /.*
   script: main.app
 
@@ -33,6 +40,8 @@ libraries:
 - name: pycrypto
   version: "2.6"
 - name: numpy
+  #version: "latest"
   version: "1.6.1"
-- name: matplotlib
-  version: "1.2.0"
+#- name: matplotlib
+#  version: "latest"
+#  #version: "1.2.0"

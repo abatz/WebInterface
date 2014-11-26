@@ -10,10 +10,17 @@ import webapp2
 import datetime
 import numpy
 import json
+import httplib2 
 
 from forms import *
 import collectionMethods
+from google.appengine.api import urlfetch
+urlfetch.set_default_fetch_deadline(60)
+httplib2.Http(timeout=15)
 
+#############################################
+##       SET DIRECTORY FOR PAGES          ##
+#############################################
 template_dir = os.path.join(os.path.dirname(__file__),'templates')
 JINJA_ENVIRONMENT= jinja2.Environment(autoescape=True,
     loader=jinja2.FileSystemLoader(template_dir))
@@ -30,35 +37,44 @@ class MainPage(webapp2.RequestHandler):
 ##       DROUGHT TOOL PAGE                 ##
 #############################################
 class DroughtTool(webapp2.RequestHandler):
-    def get(self):                             # pylint: disable=g-bad-name
-        ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
+	#############################################
+	##      GET                                ##
+	#############################################
+    def get(self): 
 	ppost=0	
+        ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
+
+	#initialize forms
 	mapzoom=4
 	pointLat = 39.0510 
 	pointLong = -98.0250
-	polygon ='[[ [-109.05, 37.0], [-102.05, 37.0], [-102.05, 41.0], [-109.05, 41.0], [-111.05, 41.0], [-111.05, 42.0], [-114.05, 42.0], [-114.05, 37.0], [-109.05, 37.0]]]';
 	state ='Washington'
 	variable = 'NDVI'
-	domainType = 'conus'
+	domainType = 'full'
 	dateStart ='2013-01-01' 
 	dateEnd='2013-03-31'
+	anomOrValue='anom'
+	opacity=str(17*0.05);
 
         template_values = {
+	    'opacity': opacity,
 	    'pointLat': pointLat,
 	    'pointLong': pointLong,
 	    'ppost': ppost,
 	    'mapzoom': mapzoom,
+	    'variable': variable,
+	    'state': state,
+	    'domainType': domainType,
+	    'anomOrValue': anomOrValue,
+	    'dateStart': dateStart,
+	    'dateEnd': dateEnd,
+	    'anomOrValue': anomOrValue,
+	    'formOpacity': formOpacity,
+	    'formAnomOrValue': formAnomOrValue,
 	    'formVariableGrid': formVariableGrid,
 	    'formLocation': formLocation,
 	    'formVariableLandsat': formVariableLandsat,
 	    'formStates': formStates,
-	    'variable': variable,
-	    'state': state,
-	    #'polygon': polygon,
-	    'domainType': domainType,
-	    'dateStart': dateStart,
-	    'dateEnd': dateEnd,
-	    #'timeSeriesGraphData': timeSeriesGraphData,
         }
         template = JINJA_ENVIRONMENT.get_template('droughttool.php')
         self.response.out.write(template.render(template_values))
@@ -68,89 +84,91 @@ class DroughtTool(webapp2.RequestHandler):
         ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
 
 	#Get data from form
-        dateStart= cgi.escape(self.request.get('dateStart'))
-        dateEnd = cgi.escape(self.request.get('dateEnd'))
-        pointLatLong = cgi.escape(self.request.get('pointLatLong'))
-        pointLatLongX = pointLatLong.split(",")
-        pointLong = float(pointLatLongX[0])
-        pointLat = float(pointLatLongX[1])
+        opacity= self.request.get('opacity')
+        dateStart= self.request.get('dateStart')
+        dateEnd = self.request.get('dateEnd')
 	variable =self.request.get('basicvariable')
 	domainType =self.request.get('domainType')
 	state=self.request.get('state')
-	#polygon=self.request.get('polygon')
-	#polygon ='[[ [-109.05, 37.0], [-102.05, 37.0], [-102.05, 41.0], [-109.05, 41.0], [-111.05, 41.0], [-111.05, 42.0], [-114.05, 42.0], [-114.05, 37.0], [-109.05, 37.0]]]';
+	anomOrValue=self.request.get('anomOrValue')
+
+        pointLatLong = self.request.get('pointLatLong')
+        pointLatLongX = pointLatLong.split(",")
+        pointLong = float(pointLatLongX[0])
+        pointLat = float(pointLatLongX[1])
+	#pointLong =float(cgi.escape(self.request.get('pointLong')))
+	#pointLat=float(cgi.escape(self.request.get('pointLat')))
+
+	collection,collectionName,collectionLongName,product,variableShortName,notes,statistic= collectionMethods.get_collection(variable);
+	title=statistic +' ' +variableShortName;
+	if(anomOrValue=='anom'):
+		title=title+' Anomaly from Climatology ';
+	source=collectionLongName+' from '+dateStart+'-'+dateEnd+''
+
+   	if(domainType=='states'):
+                subdomain=state;
+                mapzoom=4; #would like to zoom in on that state
+        elif(domainType=='full' and product=='modis'):
+                subdomain = ee.Feature.Point(pointLong,pointLat);
+                point = subdomain;
+                mapzoom=2; 
+        else:
+                subdomain = ee.Feature.Point(pointLong,pointLat);
+                point = subdomain;
+                mapzoom=4;
 
 
-	if(domainType=='points' or domainType=='conus'):
-		subdomain = ee.Feature.Point(pointLong,pointLat);
-		point = subdomain;
-	elif(domainType=='states'):
-		subdomain=state;
-	elif(domainType=='polygon'):
-		subdomain=ee.Feature.Polygon(polygon);
 
-	if(variable=='NDVI' or variable=='NDSI'):
-		product = 'landsat'
-		productLongName = 'LANDSAT 7 L1T TOA'
-		notes="NDVI calculated from Norm. Diff. of Infrared and Red bands"
-		mapzoom=4 #was 4 
-		minColorbar=-.1
-		maxColorbar=.9
-	elif(variable=='pr'): 
-		product = 'gridded'
-		productLongName = 'GRIDMET 4-km (Abatzoglou)'
-		notes=""
-		mapzoom=4
-		minColorbar=0
-		maxColorbar=400
-
-	collection,collectionLongName= collectionMethods.get_collection(product, variable,dateStart, dateEnd);
-	collection =collectionMethods.filter_domain1(collection,domainType,subdomain)
+	collection = ee.ImageCollection(collectionName).filterDate(dateStart,dateEnd).select([variable],[variable]);
 
 	template_values = {
 	}
-	if(variable=='NDVI' or variable=='NDSI'):
-		if(domainType=='points'):
-			timeSeriesData=collectionMethods.get_timeseries(collection,point,variable)
+	#if points selected, get timeseries before calculate statistic
+#	if(domainType=='points'):
+#		#timeSeriesData,timeSeriesGraphData,template_values = collectionMethods.callTimeseries(collection,variable,domainType,point)
+#		timeSeriesData=collectionMethods.get_timeseries(collection,point,variable)
+#		timeSeriesGraphData = []	
+#		n_rows = numpy.array(timeSeriesData).shape[0];
+#		for i in range(2,n_rows):
+#		  entry = {'count':timeSeriesData[i][1],'name':timeSeriesData[i][0]};
+#		  timeSeriesGraphData.append(entry);
+#
+#		template_values = {
+#		    'timeSeriesData': timeSeriesData,
+#		    'timeSeriesGraphData': timeSeriesGraphData,
+#		}
 
-			timeSeriesGraphData = []	
-			n_rows = numpy.array(timeSeriesData).shape[0];
-			for i in range(2,n_rows):
-			  entry = {'count':timeSeriesData[i][1],'name':timeSeriesData[i][0]};
-			  timeSeriesGraphData.append(entry);
-
-			template_values = {
-			    'timeSeriesData': timeSeriesData,
-	    		    'timeSeriesGraphData': timeSeriesGraphData,
-			}
-		title='Median '+variable;
-		source=collectionLongName+' from '+dateStart+'-'+dateEnd+''
-	elif(variable=='pr'): 
-		title='Total Precipitation (mm)';
-		source=collectionLongName+' from '+dateStart+'-'+dateEnd+''
-
-	collection = collectionMethods.get_statistic(collection,variable);
+ 	collection = collectionMethods.get_statistic(collection,variable,statistic,anomOrValue);
 	collection =collectionMethods.filter_domain2(collection,domainType,subdomain)
-	mapid =collectionMethods.map_collection(collection,minColorbar,maxColorbar,variable)
+
+	if(anomOrValue=='anom' or anomOrValue=='clim'):
+		collection,climatologyNotes = collectionMethods.get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,statistic,anomOrValue);
+	        template_values={'climatologyNotes': climatologyNotes,};
+
+	#the earth engine call
+	mapid =collectionMethods.map_collection(collection,variable,anomOrValue,opacity)
 
 	extra_template_values = {
+	    'opacity': opacity,
 	    'pointLat': pointLat,
 	    'pointLong': pointLong,
 	    'product': product,
-	    'productLongName': productLongName,
+	    'productLongName': collectionLongName,
 	    'notes': notes,
 	    'variable': variable,
 	    'state': state,
-	    #'polygon': polygon,
 	    'domainType': domainType,
 	    'dateStart': dateStart,
 	    'dateEnd': dateEnd,
+	    'anomOrValue': anomOrValue,
 	    'ppost': ppost,
 	    'title': title,
 	    'source': source,
 	    'mapzoom': mapzoom,
 	    'mapid': mapid['mapid'],
 	    'token': mapid['token'],
+	    'formOpacity': formOpacity,
+	    'formAnomOrValue': formAnomOrValue,
 	    'formVariableGrid': formVariableGrid,
 	    'formLocation': formLocation,
 	    'formVariableLandsat': formVariableLandsat,
@@ -191,9 +209,8 @@ class MetricsPage(webapp2.RequestHandler):
 app = webapp2.WSGIApplication(
     [('/', MainPage),
     ('/droughttool', DroughtTool),
+    ('/droughttool/', DroughtTool),
     ('/contact',ContactPage),
     ('/aboutdata',DataPage),
     ('/aboutmetrics',MetricsPage)],
-    #('/worker', TaskWorker),
-    #('/progress', ProgressWorker)],
     debug=True)

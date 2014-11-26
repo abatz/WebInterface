@@ -11,17 +11,21 @@
 <!--      MAP                -->
 <!----------------------------->
 <div class="col-md-12 img-portfolio">
+	<br><br>
 	{% if ppost ==1 %}
 		<span style="font-size:18pt"><center>{{ title }}</center></span> 
 	{% endif %}
 	 <div id="map" style="width: 800x; height: 500px;"></div>
 	{% if ppost ==1 %}
-		<span style="font-size:10pt"><center>(Source: {{ source }})</center></span> 
+		<span style="font-size:10pt"><center>Source: {{ source }}</center></span> 
+		{% if anomOrValue=='anom' or anomOrValue=='clim' %}
+		<span style="font-size:10pt"><center> {{ climatologyNotes }}</center></span> 
+		{% endif %}
 		<br>
 		<div name="form_colorbar" id="target_colorbar">
 			<center>
 			<img class="img-responsive img-hover" 
-				src="images/colorbar_{{ variable }}.png" id="colorbar">
+				src="/images/colorbars/colorbar_{% if anomOrValue =='anom' %}d{% endif %}{{ variable }}.png" id="colorbar">
 			</center> 
 		</div>
 	{% endif %}

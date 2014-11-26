@@ -1,70 +1,25 @@
-         <script src="/media/js/jquery-1.11.0.js"></script>
-
+ 	<!------------------------------------>
+        <!-- JQUERY/JQUERY UI/AJAX          -->
+        <!------------------------------------>
 	<script type="text/javascript"
             src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
-        <script src="/media/js/bootstrap.min.js"></script>
-
-	<script type="text/javascript" src="/media/extjs/adapter/ext/ext-base.js"></script>
-	<script type="text/javascript" src="/media/extjs/ext-all.js"></script>
-
- 	<!------------------------------------>
-        <!-- Script for loading             -->
-        <!------------------------------------>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
 	<script type="text/javascript" src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
-	<script type="text/javascript" src="/media/myjs/dateRangePicker.js"></script>
 
  	<!------------------------------------>
-        <!--		My SCRIPTS            -->
+        <!--		MY SCRIPTS           -->
         <!------------------------------------>
-	<script type="text/javascript" src="media/myjs/get_colorbar.js"></script>
-	<script type="text/javascript" src="media/myjs/formListener.js"></script>
+	<script type="text/javascript" src="media/myjs/get_colorbar.js"></script> <!-- COLORBAR --> 
+	<script type="text/javascript" src="media/myjs/formListener.js"></script> <!-- FORM LISTENER -->
+	<script type="text/javascript" src="media/myjs/showLoadingImage.js"></script> <!-- PROGRESS BAR -->
+	<script type="text/javascript" src="media/myjs/zoomStates.js"></script> <!-- ZOOM TO STATE -->
+	<!--<script type="text/javascript" src="media/myjs/MapToolbar.js"></script>--><!-- GOOGLE MAP TOOLBAR-->
 
- 	<!------------------------------------>
-        <!-- Script for progress bar        -->
-        <!------------------------------------>
-	<script type="text/javascript" src="media/myjs/showLoadingImage.js"></script>
-
- 	<!------------------------------------>
-        <!-- Script for google map toolbar  -->
-        <!------------------------------------>
-	
-	<script type="text/javascript" src="media/myjs/mapToolbar.js"></script>
-
- 	<!------------------------------------>
-        <!-- Script for zooming to state level-->
-	<!-- from view-source:http://geocodezip.com/v3_zoom2stateselectlist.html -->
-        <!------------------------------------>
-	 <script type="text/javascript">
-		function findAddress(address) {
-		  var addressStr=document.getElementById("stateselect").value;
-		  if (!address && (addressStr != '')) 
-		     address = "State of "+addressStr;
-		  else 
-		     address = addressStr;
-		  if ((address != '') && geocoder) {
-		   geocoder.geocode( { 'address': address}, function(results, status) {
-		   if (status == google.maps.GeocoderStatus.OK) {
-		     if (status != google.maps.GeocoderStatus.ZERO_RESULTS) {
-		       if (results && results[0]
-			   && results[0].geometry && results[0].geometry.viewport) 
-			 map.fitBounds(results[0].geometry.viewport);
-		     } else {
-		       alert("No results found");
-		     }
-		   } else {
-		    alert("Geocode was not successful for the following reason: " + status);
-		   }
-		   });
-		  }
-		}
-	</script>
-
-  	<!------------------------------------>
+	<!------------------------------------>
         <!-- Google Earth Map -->
         <!------------------------------------>
-	 <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+	 <!--<script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>-->
+	 <script src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
 	 <script type="text/javascript">
  	      var MAPID = "{{ mapid }}";
 	      var TOKEN = "{{ token }}";
@@ -85,8 +40,9 @@
 	      var map=null;
 	      var pointmarker = null;
 	      var statemarkerLayer = null;
-	
+	      var myZoom;	
 	      function initialize() {
+       		geocoder = new google.maps.Geocoder();
 		var myCenter = new google.maps.LatLng({{ pointLat }}, {{ pointLong }});
 		var myZoom ={{ mapzoom }}
 		var mapOptions = {
@@ -94,49 +50,28 @@
 		  zoom: myZoom,
 		  maxZoom: 10,
 		  streetViewControl: false,
-		  //mapTypeId: google.maps.MapTypeId.ROADMAP,
+                  mapTypeControl: true,
+                   navigationControl: true, 
+		  mapTypeId: google.maps.MapTypeId.ROADMAP,
                   mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
 		  clickable:true,
 		};
-		/*geocoder = new google.maps.Geocoder();
-                findAddress("United States");*/
 
 		window.map = new google.maps.Map(document.getElementById("map"),mapOptions);
-
-		
-		/*********************************
-		*      MULTIPLE POINTS OR POLYGON DRAWING FEATURE                   *
-		*********************************/
-		/*
-		with(MapToolbar){
-		    with(buttons){
-					$hand = document.getElementById("hand_b");
-					$shape = document.getElementById("shape_b");
-					$line = document.getElementById("line_b");
-					$placemark = document.getElementById("placemark_b");
-		    }
-		    $featureTable = document.getElementById("featuretbody");
-		    select("hand_b");
-		}
-		
-		MapToolbar.polyClickEvent = google.maps.event.addListener(map, 'click',  function(event){
-		if( !MapToolbar.isSelected(MapToolbar.buttons.$shape) && !MapToolbar.isSelected(MapToolbar.buttons.$line) ) return;
-		    if(MapToolbar.currentFeature){
-			    MapToolbar.addPoint(event, MapToolbar.currentFeature);
-		    }
-		});
-		*/
 
 		/*********************************
 		*      POINTS                    *
 		*********************************/
 		window.pointmarker = new google.maps.Marker({position:new google.maps.LatLng({{ pointLat }},{{ pointLong }}),
 			     map: map, draggable: true});
+
 		google.maps.event.addListener(window.pointmarker, 'dragend', function(a) {
 			  var div = document.createElement('div');
 			  var longitude=a.latLng.lng().toFixed(4)
 			  var latitude=a.latLng.lat().toFixed(4)
 			  document.getElementById('pointLatLong').value = longitude+','+latitude;
+			  /*document.getElementById('pointLat').value = latitude;
+			  document.getElementById('pointLong').value = longitude;*/
 		});
 		window.pointmarker.setVisible(false); 
 
@@ -149,11 +84,20 @@
                     suppressInfoWindows: false
                  }); //end KmlLayer
 		 google.maps.event.addListener(statemarkerLayer, 'click', function(kmlEvent) {
-			alert(kmlEvent.featureData.id);
-                        $('#states').val(kmlEvent.featureData.id);
+			//alert(kmlEvent.featureData.name);
+                        $('#state').val(kmlEvent.featureData.name);
+                	findAddress();
+			//var NewMapCenter = window.map.getCenter();
+			//var longitude = NewMapCenter.lng();
+			//var latitude = NewMapCenter.lat();
+			//document.getElementById('pointLatLong').value = longitude+','+latitude
+			//NewMapCenter = window.map.getCenter();
+			//window.pointmarker.latLng = window.map.getCenter();
+                	//jQuery('#pointLat').html(NewMapCenter.lat());
+                 	//jQuery('#pointLong').hmtl(NewMapCenter.lon());
 	
-                //}
           	}); //end listener
+		window.statemarkerLayer.setMap(null);
 		/*********************************
 		*      POLYGON                    *
 		*********************************/
@@ -162,8 +106,6 @@
 		*      MULTIPLE POINTS           *
 		*********************************/
 
-		window.statemarkerLayer.setMap(null);
-
 		/*********************************/
 		window.map.overlayMapTypes.push(mapType);
 	      }
@@ -171,14 +113,14 @@
 	      window.onload = initialize;
 	</script>
 
+	<!--<script type="text/javascript" src="media/myjs/pointMarkers.js"></script>--> <!-- POINT MARKER FUNCTIONS -->
+
+
  	<!------------------------------------>
-        <!-- Script for charts            -->
+        <!-- Script for charts            (these D3 graphs have problems right now.. because of needing javascript array inputs.. not python array inputs-->
         <!------------------------------------>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript" src="/media/myjs/graph_utils.js"></script>
- 	<!------------------------------------>
-        <!-- Script for charts            -->
-        <!------------------------------------>
         <script src="http://d3js.org/d3.v3.min.js"></script>
 
 	 <!--<script type="text/javascript" src="media/myjs/d3Example.js"></script>-->

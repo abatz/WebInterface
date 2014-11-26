@@ -12,8 +12,8 @@ formVariableGrid=[
         #('eddi','EDDI (Evap Dem. Drought Ind.)'),
         #('erc','ERC (Energy Release Component)'),
         #('bi','BI (Burning Index)'),
-        #('tmmn','TMAX (Min Temperature)'),
-        #('tmmx','TMAX (Max Temperature)'),
+        ('tmmn','TMIN (Min Temperature)'),
+        ('tmmx','TMAX (Max Temperature)'),
         #('rmax','RMIN (Min Rel. Humidity)'),
         #('rmin','RMAX (Max Rel. Humidity)'),
         ('pr','PPT (Precipitation)'),
@@ -30,24 +30,39 @@ formVariableLandsat=[
         #('eto','ETo (Potential Evapotranspiration)'),
         #('eddi','EDDI (Evap. Demand Drought Index)'),
         ('NDVI','NDVI (Norm. Diff. Veg. Index)'),
-        #('dNDVI','Change in NDVI (Norm. Diff. Veg. Index)'),
         #('bi','BI (Burning Index)'),
-        #('EVI','EVI (Enhanced Veg. Index)'),
+        ('EVI','EVI (Enhanced Veg. Index)'),
         ('NDSI','NDSI (Snow Index)'),
-        #('nbrt','NBRT (Norm. Burn Rat. Thm. Ind)'),
-        #('bai','BAI (Burning Area Index)'),
-        #('ndwi','NDWI (Water Index)'),
+        #('NBRT','NBRT (Norm. Burn Rat. Thm. Ind)'),
+        #('BAI','BAI (Burning Area Index)'),
+        ('NDWI','NDWI (Water Index)'),
+        ]
+
+
+#============================
+#    formAnomOrValue
+#============================
+formAnomOrValue=[
+        ('value','Values'),
+        ('anom','Anomaly'),
+        ('clim','Climatology'),
         ]
 
 #============================
 #    formLocation
 #============================
 formLocation=[
+        ('full','Full Domain'),
         ('conus','CONUS'),
-        ('points','Points'),
         ('states','States'),
+        ('points','Points'),
        # ('polygon','Polygon'),
         ]
+
+#============================
+#    formOpacity
+#============================
+formOpacity=[(str(x*0.05),str(x*0.05)) for x in range(1,21)]
 
 #============================
 #    formStates

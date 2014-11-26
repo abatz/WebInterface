@@ -1,4 +1,4 @@
-.polygon,.points,.states,.divisions,.stations,.hucs,.psas,.counties,.timefrequency,.timeavgoptions,.timerange,.dailyCalAll,.dailyCal,.monthlyCalAll,.monthlyCal,.gridtimespan,.landsattimespan,.modistimespan,.processtimeseries,.timeseriesoptions,.metric,.climatology,.statistic,.daytimechoice,.monthtimechoice,.displaytype,.basictimescale,.variableGrid{
+.points,.polygon,.states,.divisions,.stations,.hucs,.psas,.counties,.timefrequency,.timeavgoptions,.timerange,.dailyCalAll,.dailyCal,.monthlyCalAll,.monthlyCal,.gridtimespan,.landsattimespan,.modistimespan,.processtimeseries,.timeseriesoptions,.metric,.climatology,.statistic,.daytimechoice,.monthtimechoice,.displaytype,.basictimescale,.variableGrid{
     display: none;
 }
 
