@@ -56,6 +56,34 @@ def get_collection(variable):
 		notes=""
 		statistic='Mean'
 		variableShortName='Minimum Temperature'
+	elif(variable=='rmin'):
+		collectionName = 'IDAHO_EPSCOR/GRIDMET';
+		collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
+		product = 'gridded'
+		notes=""
+		statistic='Mean'
+		variableShortName='Minimum Relative Humidity'
+	elif(variable=='rmax'):
+		collectionName = 'IDAHO_EPSCOR/GRIDMET';
+		collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
+		product = 'gridded'
+		notes=""
+		statistic='Mean'
+		variableShortName='Maximum Relative Humidity'
+	elif(variable=='srad'):
+		collectionName = 'IDAHO_EPSCOR/GRIDMET';
+		collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
+		product = 'gridded'
+		notes=""
+		statistic='Mean'
+		variableShortName='Downwelling Shortwave Radiation'
+	elif(variable=='vs'):
+		collectionName = 'IDAHO_EPSCOR/GRIDMET';
+		collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
+		product = 'gridded'
+		notes=""
+		statistic='Mean'
+		variableShortName='Wind Speed Near Surface'
 
 	collection = ee.ImageCollection(collectionName).select([variable],[variable]);
 
@@ -230,6 +258,37 @@ def map_collection(collection,variable,anomOrValue,opacity):
 			palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
 			minColorbar=-30
 			maxColorbar=20
+	elif(variable=='rmin' or variable=='rmax'):
+		if(anomOrValue=='anom'):
+			palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
+			minColorbar=-25
+			maxColorbar=25
+		elif(variable=='rmin'):
+			palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
+			minColorbar=0
+			maxColorbar=100
+		elif(variable=='rmax'):
+			palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
+			minColorbar=0
+			maxColorbar=100
+	elif(variable=='srad'):
+		if(anomOrValue=='anom'):
+			palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
+			minColorbar=-25
+			maxColorbar=25
+		else:
+			palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
+			minColorbar=100
+			maxColorbar=350
+	elif(variable=='vs'):
+		if(anomOrValue=='anom'):
+			palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
+			minColorbar=-2.5
+			maxColorbar=2.5
+		else:
+			palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,5DC2C1,41B6C4,1D91C0,225EA8,253494,081D58"
+			minColorbar=0
+			maxColorbar=5
 
 	colorbarOptions = {
 		'min':minColorbar,

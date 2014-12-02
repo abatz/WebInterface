@@ -14,12 +14,12 @@ formVariableGrid=[
 	#('bi','BI (Burning Index)'),
 	('tmmn','TMIN (Min Temperature)'),
 	('tmmx','TMAX (Max Temperature)'),
-	#('rmax','RMIN (Min Rel. Humidity)'),
-	#('rmin','RMAX (Max Rel. Humidity)'),
+	('rmin','RMIN (Min Rel. Humidity)'),
+	('rmax','RMAX (Max Rel. Humidity)'),
 	('pr','PPT (Precipitation)'),
 	#('dpr','Change in PPT (Precipitation)'),
-	#('srad','SRAD (Downward Radiation)'),
-	#('vs','VS (Wind Speed)'),
+	('srad','SRAD (Downward Radiation)'),
+	('vs','VS (Wind Speed)'),
 	#('th','TH (Wind Direction)'),
 ]
 
