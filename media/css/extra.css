@@ -16,18 +16,20 @@
 #menu {
           z-index: 100; 
           position: absolute; 
-          margin: 300px 0px 0px 10px;
+          margin: 160px 0px 0px 80px;
           background-color: #fff; 
           border: 1px #000 Solid; 
           padding: 5px;
+	  align:right;
         }
 #target_colorbar{
  	  z-index: 100;
           position: absolute;
-          margin: 10px 0px 0px 10px;
+          margin: 10px 0px 0px 80px;
           background-color: #fff;
           border: 1px #000 Solid;
           padding: 5px;
+	  width: 330px;
         }
 
 .infowindow {

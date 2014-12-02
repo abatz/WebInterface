@@ -1,5 +1,14 @@
 $(function(){
 
+	jQuery('#infomarkers').on('change', function(){
+		if(jQuery(this).val()=='infomarkers'){
+		window.infomarkers.setVisible(true);
+		}
+		else{
+		window.infomarkers.setVisible(false);
+		}
+        });
+
 	 jQuery('#state').on('change', function(){
 		 //NewMapCenter = window.map.getCenter();
 		//alert(NewMapCenter)

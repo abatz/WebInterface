@@ -110,9 +110,13 @@
 			Transparency:
 			<select id="opacity" name="opacity" width="95%">
 				{% for x,y in formOpacity %}
-				    <option value="{{ x }}" {% if x == opacity  %} selected {% endif %}>{{ y }}</option>
+				    <option value="{{ x }}" {% if x == opacity  %} selected {% endif %}>
+					{{ y }}</option>
 				{% endfor %}
 			</select>
+			<br>
+			Show Info Icons:
+			<input type="checkbox" id="infomarkers" name="infomarkers" value="infomarkers"></input>
 	 {% if ppost==1 %}
 			<!--
 			<h4><p style="text-align:left"><u><span style='color:blue'> Outputs:</span></u></p></h4>
