@@ -2,18 +2,42 @@
     display: none;
 }
 
-/*----------------------------
-for showLoadingImage.js
-----------------------*/
-#loading {
-#  width: 100%;
-#  height: 100%;
-#  top: 100px;
-#  left: 100px;
-#  position: fixed;
-#  display: block;
-#  z-index: 99;
-#  text-align: center;
+#wrapper {
+          height: 100%;
+          width: 100%; 
+        }
+
+
+#map {
+            height:100%;
+            width:100%;
+            position: relative;
+        }
+#menu {
+          z-index: 100; 
+          position: absolute; 
+          margin: 300px 0px 0px 10px;
+          background-color: #fff; 
+          border: 1px #000 Solid; 
+          padding: 5px;
+        }
+#target_colorbar{
+ 	  z-index: 100;
+          position: absolute;
+          margin: 10px 0px 0px 10px;
+          background-color: #fff;
+          border: 1px #000 Solid;
+          padding: 5px;
+        }
+
+.infowindow {
+    width:500px;!important;
+    height:300px;!important;
+}
+.noscrollbar {
+line-height:1.35;
+overflow:hidden;
+white-space:nowrap;
 }
 
 /*----------------------------
@@ -42,41 +66,3 @@ for showLoadingImage.js
   stroke-width: 1.5px;
 }
 
-/*----------------------------
-for mapToolbar.js
-----------------------*/
-#hand_b {
-  width:31px;
-  height:31px;
-  background-image: url(http://google.com/mapfiles/ms/t/Bsu.png);
-}
-#hand_b.selected {
-  background-image: url(http://google.com/mapfiles/ms/t/Bsd.png);
-}
-
-#placemark_b {
-  width:31px;
-  height:31px;
-  background-image: url(http://google.com/mapfiles/ms/t/Bmu.png);
-}
-#placemark_b.selected {
-  background-image: url(http://google.com/mapfiles/ms/t/Bmd.png);
-}
-
-#line_b {
-  width:31px;
-  height:31px;
-  background-image: url(http://google.com/mapfiles/ms/t/Blu.png);
-}
-#line_b.selected {
-  background-image: url(http://google.com/mapfiles/ms/t/Bld.png);
-}
-
-#shape_b {
-  width:31px;
-  height:31px;
-  background-image: url(http://google.com/mapfiles/ms/t/Bpu.png);
-}
-#shape_b.selected {
-  background-image: url(http://google.com/mapfiles/ms/t/Bpd.png);
-}

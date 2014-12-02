@@ -5,6 +5,7 @@
  */
 
 /*! normalize.css v3.0.1 | MIT License | git.io/normalize */
+
 html {
   font-family: sans-serif;
   -webkit-text-size-adjust: 100%;
@@ -1390,33 +1391,33 @@ pre code {
   max-height: 340px;
   overflow-y: scroll;
 }
-.container {
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-}
-@media (min-width: 768px) {
-  .container {
-    width: 750px;
-  }
-}
-@media (min-width: 992px) {
-  .container {
-    width: 970px;
-  }
-}
-@media (min-width: 1200px) {
-  .container {
-    width: 1170px;
-  }
-}
-.container-fluid {
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-}
+#.container {
+#  padding-right: 15px;
+#  padding-left: 15px;
+#  margin-right: auto;
+#  margin-left: auto;
+#}
+#@media (min-width: 768px) {
+#  .container {
+#    width: 750px;
+#  }
+#}
+#@media (min-width: 992px) {
+#  .container {
+#    width: 970px;
+#  }
+#}
+#@media (min-width: 1200px) {
+#  .container {
+#    width: 1170px;
+#  }
+#}
+#.container-fluid {
+#  padding-right: 15px;
+#  padding-left: 15px;
+#  margin-right: auto;
+#  margin-left: auto;
+#}
 .row {
   margin-right: -15px;
   margin-left: -15px;
@@ -3827,13 +3828,13 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
     max-height: 200px;
   }
 }
-.container > .navbar-header,
-.container-fluid > .navbar-header,
-.container > .navbar-collapse,
-.container-fluid > .navbar-collapse {
-  margin-right: -15px;
-  margin-left: -15px;
-}
+#.container > .navbar-header,
+#.container-fluid > .navbar-header,
+#.container > .navbar-collapse,
+#.container-fluid > .navbar-collapse {
+#  margin-right: -15px;
+#  margin-left: -15px;
+#}
 @media (min-width: 768px) {
   .container > .navbar-header,
   .container-fluid > .navbar-header,
@@ -4562,9 +4563,9 @@ a.list-group-item.active > .badge,
 .jumbotron > hr {
   border-top-color: #d5d5d5;
 }
-.container .jumbotron {
-  border-radius: 6px;
-}
+#.container .jumbotron {
+#  border-radius: 6px;
+#}
 .jumbotron .container {
   max-width: 100%;
 }

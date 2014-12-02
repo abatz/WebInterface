@@ -1,24 +1,37 @@
-{% extends "base.php" %}
-{% block content %}
-<!----------------------------->
-<table border="1" width="100%" height="100%" table-layout="fixed">
-         <tr>
-		<!----------------------------->
-		<!--     OPTIONS FORM        -->
-		<!----------------------------->
-                <td valign="top" width="25%" height="600px">
-                        <form  id="form_map" method="post" onsubmit="showLoadingImage.show_loading()">
+<!DOCTYPE html>
+<html lang="en">
+{% include 'includes/header.html'%}
+<body>
+<div id="wrapper">
+	    {% include 'includes/navigation.html'%}
+        <div id="menu">
+ 			<form  id="form_map" method="post" onsubmit="showLoadingImage.show_loading()">
                         {% include 'includes/dataform.html'%}
                         </form>
-                </td>
-		<!----------------------------->
-		<!--     CONTENT                -->
-		<!----------------------------->
-                <td valign="top" width="75%" height="600px">
-                        {% include 'includes/mapfiguredata.html'%}
-                </td>
-        </tr>
-</table>
-{% include 'includes/scripts.php'%}
-<!----------------------------->
-{% endblock %}
+        </div>
+	  {% if ppost ==1 %}
+                <span style="font-size:18pt"><center>{{ title }}</center></span>
+		<span style="font-size:10pt"><center>Source: {{ source }}</center></span>
+                {% if anomOrValue=='anom' or anomOrValue=='clim' %}
+                <span style="font-size:10pt"><center> {{ climatologyNotes }}</center></span>
+                {% endif %}
+        {% endif %}	
+	  {% if ppost ==1 %}
+                <div name="form_colorbar" id="target_colorbar">
+                        <center>
+                        <img class="img-responsive img-hover"
+                                src="/images/colorbars/colorbar_{% if anomOrValue =='anom' %}d{% endif %}{{ variable }}.png" id="colorbar">
+                        </center>
+                </div>
+        {% endif %}
+        <div id="map"></div>
+      </div>
+  </body> 
+</div>
+        {% include 'includes/basicscripts.php'%}
+        {% include 'includes/scripts.php'%}
+
+</body>
+
+</html>
+

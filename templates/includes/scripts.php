@@ -3,6 +3,7 @@
         <!------------------------------------>
 	<script type="text/javascript"
             src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.1.min.js"></script> <!--for factoids-->
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
 	<script type="text/javascript" src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 
@@ -13,6 +14,7 @@
 	<script type="text/javascript" src="media/myjs/formListener.js"></script> <!-- FORM LISTENER -->
 	<script type="text/javascript" src="media/myjs/showLoadingImage.js"></script> <!-- PROGRESS BAR -->
 	<script type="text/javascript" src="media/myjs/zoomStates.js"></script> <!-- ZOOM TO STATE -->
+	<script type="text/javascript" src="media/myjs/factoids.js"></script> <!-- FACTOIDS -->
 	<!--<script type="text/javascript" src="media/myjs/MapToolbar.js"></script>--><!-- GOOGLE MAP TOOLBAR-->
 
 	<!------------------------------------>
@@ -58,6 +60,79 @@
 		};
 
 		window.map = new google.maps.Map(document.getElementById("map"),mapOptions);
+
+		/*********************************
+		*     FACTOID INFO BOXES         *
+		*********************************/
+		 var locations = [
+		      ['{% include "includes/info_wildfire.html"%}',40.6,238],
+		      ['{% include "includes/info_agriculture.html"%}',37.2,238.6],
+		      ['{% include "includes/info_livestock.html"%}', 37.5,238.4],
+		      ['{% include "includes/info_snowpack.html"%}', 37.35,237.7],
+		    ];
+	    
+	    // Setup the different icons and shadows
+	    var iconURLPrefix = 'images/';
+	    
+	    var icons = [
+	      iconURLPrefix + 'fire.gif',
+	      iconURLPrefix + 'agriculture.gif',
+	      iconURLPrefix + 'livestock.gif',
+	      iconURLPrefix + 'snow.jpg',
+	    ]
+	    var icons_length = icons.length;
+	    
+	    
+	    var shadow = {
+	      anchor: new google.maps.Point(15,33),
+	      url: iconURLPrefix + 'msmarker.shadow.png'
+	    };
+
+	var infowindow = new google.maps.InfoWindow({
+	});
+var marker;
+    var markers = new Array();
+    
+    var iconCounter = 0;
+    
+    // Add the markers and infowindows to the map
+    for (var i = 0; i < locations.length; i++) {  
+      marker = new google.maps.Marker({
+        position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+        map: map,
+        icon : icons[iconCounter],
+        shadow: shadow
+      });
+
+      markers.push(marker);
+
+ google.maps.event.addListener(marker, 'click', (function(marker, i) {
+        return function() {
+          infowindow.setContent(locations[i][0]);
+          infowindow.open(map, marker);
+	 infowindow.style.width = "400px";
+      infowindow.style.height = "400px";
+        }
+      })(marker, i));
+      
+      iconCounter++;
+      // We only have a limited number of possible icon colors, so we may have to restart the counter
+      if(iconCounter >= icons_length){
+      	iconCounter = 0;
+      }
+    }
+
+    function AutoCenter() {
+      //  Create a new viewpoint bound
+      var bounds = new google.maps.LatLngBounds();
+      //  Go through each...
+      $.each(markers, function (index, marker) {
+        bounds.extend(marker.position);
+      });
+      //  Fit these bounds to the map
+      map.fitBounds(bounds);
+    }
+    AutoCenter();
 
 		/*********************************
 		*      POINTS                    *
