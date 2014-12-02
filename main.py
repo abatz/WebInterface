@@ -46,8 +46,8 @@ class DroughtTool(webapp2.RequestHandler):
 
 		#initialize forms
 		mapzoom=4
-		pointLat = 39.0510 
-		pointLong = -98.0250
+		pointLat =42 
+		pointLong =-112
 		state ='California'
 		variable = 'pr'
 		domainType = 'full'
