@@ -164,15 +164,12 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
 
 #===========================================
 #   FIRST_FILTER_DOMAIN(for filterBounds)
+# I've decided this is sort of a useless function... only good for landsat bands I think
 #===========================================
-def filter_domain1(collection,domainType, subdomain):
+#def filter_domain1(collection,domainType, subdomain):
 #	if(domainType=='points'):
 #		collection =collection.filterBounds(subdomain);
-#	elif(domainType=='states'):
-#	elif(domainType=='conus'):
-	if(domainType=='rectangle'):
-		collection =collection.filterBounds(subdomain);
-	return (collection);
+#	return (collection);
 
 #===========================================
 #   GET_STATISTIC 

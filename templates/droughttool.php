@@ -14,18 +14,28 @@
 		<!------------------------>
 		  {% if ppost ==1 %}
 			<br>
+			<table>
+			<tr>
+			<td width="30%"> 
+			</td>
+			<td width="35%">
 			<span style="font-size:18pt"><center>{{ title }}</center></span>
 			<span style="font-size:10pt"><center>Source: {{ source }}</center></span>
 			{% if anomOrValue=='anom' or anomOrValue=='clim' %}
 				 <span style ="font-size:10pt"><center> {{ climatologyNotes }}</center></span>
 			{% endif %}
+			</td>
+			<td width="35%">
 			<div name="form_colorbar" id="target_colorbar">
 				<center>
 				<img class="img-responsive img-hover" 
 					src="/images/colorbars/colorbar_{% if anomOrValue =='anom' %}d{% endif %}{{ variable }}.png" 
-					id="colorbar">
+					id="colorbar">&nbsp;
 				</center>
 			</div>
+			</td>
+			</tr>
+			</table>
 		{% endif %}
 		<!----------MAP------------>
 		<div id="map"></div>
