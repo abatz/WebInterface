@@ -55,11 +55,19 @@ class DroughtTool(webapp2.RequestHandler):
 		dateEnd='2013-03-31'
 		anomOrValue='anom'
 		opacity=str(14*0.05);
+		NELat = 45
+		NELong= -95
+		SWLat= 40
+		SWLong= -111
 
 		template_values = {
 			'opacity': opacity,
 			'pointLat': pointLat,
 			'pointLong': pointLong,
+			'NELat': NELat,
+			'NELong': NELong,
+			'SWLat': SWLat,
+			'SWLong': SWLong,
 			'ppost': ppost,
 			'mapzoom': mapzoom,
 			'variable': variable,
@@ -97,6 +105,10 @@ class DroughtTool(webapp2.RequestHandler):
 		pointLat = float(pointLatLongX[1])
 		#pointLong =float(cgi.escape(self.request.get('pointLong')))
 		#pointLat=float(cgi.escape(self.request.get('pointLat')))
+		NELat = float(self.request.get('NELat'))
+		NELong = float(self.request.get('NELong'))
+		SWLat = float(self.request.get('SWLat'))
+		SWLong = float(self.request.get('SWLong'))
 
 		collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=collectionMethods.get_collection(variable);
 		title=statistic +' ' +variableShortName;
@@ -112,12 +124,17 @@ class DroughtTool(webapp2.RequestHandler):
 			subdomain = ee.Feature.Point(pointLong,pointLat);
 			point = subdomain;
 			mapzoom=4; 
+		elif(domainType=='rectangle'):
+			subdomain = ee.Feature.Rectangle(SWLong,SWLat,NELong,NELat);
+			point = subdomain;
+			mapzoom=4;
 		else:
 			subdomain = ee.Feature.Point(pointLong,pointLat);
 			point = subdomain;
 			mapzoom=4;
 
 		collection = ee.ImageCollection(collectionName).filterDate(dateStart,dateEnd).select([variable],[variable]);
+		#collection = collectionMethods.filter_domain1(collection,domainType, subdomain);
 
 		template_values = {}
 		#if points selected, get timeseries before calculate statistic
@@ -149,6 +166,10 @@ class DroughtTool(webapp2.RequestHandler):
 			'opacity': opacity,
 			'pointLat': pointLat,
 			'pointLong': pointLong,
+			'NELat': NELat,
+			'NELong': NELong,
+			'SWLat': SWLat,
+			'SWLong': SWLong,
 			'product': product,
 			'productLongName': collectionLongName,
 			'notes': notes,

@@ -165,14 +165,14 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
 #===========================================
 #   FIRST_FILTER_DOMAIN(for filterBounds)
 #===========================================
-#def filter_domain1(collection,domainType, subdomain):
+def filter_domain1(collection,domainType, subdomain):
 #	if(domainType=='points'):
 #		collection =collection.filterBounds(subdomain);
 #	elif(domainType=='states'):
 #	elif(domainType=='conus'):
-#	elif(domainType=='polygon'):
-#		collection =collection.filterBounds(subdomain);
-#	return (collection);
+	if(domainType=='rectangle'):
+		collection =collection.filterBounds(subdomain);
+	return (collection);
 
 #===========================================
 #   GET_STATISTIC 
@@ -203,6 +203,8 @@ def filter_domain2(collection,domainType, subdomain):
 	elif(domainType=='conus'):
 		fc = ee.FeatureCollection('ft:1fRY18cjsHzDgGiJiS2nnpUU3v9JPDc2HNaR7Xk8');
 		collection= collection.clip(fc.geometry());
+	elif(domainType=='rectangle'):
+		collection= collection.clip(subdomain);
 
 	return (collection);
 

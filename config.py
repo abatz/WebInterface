@@ -20,14 +20,13 @@ EE_ACCOUNT = '439663283355-q1cmji5msrlvn627n848rh2l03d78p7f@developer.gserviceac
 EE_PRIVATE_KEY_FILE = 'privatekey.pem'
 
 # DEBUG_MODE will be True if running in a local development environment.
-DEBUG_MODE = ('SERVER_SOFTWARE' in os.environ and
-              os.environ['SERVER_SOFTWARE'].startswith('Dev'))
+DEBUG_MODE = ('SERVER_SOFTWARE' in os.environ and os.environ['SERVER_SOFTWARE'].startswith('Dev'))
 
 # Set up the appropriate credentials depending on where we're running.
 if DEBUG_MODE:
-	EE_CREDENTIALS = ee.ServiceAccountCredentials(EE_ACCOUNT, EE_PRIVATE_KEY_FILE)
+  EE_CREDENTIALS = ee.ServiceAccountCredentials(EE_ACCOUNT, EE_PRIVATE_KEY_FILE)
 else:
-	#EE_CREDENTIALS = AppAssertionCredentials(ee.OAUTH2_SCOPE)
-	# Change the above line to the below to use your private credentials in
-	# an App Engine instance.
-	EE_CREDENTIALS =ee.ServiceAccountCredentials(EE_ACCOUNT, EE_PRIVATE_KEY_FILE)
+  #EE_CREDENTIALS = AppAssertionCredentials(ee.OAUTH2_SCOPE)
+  # Change the above line to the below to use your private credentials in
+  # an App Engine instance.
+  EE_CREDENTIALS =ee.ServiceAccountCredentials(EE_ACCOUNT, EE_PRIVATE_KEY_FILE)

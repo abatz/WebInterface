@@ -3,7 +3,6 @@
         <!------------------------------------>
 	<script type="text/javascript"
             src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-	<!--<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.1.min.js"></script>--> <!--for factoids-->
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
 	<script type="text/javascript" src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 
@@ -14,8 +13,8 @@
 	<script type="text/javascript" src="media/myjs/formListener.js"></script> <!-- FORM LISTENER -->
 	<script type="text/javascript" src="media/myjs/showLoadingImage.js"></script> <!-- PROGRESS BAR -->
 	<script type="text/javascript" src="media/myjs/zoomStates.js"></script> <!-- ZOOM TO STATE -->
-	<!--<script type="text/javascript" src="media/myjs/factoids.js"></script>--> <!-- FACTOIDS -->
-	<!--<script type="text/javascript" src="media/myjs/MapToolbar.js"></script>--><!-- GOOGLE MAP TOOLBAR-->
+
+	<!--<script type="text/javascript" src="media/myjs/infoMarkers.js"></script>--> <!-- INFO MARKERS -->
 
 	<!------------------------------------>
         <!-- Google Earth Map -->
@@ -61,6 +60,16 @@
 		};
 
 		window.map = new google.maps.Map(document.getElementById("map"),mapOptions);
+
+ 		function showNewRect(event) {
+                  var ne = rectangle.getBounds().getNorthEast();
+                  var sw = rectangle.getBounds().getSouthWest();
+
+                    document.getElementById('NELat').value = ne.lat().toFixed(4);
+                    document.getElementById('NELong').value = ne.lng().toFixed(4);
+                    document.getElementById('SWLat').value = sw.lat().toFixed(4);
+                    document.getElementById('SWLong').value = sw.lng().toFixed(4);
+                }
 
 		/*********************************
 		*     FACTOID INFO BOXES         *
@@ -155,6 +164,28 @@
 		/*********************************
 		*      STATES                    *
 		*********************************/
+  		bounds = new google.maps.LatLngBounds(
+                              new google.maps.LatLng(40.490, -111.649),  //SW corner
+                              new google.maps.LatLng(44.599, -97.443)    //NE corner
+		  );
+
+		  // Define the rectangle and set its editable property to true.
+		  rectangle = new google.maps.Rectangle({
+		    bounds: bounds,
+		    editable: true,
+		    draggable: true
+		  });
+
+		  // Add an event listener on the rectangle.
+		  google.maps.event.addListener(rectangle, 'bounds_changed', showNewRect);
+
+		  // Define an info window on the map.
+		  infoWindow = new google.maps.InfoWindow();
+
+
+		/*********************************
+		*      STATES                    *
+		*********************************/
 		window.statemarkerLayer = new google.maps.KmlLayer('http://www.wrcc.dri.edu/monitor/WWDT/KML/states.kmz', {
                 map:map,
                     preserveViewport: true,
@@ -186,6 +217,8 @@
 		/*********************************/
 		window.map.overlayMapTypes.push(mapType);
 	      }
+		
+
 	      google.maps.event.addDomListener(window, 'load', initialize);
 	      window.onload = initialize;
 	</script>

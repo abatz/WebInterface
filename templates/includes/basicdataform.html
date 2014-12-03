@@ -76,6 +76,16 @@
 						</select>
 						<br>
 					</div>
+					 <div class="rectangle" style="display:none">
+                                                <table><tr><td>
+                                                 <img src="images/blackrectangle.png"></td>
+                                                <td>
+                                                NE corner:<input id="NELat" name="NELat" value="{{ NELat }}" size=8 />N, 
+							<input id="NELong" name="NELong" value="{{ NELong }}" size=8>E<br>
+                                                SW corner:<input id="SWLat" name="SWLat" value="{{ SWLat }}" size=8/>N, 
+							<input id="SWLong" name="SWLong" value="{{ SWLong }}" size=8/>E<br>
+                                                </td></tr></table>
+                                        </div>
 					<div class="points">
 						<br>
                                                   Select Point(s):<br>
@@ -84,11 +94,12 @@
                                                   <!--<input id="pointLat" name="pointLatLong" value="{{ pointLat }}" size=5/>N,
                                                   <input id="pointLong" name="pointLatLong" value="{{ pointLong }}" size=5 />E-->
 					</div>
-					<div class="polygon">
+					<!--<div class="polygon">
 						  Enter a Polygon (Lon(E), Lat(N)):
 						<textarea rows="5" cols="30" id="polygon" name="polygon" >{{ polygon }}</textarea>
 						<br>
 					</div>
+					-->
 			     </div>
 				<br>
 		       <!----------------------------->
@@ -115,8 +126,9 @@
 				{% endfor %}
 			</select>
 			<br>
-			Show Info Icons:
-			<input type="checkbox" id="infomarkers" name="infomarkers" value="infomarkers"></input>
+			<!--Show Info Icons:
+			<input type="checkbox" id="infomarkers" class="infomarkers" value="infomarkers"></input>
+			-->
 	 {% if ppost==1 %}
 			<!--
 			<h4><p style="text-align:left"><u><span style='color:blue'> Outputs:</span></u></p></h4>

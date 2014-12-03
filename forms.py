@@ -53,9 +53,9 @@ formAnomOrValue=[
 formLocation=[
 	('full','Full Domain'),
 	('conus','CONUS'),
+	('rectangle','Rectangle'),
 	('states','States'),
 	('points','Points'),
-	# ('polygon','Polygon'),
 ]
 
 #============================
