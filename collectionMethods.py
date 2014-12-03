@@ -136,7 +136,7 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
 	#calculate climatology
 	climatology = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).select([variable],[variable]);
 
-	if(statistic=='Total'):
+	if(statistic=='Total' and variable=='pr'):
 		climatology = ee.Image(climatology.sum().divide(num_years));
 	elif(statistic=='Median'):
 		climatology = ee.Image(climatology.median());
@@ -151,10 +151,12 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
 		collection=climatology;
 	elif(anomOrValue=='anom'):
 		#calculate anomaly
-		if(statistic=='Total'):
+		if(statistic=='Total' and variable=='pr'):
 			collection = ee.Image(collection.divide(climatology).multiply(100)); #anomaly
 		elif(statistic=='Median'):
 			collection = ee.Image(collection.subtract(climatology)); #anomaly
+		elif(statistic=='Mean' and variable=='sph'):
+			collection = ee.Image(collection.subtract(climatology).divide(climatology).multiply(100));
 		elif(statistic=='Mean'):
 			collection = ee.Image(collection.subtract(climatology));
 
@@ -246,11 +248,13 @@ def map_collection(collection,variable,anomOrValue,opacity):
 			minColorbar=.95;
 			maxColorbar=1.0;
 	elif(variable=='pr'):
-		minColorbar=0
-		maxColorbar=200
 		if(anomOrValue=='anom'):
+			minColorbar=0
+			maxColorbar=200
 			palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
 		else:
+			minColorbar=0
+			maxColorbar=400
 			palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,41B6C4,1D91C0,225EA8,0C2C84"
 	elif(variable=='tmmx' or variable=='tmmn'):
 		if(anomOrValue=='anom'):
@@ -298,13 +302,13 @@ def map_collection(collection,variable,anomOrValue,opacity):
 			maxColorbar=5
 	elif(variable=='sph'):
 		if(anomOrValue=='anom'):
-			palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
-			minColorbar=-2.5
-			maxColorbar=2.5
+			minColorbar=-30
+			maxColorbar=30
+			palette="053061,2166AC,4393C3,67ADD1,92C5DE,D1E5F0,F7F7F7,FDDBC7,F4A582,E88465,D6604D,B2182B,67001F"
 		else:
-			palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,5DC2C1,41B6C4,1D91C0,225EA8,253494,081D58"
+			palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026,D6604D,B2182B,67001F"
 			minColorbar=0
-			maxColorbar=0.001
+			maxColorbar=0.02
 
 	colorbarOptions = {
 		'min':minColorbar,
