@@ -84,6 +84,13 @@ def get_collection(variable):
 		notes=""
 		statistic='Mean'
 		variableShortName='Wind Speed Near Surface'
+	elif(variable=='sph'):
+		collectionName = 'IDAHO_EPSCOR/GRIDMET';
+		collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
+		product = 'gridded'
+		notes=""
+		statistic='Mean'
+		variableShortName='Specific Humidity'
 
 	collection = ee.ImageCollection(collectionName).select([variable],[variable]);
 
@@ -289,6 +296,15 @@ def map_collection(collection,variable,anomOrValue,opacity):
 			palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,5DC2C1,41B6C4,1D91C0,225EA8,253494,081D58"
 			minColorbar=0
 			maxColorbar=5
+	elif(variable=='sph'):
+		if(anomOrValue=='anom'):
+			palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
+			minColorbar=-2.5
+			maxColorbar=2.5
+		else:
+			palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,5DC2C1,41B6C4,1D91C0,225EA8,253494,081D58"
+			minColorbar=0
+			maxColorbar=0.001
 
 	colorbarOptions = {
 		'min':minColorbar,

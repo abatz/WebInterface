@@ -21,6 +21,7 @@ formVariableGrid=[
 	('srad','SRAD (Downward Radiation)'),
 	('vs','VS (Wind Speed)'),
 	#('th','TH (Wind Direction)'),
+	('sph','SPH (Specific Humidity)'),
 ]
 
 #============================

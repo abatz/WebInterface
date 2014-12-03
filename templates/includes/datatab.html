@@ -1,33 +1,28 @@
-<!----------------------------->
-<!--      DATA  FORM         -->
-<!----------------------------->
-<table id="table" class="table table-striped table-bordered">
-          <tr>
-                <td>
-		 <input type="button"  class="btn btn-large btn-primary pull-right"
-                        value="DOWNLOAD DATA" onClick="">
-		</td>
-	</tr>
-</table>
+	{% if ppost ==1 %}
+	<table id="table" class="table table-striped table-bordered">
+		  <tr>
+			<td>
+			 <input type="button"  class="btn btn-large btn-primary pull-right"
+				value="DOWNLOAD DATA" onClick="">
+			</td>
+		</tr>
+	</table>
 
-<!----------------------------->
-<!--      DATA               -->
-<!----------------------------->
-
-<table border="0" width="100%" height="100%">
-	<tr>
-	     <td style="text-align:left">
-			#Variable: {{ variable }} <br>
-			#Data Source: {{ productLongName }} <br>
-			#Location: ({{ pointLat }} N,{{ pointLong }}E )<br>
-			#Time Period: {{ dateStart }} to  {{ dateEnd }}<br>
-			#Notes: {{ notes }}<br>
-			#<br>
-			#======================================================<br>
-			{% for x,y in timeSeriesData %}
-				{{ x }}, {{ y }} <br>
-			{% endfor %}
-			#======================================================<br>
-	      </td>
-	</tr>
-</table>
+	<table border="0" width="100%" height="100%">
+		<tr>
+		     <td style="text-align:left">
+				#Variable: {{ variable }} <br>
+				#Data Source: {{ productLongName }} <br>
+				#Location: ({{ pointLat }} N,{{ pointLong }}E )<br>
+				#Time Period: {{ dateStart }} to  {{ dateEnd }}<br>
+				#Notes: {{ notes }}<br>
+				#<br>
+				#======================================================<br>
+				{% for x,y in timeSeriesData %}
+					{{ x }}, {{ y }} <br>
+				{% endfor %}
+				#======================================================<br>
+		      </td>
+		</tr>
+	</table>
+{% endif %}
