@@ -1,0 +1,118 @@
+<!-- Modal -->
+<div class="modal fade" id="aboutMetricsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+ <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <!----------------------------->
+        <!--     HEADER             -->
+        <!----------------------------->
+        <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		<h4 class="modal-title" id="myModalLabel">About the Data</h4>
+        </div>
+        <div class="modal-body">
+		<!----------------------------->
+                <!--      NDVI               -->
+                <!----------------------------->
+                <div class="row">
+                    <div class="col-md-7 img-portfolio">
+                          {% include 'descriptions/NDVI_description.html'%}
+                    </div>
+                    <div class="col-md-5 img-portfolio">
+                        <p>
+                         <img src="images/NDVIanomaly.jpg" width="100%">
+                          <br>
+                                The above image shows the NDVI anomaly in the U.S. for August 1993.
+                                In that year, heavy rain in the Northern Great Plains
+                                (North and South Dakota, Alberta, and Saskatchewan) led to flooding
+                                in the Missouri River. The resulting exceptionally lush vegetation
+                                appears as a positive anomaly (green).
+                                Concurrently, in the Eastern U.S., rainfall was very low, and the region
+                                exhibited a strong negative anomaly (dark red).
+                                (Credit: http://earthobservatory.nasa.gov/)</p>
+                    </div>
+                </div>
+
+		 <!----------------------------->
+                <!--      EVI               -->
+                <!----------------------------->
+                <div class="row">
+                    <div class="col-md-7 img-portfolio">
+                          {% include 'descriptions/EVI_description.html'%}
+                    </div>
+                    <div class="col-md-5 img-portfolio">
+                    </div>
+		</div>
+                <!----------------------------->
+                <!--      NDWI             -->
+                <!----------------------------->
+                <div class="row">
+                    <div class="col-md-7 img-portfolio">
+                          {% include 'descriptions/NDWI_description.html'%}
+                    </div>
+                    <div class="col-md-5 img-portfolio">
+                    </div>
+                </div>
+                <!----------------------------->
+                <!--      NDSI             -->
+                <!----------------------------->
+                <div class="row">
+                    <div class="col-md-7 img-portfolio">
+                          {% include 'descriptions/NDSI_description.html'%}
+                    </div>
+                    <div class="col-md-5 img-portfolio">
+                    </div>
+                </div>
+
+
+                <!----------------------------->
+                <!--      PDSI           -->
+                <!----------------------------->
+                <div class="row">
+                    <div class="col-md-7 img-portfolio">
+                          {% include 'descriptions/PDSI_description.html'%}
+                    </div>
+                    <div class="col-md-5 img-portfolio">
+                    </div>
+                </div>
+                <!----------------------------->
+                <!--      SPISPEI             -->
+                <!----------------------------->
+                <div class="row">
+                    <div class="col-md-7 img-portfolio">
+                          {% include 'descriptions/SPISPEI_description.html'%}
+                    </div>
+                    <div class="col-md-5 img-portfolio">
+                        <p>
+                         <img src="images/SPEI.png" width="100%">
+                        <br>
+                        Example of SPEI for California from 1900 - 2010
+                        showing periods of drought(red SPEI<-1) and pluvial(blue SPEI>1).
+                        </p>
+                    </div>
+		</div>
+                <!----------------------------->
+                <!--        ET                -->
+                <!----------------------------->
+                <div class="row">
+                    <div class="col-md-7 img-portfolio">
+                          {% include 'descriptions/ET_description.html'%}
+                    </div>
+                    <div class="col-md-5 img-portfolio">
+                    </div>
+		</div>
+                <!----------------------------->
+                <!--        EDDI                -->
+                <!----------------------------->
+                <div class="row">
+                    <div class="col-md-7 img-portfolio">
+                          {% include 'descriptions/EDDI_description.html'%}
+                    </div>
+                    <div class="col-md-5 img-portfolio">
+                    </div>
+                </div>
+
+        	<!----------------------------->
+       </div><!--modal-body-->
+    </div><!--modal-content-->
+  </div><!--modal-dialog-->
+</div>

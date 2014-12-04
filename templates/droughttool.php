@@ -44,8 +44,12 @@
 		<!----------MAP------------>
 		<div id="map"></div>
 		<!---------------------->
-
 	      </div>
+
+             {% include 'droughthomemodal.html'%}
+             {% include 'aboutdatamodal.html'%}
+             {% include 'contactmodal.html'%}
+             {% include 'aboutmetricsmodal.html'%}
 	  </body> 
 	</div>
         {% include 'includes/basicscripts.php'%}

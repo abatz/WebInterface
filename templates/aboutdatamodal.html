@@ -1,0 +1,50 @@
+<!-- Modal -->
+<div class="modal fade" id="aboutDataModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+ <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <!----------------------------->
+        <!--     HEADER             -->
+        <!----------------------------->
+        <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		<h4 class="modal-title" id="myModalLabel">About the Data</h4>
+        </div>
+        <div class="modal-body">
+		<!----------------------------->
+		<!--     GRIDDED             -->
+		<!----------------------------->
+		<div class="row">
+		    <div class="col-md-7 img-portfolio">
+			  {% include 'descriptions/gridmet_description.html'%}
+		    </div>
+		    <div class="col-md-5 img-portfolio">
+			 <img src="images/METDATA.png" width="100%">
+		    </div>
+		</div>
+		<!----------------------------->
+		<!--      LANDSAT             -->
+		<!----------------------------->
+		<div class="row">
+		    <div class="col-md-7 img-portfolio">
+			  {% include 'descriptions/landsat_description.html'%}
+		    </div>
+		    <div class="col-md-5 img-portfolio">
+			 <img src="images/LANDSAT_satellite.jpg" width="100%">
+		    </div>
+		</div>
+		<!----------------------------->
+		<!--      MODIS              -->
+		<!----------------------------->
+		<div class="row">
+		    <div class="col-md-7 img-portfolio">
+			  {% include 'descriptions/modis_description.html'%}
+		    </div>
+		    <div class="col-md-5 img-portfolio">
+			 <img src="images/MODIS_satellite.png" height="350px">
+		    </div>
+		</div>
+        	<!----------------------------->
+       </div><!--modal-body-->
+    </div><!--modal-content-->
+  </div><!--modal-dialog-->
+</div>

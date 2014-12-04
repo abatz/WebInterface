@@ -245,10 +245,12 @@ class MetricsPage(webapp2.RequestHandler):
 ##       URL MAPPING                        ##
 #############################################
 app = webapp2.WSGIApplication(
-	[('/', MainPage),
-	('/droughttool', DroughtTool),
-	('/droughttool/', DroughtTool),
-	('/contact',ContactPage),
-	('/aboutdata',DataPage),
-	('/aboutmetrics',MetricsPage)],
+	[#('/', MainPage),
+	('/', DroughtTool),
+	#('/droughttool', DroughtTool),
+	#('/droughttool/', DroughtTool),
+	#('/contact',ContactPage),
+	#('/aboutdata',DataPage),
+	#('/aboutmetrics',MetricsPage)
+	],
 debug=True)
