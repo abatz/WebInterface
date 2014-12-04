@@ -60,6 +60,8 @@ class DroughtTool(webapp2.RequestHandler):
 		SWLat= 40
 		SWLong= -111
 
+		#palette,minColorbar,maxColorbar,colorbarLabel=collectionMethods.get_colorbar(variable,anomOrValue);
+
 		template_values = {
 			'opacity': opacity,
 			'pointLat': pointLat,
@@ -83,6 +85,9 @@ class DroughtTool(webapp2.RequestHandler):
 			'formLocation': formLocation,
 			'formVariableLandsat': formVariableLandsat,
 			'formStates': formStates,
+			#'palette': palette,
+			#'minColorbar': minColorbar,
+			#'maxColorbar': maxColorbar,
 		}
 		template = JINJA_ENVIRONMENT.get_template('droughttool.php')
 		self.response.out.write(template.render(template_values))
@@ -110,6 +115,13 @@ class DroughtTool(webapp2.RequestHandler):
 		SWLat = float(self.request.get('SWLat'))
 		SWLong = float(self.request.get('SWLong'))
 
+		palette,minColorbar,maxColorbar,colorbarLabel=collectionMethods.get_colorbar(variable,anomOrValue);
+		#paletteArray=["#313695","#4575B4","#74ADD1","#ABD9E9","#E0F3F8","#FEE090","#FDAE61","#F46D43","#D73027","#A50026"]
+		#minColorbar = float(self.request.get('minColorbar'))
+		#maxColorbar = float(self.request.get('maxColorbar'))
+		#palette = self.request.get('palette')
+
+
 		collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=collectionMethods.get_collection(variable);
 		title=statistic +' ' +variableShortName;
 
@@ -124,6 +136,10 @@ class DroughtTool(webapp2.RequestHandler):
 			subdomain = ee.Feature.Point(pointLong,pointLat);
 			point = subdomain;
 			mapzoom=4; 
+		elif(domainType=='full' and product=='gridded'):
+			subdomain = ee.Feature.Point(pointLong,pointLat);
+			point = subdomain;
+			mapzoom=5; 
 		elif(domainType=='rectangle'):
 			subdomain = ee.Feature.Rectangle(SWLong,SWLat,NELong,NELat);
 			point = subdomain;
@@ -160,9 +176,10 @@ class DroughtTool(webapp2.RequestHandler):
 			template_values={'climatologyNotes': climatologyNotes,};
 
 		#the earth engine call
-		mapid =collectionMethods.map_collection(collection,variable,anomOrValue,opacity)
+		mapid =collectionMethods.map_collection(collection,variable,anomOrValue,opacity,palette,minColorbar,maxColorbar)
 
 		extra_template_values = {
+			'colorbarLabel': colorbarLabel,
 			'opacity': opacity,
 			'pointLat': pointLat,
 			'pointLong': pointLong,
@@ -191,6 +208,9 @@ class DroughtTool(webapp2.RequestHandler):
 			'formLocation': formLocation,
 			'formVariableLandsat': formVariableLandsat,
 			'formStates': formStates,
+			'palette': palette,
+			'minColorbar': minColorbar,
+			'maxColorbar': maxColorbar,
 		}
 		template_values = dict(template_values,**extra_template_values);
 

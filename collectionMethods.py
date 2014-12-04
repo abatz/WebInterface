@@ -145,7 +145,8 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
 
 	if(anomOrValue=='clim'):
 		if((variable=='tmmx' or variable=='tmmn')):
-			climatology=climatology.subtract(273.15);
+			climatology=climatology.subtract(273.15)   #convert to C
+			#climatology=climatology.subtract(273.15).multiply(1.8).add(32); #convert to F
 		mask = collection.gt(-9999);
 		climatology = climatology.mask(mask);
 		collection=climatology;
@@ -183,7 +184,8 @@ def get_statistic(collection,variable,statistic,anomOrValue):
 		collection = collection.sum();
 
 	if((anomOrValue=='value' or anomOrValue=='clim') and (variable=='tmmx' or variable=='tmmn')):
-		collection=collection.subtract(273.15);
+		collection=collection.subtract(273.15)  #convert to C
+		#collection=collection.subtract(273.15).multiply(1.8).add(32); #convert to F
 
 	return (collection);
 
@@ -206,28 +208,32 @@ def filter_domain2(collection,domainType, subdomain):
 	return (collection);
 
 #===========================================
-#   MAP_COLLECTION 
+#   GET_COLORBAR 
 #===========================================
-def map_collection(collection,variable,anomOrValue,opacity):
+def get_colorbar(variable,anomOrValue):
 	#opacity=".85";
 	if(variable=='NDVI' or variable=='EVI'):
 		if(anomOrValue=='anom'):
 			palette="A50026,D73027,F46D43,FDAE61,FEE08B,FFFFBF,D9EF8B,A6D96A,66BD63,1A9850,006837"
 			minColorbar=-.4
 			maxColorbar=.4
+			colorbarLabel='Difference from climatology'
 		else:
 			palette="FFFFE5,F7FCB9,D9F0A3,ADDD8E,93D284,78C679,41AB5D,238443,006837,004529"
 			minColorbar=-.1
 			maxColorbar=.9
+			colorbarLabel=''
 	elif(variable=='NDSI' or variable=='NDWI'):
 		if(anomOrValue=='anom'):
 			palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
 			minColorbar=-.5
 			maxColorbar=.5
+			colorbarLabel='Difference from climatology'
 		else:
 			palette="08306B,08519C,2171B5,4292C6,6BAED6,9ECAE1,C6DBEF,DEEBF7,F7FBFF"
-			minColorbar=-.1
-			maxColorbar=.9
+			minColorbar=-.2
+			maxColorbar=.7
+			colorbarLabel=''
 	elif(variable=='BAI'):
 		if(anomOrValue=='anom'):
 			palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
@@ -251,64 +257,89 @@ def map_collection(collection,variable,anomOrValue,opacity):
 			minColorbar=0
 			maxColorbar=200
 			palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
+			colorbarLabel='Percent of climatology'
 		else:
 			minColorbar=0
 			maxColorbar=400
 			palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,41B6C4,1D91C0,225EA8,0C2C84"
+			colorbarLabel='mm'
 	elif(variable=='tmmx' or variable=='tmmn'):
 		if(anomOrValue=='anom'):
 			palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
 			minColorbar=-5
 			maxColorbar=5
+			colorbarLabel='Difference from climatology'
 		elif(variable=='tmmx'):
 			palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
 			minColorbar=-20
 			maxColorbar=30
+			colorbarLabel='deg C'
+			#palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FFF6A7,FEE090,FDAE61,F46D43,D73027,A50026"
+			#minColorbar=-10
+			#maxColorbar=110
+			#colorbarLabel='deg F'
 		elif(variable=='tmmn'):
 			palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
 			minColorbar=-30
 			maxColorbar=20
+			colorbarLabel='deg C'
 	elif(variable=='rmin' or variable=='rmax'):
 		if(anomOrValue=='anom'):
 			palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
 			minColorbar=-25
 			maxColorbar=25
+			colorbarLabel='Difference from climatology'
 		elif(variable=='rmin'):
 			palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
 			minColorbar=0
 			maxColorbar=100
+			colorbarLabel='%'
 		elif(variable=='rmax'):
 			palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
 			minColorbar=0
 			maxColorbar=100
+			colorbarLabel='%'
 	elif(variable=='srad'):
 		if(anomOrValue=='anom'):
 			palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
 			minColorbar=-25
 			maxColorbar=25
+			colorbarLabel='Difference from climatology'
 		else:
 			palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
 			minColorbar=100
 			maxColorbar=350
+			colorbarLabel='W /m2'
 	elif(variable=='vs'):
 		if(anomOrValue=='anom'):
 			palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
 			minColorbar=-2.5
 			maxColorbar=2.5
+			colorbarLabel='Difference from climatology'
 		else:
 			palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,5DC2C1,41B6C4,1D91C0,225EA8,253494,081D58"
 			minColorbar=0
 			maxColorbar=5
+			colorbarLabel='m/s'
 	elif(variable=='sph'):
 		if(anomOrValue=='anom'):
 			minColorbar=-30
 			maxColorbar=30
 			palette="053061,2166AC,4393C3,67ADD1,92C5DE,D1E5F0,F7F7F7,FDDBC7,F4A582,E88465,D6604D,B2182B,67001F"
+			colorbarLabel='Percent Difference from climatology'
 		else:
 			palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026,D6604D,B2182B,67001F"
 			minColorbar=0
 			maxColorbar=0.02
+			colorbarLabel='kg / kg'
 
+	return (palette,minColorbar,maxColorbar,colorbarLabel);
+
+#===========================================
+#   MAP_COLLECTION 
+#===========================================
+def map_collection(collection,variable,anomOrValue,opacity,palette,minColorbar,maxColorbar):
+	#palette = palette.replace('#','')   #might need this to account for difference with svg colorbar palette and GAE palette
 	colorbarOptions = {
 		'min':minColorbar,
 		'max':maxColorbar,

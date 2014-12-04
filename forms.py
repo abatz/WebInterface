@@ -43,8 +43,8 @@ formVariableLandsat=[
 #============================
 formAnomOrValue=[
 	('value','Values'),
-	('anom','Anomaly'),
 	('clim','Climatology'),
+	('anom','Anomaly'),
 ]
 
 #============================

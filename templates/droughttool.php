@@ -16,23 +16,27 @@
 			<br>
 			<table>
 			<tr>
-			<td width="30%"> 
+			<td width="30%" padding="1"> 
 			</td>
-			<td width="35%">
-			<span style="font-size:18pt"><center>{{ title }}</center></span>
-			<span style="font-size:10pt"><center>Source: {{ source }}</center></span>
-			{% if anomOrValue=='anom' or anomOrValue=='clim' %}
-				 <span style ="font-size:10pt"><center> {{ climatologyNotes }}</center></span>
-			{% endif %}
+			<td width="40%">
+				<span style="font-size:18pt"><center>{{ title }}</center></span>
+				<span style="font-size:10pt"><center>Source: {{ source }}</center></span>
+				{% if anomOrValue=='anom' or anomOrValue=='clim' %}
+					 <span style ="font-size:10pt"><center> {{ climatologyNotes }}</center></span>
+				{% endif %}
 			</td>
-			<td width="35%">
-			<div name="form_colorbar" id="target_colorbar">
-				<center>
-				<img class="img-responsive img-hover" 
-					src="/images/colorbars/colorbar_{% if anomOrValue =='anom' %}d{% endif %}{{ variable }}.png" 
-					id="colorbar">&nbsp;
-				</center>
-			</div>
+			<td width="30%">
+				<!--
+				 <div id="colorbar"><svg style="width:400px;height:30px;"></svg></div>
+				-->
+				<center>{{ colorbarLabel }}</center>
+				<div name="form_colorbar" id="target_colorbar" style="width:100%">
+					<center>
+					<img class="img-responsive img-hover" 
+						src="/images/colorbars/colorbar_{% if anomOrValue =='anom' %}d{% endif %}{{ variable }}.png" 
+						id="colorbar">&nbsp;
+					</center>
+				</div>
 			</td>
 			</tr>
 			</table>

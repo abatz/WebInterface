@@ -13,7 +13,11 @@
 	<script type="text/javascript" src="media/myjs/formListener.js"></script> <!-- FORM LISTENER -->
 	<script type="text/javascript" src="media/myjs/showLoadingImage.js"></script> <!-- PROGRESS BAR -->
 	<script type="text/javascript" src="media/myjs/zoomStates.js"></script> <!-- ZOOM TO STATE -->
+	<script type="text/javascript" src="/media/myjs/colorbar.js"></script><!--DYNAMIC COLORBAR-->
 
+	<!------------------------------------>
+        <!-- NOT USED YET -->
+        <!------------------------------------>
 	<!--<script type="text/javascript" src="media/myjs/infoMarkers.js"></script>--> <!-- INFO MARKERS -->
 
 	<!------------------------------------>
@@ -70,80 +74,18 @@
                     document.getElementById('SWLat').value = sw.lat().toFixed(4);
                     document.getElementById('SWLong').value = sw.lng().toFixed(4);
                 }
-
 		/*********************************
-		*     FACTOID INFO BOXES         *
+		*     COLORBAR                   *
 		*********************************/
-		    var infowindow = new google.maps.InfoWindow({
-			});
-		    window.infomarkers = new Array();
-		    
-	            function addInfoMarkers(){
-				var locations = [
-			      ['{% include "includes/info_wildfire.html"%}',40.6,238],
-			      ['{% include "includes/info_agriculture.html"%}',37.2,238.6],
-			      ['{% include "includes/info_livestock.html"%}', 37.5,238.4],
-			      ['{% include "includes/info_snowpack.html"%}', 37.35,237.7],
-			    ];
-
-			    // Setup the different icons and shadows
-			    var iconURLPrefix = 'images/';
-
-			    var icons = [
-			      iconURLPrefix + 'fire.gif',
-			      iconURLPrefix + 'agriculture.gif',
-			      iconURLPrefix + 'livestock.gif',
-			      iconURLPrefix + 'snow.jpg',
-			    ]
-			    var icons_length = icons.length;
-		    	    var iconCounter = 0;
-			    for (var i = 0; i < locations.length; i++) {  
-				infomarker = new google.maps.Marker({
-				position: new google.maps.LatLng(locations[i][1], locations[i][2]),
-				map: map,
-				icon : icons[iconCounter],
-			      });
-			      window.infomarkers.push(infomarker);
-		       }
-		addInfoMarkers();
-
-		   function setInfoMarkersMap(map) {
-			  for (var i = 0; i < markers.length; i++) {
-			    infomarkers[i].setMap(map);
-			  }
-			}
-		   // Removes the markers from the map, but keeps them in the array.
-		   function clearMarkers() {
-			  setInfoMarkersMap(null);
-			}
-
-		 google.maps.event.addListener(infomarker, 'click', (function(infomarker, i) {
-			return function() {
-			  infowindow.setContent(locations[i][0]);
-			  infowindow.open(map, infomarker);
-			  infowindow.style.width = "400px";
-		          infowindow.style.height = "400px";
-			}
-		      })(infomarker, i));
-		      
-		      iconCounter++;
-		      // We only have a limited number of possible icon colors, so we may have to restart the counter
-		      if(iconCounter >= icons_length){
-			iconCounter = 0;
-		      }
-		    }
-
-		    //function AutoCenter() {
-		      //  Create a new viewpoint bound
-		      //var bounds = new google.maps.LatLngBounds();
-		      //  Go through each...
-		      //$.each(markers, function (index, marker) {
-		//	bounds.extend(marker.position);
-		    //  });
-		      //  Fit these bounds to the map
-		   //   map.fitBounds(bounds);
-		    //}
-		    //AutoCenter();
+		//palette=["#313695","#4575B4","#74ADD1","#ABD9E9","#E0F3F8","#FEE090","#FDAE61","#F46D43","#D73027","#A50026"]
+		//palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"  #this is GAE colorbar
+		//myScale = d3.scale.quantile().range(palette).domain([{{ minColorbar }},{{ maxColorbar}}])
+		//colorbar = Colorbar()
+		 //   .thickness(30)
+		//    .barlength(400)
+		//    .orient("horizontal")
+		//    .scale(myScale)
+		//colorbarObject = d3.select("#colorbar").call(colorbar)
 
 		/*********************************
 		*      POINTS                    *
@@ -162,7 +104,7 @@
 		window.pointmarker.setVisible(false); 
 
 		/*********************************
-		*      STATES                    *
+		*      RECTANGLE                    *
 		*********************************/
   		bounds = new google.maps.LatLngBounds(
                               new google.maps.LatLng(40.490, -111.649),  //SW corner
@@ -180,8 +122,7 @@
 		  google.maps.event.addListener(rectangle, 'bounds_changed', showNewRect);
 
 		  // Define an info window on the map.
-		  infoWindow = new google.maps.InfoWindow();
-
+		  //infoWindow = new google.maps.InfoWindow();
 
 		/*********************************
 		*      STATES                    *
@@ -222,9 +163,6 @@
 	      google.maps.event.addDomListener(window, 'load', initialize);
 	      window.onload = initialize;
 	</script>
-
-	<!--<script type="text/javascript" src="media/myjs/pointMarkers.js"></script>--> <!-- POINT MARKER FUNCTIONS -->
-
 
  	<!------------------------------------>
         <!-- Script for charts            (these D3 graphs have problems right now.. because of needing javascript array inputs.. not python array inputs-->

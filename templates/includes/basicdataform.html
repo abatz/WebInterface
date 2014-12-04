@@ -125,18 +125,22 @@
 					{{ y }}</option>
 				{% endfor %}
 			</select>
+		 {% if ppost==1 %}
+		<!--
 			<br>
-			<!--Show Info Icons:
-			<input type="checkbox" id="infomarkers" class="infomarkers" value="infomarkers"></input>
-			-->
-	 {% if ppost==1 %}
-			<!--
-			<h4><p style="text-align:left"><u><span style='color:blue'> Outputs:</span></u></p></h4>
-			<li>Map</li>
-			{% if variable=='NDVI' %}<li>Data</li>{% endif %}
-			-->
+			Colorbar Palette:
+                        <input id="palette" name="palette" value="{{ palette }}" />
+                        <br>
+			Colorbar Values:
+                                 <input id="minColorbar" name="minColorbar" value="{{ minColorbar }}" size=4> to
+                                 <input id="maxColorbar" name="maxColorbar" value="{{ maxColorbar }}" size=4 />
 
-	 {% endif %}
+		-->
+	 	{% endif %}
+			<!--Show Info Icons:
+			<!--<input type="checkbox" id="infomarkers" class="infomarkers" value="infomarkers"></input>-->
+
 		   </td>
 		</tr>
+		   </td>
 	</table>
