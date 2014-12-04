@@ -5,7 +5,7 @@
 	<div id="wrapper">
 		{% include 'includes/navigation.html'%}
 		<div id="menu">
-				<form  id="form_map" method="post" onsubmit="showLoadingImage.show_loading()">
+				<form  action="/" id="form_map" method="post" onsubmit="showLoadingImage.show_loading()">
 					{% include 'includes/dataform.html'%}
 				</form>
 		</div>
@@ -14,7 +14,7 @@
 		<!------------------------>
 		  {% if ppost ==1 %}
 			<br>
-			<table>
+			<table padding="1">
 			<tr>
 			<td width="30%" padding="1"> 
 			</td>
@@ -50,6 +50,10 @@
              {% include 'aboutdatamodal.html'%}
              {% include 'contactmodal.html'%}
              {% include 'aboutmetricsmodal.html'%}
+             {% include 'shareLinkmodal.html'%}
+             {% include 'optionsmodal.html'%}
+             {% include 'figuresmodal.html'%}
+             {% include 'datamodal.html'%}
 	  </body> 
 	</div>
         {% include 'includes/basicscripts.php'%}

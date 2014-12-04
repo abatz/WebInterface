@@ -44,25 +44,58 @@ class DroughtTool(webapp2.RequestHandler):
 		ppost=0	
 		ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
 
+		initial_mapzoom=4;
+		initial_pointLat=42;
+		initial_pointLong=-112;
+		initial_state='Calfornia';
+		initial_variable='pr';
+		initial_domainType='full';
+		initial_dateStart='2013-01-01';
+		initial_dateEnd='2013-03-31';
+		initial_anomOrValue='anom';
+		initial_opacity=str(14*0.05);
+		initial_NELat=45;	
+		initial_NELong=-95;
+		initial_SWLat=40;
+		initial_SWLong=-111;
+
 		#initialize forms
-		mapzoom=4
-		pointLat =42 
-		pointLong =-112
-		state ='California'
-		variable = 'pr'
-		domainType = 'full'
-		dateStart ='2013-01-01' 
-		dateEnd='2013-03-31'
-		anomOrValue='anom'
-		opacity=str(14*0.05);
-		NELat = 45
-		NELong= -95
-		SWLat= 40
-		SWLong= -111
+		mapzoom=self.request.get('mapzoom',initial_mapzoom);
+		pointLat=self.request.get('pointLat',initial_pointLat);
+		pointLong=self.request.get('pointLong',initial_pointLong);
+		state=self.request.get('state',initial_state);
+		variable=self.request.get('variable',initial_variable);
+		domainType=self.request.get('domainType',initial_domainType);
+		dateStart=self.request.get('dateStart',initial_dateStart);
+		dateEnd=self.request.get('dateEnd',initial_dateEnd);
+		anomOrValue=self.request.get('anomOrValue',initial_anomOrValue);
+		opacity=self.request.get('opacity',initial_opacity);
+		NELat=float(self.request.get('NELat',initial_NELat));
+		NELong=float(self.request.get('NELong',initial_NELong));
+		SWLat=float(self.request.get('SWLat',initial_SWLat));
+		SWLong=float(self.request.get('SWLong',initial_SWLong));
+
+		
+		shareLink = 'khegewisch-test.appspot.com'+'?mapzoom='+str(mapzoom)+'?pointLat='+str(pointLat)+\
+			'?pointLong='+str(pointLong)+'?variable='+variable+'?opacity='+str(opacity)+'?dateStart='+dateStart+'?dateEnd='+dateEnd;
+		# not working currently
+		#if(mapzoom!=initial_mapzoom):
+		#	shareLink=shareLink+'?mapzoom='+str(mapzoom)
+		#if(pointLat!=initial_pointLat):
+		#	shareLink=shareLink+'?pointLat='+str(pointLat)
+		#if(pointLong!=initial_pointLong):
+		#	shareLink=shareLink+'?pointLong='+str(pointLong)
+
+
+		if self.request.arguments():	
+			mapid,template_values,colorbarLabel,product,collectionLongName,notes,title,source,mapzoom= \
+				collectionMethods.get_images(opacity,pointLat,pointLong,NELat,NELong,SWLat,SWLong,ppost,\
+				variable,state,domainType,dateStart,dateEnd,anomOrValue);
 
 		#palette,minColorbar,maxColorbar,colorbarLabel=collectionMethods.get_colorbar(variable,anomOrValue);
 
 		template_values = {
+			'shareLink': shareLink,
 			'opacity': opacity,
 			'pointLat': pointLat,
 			'pointLong': pointLong,
@@ -75,7 +108,6 @@ class DroughtTool(webapp2.RequestHandler):
 			'variable': variable,
 			'state': state,
 			'domainType': domainType,
-			'anomOrValue': anomOrValue,
 			'dateStart': dateStart,
 			'dateEnd': dateEnd,
 			'anomOrValue': anomOrValue,
@@ -115,70 +147,15 @@ class DroughtTool(webapp2.RequestHandler):
 		SWLat = float(self.request.get('SWLat'))
 		SWLong = float(self.request.get('SWLong'))
 
-		palette,minColorbar,maxColorbar,colorbarLabel=collectionMethods.get_colorbar(variable,anomOrValue);
-		#paletteArray=["#313695","#4575B4","#74ADD1","#ABD9E9","#E0F3F8","#FEE090","#FDAE61","#F46D43","#D73027","#A50026"]
-		#minColorbar = float(self.request.get('minColorbar'))
-		#maxColorbar = float(self.request.get('maxColorbar'))
-		#palette = self.request.get('palette')
+		mapid,template_values,colorbarLabel,product,collectionLongName,notes,title,source,mapzoom=\
+			collectionMethods.get_images(opacity,pointLat,pointLong,NELat,NELong,SWLat,SWLong,ppost,\
+			variable,state,domainType,dateStart,dateEnd,anomOrValue);
 
-
-		collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=collectionMethods.get_collection(variable);
-		title=statistic +' ' +variableShortName;
-
-		if(anomOrValue=='anom'):
-			title=title+' Anomaly from Climatology ';
-		source=collectionLongName+' from '+dateStart+'-'+dateEnd+''
-
-		if(domainType=='states'):
-			subdomain=state;
-			mapzoom=4; #would like to zoom in on that state
-		elif(domainType=='full' and product=='modis'):
-			subdomain = ee.Feature.Point(pointLong,pointLat);
-			point = subdomain;
-			mapzoom=4; 
-		elif(domainType=='full' and product=='gridded'):
-			subdomain = ee.Feature.Point(pointLong,pointLat);
-			point = subdomain;
-			mapzoom=5; 
-		elif(domainType=='rectangle'):
-			subdomain = ee.Feature.Rectangle(SWLong,SWLat,NELong,NELat);
-			point = subdomain;
-			mapzoom=4;
-		else:
-			subdomain = ee.Feature.Point(pointLong,pointLat);
-			point = subdomain;
-			mapzoom=4;
-
-		collection = ee.ImageCollection(collectionName).filterDate(dateStart,dateEnd).select([variable],[variable]);
-		#collection = collectionMethods.filter_domain1(collection,domainType, subdomain);
-
-		template_values = {}
-		#if points selected, get timeseries before calculate statistic
-		#	if(domainType=='points'):
-		#		#timeSeriesData,timeSeriesGraphData,template_values = collectionMethods.callTimeseries(collection,variable,domainType,point)
-		#		timeSeriesData=collectionMethods.get_timeseries(collection,point,variable)
-		#		timeSeriesGraphData = []	
-		#		n_rows = numpy.array(timeSeriesData).shape[0];
-		#		for i in range(2,n_rows):
-		#		  entry = {'count':timeSeriesData[i][1],'name':timeSeriesData[i][0]};
-		#		  timeSeriesGraphData.append(entry);
-		#
-		#		template_values = {
-		#		    'timeSeriesData': timeSeriesData,
-		#		    'timeSeriesGraphData': timeSeriesGraphData,
-		#		}
-
-		collection = collectionMethods.get_statistic(collection,variable,statistic,anomOrValue);
-		collection =collectionMethods.filter_domain2(collection,domainType,subdomain)
-
-		if(anomOrValue=='anom' or anomOrValue=='clim'):
-			collection,climatologyNotes = collectionMethods.get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,statistic,anomOrValue);
-			template_values={'climatologyNotes': climatologyNotes,};
-
-		#the earth engine call
-		mapid =collectionMethods.map_collection(collection,variable,anomOrValue,opacity,palette,minColorbar,maxColorbar)
+		shareLink = 'khegewisch-test.appspot.com'+'?mapzoom='+str(mapzoom)+'?pointLat='+str(pointLat)+\
+			'?pointLong='+str(pointLong)+'?variable='+variable+'?opacity='+str(opacity)+'?dateStart='+dateStart+'?dateEnd='+dateEnd;
 
 		extra_template_values = {
+			'shareLink': shareLink,
 			'colorbarLabel': colorbarLabel,
 			'opacity': opacity,
 			'pointLat': pointLat,
@@ -208,9 +185,9 @@ class DroughtTool(webapp2.RequestHandler):
 			'formLocation': formLocation,
 			'formVariableLandsat': formVariableLandsat,
 			'formStates': formStates,
-			'palette': palette,
-			'minColorbar': minColorbar,
-			'maxColorbar': maxColorbar,
+			#'palette': palette,
+			#'minColorbar': minColorbar,
+			#'maxColorbar': maxColorbar,
 		}
 		template_values = dict(template_values,**extra_template_values);
 
@@ -220,26 +197,26 @@ class DroughtTool(webapp2.RequestHandler):
 #############################################
 ##       CONTACT PAGE                      ##
 #############################################
-class ContactPage(webapp2.RequestHandler):
-	def get(self):   
-		template = JINJA_ENVIRONMENT.get_template('contact.html')
-		self.response.out.write(template.render({}))
+#class ContactPage(webapp2.RequestHandler):
+#	def get(self):   
+#		template = JINJA_ENVIRONMENT.get_template('contact.html')
+#		self.response.out.write(template.render({}))
 
 #############################################
 ##       ABOUT DATA PAGE                   ##
 #############################################
-class DataPage(webapp2.RequestHandler):
-	def get(self):   
-		template = JINJA_ENVIRONMENT.get_template('aboutdata.html')
-		self.response.out.write(template.render({}))
+#class DataPage(webapp2.RequestHandler):
+#	def get(self):   
+#		template = JINJA_ENVIRONMENT.get_template('aboutdata.html')
+#		self.response.out.write(template.render({}))
 
 #############################################
 ##       ABOUT METRIC PAGE                 ##
 #############################################
-class MetricsPage(webapp2.RequestHandler):
-	def get(self):   
-		template = JINJA_ENVIRONMENT.get_template('aboutmetrics.html')
-		self.response.out.write(template.render({}))
+#class MetricsPage(webapp2.RequestHandler):
+#	def get(self):   
+#		template = JINJA_ENVIRONMENT.get_template('aboutmetrics.html')
+#		self.response.out.write(template.render({}))
 
 #############################################
 ##       URL MAPPING                        ##

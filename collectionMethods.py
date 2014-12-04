@@ -4,6 +4,75 @@ import datetime
 import numpy
 
 #===========================================
+#   GET_IMAGES 
+#===========================================
+def get_images(opacity,pointLat,pointLong,NELat,NELong,SWLat,SWLong,ppost,variable,state,domainType,dateStart,dateEnd,anomOrValue):
+	palette,minColorbar,maxColorbar,colorbarLabel=get_colorbar(variable,anomOrValue);
+	#paletteArray=["#313695","#4575B4","#74ADD1","#ABD9E9","#E0F3F8","#FEE090","#FDAE61","#F46D43","#D73027","#A50026"]
+	#minColorbar = float(self.request.get('minColorbar'))
+	#maxColorbar = float(self.request.get('maxColorbar'))
+	#palette = self.request.get('palette')
+
+	collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(variable);
+	title=statistic +' ' +variableShortName;
+
+	if(anomOrValue=='anom'):
+		title=title+' Anomaly from Climatology ';
+	source=collectionLongName+' from '+dateStart+'-'+dateEnd+''
+
+	if(domainType=='states'):
+		subdomain=state;
+		mapzoom=4; #would like to zoom in on that state
+	elif(domainType=='full' and product=='modis'):
+		subdomain = ee.Feature.Point(pointLong,pointLat);
+		point = subdomain;
+		mapzoom=4;
+	elif(domainType=='full' and product=='gridded'):
+		subdomain = ee.Feature.Point(pointLong,pointLat);
+		point = subdomain;
+		mapzoom=5;
+	elif(domainType=='rectangle'):
+		subdomain = ee.Feature.Rectangle(SWLong,SWLat,NELong,NELat);
+		point = subdomain;
+		mapzoom=4;
+	else:
+		subdomain = ee.Feature.Point(pointLong,pointLat);
+		point = subdomain;
+		mapzoom=4;
+
+	collection = ee.ImageCollection(collectionName).filterDate(dateStart,dateEnd).select([variable],[variable]);
+	#collection = filter_domain1(collection,domainType, subdomain);
+
+	template_values = {}
+	#if points selected, get timeseries before calculate statistic
+	#       if(domainType=='points'):
+	#               #timeSeriesData,timeSeriesGraphData,template_values = callTimeseries(collection,variable,domainType,point)
+	#               timeSeriesData=get_timeseries(collection,point,variable)
+	#               timeSeriesGraphData = []
+	#               n_rows = numpy.array(timeSeriesData).shape[0];
+	#               for i in range(2,n_rows):
+	#                 entry = {'count':timeSeriesData[i][1],'name':timeSeriesData[i][0]};
+	#                 timeSeriesGraphData.append(entry);
+	#
+	#               template_values = {
+	#                   'timeSeriesData': timeSeriesData,
+	#                   'timeSeriesGraphData': timeSeriesGraphData,
+	#               }
+
+	collection = get_statistic(collection,variable,statistic,anomOrValue);
+	collection =filter_domain2(collection,domainType,subdomain)
+
+	if(anomOrValue=='anom' or anomOrValue=='clim'):
+		collection,climatologyNotes = get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,statistic,anomOrValue);
+		template_values={'climatologyNotes': climatologyNotes,};
+
+	#the earth engine call
+	mapid =map_collection(collection,variable,anomOrValue,opacity,palette,minColorbar,maxColorbar)
+
+	return (mapid,template_values,colorbarLabel,product,collectionLongName,notes,title,source,mapzoom);
+
+
+#===========================================
 #    GET_COLLECTION
 #===========================================
 def get_collection(variable):
@@ -262,7 +331,8 @@ def get_colorbar(variable,anomOrValue):
 			minColorbar=0
 			maxColorbar=400
 			palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,41B6C4,1D91C0,225EA8,0C2C84"
-			colorbarLabel='mm'
+			#colorbarLabel='mm'
+			colorbarLabel=''
 	elif(variable=='tmmx' or variable=='tmmn'):
 		if(anomOrValue=='anom'):
 			palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
