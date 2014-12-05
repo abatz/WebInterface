@@ -1,6 +1,6 @@
 #python specific
 *.pyc
-## generic files to ignore
+# generic files to ignore
 *~
 *.lock
 *.DS_Store
@@ -12,10 +12,7 @@
 *.pem
 /OLD
 /ee
-ee
 /httplib2
-httplib2
 six.py
 config.py
-/oauthclient
-oauth2client
+/oauth2client
