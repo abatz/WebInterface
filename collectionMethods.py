@@ -65,9 +65,66 @@ def get_images(opacity,pointLat,pointLong,NELat,NELong,SWLat,SWLong,ppost,variab
 		template_values={'climatologyNotes': climatologyNotes,};
 
 	#the earth engine call
-	mapid =map_collection(collection,variable,anomOrValue,opacity,palette,minColorbar,maxColorbar)
+	mapid =map_collection(collection,opacity,palette,minColorbar,maxColorbar)
 
 	return (mapid,template_values,colorbarLabel,product,collectionLongName,notes,title,source,mapzoom,palette,minColorbar,maxColorbar);
+
+#===========================================
+#   GET_wb
+#===========================================
+def get_wb(opacity,pointLat,pointLong,NELat,NELong,SWLat,SWLong,ppost,state,domainType,\
+    dateStart,dateEnd,anomOrValue,palette,minColorbar,maxColorbar):
+	variable='wb';
+        palette,minColorbar,maxColorbar,colorbarLabel=get_colorbar(variable,anomOrValue);
+
+        collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(variable);
+        title=statistic +' ' +variableShortName;
+
+        if(anomOrValue=='anom'):
+                title=title+' Anomaly from Climatology ';
+        source=collectionLongName+' from '+dateStart+'-'+dateEnd+''
+
+        if(domainType=='states'):
+                subdomain=state;
+                mapzoom=4; #would like to zoom in on that state
+        elif(domainType=='full' and product=='modis'):
+                subdomain = ee.Feature.Point(pointLong,pointLat);
+                point = subdomain;
+                mapzoom=4;
+        elif(domainType=='full' and product=='gridded'):
+                subdomain = ee.Feature.Point(pointLong,pointLat);
+                point = subdomain;
+                mapzoom=5;
+        elif(domainType=='rectangle'):
+                subdomain = ee.Feature.Rectangle(SWLong,SWLat,NELong,NELat);
+                point = subdomain;
+                mapzoom=4;
+        else:
+                subdomain = ee.Feature.Point(pointLong,pointLat);
+                point = subdomain;
+                mapzoom=4;
+
+        collection_pr = ee.ImageCollection(collectionName).filterDate(dateStart,dateEnd).select(['pr'],['pr']);
+        collection_pet = ee.ImageCollection(collectionName).filterDate(dateStart,dateEnd).select(['pet'],['pet']);
+
+        template_values = {}
+
+        collection_pr = get_statistic(collection_pr,'pr',statistic,'value');
+        collection_pet = get_statistic(collection_pet,'pet',statistic,'value');
+        collection_pr =filter_domain2(collection_pr,domainType,subdomain)
+        collection_pet =filter_domain2(collection_pet,domainType,subdomain)
+
+	#form water balance
+	collection = collection_pr.subtract(collection_pet);
+
+        if(anomOrValue=='anom' or anomOrValue=='clim'):
+                collection,climatologyNotes = get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,statistic,anomOrValue);
+                template_values={'climatologyNotes': climatologyNotes,};
+
+        #the earth engine call
+        mapid =map_collection(collection,opacity,palette,minColorbar,maxColorbar)
+
+        return (mapid,template_values,colorbarLabel,product,collectionLongName,notes,title,source,mapzoom,palette,minColorbar,maxColorbar);
 
 
 #===========================================
@@ -213,6 +270,27 @@ def get_collection(variable):
         notes=""
         statistic='Mean'
         variableShortName='Specific Humidity'
+    elif(variable=='erc'):
+        collectionName = 'IDAHO_EPSCOR/GRIDMET';
+        collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
+        product = 'gridded'
+        notes=""
+        statistic='Mean'
+        variableShortName='Energy Release Component'
+    elif(variable=='pet'):
+        collectionName = 'IDAHO_EPSCOR/GRIDMET';
+        collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
+        product = 'gridded'
+        notes=""
+        statistic='Total'
+        variableShortName='Potential Evapotranspiration'
+    elif(variable=='wb'):
+        collectionName = 'IDAHO_EPSCOR/GRIDMET';
+        collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
+        product = 'gridded'
+        notes=""
+        statistic='Total'
+        variableShortName='Water Balance (PPT-PET)'
 
     collection = ee.ImageCollection(collectionName).select([variable],[variable]);
 
@@ -240,9 +318,10 @@ def callTimeseries(collection,variable,domainType,point):
 #    GET_ANOMALY
 #===========================================
 def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,statistic,anomOrValue):
-    doyStart = ee.Number(ee.Algorithms.Date(dateStart).getRelative('day', 'year')).add(1); #removed double()
+    doyStart = ee.Number(ee.Algorithms.Date(dateStart).getRelative('day', 'year')).add(1); 
     doyEnd = ee.Number(ee.Algorithms.Date(dateEnd).getRelative('day', 'year')).add(1);
     doy_filter = ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year');
+
     if(product=='gridded'):
         yearStartClim ='1981';
         yearEndClim='2010';
@@ -256,12 +335,25 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
     climatologyNote='Climatology calculated from '+yearStartClim+'-'+yearEndClim;
 
     #calculate climatology
-    climatology = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).select([variable],[variable]);
+    if(variable=='wb'):
+        climatology_pr = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
+           select(['pr'],['pr']);
+        climatology_pet = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
+           select(['pet'],['pet']);
+	climatology = climatology_pr.subtract(climatology_pet);
+    else:
+        climatology = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).select([variable],[variable]);
 
     if(statistic=='Total' and variable=='pr'):
+         climatology = ee.Image(climatology.().divide(num_years));
+    elif(statistic=='Total' and variable=='pet'):
          climatology = ee.Image(climatology.sum().divide(num_years));
     elif(statistic=='Median'):
          climatology = ee.Image(climatology.median());
+    #elif(statistic=='Mean' and variable=='erc'):
+	#wait need to keep the climatology collection to compute the percentile
+    elif(variable=='wb'):
+         climatology = ee.Image(climatology.sum());
     elif(statistic=='Mean'):
          climatology = ee.Image(climatology.mean());
 
@@ -276,8 +368,12 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
         #calculate anomaly
         if(statistic=='Total' and variable=='pr'):
             collection = ee.Image(collection.divide(climatology).multiply(100)); #anomaly
+        elif(statistic=='Total' and variable=='pet'):
+            collection = ee.Image(collection.divide(climatology).multiply(100)); #anomaly
         elif(statistic=='Median'):
             collection = ee.Image(collection.subtract(climatology)); #anomaly
+        elif(statistic=='Mean' and variable=='erc'):
+            collection = ee.Image(collection.divide(climatology).multiply(100));
         elif(statistic=='Mean' and variable=='sph'):
             collection = ee.Image(collection.subtract(climatology).divide(climatology).multiply(100));
         elif(statistic=='Mean'):
@@ -436,13 +532,47 @@ def get_colorbar(variable,anomOrValue):
             minColorbar=0
             maxColorbar=0.02
             colorbarLabel='kg / kg'
- 
+    elif(variable=='erc'):
+        if(anomOrValue=='anom'):
+            minColorbar=40
+            maxColorbar=100
+            palette="FFFFFF,FFFFCC,FFEDA0,FED976,FEB24C,FEA143,FD8D3C,FC4E2A,E31A1C,BD0026,800026,000000"
+            colorbarLabel='Percentile from climatology'
+        else:
+            palette="FFFFFF,FFFFCC,FFEDA0,FED976,FEB24C,FD8D3C,FC4E2A,E31A1C,BD0026,800026,000000"
+            minColorbar=10
+            maxColorbar=120
+            colorbarLabel=''
+    elif(variable=='pet'): #mm
+        if(anomOrValue=='anom'):
+            minColorbar=0
+            maxColorbar=200
+            palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
+            colorbarLabel='Percent of climatology'
+        else:
+            minColorbar=0
+            maxColorbar=400
+            palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,41B6C4,1D91C0,225EA8,0C2C84"
+            colorbarLabel='mm'
+    elif(variable=='wb'): #mm
+        if(anomOrValue=='anom'):
+            minColorbar=0
+            maxColorbar=200
+            palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
+            colorbarLabel='Percent of climatology'
+        else:
+            minColorbar=-200
+            maxColorbar=200
+            palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,5DC2C1,41B6C4,1D91C0,225EA8,253494,081D58"
+            #colorbarLabel='mm'
+            colorbarLabel=''
+
     return (palette,minColorbar,maxColorbar,colorbarLabel);
 
 #===========================================
 #   MAP_COLLECTION 
 #===========================================
-def map_collection(collection,variable,anomOrValue,opacity,palette,minColorbar,maxColorbar):
+def map_collection(collection,opacity,palette,minColorbar,maxColorbar):
     #palette = palette.replace('#','')   #might need this to account for difference with svg colorbar palette and GAE palette
     colorbarOptions = {
         'min':minColorbar,

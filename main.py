@@ -157,9 +157,14 @@ class DroughtTool(webapp2.RequestHandler):
         minColorbar=float(self.request.get('minColorbar'));
         maxColorbar=float(self.request.get('maxColorbar'));
 
-        mapid,template_values,colorbarLabel,product,collectionLongName,notes,title,source,mapzoom,palette,minColorbar,maxColorbar=\
-	    collectionMethods.get_images(opacity,pointLat,pointLong,NELat,NELong,SWLat,SWLong,ppost,\
-    	    variable,state,domainType,dateStart,dateEnd,anomOrValue,palette,minColorbar,maxColorbar);
+	if(variable=='wb'):
+            mapid,template_values,colorbarLabel,product,collectionLongName,notes,title,source,mapzoom,palette,minColorbar,maxColorbar=\
+	        collectionMethods.get_wb(opacity,pointLat,pointLong,NELat,NELong,SWLat,SWLong,ppost,\
+    	        state,domainType,dateStart,dateEnd,anomOrValue,palette,minColorbar,maxColorbar);
+	else:
+            mapid,template_values,colorbarLabel,product,collectionLongName,notes,title,source,mapzoom,palette,minColorbar,maxColorbar=\
+	        collectionMethods.get_images(opacity,pointLat,pointLong,NELat,NELong,SWLat,SWLong,ppost,\
+    	        variable,state,domainType,dateStart,dateEnd,anomOrValue,palette,minColorbar,maxColorbar);
 
         shareLink = 'khegewisch-test.appspot.com'+'?mapzoom='+str(mapzoom)+'?pointLat='+str(pointLat)+\
 	'?pointLong='+str(pointLong)+'?variable='+variable+'?opacity='+str(opacity)+'?dateStart='+dateStart+'?dateEnd='+dateEnd;
