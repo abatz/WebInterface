@@ -340,20 +340,26 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
            select(['pr'],['pr']);
         climatology_pet = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
            select(['pet'],['pet']);
-	climatology = climatology_pr.subtract(climatology_pet);
     else:
         climatology = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).select([variable],[variable]);
 
+<<<<<<< HEAD
     if(statistic=='Total' and variable=='pr'):
          climatology = ee.Image(climatology.divide(num_years));
+=======
+    if(variable=='wb'):
+         climatology_pr = ee.Image(climatology_pr.sum().divide(num_years));
+         climatology_pet = ee.Image(climatology_pet.sum().divide(num_years));
+	 climatology = climatology_pr.subtract(climatology_pet);
+	 climatology_sd = climatology.reduce(ee.Reducer.stdDev());
+    elif(statistic=='Total' and variable=='pr'):
+         climatology = ee.Image(climatology.sum().divide(num_years));
     elif(statistic=='Total' and variable=='pet'):
          climatology = ee.Image(climatology.sum().divide(num_years));
     elif(statistic=='Median'):
          climatology = ee.Image(climatology.median());
     #elif(statistic=='Mean' and variable=='erc'):
 	#wait need to keep the climatology collection to compute the percentile
-    elif(variable=='wb'):
-         climatology = ee.Image(climatology.sum());
     elif(statistic=='Mean'):
          climatology = ee.Image(climatology.mean());
 
@@ -378,6 +384,8 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
             collection = ee.Image(collection.subtract(climatology).divide(climatology).multiply(100));
         elif(statistic=='Mean'):
             collection = ee.Image(collection.subtract(climatology));
+        elif(variable=='wb'):
+            collection = ee.Image(collection.subtract(climatology).divide(climatology_sd));
 
     return(collection,climatologyNote);
 
@@ -556,14 +564,14 @@ def get_colorbar(variable,anomOrValue):
             colorbarLabel='mm'
     elif(variable=='wb'): #mm
         if(anomOrValue=='anom'):
-            minColorbar=0
-            maxColorbar=200
+            minColorbar=-3
+            maxColorbar=3
             palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
             colorbarLabel='Percent of climatology'
         else:
-            minColorbar=-200
-            maxColorbar=200
-            palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,5DC2C1,41B6C4,1D91C0,225EA8,253494,081D58"
+            minColorbar=-220
+            maxColorbar=220
+            palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
             #colorbarLabel='mm'
             colorbarLabel=''
 
