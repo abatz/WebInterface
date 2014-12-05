@@ -252,8 +252,8 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
     elif(product=='modis'):
         yearStartClim ='2000';
         yearEndClim='2010';
-        num_years = int(yearEndClim) - int(yearStartClim) + 1;
-        climatologyNote='Climatology calculated from '+yearStartClim+'-'+yearEndClim;
+    num_years = int(yearEndClim) - int(yearStartClim) + 1;
+    climatologyNote='Climatology calculated from '+yearStartClim+'-'+yearEndClim;
 
     #calculate climatology
     climatology = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).select([variable],[variable]);
