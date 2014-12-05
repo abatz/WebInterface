@@ -77,15 +77,15 @@
 		/*********************************
 		*     COLORBAR                   *
 		*********************************/
-		//palette=["#313695","#4575B4","#74ADD1","#ABD9E9","#E0F3F8","#FEE090","#FDAE61","#F46D43","#D73027","#A50026"]
+		palette=["#313695","#4575B4","#74ADD1","#ABD9E9","#E0F3F8","#FEE090","#FDAE61","#F46D43","#D73027","#A50026"]
 		//palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"  #this is GAE colorbar
-		//myScale = d3.scale.quantile().range(palette).domain([{{ minColorbar }},{{ maxColorbar}}])
-		//colorbar = Colorbar()
-		 //   .thickness(30)
-		//    .barlength(400)
-		//    .orient("horizontal")
-		//    .scale(myScale)
-		//colorbarObject = d3.select("#colorbar").call(colorbar)
+		myScale = d3.scale.quantile().range(palette).domain([{{ minColorbar }},{{ maxColorbar}}])
+		colorbar = Colorbar()
+		   .thickness(30)
+		    .barlength(400)
+		    .orient("horizontal")
+		    .scale(myScale)
+		colorbarObject = d3.select("#colorbar").call(colorbar)
 
 		/*********************************
 		*      POINTS                    *

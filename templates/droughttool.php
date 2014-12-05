@@ -26,9 +26,7 @@
 				{% endif %}
 			</td>
 			<td width="30%">
-				<!--
-				 <div id="colorbar"><svg style="width:400px;height:30px;"></svg></div>
-				-->
+				 <div id="colorbar"><svg style="width:400px;height:30px;"></svg></div><br>
 				<center>{{ colorbarLabel }}</center>
 				<div name="form_colorbar" id="target_colorbar" style="width:100%">
 					<center>
