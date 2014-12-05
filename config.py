@@ -11,7 +11,7 @@ EE_URL = 'https://earthengine.googleapis.com'
 # The service account email address authorized by your Google contact.
 # Set up a service account as described here:
 # https://sites.google.com/site/earthengineapidocs/creating-oauth2-service-account
-EE_ACCOUNT = '439663283355-q1cmji5msrlvn627n848rh2l03d78p7f@developer.gserviceaccount.com'
+EE_ACCOUNT = '157108865506-2eq34cnsbvtn79djpss6ke51s8utgu5n@developer.gserviceaccount.com'
 
 # The private key associated with your service account in Privacy Enhanced
 # Email format (.pem suffix).  To convert a private key from the RSA format

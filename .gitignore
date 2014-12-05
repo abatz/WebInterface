@@ -11,4 +11,7 @@
 *.bak
 *.pem
 /OLD
-*.gitignore
+.gitignore
+ee/
+httplib2/
+six.py
