@@ -343,10 +343,8 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
     else:
         climatology = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).select([variable],[variable]);
 
-<<<<<<< HEAD
     if(statistic=='Total' and variable=='pr'):
          climatology = ee.Image(climatology.divide(num_years));
-=======
     if(variable=='wb'):
          climatology_pr = ee.Image(climatology_pr.sum().divide(num_years));
          climatology_pet = ee.Image(climatology_pet.sum().divide(num_years));
