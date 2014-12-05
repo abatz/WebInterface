@@ -11,8 +11,11 @@
 *.bak
 *.pem
 /OLD
-.gitignore
-ee/
-httplib2/
+/ee
+ee
+/httplib2
+httplib2
 six.py
 config.py
+/oauthclient
+oauth2client
