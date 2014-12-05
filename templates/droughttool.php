@@ -26,7 +26,7 @@
 				{% endif %}
 			</td>
 			<td width="30%">
-				 <div id="colorbar"><svg style="width:400px;height:30px;"></svg></div><br>
+			<!--	 <div id="colorbar"><svg style="width:400px;height:30px;"></svg></div><br>-->
 				<center>{{ colorbarLabel }}</center>
 				<div name="form_colorbar" id="target_colorbar" style="width:100%">
 					<center>
@@ -48,7 +48,7 @@
              {% include 'aboutdatamodal.html'%}
              {% include 'contactmodal.html'%}
              {% include 'aboutmetricsmodal.html'%}
-             {% include 'shareLinkmodal.html'%}
+             {% include 'sharelinkmodal.html'%}
              {% include 'optionsmodal.html'%}
              {% include 'figuresmodal.html'%}
              {% include 'datamodal.html'%}
