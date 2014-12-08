@@ -14,6 +14,11 @@ def get_images(template_values):
     dT = TV['domainType']
     dS = TV['dateStart']; dE = TV['dateEnd']
     pLat = TV['pointLat']; pLon = TV['pointLong']
+    pointsLonLat = TV['pointsLonLat'] #string of comma separates llon,lat pairs
+    llList = pointsLonLat.split(',')
+    #Format for ee.Feature.MultiPoint
+    pointsLonLatList = [(float(llList[i]),float(llList[i+1])) for i in range(0,len(llList) - 1,2)]
+
     #get map palette options
     palette,minColorbar,maxColorbar,colorbarLabel=get_colorbar(str(var),str(aOV))
     #Override max/minColorbar if user entered custom value
@@ -29,22 +34,23 @@ def get_images(template_values):
         title = title + ' Anomaly from Climatology ';
     #Set source, domain, subdomain
     source = collectionLongName + ' from ' + dS + '-' + dE + ''
-    subdomain = ee.Feature.Point(pLon,pLat)
+    #subdomain = ee.Feature.Point(pLon,pLat)
+    subdomain = ee.Feature.MultiPoint(pointsLonLatList)
     if(dT == 'states'):
         subdomain = template_values['state']
         mapzoom=4; #would like to zoom in on that state
     elif(dT == 'full' and product == 'modis'):
-        point = subdomain
+        points = subdomain
         mapzoom=4
     elif(dT=='full' and product=='gridded'):
-        point = subdomain
+        points = subdomain
         mapzoom=5
     elif(dT=='rectangle'):
         subdomain = ee.Feature.Rectangle(SWLong,SWLat,NELong,NELat)
-        point = subdomain
+        points = subdomain
         mapzoom=4
     else:
-        point = subdomain
+        points = subdomain
         mapzoom=4
     if var == 'wb':
         collection_pr = ee.ImageCollection(collectionName).filterDate(dS,dE).select(['pr'],['pr'])
@@ -200,6 +206,44 @@ def get_collection(variable):
 #===========================================
 #    GET_TIMESERIES
 #===========================================
+def get_time_series(collection, variable, point):
+    ######################################################
+    #### Data in list format
+    ######################################################
+    dataString = collection.getRegion(point,1).getInfo()
+    dataString.pop(0) #remove first row of list ["id","longitude","latitude","time",variable]
+    timeList = [row[3] for row in dataString]
+    variableList = [row[4] for row in dataString]
+    ######################################################
+    #### CREATE TIME SERIES ARRAY WITH DATE IN COL 1 AND VALUE IN COL 2
+    ######################################################
+    timeSeriesData = []
+    for i in range(0,len(variableList),1):
+        time_ms = (ee.Algorithms.Date(dataString[i][3])).getInfo()['value']
+        data1 = time.strftime('%m/%d/%Y',  time.gmtime(time_ms/1000))
+        data2 = (dataString[i][4])
+        if data2 is not None:
+            timeSeriesData.append([data1,data2])
+    ######################################################
+    #### SORT IN CHRONOLOGICAL ORDER
+    ######################################################
+    timeSeriesData.sort(key=lambda date: datetime.datetime.strptime(date[0], "%m/%d/%Y"))
+    ######################################################
+    #### ADD HEADER TO SORTED LIST
+    ######################################################
+    timeSeriesData = [['Dates','Values']] + timeSeriesData
+    ######################################################
+    #### GET GRAPH DATA
+    ######################################################
+    timeSeriesGraphData = []
+    n_rows = numpy.array(timeSeriesData).shape[0]
+    for i in range(2,n_rows):
+        entry = {'count':timeSeriesData[i][1],'name':timeSeriesData[i][0]}
+        timeSeriesGraphData.append(entry)
+    return timeSeriesData, timeSeriesGraphData
+
+
+'''
 def callTimeseries(collection,variable,domainType,point):
     if(domainType=='points'):
         timeSeriesData=get_timeseries(collection,point,variable)
@@ -214,7 +258,7 @@ def callTimeseries(collection,variable,domainType,point):
         'timeSeriesGraphData': timeSeriesGraphData,
     }
     return (timeSeriesData,timeSeriesGraphData,template_values);
-
+'''
 #===========================================
 #    GET_ANOMALY
 #===========================================
@@ -488,6 +532,7 @@ def map_collection(collection,opacity,palette,minColorbar,maxColorbar):
 
     return mapid;
 
+'''
 #===========================================
 #   GET_TIMESERIES
 #===========================================
@@ -541,3 +586,4 @@ def get_timeseries(collection,point,variable):
 #### RETURN
 ######################################################
     return (timeSeries)
+'''
