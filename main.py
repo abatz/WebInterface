@@ -57,6 +57,8 @@ class DroughtTool(webapp2.RequestHandler):
         self.NELong= self.request.get('NELong',-95)
         self.SWLat= self.request.get('SWLat',40)
         self.SWLong= self.request.get('SWLong',-111)
+        self.kmloption = self.request.get('kmloption', '')
+        self.kmlurl = self.request.get('kmlurl', '')
         self.minColorbar = self.request.get('minColorbar', None)
         self.maxColorbar = self.request.get('maxColorbar', None)
         self.palette = self.request.get('palette', None)
@@ -105,6 +107,8 @@ class DroughtTool(webapp2.RequestHandler):
             'formLocation': formLocation,
             'formVariableLandsat': formVariableLandsat,
             'formStates': formStates,
+            'kmlurl': self.kmlurl,
+            'kmloption': self.kmloption,
             #'palette': self.palette,
             #'minColorbar': self.minColorbar,
             #'maxColorbar': self.maxColorbar,
@@ -120,6 +124,10 @@ class DroughtTool(webapp2.RequestHandler):
             template_values['minColorbar'] = self.minColorbar
         if self.maxColorbar:
             template_values['maxColorbar'] = self.maxColorbar
+        if self.kmlurl:
+            template_values['kmlurl'] = self.kmlurl
+        if self.kmloption:
+            template_values['kmloption'] = self.kmloption
         return template_values
     #############################################
     ##      GET                                ##

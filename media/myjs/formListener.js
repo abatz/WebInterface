@@ -4,12 +4,26 @@ $(function(){
 	/*--------------------------------------------*/
 	/*         INFOMARKER LISTENER **BROKEN       */
 	/*--------------------------------------------*/
-	jQuery('.infomarkers').on('change', 'input[type=checkbox]',function(){
+	/*--jQuery('.infomarkers').on('change', 'input[type=checkbox]',function(){
 		console.log('changed infomarkers')
 		if(jQuery('#infomarkers').is(':checked')){
 		console.log('changed infomarkers')
 
 		}
+        });
+	*/
+
+
+	jQuery('#kmloption').on('change', 'input[type=checkbox]',function(){
+			console.log('kml changed')
+		if(jQuery('#kmloption').is(':checked')){
+			console.log('kml added')
+  			window.kmlmarkerLayer.setMap(window.map);
+		}else{
+			console.log('kml removed')
+			window.kmlmarkerLayer.setMap(null);
+		}
+
         });
 
 	/*--------------------------------------------*/

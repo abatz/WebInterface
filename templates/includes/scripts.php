@@ -42,6 +42,7 @@
 	      var map=null;
 	      var pointmarker = null;
 	      var statemarkerLayer = null;
+	      var kmlmarkerLayer = null;
 	      var myZoom;	
 	      var infomarkers;
 	      /*********************************
@@ -148,8 +149,17 @@
           	}); //end listener
 		window.statemarkerLayer.setMap(null);
 		/*********************************
-		*      POLYGON                    *
+		*      KML LAYER                    *
 		*********************************/
+		window.kmlmarkerLayer = new google.maps.KmlLayer('{{ kmlurl }}', {
+		map:map,
+                    preserveViewport: true,
+                    suppressInfoWindows: false
+                 }); //end KmlLayer
+		map.overlayMapTypes.push(mapType);
+		//window.kmlmarkerLayer.setMap(null);
+		window.kmlmarkerLayer.setMap(window.map);
+        	//window.kmlmarkersArray.push(kmlmarkerLayer);
 
 		/*********************************
 		*      MULTIPLE POINTS           *
