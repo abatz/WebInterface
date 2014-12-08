@@ -109,9 +109,9 @@ class DroughtTool(webapp2.RequestHandler):
             'formStates': formStates,
             'kmlurl': self.kmlurl,
             'kmloption': self.kmloption,
-            #'palette': self.palette,
-            #'minColorbar': self.minColorbar,
-            #'maxColorbar': self.maxColorbar,
+            'palette': self.palette,
+            'minColorbar': self.minColorbar,
+            'maxColorbar': self.maxColorbar,
         }
         if self.palette:
             template_values['palette']= self.palette

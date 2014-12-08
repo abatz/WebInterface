@@ -9,10 +9,10 @@
 	       <!----------------------------->
 	       <!--           VARIABLE      -->
 	       <!----------------------------->
-		  <div class="basicvariable">
+		  <!--<div class="basicvariable">-->
 			<div class="variableLandsat">
 		  		<b>Variable:</b><br> 
-				<select id="variableLandsat" name="basicvariable" width="95%">
+				<select id="variableLandsat" name="basicvariable" class="basicvariable" width="95%">
 					{% for x,y in formVariableLandsat %}
 					    <option value="{{ x }}" {% if x == variable  %} selected {% endif %}>{{ y }}</option>
 					{% endfor %}
@@ -22,13 +22,13 @@
 				</select>
 				<br>
 		  		<b>Calculation:</b><br> 
-				<select id="anomOrValue" name="anomOrValue" width="95%">
+				<select id="anomOrValue" name="anomOrValue" class="anomOrValue" width="95%">
 					{% for x,y in formAnomOrValue %}
 					    <option value="{{ x }}" {% if x == anomOrValue  %} selected {% endif %}>{{ y }}</option>
 					{% endfor %}
 				</select>
 			</div>
-		</div>
+		<!--</div>-->
 	</td>
 	</tr>
 	<tr>

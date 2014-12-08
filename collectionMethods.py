@@ -442,7 +442,7 @@ def get_colorbar(variable,anomOrValue):
             minColorbar=40
             maxColorbar=100
             palette="FFFFFF,FFFFCC,FFEDA0,FED976,FEB24C,FEA143,FD8D3C,FC4E2A,E31A1C,BD0026,800026,000000"
-            colorbarLabel='Percentile from climatology'
+            colorbarLabel='Percent difference from climatology'
         else:
             palette="FFFFFF,FFFFCC,FFEDA0,FED976,FEB24C,FD8D3C,FC4E2A,E31A1C,BD0026,800026,000000"
             minColorbar=10
@@ -469,8 +469,7 @@ def get_colorbar(variable,anomOrValue):
             minColorbar=-220
             maxColorbar=220
             palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
-            #colorbarLabel='mm'
-            colorbarLabel=''
+            colorbarLabel='mm'
 
     return (palette,minColorbar,maxColorbar,colorbarLabel);
 
