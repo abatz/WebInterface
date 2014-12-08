@@ -52,7 +52,7 @@
        		geocoder = new google.maps.Geocoder();
             var pointsLonLat = String({{pointsLonLat}});
             var pointLat = parseFloat(pointsLonLat.split(',')[1]);
-            var pointLon = parseFloat(pointsLonLat.split(',')[0]);
+            var pointLong = parseFloat(pointsLonLat.split(',')[0]);
 		var myCenter = new google.maps.LatLng({{ pointLat }}, {{ pointLong }});
 		var myZoom ={{ mapzoom }}
 		var mapOptions = {
