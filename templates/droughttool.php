@@ -12,7 +12,7 @@
 		<!------------------------->
 		<!-- TITLE and COLORBAR -->
 		<!------------------------>
-		  {% if ppost ==1 %}
+		  {% if mapid %}
 			<br>
 			<table padding="1">
 			<tr>
@@ -26,13 +26,14 @@
 				{% endif %}
 			</td>
 			<td width="30%">
+<<<<<<< HEAD
 				<div id="colorbar"><svg style="width:400px;height:30px;"></svg></div><br>
+=======
+>>>>>>> 4d48d17a3bbbe44291796b2daa4b1ba603435db7
 				<center>{{ colorbarLabel }}</center>
 				<div name="form_colorbar" id="target_colorbar" style="width:100%">
 					<center>
-					<img class="img-responsive img-hover" 
-						src="/images/colorbars/colorbar_{% if anomOrValue =='anom' %}d{% endif %}{{ variable }}.png" 
-						id="colorbar">&nbsp;
+                    <div id="colorbar"><svg style="width:400px;height:30px;"></svg></div><br>
 					</center>
 				</div>
 			</td>
