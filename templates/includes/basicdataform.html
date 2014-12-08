@@ -133,16 +133,14 @@
                                  <input id="minColorbar" name="minColorbar" value="{{ minColorbar }}" size=4> to
                                  <input id="maxColorbar" name="maxColorbar" value="{{ maxColorbar }}" size=4 />
 
-		 {% if ppost==1 %}
-	 	{% endif %}
 			<!--Show Info Icons:
 			<!--<input type="checkbox" id="infomarkers" class="infomarkers" value="infomarkers"></input>-->
 
 		   </td>
 		   </tr>
+           {% if mapid %}
 		   <tr><td>
 			<button type="button" data-toggle="modal" data-target="#shareLink">Share Link</button>
-
-		  </td>
-		</tr>
+		  </td></tr>
+          {% endif %}
 	</table>
