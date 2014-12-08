@@ -26,16 +26,10 @@
 				{% endif %}
 			</td>
 			<td width="30%">
-<<<<<<< HEAD
-				<div id="colorbar"><svg style="width:400px;height:30px;"></svg></div><br>
-=======
->>>>>>> 4d48d17a3bbbe44291796b2daa4b1ba603435db7
-				<center>{{ colorbarLabel }}</center>
 				<div name="form_colorbar" id="target_colorbar" style="width:100%">
-					<center>
-                    <div id="colorbar"><svg style="width:400px;height:30px;"></svg></div><br>
-					</center>
+                    			<div id="colorbar"><svg style="width:400px;height:30px;"></svg></div>
 				</div>
+				<center>{{ colorbarLabel }}</center>
 			</td>
 			</tr>
 			</table>

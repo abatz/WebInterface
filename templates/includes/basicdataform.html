@@ -126,15 +126,26 @@
 				{% endfor %}
 			</select>
 			<br>
-			Colorbar Palette:
-                        <input id="palette" name="palette" value="{{ palette }}" />
-                        <br>
-			Colorbar Values:
-                                 <input id="minColorbar" name="minColorbar" value="{{ minColorbar }}" size=4> to
-                                 <input id="maxColorbar" name="maxColorbar" value="{{ maxColorbar }}" size=4 />
+			<input type="checkbox" id="colorbaroption">Customize colorbar<br>
+			<div class="colorbar">
+				<br>
+				Colorbar Palette:
+				<input id="palette" name="palette" value="{{ palette }}" />
+				<br>
+				Colorbar Values:
+					 <input id="minColorbar" name="minColorbar" value="{{ minColorbar }}" size=4> to
+					 <input id="maxColorbar" name="maxColorbar" value="{{ maxColorbar }}" size=4 />			
+			</div>
 
 			<!--Show Info Icons:
 			<!--<input type="checkbox" id="infomarkers" class="infomarkers" value="infomarkers"></input>-->
+			<br>
+			<input type="checkbox" id="kmlfile">Add kml/kmz layer to map<br>
+			<div class="kmlfile">
+			<b>Enter URL for KML/KMZ Layer:</b><br>
+				<input id="kmlurl" name="kmlurl" value="{{ kmlurl }}" size="50" />
+			</div>
+
 
 		   </td>
 		   </tr>
