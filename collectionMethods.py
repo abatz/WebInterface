@@ -4,183 +4,84 @@ import datetime
 import numpy
 
 #===========================================
-#   GET_IMAGES 
+#   GET_IMAGES
 #===========================================
-def get_images(opacity,pointLat,pointLong,NELat,NELong,SWLat,SWLong,ppost,variable,state,domainType,\
-    dateStart,dateEnd,anomOrValue,palette,minColorbar,maxColorbar):
-	
-        palette,minColorbar,maxColorbar,colorbarLabel=get_colorbar(variable,anomOrValue);
-	
-	collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(variable);
-	title=statistic +' ' +variableShortName;
-
-	if(anomOrValue=='anom'):
-		title=title+' Anomaly from Climatology ';
-	source=collectionLongName+' from '+dateStart+'-'+dateEnd+''
-
-	if(domainType=='states'):
-		subdomain=state;
-		mapzoom=4; #would like to zoom in on that state
-	elif(domainType=='full' and product=='modis'):
-		subdomain = ee.Feature.Point(pointLong,pointLat);
-		point = subdomain;
-		mapzoom=4;
-	elif(domainType=='full' and product=='gridded'):
-		subdomain = ee.Feature.Point(pointLong,pointLat);
-		point = subdomain;
-		mapzoom=5;
-	elif(domainType=='rectangle'):
-		subdomain = ee.Feature.Rectangle(SWLong,SWLat,NELong,NELat);
-		point = subdomain;
-		mapzoom=4;
-	else:
-		subdomain = ee.Feature.Point(pointLong,pointLat);
-		point = subdomain;
-		mapzoom=4;
-
-	collection = ee.ImageCollection(collectionName).filterDate(dateStart,dateEnd).select([variable],[variable]);
-	#collection = filter_domain1(collection,domainType, subdomain);
-
-	template_values = {}
-	#if points selected, get timeseries before calculate statistic
-	#       if(domainType=='points'):
-	#               #timeSeriesData,timeSeriesGraphData,template_values = callTimeseries(collection,variable,domainType,point)
-	#               timeSeriesData=get_timeseries(collection,point,variable)
-	#               timeSeriesGraphData = []
-	#               n_rows = numpy.array(timeSeriesData).shape[0];
-	#               for i in range(2,n_rows):
-	#                 entry = {'count':timeSeriesData[i][1],'name':timeSeriesData[i][0]};
-	#                 timeSeriesGraphData.append(entry);
-	#
-	#               template_values = {
-	#                   'timeSeriesData': timeSeriesData,
-	#                   'timeSeriesGraphData': timeSeriesGraphData,
-	#               }
-
-	collection = get_statistic(collection,variable,statistic,anomOrValue);
-	collection =filter_domain2(collection,domainType,subdomain)
-
-	if(anomOrValue=='anom' or anomOrValue=='clim'):
-		collection,climatologyNotes = get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,statistic,anomOrValue);
-		template_values={'climatologyNotes': climatologyNotes,};
-
-	#the earth engine call
-	mapid =map_collection(collection,opacity,palette,minColorbar,maxColorbar)
-
-	return (mapid,template_values,colorbarLabel,product,collectionLongName,notes,title,source,mapzoom,palette,minColorbar,maxColorbar);
-
-#===========================================
-#   GET_wb
-#===========================================
-def get_wb(opacity,pointLat,pointLong,NELat,NELong,SWLat,SWLong,ppost,state,domainType,\
-    dateStart,dateEnd,anomOrValue,palette,minColorbar,maxColorbar):
-	variable='wb';
-        palette,minColorbar,maxColorbar,colorbarLabel=get_colorbar(variable,anomOrValue);
-
-        collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(variable);
-        title=statistic +' ' +variableShortName;
-
-        if(anomOrValue=='anom'):
-                title=title+' Anomaly from Climatology ';
-        source=collectionLongName+' from '+dateStart+'-'+dateEnd+''
-
-        if(domainType=='states'):
-                subdomain=state;
-                mapzoom=4; #would like to zoom in on that state
-        elif(domainType=='full' and product=='modis'):
-                subdomain = ee.Feature.Point(pointLong,pointLat);
-                point = subdomain;
-                mapzoom=4;
-        elif(domainType=='full' and product=='gridded'):
-                subdomain = ee.Feature.Point(pointLong,pointLat);
-                point = subdomain;
-                mapzoom=5;
-        elif(domainType=='rectangle'):
-                subdomain = ee.Feature.Rectangle(SWLong,SWLat,NELong,NELat);
-                point = subdomain;
-                mapzoom=4;
-        else:
-                subdomain = ee.Feature.Point(pointLong,pointLat);
-                point = subdomain;
-                mapzoom=4;
-
-        collection_pr = ee.ImageCollection(collectionName).filterDate(dateStart,dateEnd).select(['pr'],['pr']);
-        collection_pet = ee.ImageCollection(collectionName).filterDate(dateStart,dateEnd).select(['pet'],['pet']);
-
-        template_values = {}
-
+def get_images(template_values):
+    TV = {}
+    for key, val in template_values.iteritems():
+        TV[key] = val
+    var = TV['variable'];aOV = TV['anomOrValue']
+    dT = TV['domainType']
+    dS = TV['dateStart']; dE = TV['dateEnd']
+    pLat = TV['pointLat']; pLon = TV['pointLong']
+    #get map palette options
+    palette,minColorbar,maxColorbar,colorbarLabel=get_colorbar(str(var),str(aOV))
+    #Override max/minColorbar if user entered custom value
+    if 'minColorbar' in template_values.keys():
+        minColorbar = template_values['minColorbar']
+    if 'maxColorbar' in template_values.keys():
+        maxColorbar = template_values['maxColorbar']
+    #get collection
+    collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(var);
+    #Set title
+    title = statistic + ' ' + variableShortName;
+    if(aOV == 'anom'):
+        title = title + ' Anomaly from Climatology ';
+    #Set source, domain, subdomain
+    source = collectionLongName + ' from ' + dS + '-' + dE + ''
+    subdomain = ee.Feature.Point(pLon,pLat)
+    if(dT == 'states'):
+        subdomain = template_values['state']
+        mapzoom=4; #would like to zoom in on that state
+    elif(dT == 'full' and product == 'modis'):
+        point = subdomain
+        mapzoom=4
+    elif(dT=='full' and product=='gridded'):
+        point = subdomain
+        mapzoom=5
+    elif(dT=='rectangle'):
+        subdomain = ee.Feature.Rectangle(SWLong,SWLat,NELong,NELat)
+        point = subdomain
+        mapzoom=4
+    else:
+        point = subdomain
+        mapzoom=4
+    if var == 'wb':
+        collection_pr = ee.ImageCollection(collectionName).filterDate(dS,dE).select(['pr'],['pr'])
+        collection_pet = ee.ImageCollection(collectionName).filterDate(dS,dE).select(['pet'],['pet'])
         collection_pr = get_statistic(collection_pr,'pr',statistic,'value');
         collection_pet = get_statistic(collection_pet,'pet',statistic,'value');
-        collection_pr =filter_domain2(collection_pr,domainType,subdomain)
-        collection_pet =filter_domain2(collection_pet,domainType,subdomain)
+        collection_pr =filter_domain2(collection_pr,dT,subdomain)
+        collection_pet =filter_domain2(collection_pet,dT,subdomain)
+        #form water balance
+        collection = collection_pr.subtract(collection_pet);
+    else:
+        collection = ee.ImageCollection(collectionName).filterDate(dS,dE).select([var],[var])
+        #collection = filter_domain1(collection,dT, subdomain)
+        collection = get_statistic(collection,var,statistic,aOV);
+        collection = filter_domain2(collection,dT,subdomain)
 
-	#form water balance
-	collection = collection_pr.subtract(collection_pet);
+    if  aOV in ['anom','clim']:
+        collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV)
+        TV['climatologyNotes'] = climatologyNotes
 
-        if(anomOrValue=='anom' or anomOrValue=='clim'):
-                collection,climatologyNotes = get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,statistic,anomOrValue);
-                template_values={'climatologyNotes': climatologyNotes,};
-
-        #the earth engine call
-        mapid =map_collection(collection,opacity,palette,minColorbar,maxColorbar)
-
-        return (mapid,template_values,colorbarLabel,product,collectionLongName,notes,title,source,mapzoom,palette,minColorbar,maxColorbar);
-
-
-#===========================================
-#   INITIALIZE_FORM 
-#===========================================
-#def initialize_form(self,ppost):
-    #if(ppost==1):
-        #initialize forms
-        #mapzoom=self.request.get('mapzoom');
-        #pointLat=self.request.get('pointLat');
-        #pointLong=self.request.get('pointLong');
-        #state=self.request.get('state');
-        #variable=self.request.get('variable');
-        #domainType=self.request.get('domainType');
-        #dateStart=self.request.get('dateStart');
-        #dateEnd=self.request.get('dateEnd');
-        #anomOrValue=self.request.get('anomOrValue');
-        #opacity=self.request.get('opacity');
-        #NELat=float(self.request.get('NELat'));
-        #NELong=float(self.request.get('NELong'));
-        #SWLat=float(self.request.get('SWLat'));
-        #SWLong=float(self.request.get('SWLong'));
-#    #else:
-#    initial_mapzoom=4;
-#    initial_pointLat=42;
-#    initial_pointLong=-112;
-#    initial_state='Calfornia';
-#    initial_variable='pr';
-#    initial_domainType='full';
-#    initial_dateStart='2013-01-01';
-#    initial_dateEnd='2013-03-31';
-#    initial_anomOrValue='anom';
-#    initial_opacity=str(14*0.05);
-#    initial_NELat=45;
-#    initial_NELong=-95;
-#    initial_SWLat=40;
-#    initial_SWLong=-111;
-
-#    #initialize forms
-#    mapzoom=self.request.get('mapzoom',initial_mapzoom);
-#    pointLat=self.request.get('pointLat',initial_pointLat);
-#    pointLong=self.request.get('pointLong',initial_pointLong);
-#    state=self.request.get('state',initial_state);
-#    variable=self.request.get('variable',initial_variable);
-#    domainType=self.request.get('domainType',initial_domainType);
-#    dateStart=self.request.get('dateStart',initial_dateStart);
-#    dateEnd=self.request.get('dateEnd',initial_dateEnd);
-#    anomOrValue=self.request.get('anomOrValue',initial_anomOrValue);
-#    opacity=self.request.get('opacity',initial_opacity);
-#    NELat=float(self.request.get('NELat',initial_NELat));
-#    NELong=float(self.request.get('NELong',initial_NELong));
-#    SWLat=float(self.request.get('SWLat',initial_SWLat));
-#    SWLong=float(self.request.get('SWLong',initial_SWLong));
-
-#    return( mapzoom,pointLat,pointLong,state,variable,domainType,dateStart,dateEnd,anomOrValue,\
-#        opacity,NELat,NELong,SWLat,SWLong);
+    #the earth engine call
+    mapid = map_collection(collection,TV['opacity'],palette,minColorbar,maxColorbar)
+    #mapid = map_collection(collection,var,aOV,TV['opacity'],palette,minColorbar,maxColorbar)
+    extra_template_values = {
+        'mapid': mapid['mapid'],
+        'token': mapid['token'],
+        'source': source,
+        'product':product,
+        'productLongName': collectionLongName,
+        'title': title,
+        'palette': palette,
+        'colorbarLabel': colorbarLabel,
+        'minColorbar': minColorbar,
+        'maxColorbar': maxColorbar
+    }
+    TV.update(extra_template_values)
+    return TV
 
 #===========================================
 #    GET_COLLECTION
@@ -318,7 +219,7 @@ def callTimeseries(collection,variable,domainType,point):
 #    GET_ANOMALY
 #===========================================
 def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,statistic,anomOrValue):
-    doyStart = ee.Number(ee.Algorithms.Date(dateStart).getRelative('day', 'year')).add(1); 
+    doyStart = ee.Number(ee.Algorithms.Date(dateStart).getRelative('day', 'year')).add(1);
     doyEnd = ee.Number(ee.Algorithms.Date(dateEnd).getRelative('day', 'year')).add(1);
     doy_filter = ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year');
 
@@ -343,8 +244,6 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
     else:
         climatology = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).select([variable],[variable]);
 
-    if(statistic=='Total' and variable=='pr'):
-         climatology = ee.Image(climatology.divide(num_years));
     if(variable=='wb'):
          climatology_pr = ee.Image(climatology_pr.sum().divide(num_years));
          climatology_pet = ee.Image(climatology_pet.sum().divide(num_years));
@@ -397,7 +296,7 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
 #	return (collection);
 
 #===========================================
-#   GET_STATISTIC 
+#   GET_STATISTIC
 #===========================================
 def get_statistic(collection,variable,statistic,anomOrValue):
     if(statistic=='Mean'):
@@ -432,7 +331,7 @@ def filter_domain2(collection,domainType, subdomain):
     return (collection);
 
 #===========================================
-#   GET_COLORBAR 
+#   GET_COLORBAR
 #===========================================
 def get_colorbar(variable,anomOrValue):
     if(variable=='NDVI' or variable=='EVI'):
@@ -452,7 +351,7 @@ def get_colorbar(variable,anomOrValue):
             minColorbar=-.5
             maxColorbar=.5
             colorbarLabel='Difference from climatology'
-        else: 
+        else:
             palette="08306B,08519C,2171B5,4292C6,6BAED6,9ECAE1,C6DBEF,DEEBF7,F7FBFF"
             minColorbar=-.2
             maxColorbar=.7
@@ -576,7 +475,7 @@ def get_colorbar(variable,anomOrValue):
     return (palette,minColorbar,maxColorbar,colorbarLabel);
 
 #===========================================
-#   MAP_COLLECTION 
+#   MAP_COLLECTION
 #===========================================
 def map_collection(collection,opacity,palette,minColorbar,maxColorbar):
     #palette = palette.replace('#','')   #might need this to account for difference with svg colorbar palette and GAE palette
@@ -591,7 +490,7 @@ def map_collection(collection,opacity,palette,minColorbar,maxColorbar):
     return mapid;
 
 #===========================================
-#   GET_TIMESERIES 
+#   GET_TIMESERIES
 #===========================================
 def get_timeseries(collection,point,variable):
 ######################################################
@@ -640,6 +539,6 @@ def get_timeseries(collection,point,variable):
 #minNDVI = numpy.min(variableList_filt,axis=0)
 
 ######################################################
-#### RETURN 
+#### RETURN
 ######################################################
     return (timeSeries)
