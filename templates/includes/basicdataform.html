@@ -39,10 +39,10 @@
 		  <b>Time Period</b><br>
 		   <div class="timeperiod">
 			  Start Date:
-			  <input type="text" id="from" value={{ dateStart }} name="dateStart">
+			  <input type="text" id="dateStart" value="{{ dateStart }}" name="dateStart">
 			  <br>
 			  End Date:
-			  <input type="text" id="to" value={{ dateEnd }} name="dateEnd">
+			  <input type="text" id="dateEnd" value="{{ dateEnd }}" name="dateEnd">
 		   </div>
 	  </td>
 	</tr>
@@ -126,7 +126,8 @@
 				{% endfor %}
 			</select>
 			<br>
-			<input type="checkbox" id="colorbaroption" name="colorbaroption">Customize colorbar<br>
+			<!--<input type="checkbox" id="colorbaroption" name="colorbaroption">Customize colorbar<br>-->
+
 			<div class="colorbar">
 				<br>
 				Colorbar Palette:
@@ -140,7 +141,7 @@
 			<!--Show Info Icons:
 			<!--<input type="checkbox" id="infomarkers" class="infomarkers" value="infomarkers"></input>-->
 			<br>
-			<input type="checkbox" id="kmloption" name="kmloption">Add kml/kmz layer to map<br>
+			<!--<input type="checkbox" id="kmloption" name="kmloption">Add kml/kmz layer to map<br>-->
 			<div class="kmlurl">
 			<b>Enter URL for KML/KMZ Layer:</b><br>
 				<input id="kmlurl" name="kmlurl" value="{{ kmlurl }}" size="50" />

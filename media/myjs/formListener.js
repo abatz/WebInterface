@@ -104,8 +104,8 @@ $(function(){
                 }
 	 }else if(jQuery('.basicvariable').val()=='erc'){
                  if(jQuery('.anomOrValue').val()=='anom'){
-                        minColorbar =40;
-                        maxColorbar = 100;
+                        minColorbar =0;
+                        maxColorbar = 200;
                         palette="FFFFFF,FFFFCC,FFEDA0,FED976,FEB24C,FEA143,FD8D3C,FC4E2A,E31A1C,BD0026,800026,000000"
                 }else{
                         minColorbar = 10;
@@ -177,8 +177,10 @@ $(function(){
 	/*        STATE LISTENER 		      */
 	/*--------------------------------------------*/
 	 jQuery('#state').on('change', function(){
-		 //NewMapCenter = window.map.getCenter();
-		//alert(NewMapCenter)
+		//state = jQuery('#state').val();
+		//alert(state)
+	     //document.getElementById('pointLat').value =minColorbar;
+	     //document.getElementById('pointLon').value =minColorbar;
                  //jQuery('.pointLat').val(NewMapCenter.lat());
                  //jQuery('.pointLon').val(NewMapCenter.lng());
 	});

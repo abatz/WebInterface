@@ -3,6 +3,8 @@
         <!------------------------------------>
 	<script type="text/javascript"
             src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+	<!-- for date picker calendar -->
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
 	<script type="text/javascript" src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 
@@ -14,7 +16,39 @@
 	<script type="text/javascript" src="media/myjs/showLoadingImage.js"></script> <!-- PROGRESS BAR -->
 	<script type="text/javascript" src="media/myjs/zoomStates.js"></script> <!-- ZOOM TO STATE -->
 	<script type="text/javascript" src="/media/myjs/colorbar.js"></script><!--DYNAMIC COLORBAR-->
-
+	<!--<script type="text/javascript" src="/media/myjs/dateRangePicker.js"></script>--><!--CALENDAR DATE PICKER-->
+<!--
+	<script type="text/javascript"> 
+		$(function(){
+		    $( "#dateStart" ).datepicker({
+		      defaultDate: {{ dateStart }},
+		      changeMonth: true,
+		      changeYear: true,
+		      numberOfMonths: 3,
+		      //minDate: "01/01/1979",
+		      minDate: "1979-01-01",
+		      maxDate: "0",
+		      dateFormat: "yy-mm-dd",
+		      onClose: function( selectedDate ) {
+			$( "#dateStart" ).datepicker( "option", "minDate", selectedDate );
+		      }
+		  }).datepicker('setDate', "01/01/1979");
+		 $( "#dateEnd" ).datepicker({
+		      defaultDate: {{ dateEnd }},
+		      changeMonth: true,
+		      changeYear: true,
+		      numberOfMonths: 3,
+		      minDate: "1979-01-01",
+		      //minDate: "01/01/1979",
+		      maxDate: "0",
+		      dateFormat: "yy-mm-dd",
+		      onClose: function( selectedDate ) {
+			$( "#dateEnd" ).datepicker( "option", "maxDate", selectedDate );
+			}
+		  }).datepicker('setDate', 'today');
+		});
+	</script>
+-->
 	<!------------------------------------>
         <!-- NOT USED YET -->
         <!------------------------------------>

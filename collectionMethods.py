@@ -2,11 +2,14 @@ import ee
 import time
 import datetime
 import numpy
+import json
 
 #===========================================
 #   GET_IMAGES
 #===========================================
 def get_images(template_values):
+    from forms import stateLat, stateLong;
+
     TV = {}
     for key, val in template_values.iteritems():
         TV[key] = val
@@ -34,7 +37,9 @@ def get_images(template_values):
     subdomain = ee.Feature.Point(pLon,pLat)
     if(dT == 'states'):
         subdomain = template_values['state']
-        mapzoom=4; #would like to zoom in on that state
+        mapzoom=6; #would like to zoom in on that state
+        #pLat = stateLat(subdomain);
+        #pLon = stateLon(subdomain);
     elif(dT == 'full' and product == 'modis'):
         point = subdomain
         mapzoom=4
@@ -70,6 +75,8 @@ def get_images(template_values):
     #the earth engine call
     mapid = map_collection(collection,TV['opacity'],palette,minColorbar,maxColorbar)
     #mapid = map_collection(collection,var,aOV,TV['opacity'],palette,minColorbar,maxColorbar)
+
+
     extra_template_values = {
         'mapid': mapid['mapid'],
         'token': mapid['token'],
@@ -257,8 +264,8 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
          climatology = ee.Image(climatology.sum().divide(num_years));
     elif(statistic=='Median'):
          climatology = ee.Image(climatology.median());
-    #elif(statistic=='Mean' and variable=='erc'):
-	#wait need to keep the climatology collection to compute the percentile
+    elif(statistic=='Mean' and variable=='erc'):
+         climatology = ee.Image(climatology.mean());
     elif(statistic=='Mean'):
          climatology = ee.Image(climatology.mean());
 
@@ -441,8 +448,8 @@ def get_colorbar(variable,anomOrValue):
             colorbarLabel='kg / kg'
     elif(variable=='erc'):
         if(anomOrValue=='anom'):
-            minColorbar=40
-            maxColorbar=100
+            minColorbar=0
+            maxColorbar=200
             palette="FFFFFF,FFFFCC,FFEDA0,FED976,FEB24C,FEA143,FD8D3C,FC4E2A,E31A1C,BD0026,800026,000000"
             colorbarLabel='Percent difference from climatology'
         else:

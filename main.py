@@ -41,7 +41,6 @@ class DroughtTool(webapp2.RequestHandler):
         #sets form  parameters
         self.ppost = 0
         self.opacity = self.request.get('opacity',str(14*0.05))
-        self.mapzoom = self.request.get('mapzoom',4)
         self.variable = self.request.get('basicvariable','pr')
         self.domainType = self.request.get('domainType','full')
         self.state = self.request.get('state','California')
@@ -62,6 +61,15 @@ class DroughtTool(webapp2.RequestHandler):
         self.minColorbar = self.request.get('minColorbar', None)
         self.maxColorbar = self.request.get('maxColorbar', None)
         self.palette = self.request.get('palette', None)
+
+	if(self.domainType=='full'):
+            mz= 5;
+        elif(self.domainType=='states'):
+            mz= 6;
+	else:
+	    mz=4;
+        self.mapzoom = self.request.get('mapzoom',mz)
+
         if self.minColorbar is None and self.maxColorbar is None:
             self.palette,self.minColorbar,self.maxColorbar,self.colorbarLabel=collectionMethods.get_colorbar(self.variable,self.anomOrValue)
 
