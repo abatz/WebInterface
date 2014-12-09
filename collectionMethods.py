@@ -13,15 +13,15 @@ def get_images(template_values):
     var = TV['variable'];aOV = TV['anomOrValue']
     dT = TV['domainType']
     dS = TV['dateStart']; dE = TV['dateEnd']
-    pointsLonLat = TV['pointsLonLat'] #string of comma separates llon,lat pairs
-    pointsLonLatList = pointsLonLat.split(',')
-    pointsLonLatTuples = [(float(pointsLonLatList[i]),float(pointsLonLatList[i+1])) for i in range(0,len(pointsLonLatList) - 1,2)]
+    pointsLongLat = TV['pointsLongLat'] #string of comma separates llon,lat pairs
+    pointsLongLatList = pointsLongLat.split(',')
+    pointsLongLatTuples = [(float(pointsLongLatList[i]),float(pointsLongLatList[i+1])) for i in range(0,len(pointsLongLatList) - 1,2)]
     multi_point = False
-    if len(pointsLonLatList) > 2:
+    if len(pointsLongLatList) > 2:
         multi_point = True
-        subdomain = ee.Feature.MultiPoint(pointsLonLatTuples)
+        subdomain = ee.Feature.MultiPoint(pointsLongLatTuples)
     else:
-        subdomain = ee.Feature.Point(float(pointsLonLatList[0]),float(pointsLonLatList[1]))
+        subdomain = ee.Feature.Point(float(pointsLongLatList[0]),float(pointsLongLatList[1]))
     #get map palette options
     palette,minColorbar,maxColorbar,colorbarLabel=get_colorbar(str(var),str(aOV))
     #Override max/minColorbar if user entered custom value
@@ -70,12 +70,11 @@ def get_images(template_values):
         collection = collection_pr.subtract(collection_pet);
     else:
         collection = ee.ImageCollection(collectionName).filterDate(dS,dE).select([var],[var])
-        '''
         #Time Series
         if points:
             #FIX ME, can we get TS data for MultiPoint and oly have to query once?
             #get data for each point
-            for p in pointsLonLatTuples:
+            for p in pointsLongLatTuples:
                 point = ee.Feature.Point(p[0],p[1])
                 timeSeriesData, timeSeriesGraphData = get_time_series(collection,var,point)
                 data = {
@@ -84,7 +83,6 @@ def get_images(template_values):
                     'timeSeriesGraphData':timeSeriesGraphData
                 }
                 timeSeriesDataPoints.append(data)
-        '''
         #collection = filter_domain1(collection,dT, subdomain)
         collection = get_statistic(collection,var,statistic,aOV);
         collection = filter_domain2(collection,dT,subdomain)
