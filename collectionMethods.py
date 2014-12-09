@@ -29,6 +29,8 @@ def get_images(template_values):
         minColorbar = template_values['minColorbar']
     if 'maxColorbar' in template_values.keys():
         maxColorbar = template_values['maxColorbar']
+    if 'palette' in template_values.keys():
+        palette = template_values['palette']
     #get collection
     collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(var);
     #Set title
