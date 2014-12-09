@@ -49,9 +49,9 @@
 	      *********************************/
 	      function initialize() {
        		geocoder = new google.maps.Geocoder();
-            var pointsLonLat = "{{ pointsLonLat}}";
-            var pointLat = parseFloat(pointsLonLat.split(',')[1]);
-            var pointLong = parseFloat(pointsLonLat.split(',')[0]);
+            var pointsLongLat = "{{ pointsLongLat}}";
+            var pointLat = parseFloat(pointsLongLat.split(',')[1]);
+            var pointLong = parseFloat(pointsLongLat.split(',')[0]);
 		var myCenter = new google.maps.LatLng(pointLat, pointLong);
 		var myZoom ={{ mapzoom }}
 		var mapOptions = {
@@ -95,7 +95,7 @@
 		*      POINTS                    *
 		*********************************/
         var bounds = new google.maps.LatLngBounds();
-        var points_list = pointsLonLat.split(',');
+        var points_list = pointsLongLat.split(',');
         var pLat,pLong
         for (i=0;i<points_list.length - 1;i+=2){
             pLat = points_list[i+1];
@@ -125,7 +125,7 @@
                 var longitude=a.latLng.lng().toFixed(4);
                 var latitude=a.latLng.lat().toFixed(4);
                 var new_point_list = points_pre.concat([String(longitude),String(latitude)]).concat(points_post);
-                document.getElementById('pointsLonLat').value = new_point_list.join();
+                document.getElementById('pointsLongLat').value = new_point_list.join();
             });
             window.pointmarker.setVisible(false);
         }
