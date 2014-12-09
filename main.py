@@ -46,7 +46,7 @@ class DroughtTool(webapp2.RequestHandler):
         self.domainType = self.request.get('domainType','full')
         self.state = self.request.get('state','California')
         self.anomOrValue = self.request.get('anomOrValue','anom')
-        self.pointsLonLat = self.request.get('pointsLonLat','-112,42')
+        self.pointsLongLat = self.request.get('pointsLongLat','-112,42')
         self.dateStart = self.request.get('dateStart','2013-01-01')
         self.dateEnd = self.request.get('dateEnd','2013-03-31')
         self.opacity = self.request.get('opacity',str(14*0.05))
@@ -83,7 +83,7 @@ class DroughtTool(webapp2.RequestHandler):
     def set_initial_template_values(self):
         template_values = {
             'opacity': self.opacity,
-            'pointsLonLat':self.pointsLonLat,
+            'pointsLongLat':self.pointsLongLat,
             'NELat': self.NELat,
             'NELong': self.NELong,
             'SWLat': self.SWLat,
