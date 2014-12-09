@@ -13,12 +13,15 @@ def get_images(template_values):
     var = TV['variable'];aOV = TV['anomOrValue']
     dT = TV['domainType']
     dS = TV['dateStart']; dE = TV['dateEnd']
-    pLat = TV['pointLat']; pLon = TV['pointLong']
     pointsLonLat = TV['pointsLonLat'] #string of comma separates llon,lat pairs
-    llList = pointsLonLat.split(',')
-    #Format for ee.Feature.MultiPoint
-    pointsLonLatList = [(float(llList[i]),float(llList[i+1])) for i in range(0,len(llList) - 1,2)]
-
+    pointsLonLatList = pointsLonLat.split(',')
+    pointsLonLatTuples = [(float(pointsLonLatList[i]),float(pointsLonLatList[i+1])) for i in range(0,len(pointsLonLatList) - 1,2)]
+    multi_point = False
+    if len(pointsLonLatList) > 2:
+        multi_point = True
+        subdomain = ee.Feature.MultiPoint(pointsLonLatTuples)
+    else:
+        subdomain = ee.Feature.Point(float(pointsLonLatList[0]),float(pointsLonLatList[1]))
     #get map palette options
     palette,minColorbar,maxColorbar,colorbarLabel=get_colorbar(str(var),str(aOV))
     #Override max/minColorbar if user entered custom value
@@ -34,8 +37,7 @@ def get_images(template_values):
         title = title + ' Anomaly from Climatology ';
     #Set source, domain, subdomain
     source = collectionLongName + ' from ' + dS + '-' + dE + ''
-    #subdomain = ee.Feature.Point(pLon,pLat)
-    subdomain = ee.Feature.MultiPoint(pointsLonLatList)
+    points = None
     if(dT == 'states'):
         subdomain = template_values['state']
         mapzoom=4; #would like to zoom in on that state
@@ -52,7 +54,10 @@ def get_images(template_values):
     else:
         points = subdomain
         mapzoom=4
+
+    timeSeriesDataPoints = []
     if var == 'wb':
+        #FIX ME: implements tiem series for wb
         collection_pr = ee.ImageCollection(collectionName).filterDate(dS,dE).select(['pr'],['pr'])
         collection_pet = ee.ImageCollection(collectionName).filterDate(dS,dE).select(['pet'],['pet'])
         collection_pr = get_statistic(collection_pr,'pr',statistic,'value');
@@ -63,10 +68,24 @@ def get_images(template_values):
         collection = collection_pr.subtract(collection_pet);
     else:
         collection = ee.ImageCollection(collectionName).filterDate(dS,dE).select([var],[var])
+        '''
+        #Time Series
+        if points:
+            #FIX ME, can we get TS data for MultiPoint and oly have to query once?
+            #get data for each point
+            for p in pointsLonLatTuples:
+                point = ee.Feature.Point(p[0],p[1])
+                timeSeriesData, timeSeriesGraphData = get_time_series(collection,var,point)
+                data = {
+                    'LongLat':str(p[0]) +',' + str(p[1]),
+                    'timeSeriesData':timeSeriesData,
+                    'timeSeriesGraphData':timeSeriesGraphData
+                }
+                timeSeriesDataPoints.append(data)
+        '''
         #collection = filter_domain1(collection,dT, subdomain)
         collection = get_statistic(collection,var,statistic,aOV);
         collection = filter_domain2(collection,dT,subdomain)
-
     if  aOV in ['anom','clim']:
         collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV)
         TV['climatologyNotes'] = climatologyNotes
@@ -77,6 +96,7 @@ def get_images(template_values):
     extra_template_values = {
         'mapid': mapid['mapid'],
         'token': mapid['token'],
+        'timeSeriesDataPoints':timeSeriesDataPoints,
         'source': source,
         'product':product,
         'productLongName': collectionLongName,
