@@ -9,10 +9,10 @@
 	       <!----------------------------->
 	       <!--           VARIABLE      -->
 	       <!----------------------------->
-		  <!--<div class="basicvariable">-->
+          <!--<div class="basicvariable">-->
 			<div class="variableLandsat">
 		  		<b>Variable:</b><br> 
-				<select id="variableLandsat" name="basicvariable" class="basicvariable" width="95%">
+				<select id="basicvariable" name="basicvariable" class="basicvariable" width="95%">
 					{% for x,y in formVariableLandsat %}
 					    <option value="{{ x }}" {% if x == variable  %} selected {% endif %}>{{ y }}</option>
 					{% endfor %}
@@ -31,6 +31,13 @@
 		<!--</div>-->
 	</td>
 	</tr>
+    {% if form_error.basicvariable %}
+        <tr>
+        <td>
+        <div class="error">{{ form_error.basicvariable }}</div>
+        </td>
+        </tr>
+    {% endif %}
 	<tr>
 	<td>
 	       <!----------------------------->
@@ -39,10 +46,26 @@
 		  <b>Time Period</b><br>
 		   <div class="timeperiod">
 			  Start Date:
+<<<<<<< HEAD
 			  <input type="text" id="dateStart" value="{{ dateStart }}" name="dateStart">
+=======
+			  <input type="text" id="dateStart" value={{ dateStart }} name="dateStart">
+>>>>>>> 1bbe8a5fa1cd0e5b0a7fd2f005b89e1bfe7fd4fd
 			  <br>
+              {% if form_error.dateStart %}
+                <div class="error">{{ form_error.dateStart }}</div>
+                <br>
+              {% endif %} 
 			  End Date:
+<<<<<<< HEAD
 			  <input type="text" id="dateEnd" value="{{ dateEnd }}" name="dateEnd">
+=======
+			  <input type="text" id="dateEnd" value={{ dateEnd }} name="dateEnd">
+              {% if form_error.dateEnd %}
+                <br>
+                <div class="error">{{ form_error.dateEnd }}</div>
+              {% endif %}
+>>>>>>> 1bbe8a5fa1cd0e5b0a7fd2f005b89e1bfe7fd4fd
 		   </div>
 	  </td>
 	</tr>
@@ -59,14 +82,23 @@
 						    <option value="{{ x }}"{% if x == domainType  %} selected {% endif %}>{{ y }}</option>
 						{% endfor %}
 					</select>
+                    {% if form_error.domainType %}
+                        <br>
+                        <div class="error">{{ form_error.domainType }}</div>
+                    {% endif %}
 				 </div>
 			       <!----------------------------->
 			       <!--      SUBDOMAIN (Points,States)   -->
 			       <!----------------------------->
 				   <div class="subdomain">
-					<div class="states">
+                   {% if domainType == "states"%}
+                   <div class="states">
+                   {% else %}
+					<div class="states" style="display:none">
+                    {% endif %}
 						<br>	
 						  Select a State:
+
 						<select id="state" name="state" width="95%" class="textfeld"  
 							onclick="findAddress();return false"  
 							onchange="findAddress();return false" onfocus="">
@@ -74,23 +106,59 @@
 							    <option value="{{ x }}" {% if x == state  %} selected {% endif %}>{{ y }}</option>
 							{% endfor %}
 						</select>
+                        {% if form_error.state %}
+                            <br>
+                            <div class="error">{{ form_error.state }}</div>
+                        {% endif %}
 						<br>
 					</div>
+                    {% if domainType == "rectangle"%}
+                    <div class="rectangle">
+                    {% else %}
 					 <div class="rectangle" style="display:none">
+                     {% endif %}
                                                 <table><tr><td>
                                                  <img src="images/blackrectangle.png"></td>
                                                 <td>
                                                 NE corner:<input id="NELat" name="NELat" value="{{ NELat }}" size=8 />N, 
 							<input id="NELong" name="NELong" value="{{ NELong }}" size=8>E<br>
+                            {% if form_error.NELong %}
+                                <div class="error">{{ form_error.NELong }}</div>
+                                <br>
+                            {% endif %}
+                            {% if form_error.NELat %}
+                                <div class="error">{{ form_error.NELat }}</div>
+                                <br>
+                            {% endif %}
+                            
                                                 SW corner:<input id="SWLat" name="SWLat" value="{{ SWLat }}" size=8/>N, 
 							<input id="SWLong" name="SWLong" value="{{ SWLong }}" size=8/>E<br>
-                                                </td></tr></table>
-                                        </div>
+                            {% if form_error.SWLong %}
+                                <div class="error">{{ form_error.SWLong }}</div>
+                                <br>
+                            {% endif %}
+                            {% if form_error.NSWLat %}
+                                <div class="error">{{ form_error.SWLat }}</div>
+                                <br>            
+                            {% endif %}
+
+                     </td></tr></table>
+                     </div>
+                     {% if domainType == "points" %}
 					<div class="points">
-						<br>
-                                                  Select Point(s):<br>
-                                                  <img src="http://www.google.com/mapfiles/ms/micons/red.png">
-                                                  <input id="pointsLongLat" name="pointsLongLat" value="{{ pointsLongLat }}" />
+                    {% else %}
+                    <div class="points" style="display:none;">
+                    {% endif %}
+					  <br>
+                      Select Point(s):<br>
+                      <img src="http://www.google.com/mapfiles/ms/micons/red.png">
+                      <input id="pointsLongLat" name="pointsLongLat" value="{{ pointsLongLat }}" />
+                      {% if form_error.pointsLongLat %}
+                        <br>        
+                        <div class="error">{{ form_error.pointsLongLat }}</div>
+                        <br>            
+                      {% endif %}
+
                                                   <!--<input name="pointLatLong" value="{{ pointLong }},{{ pointLat }}" />-->
                                                   <!--<input id="pointLat" name="pointLatLong" value="{{ pointLat }}" size=5/>N,
                                                   <input id="pointLong" name="pointLatLong" value="{{ pointLong }}" size=5 />E-->
@@ -126,6 +194,11 @@
 					{{ y }}</option>
 				{% endfor %}
 			</select>
+            {% if form_error.opacity %}
+                <br>
+                <div class="error">{{ form_error.opacity }}</div>
+                <br>            
+            {% endif %}
 			<br>
 			<!--<input type="checkbox" id="colorbaroption" name="colorbaroption">Customize colorbar<br>-->
 
@@ -133,10 +206,23 @@
 				<br>
 				Colorbar Palette:
 				<input id="palette" name="palette" value="{{ palette }}" />
+                {% if form_error.palette %}
+                    <br>
+                    <div class="error">{{ form_error.palette }}</div>
+                {% endif %}
 				<br>
 				Colorbar Values:
-					 <input id="minColorbar" name="minColorbar" value="{{ minColorbar }}" size=4> to
-					 <input id="maxColorbar" name="maxColorbar" value="{{ maxColorbar }}" size=4 />			
+					 <input id="minColorbar" name="minColorbar" value="{{ minColorbar }}" size=4> to 
+                     {% if form_error.minColorbar %}
+                        <br>
+                        <div class="error">{{ form_error.minColorbar }}</div>
+                        <br>                 
+                     {% endif %}
+					 <input id="maxColorbar" name="maxColorbar" value="{{ maxColorbar }}" size=4 />
+                    {% if form_error.maxColorbar %}
+                        <br>
+                        <div class="error">{{ form_error.maxColorbar }}</div>
+                     {% endif %}	
 			</div>
 
 			<!--Show Info Icons:
@@ -147,7 +233,11 @@
 			<b>Enter URL for KML/KMZ Layer:</b><br>
 				<input id="kmlurl" name="kmlurl" value="{{ kmlurl }}" size="50" />
 			</div>
-
+            {% if form_error.kmlurl %}
+                <br>
+                <div class="error">{{ form_error.minColorbar }}</div>
+                <br>
+            {% endif %}
 
 		   </td>
 		   </tr>

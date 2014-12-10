@@ -447,8 +447,41 @@ var infos = svg.append("g")
 .enter()
 .append("g")
 .attr("transform",function(d,i){d.x = x(d.date); d.y = height/2; return "translate(" + d.x + "," + d.y + ")";})
-	
-
-
-
 </script>
+
+<!------------------------------------>
+<!--        DATE PICKER          -->
+<!------------------------------------>
+<script type="text/javascript">
+$(function(){
+    $( "#dateStart" ).datepicker({
+      //setDate: {{ dateStart }},
+      changeMonth: true,
+      changeYear: true,
+      numberOfMonths: 3,
+      //minDate: "01/01/1979",
+      minDate: "1979-01-01",
+      maxDate: "0",
+      dateFormat: "yy-mm-dd",
+      onClose: function( selectedDate ) {
+        $( "#dateEnd" ).datepicker( "option", "minDate", selectedDate );
+      }
+    }).datepicker('setDate', "{{ dateStart }}");
+
+    $( "#dateEnd" ).datepicker({
+      //defaultDate: {{ dateEnd }},
+      changeMonth: true,
+      changeYear: true,
+      numberOfMonths: 3,
+      minDate: "1979-01-01",
+      //minDate: "01/01/1979",
+      maxDate: "0",
+      dateFormat: "yy-mm-dd",
+      onClose: function( selectedDate ) {
+        $( "#dateStart" ).datepicker( "option", "maxDate", selectedDate );
+        }
+    }).datepicker('setDate', '{{ dateEnd }}');
+});
+</script>
+
+
