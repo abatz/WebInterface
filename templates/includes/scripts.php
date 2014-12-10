@@ -16,12 +16,10 @@
 	<script type="text/javascript" src="media/myjs/showLoadingImage.js"></script> <!-- PROGRESS BAR -->
 	<script type="text/javascript" src="media/myjs/zoomStates.js"></script> <!-- ZOOM TO STATE -->
 	<script type="text/javascript" src="/media/myjs/colorbar.js"></script><!--DYNAMIC COLORBAR-->
-	<!--<script type="text/javascript" src="/media/myjs/dateRangePicker.js"></script>--><!--CALENDAR DATE PICKER-->
-<!--
 	<script type="text/javascript"> 
 		$(function(){
 		    $( "#dateStart" ).datepicker({
-		      defaultDate: {{ dateStart }},
+		      //setDate: {{ dateStart }},
 		      changeMonth: true,
 		      changeYear: true,
 		      numberOfMonths: 3,
@@ -30,11 +28,11 @@
 		      maxDate: "0",
 		      dateFormat: "yy-mm-dd",
 		      onClose: function( selectedDate ) {
-			$( "#dateStart" ).datepicker( "option", "minDate", selectedDate );
+			$( "#dateEnd" ).datepicker( "option", "minDate", selectedDate );
 		      }
-		  }).datepicker('setDate', "01/01/1979");
+		  }).datepicker('setDate', "{{ dateStart }}");
 		 $( "#dateEnd" ).datepicker({
-		      defaultDate: {{ dateEnd }},
+		      //defaultDate: {{ dateEnd }},
 		      changeMonth: true,
 		      changeYear: true,
 		      numberOfMonths: 3,
@@ -43,12 +41,11 @@
 		      maxDate: "0",
 		      dateFormat: "yy-mm-dd",
 		      onClose: function( selectedDate ) {
-			$( "#dateEnd" ).datepicker( "option", "maxDate", selectedDate );
+			$( "#dateStart" ).datepicker( "option", "maxDate", selectedDate );
 			}
-		  }).datepicker('setDate', 'today');
+		  }).datepicker('setDate', '{{ dateEnd }}');
 		});
 	</script>
--->
 	<!------------------------------------>
         <!-- NOT USED YET -->
         <!------------------------------------>
@@ -112,9 +109,13 @@
 		/*********************************
 		*     COLORBAR                   *
 		*********************************/
-		palette=["#313695","#4575B4","#74ADD1","#ABD9E9","#E0F3F8","#FEE090","#FDAE61","#F46D43","#D73027","#A50026"]
-		//palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"  #this is GAE colorbar
-		myScale = d3.scale.quantile().range(palette).domain([{{ minColorbar }},{{ maxColorbar}}])
+		palette_string = "{{ palette }}"
+                palette_list = palette_string.split(",");
+		var myPalette = new Array();
+		for (var i = 0; i < palette_list.length; i++) {
+    			myPalette[i]="#"+palette_list[i];
+		}
+		myScale = d3.scale.quantile().range(myPalette).domain([{{ minColorbar }},{{ maxColorbar}}])
 		colorbar = Colorbar()
 		   .thickness(30)
 		    .barlength(400)

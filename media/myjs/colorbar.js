@@ -221,7 +221,7 @@ function Colorbar() {
 
 	    if (typeof(scale.quantiles) != "undefined") {
 		quantileScaleMarkers = scale.quantiles().concat( d3.extent(scale.domain()))
-		console.log(quantileScaleMarkers)
+		//console.log(quantileScaleMarkers)
 		colorAxisFunction.tickValues(quantileScaleMarkers)
 	    }
 

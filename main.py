@@ -49,8 +49,8 @@ class DroughtTool(webapp2.RequestHandler):
         self.pointLatLongX = self.pointLatLong.split(",")
         self.pointLong = float(self.pointLatLongX[0])
         self.pointLat = float(self.pointLatLongX[1])
-        self.dateStart = self.request.get('dateStart','2013-01-01')
-        self.dateEnd = self.request.get('dateEnd','2013-03-31')
+        self.dateStart = self.request.get('dateStart','2014-06-01')
+        self.dateEnd = self.request.get('dateEnd','2014-08-31')
         self.opacity = self.request.get('opacity',str(14*0.05))
         self.NELat = self.request.get('NELat',45)
         self.NELong= self.request.get('NELong',-95)
@@ -147,6 +147,13 @@ class DroughtTool(webapp2.RequestHandler):
         #initialize forms
         self.set_form_params()
         template_values = self.set_initial_template_values()
+
+        #pass palette used to d3 colorbar
+        #palette = template_values['palette'];
+        #palette_list = palette.split(',');
+        #for i in range(len(palette_list)):
+        #    paletteArray[i] = '#'+palette_list[i];  
+
         if self.request.arguments():
             template_values = collectionMethods.get_images(template_values)
         template = JINJA_ENVIRONMENT.get_template('droughttool.php')
