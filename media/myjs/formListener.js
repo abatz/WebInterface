@@ -208,41 +208,41 @@ $(function(){
                  jQuery('.points').hide();
                  jQuery('.polygon').hide();
                  jQuery('.states').show();   
-		 window.pointmarker.setVisible(false);
-		 jQuery('.rectangle').hide();
-		 rectangle.setMap(null);
+		         window.pointmarker.setVisible(false);
+		        jQuery('.rectangle').hide();
+		        rectangle.setMap(null);
 	
-		//hide until I figure out the state map
-		 window.statemarkerLayer.setMap(window.map);
-		 //window.statemarkerLayer.setMap(null);
+		        //hide until I figure out the state map
+		        window.statemarkerLayer.setMap(window.map);
+		        //window.statemarkerLayer.setMap(null);
 
             }
             else if(jQuery(this).val()=='points'){
                  jQuery('.points').show();
                  jQuery('.polygon').hide();
                  jQuery('.states').hide();
-		 window.pointmarker.setVisible(true);
-		 window.statemarkerLayer.setMap(null);
-		 jQuery('.rectangle').hide();
-		 rectangle.setMap(null);
+		        window.pointmarker.setVisible(true);
+		        window.statemarkerLayer.setMap(null);
+		        jQuery('.rectangle').hide();
+		        rectangle.setMap(null);
             }
             else if(jQuery(this).val()=='rectangle'){
                  jQuery('.points').hide();
                  jQuery('.polygon').show();
                  jQuery('.states').hide();
-		 window.pointmarker.setVisible(false);
-		 window.statemarkerLayer.setMap(null);
-		 jQuery('.rectangle').show();
-                 rectangle.setMap(window.map);
-	}
+		        window.pointmarker.setVisible(false);
+		        window.statemarkerLayer.setMap(null);
+		        jQuery('.rectangle').show();
+                rectangle.setMap(window.map);
+	       }
            else{
                  jQuery('.points').hide();
                  jQuery('.polygon').hide();
                  jQuery('.states').hide();
-		 window.pointmarker.setVisible(false);
-		 window.statemarkerLayer.setMap(null);
-		 jQuery('.rectangle').hide();
-		 rectangle.setMap(null);
+		        window.pointmarker.setVisible(false);
+		        window.statemarkerLayer.setMap(null);
+		        jQuery('.rectangle').hide();
+		        rectangle.setMap(null);
            }
     });
 

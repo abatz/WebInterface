@@ -1,4 +1,4 @@
-.points,.polygon,.states,.divisions,.stations,.hucs,.psas,.counties,.timefrequency,.timeavgoptions,.timerange,.dailyCalAll,.dailyCal,.monthlyCalAll,.monthlyCal,.gridtimespan,.landsattimespan,.modistimespan,.processtimeseries,.timeseriesoptions,.metric,.climatology,.statistic,.daytimechoice,.monthtimechoice,.displaytype,.basictimescale,.variableGrid{
+.divisions,.stations,.hucs,.psas,.counties,.timefrequency,.timeavgoptions,.timerange,.dailyCalAll,.dailyCal,.monthlyCalAll,.monthlyCal,.gridtimespan,.landsattimespan,.modistimespan,.processtimeseries,.timeseriesoptions,.metric,.climatology,.statistic,.daytimechoice,.monthtimechoice,.displaytype,.basictimescale,.variableGrid{
     display: none;
 }
 
@@ -67,3 +67,7 @@ white-space:nowrap;
   stroke-width: 1.5px;
 }
 
+.error {
+    color:red;
+    font-style:bold;
+}

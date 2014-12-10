@@ -50,7 +50,7 @@ def get_images(template_values):
         points = subdomain
         mapzoom=5
     elif(dT=='rectangle'):
-        subdomain = ee.Feature.Rectangle(SWLong,SWLat,NELong,NELat)
+        subdomain = ee.Feature.Rectangle(float(TV['SWLong']),float(TV['SWLat']),float(TV['NELong']),float(TV['NELat']))
         points = subdomain
         mapzoom=4
     else:
@@ -71,7 +71,7 @@ def get_images(template_values):
     else:
         collection = ee.ImageCollection(collectionName).filterDate(dS,dE).select([var],[var])
         #Time Series
-        if points:
+        if  dT == 'points' and points:
             #FIX ME, can we get TS data for MultiPoint and oly have to query once?
             #get data for each point
             for p in pointsLongLatTuples:
@@ -398,6 +398,11 @@ def filter_domain2(collection,domainType, subdomain):
 #   GET_COLORBAR
 #===========================================
 def get_colorbar(variable,anomOrValue):
+    #Set defaults to avoid error
+    palette = ""
+    minColorbar = 999
+    maxColorbar = 999
+    colorbarLabel = ''
     if(variable=='NDVI' or variable=='EVI'):
         if(anomOrValue=='anom'):
             palette="A50026,D73027,F46D43,FDAE61,FEE08B,FFFFBF,D9EF8B,A6D96A,66BD63,1A9850,006837"

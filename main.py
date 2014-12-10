@@ -12,7 +12,8 @@ import numpy
 import json
 import httplib2
 
-from forms import *
+#from forms import *
+import forms
 import collectionMethods
 from google.appengine.api import urlfetch
 urlfetch.set_default_fetch_deadline(60)
@@ -40,6 +41,7 @@ class DroughtTool(webapp2.RequestHandler):
     def set_form_params(self):
         #sets form  parameters
         self.ppost = 0
+        self.form_error = {}
         self.opacity = self.request.get('opacity',str(14*0.05))
         self.mapzoom = self.request.get('mapzoom',4)
         self.variable = self.request.get('basicvariable','pr')
@@ -82,6 +84,7 @@ class DroughtTool(webapp2.RequestHandler):
 
     def set_initial_template_values(self):
         template_values = {
+            'form_error': self.form_error,
             'opacity': self.opacity,
             'pointsLongLat':self.pointsLongLat,
             'NELat': self.NELat,
@@ -97,12 +100,12 @@ class DroughtTool(webapp2.RequestHandler):
             'dateStart': self.dateStart,
             'dateEnd': self.dateEnd,
             'anomOrValue': self.anomOrValue,
-            'formOpacity': formOpacity,
-            'formAnomOrValue': formAnomOrValue,
-            'formVariableGrid': formVariableGrid,
-            'formLocation': formLocation,
-            'formVariableLandsat': formVariableLandsat,
-            'formStates': formStates,
+            'formOpacity': forms.formOpacity,
+            'formAnomOrValue': forms.formAnomOrValue,
+            'formVariableGrid': forms.formVariableGrid,
+            'formLocation': forms.formLocation,
+            'formVariableLandsat': forms.formVariableLandsat,
+            'formStates': forms.formStates,
             'kmlurl': self.kmlurl,
             'kmloption': self.kmloption,
             'palette': self.palette,
@@ -124,7 +127,43 @@ class DroughtTool(webapp2.RequestHandler):
             template_values['kmlurl'] = self.kmlurl
         if self.kmloption:
             template_values['kmloption'] = self.kmloption
-        return template_values
+        #format template values to allow for differnet date formats etc...
+        #See format_ functions in forms.py
+        formatted_template_values = {}
+        for key, val in template_values.iteritems():
+            format_function_name = 'format_' + key
+            try:
+                format_function = getattr(forms,format_function_name)
+            except:
+                format_function = None
+
+            if format_function:
+                formatted_template_values[key] = format_function(val)
+            else:
+                formatted_template_values[key] = val
+        return formatted_template_values
+
+    def check_user_input(self, template_values):
+        #Checks for errors in user input
+        #See check_ functions in forms.py
+        #At first error encountered, spits out error message and exits
+        err = None; fieldID = None
+        for key, val in template_values.iteritems():
+            #do not check form items
+            if key[0:4] == 'form':
+                continue
+            check_function_name = 'check_' + key
+            try:
+                #See if a check function exists in forms.py
+                #If so, executed to check for form errors
+                check_function = getattr(forms,check_function_name)
+            except:
+                continue
+            err = check_function(val)
+            if err:
+                fieldID = key
+                return fieldID,err
+        return fieldID,err
     #############################################
     ##      GET                                ##
     #############################################
@@ -135,8 +174,13 @@ class DroughtTool(webapp2.RequestHandler):
         #initialize forms
         self.set_form_params()
         template_values = self.set_initial_template_values()
-        if self.request.arguments():
-            template_values = collectionMethods.get_images(template_values)
+        #Check user input for errors:
+        fieldID,input_err = self.check_user_input(template_values)
+        if not input_err:
+            if self.request.arguments():
+                template_values = collectionMethods.get_images(template_values)
+        else:
+            template_values['form_error'] = {fieldID:input_err}
         template = JINJA_ENVIRONMENT.get_template('droughttool.php')
         self.response.out.write(template.render(template_values))
     #############################################
@@ -146,10 +190,16 @@ class DroughtTool(webapp2.RequestHandler):
         ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
         self.set_form_params()
         template_values = self.set_initial_template_values()
-        #Override ppost default
-        template_values['ppost'] = 1
-        #get the collection and update template values
-        template_values = collectionMethods.get_images(template_values)
+        #Check user input for errors:
+        fieldID,input_err = self.check_user_input(template_values)
+        if not input_err:
+            #Override ppost default
+            template_values['ppost'] = 1
+            #get the collection and update template values
+            template_values = collectionMethods.get_images(template_values)
+        else:
+            #write error message to html
+            template_values['form_error'] = {fieldID:input_err}
         template = JINJA_ENVIRONMENT.get_template('droughttool.php')
         self.response.out.write(template.render(template_values))
 
