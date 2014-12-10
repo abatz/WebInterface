@@ -66,7 +66,7 @@ formLocation=[
 #============================
 #    formOpacity
 #============================
-formOpacity=[(str(x*0.05),str(1.0-x*0.05)) for x in range(20,-1,-1)]
+formOpacity=[(str(x*0.05),str((1.0-x*0.05)*100)+'%') for x in range(20,-1,-1)]
 
 #============================
 #   formDayStart/formDayEnd, formYearStart/formYearEnd
@@ -132,6 +132,7 @@ formStates=[
     ('Wyoming','Wyoming'),
 ]
 
+stateLong = {
     'Alaska':-152.2683,
     'Alabama':-86.8073,
     'Arizona':-92.3809,
@@ -530,4 +531,3 @@ def check_opacity(opacity):
     if str(opacity) not in options:
         return 'Opacity should be one of: %s. You entered: %s' %(','.join(options), str(opacity))
 
->>>>>>> 1bbe8a5fa1cd0e5b0a7fd2f005b89e1bfe7fd4fd

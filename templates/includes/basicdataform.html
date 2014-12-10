@@ -46,26 +46,18 @@
 		  <b>Time Period</b><br>
 		   <div class="timeperiod">
 			  Start Date:
-<<<<<<< HEAD
 			  <input type="text" id="dateStart" value="{{ dateStart }}" name="dateStart">
-=======
-			  <input type="text" id="dateStart" value={{ dateStart }} name="dateStart">
->>>>>>> 1bbe8a5fa1cd0e5b0a7fd2f005b89e1bfe7fd4fd
 			  <br>
               {% if form_error.dateStart %}
                 <div class="error">{{ form_error.dateStart }}</div>
                 <br>
               {% endif %} 
 			  End Date:
-<<<<<<< HEAD
 			  <input type="text" id="dateEnd" value="{{ dateEnd }}" name="dateEnd">
-=======
-			  <input type="text" id="dateEnd" value={{ dateEnd }} name="dateEnd">
               {% if form_error.dateEnd %}
                 <br>
                 <div class="error">{{ form_error.dateEnd }}</div>
               {% endif %}
->>>>>>> 1bbe8a5fa1cd0e5b0a7fd2f005b89e1bfe7fd4fd
 		   </div>
 	  </td>
 	</tr>
@@ -188,6 +180,7 @@
 		   <td>
 			<h4><p style="text-align:left"><u><span style='color:blue'> Map Options:</span></u></p></h4>
 			Transparency:
+		<!--<input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="14"/>-->
 			<select id="opacity" name="opacity" width="95%">
 				{% for x,y in formOpacity %}
 				    <option value="{{ x }}" {% if x == opacity  %} selected {% endif %}>

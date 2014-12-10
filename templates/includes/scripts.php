@@ -16,6 +16,7 @@
 	<script type="text/javascript" src="media/myjs/showLoadingImage.js"></script> <!-- PROGRESS BAR -->
 	<script type="text/javascript" src="media/myjs/zoomStates.js"></script> <!-- ZOOM TO STATE -->
 	<script type="text/javascript" src="/media/myjs/colorbar.js"></script><!--DYNAMIC COLORBAR-->
+	<!--<script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script>--><!--TRANSPARENCY SLIDER-->
 	<script type="text/javascript"> 
 		$(function(){
 		    $( "#dateStart" ).datepicker({
@@ -79,6 +80,14 @@
 	      *    INITIALIZE CALL
 	      *********************************/
 	      function initialize() {
+
+		// With JQuery
+$('#ex1').slider({
+	formatter: function(value) {
+		return 'Current value: ' + value;
+	}
+});
+
        		geocoder = new google.maps.Geocoder();
             var pointsLongLat = "{{ pointsLongLat}}";
             var pointLat = parseFloat(pointsLongLat.split(',')[1]);
