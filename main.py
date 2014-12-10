@@ -45,12 +45,18 @@ class DroughtTool(webapp2.RequestHandler):
         self.domainType = self.request.get('domainType','full')
         self.state = self.request.get('state','California')
         self.anomOrValue = self.request.get('anomOrValue','anom')
+<<<<<<< HEAD
         self.pointLatLong = self.request.get('pointLatLong','-112,42')
         self.pointLatLongX = self.pointLatLong.split(",")
         self.pointLong = float(self.pointLatLongX[0])
         self.pointLat = float(self.pointLatLongX[1])
         self.dateStart = self.request.get('dateStart','2014-06-01')
         self.dateEnd = self.request.get('dateEnd','2014-08-31')
+=======
+        self.pointsLongLat = self.request.get('pointsLongLat','-112,42')
+        self.dateStart = self.request.get('dateStart','2013-01-01')
+        self.dateEnd = self.request.get('dateEnd','2013-03-31')
+>>>>>>> 7d8040f5e20f1247e7cf704541d911f3ae64d343
         self.opacity = self.request.get('opacity',str(14*0.05))
         self.NELat = self.request.get('NELat',45)
         self.NELong= self.request.get('NELong',-95)
@@ -94,8 +100,7 @@ class DroughtTool(webapp2.RequestHandler):
     def set_initial_template_values(self):
         template_values = {
             'opacity': self.opacity,
-            'pointLat': self.pointLat,
-            'pointLong': self.pointLong,
+            'pointsLongLat':self.pointsLongLat,
             'NELat': self.NELat,
             'NELong': self.NELong,
             'SWLat': self.SWLat,

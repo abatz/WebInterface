@@ -13,14 +13,17 @@
 		     <td style="text-align:left">
 				#Variable: {{ variable }} <br>
 				#Data Source: {{ productLongName }} <br>
-				#Location: ({{ pointLat }} N,{{ pointLong }}E )<br>
+				#Locations: ({{ pointsLongLat }})<br>
 				#Time Period: {{ dateStart }} to  {{ dateEnd }}<br>
 				#Notes: {{ notes }}<br>
 				#<br>
 				#======================================================<br>
-				{% for x,y in timeSeriesData %}
-					{{ x }}, {{ y }} <br>
-				{% endfor %}
+                {% for DataDict in timeSeriesDataPoints  %}
+				    Location: {{DataDict.LongLat }}<br />
+                    {% for x,y in DataDict.timeSeriesData %}
+					    {{ x }}, {{ y }} <br>
+				    {% endfor %}<br />
+                {% endfor %}
 				#======================================================<br>
 		      </td>
 		</tr>

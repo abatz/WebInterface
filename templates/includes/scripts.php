@@ -58,7 +58,6 @@
 	 <script type="text/javascript">
  	      var MAPID = "{{ mapid }}";
 	      var TOKEN = "{{ token }}";
-
 	      var eeMapOptions = {
 			getTileUrl: function(tile, zoom) {
 				  var url = ['https://earthengine.googleapis.com/map',
@@ -81,7 +80,10 @@
 	      *********************************/
 	      function initialize() {
        		geocoder = new google.maps.Geocoder();
-		var myCenter = new google.maps.LatLng({{ pointLat }}, {{ pointLong }});
+            var pointsLongLat = "{{ pointsLongLat}}";
+            var pointLat = parseFloat(pointsLongLat.split(',')[1]);
+            var pointLong = parseFloat(pointsLongLat.split(',')[0]);
+		var myCenter = new google.maps.LatLng(pointLat, pointLong);
 		var myZoom ={{ mapzoom }}
 		var mapOptions = {
 		  center: myCenter,
@@ -106,6 +108,7 @@
                     document.getElementById('SWLat').value = sw.lat().toFixed(4);
                     document.getElementById('SWLong').value = sw.lng().toFixed(4);
                 }
+
 		/*********************************
 		*     COLORBAR                   *
 		*********************************/
@@ -126,6 +129,43 @@
 		/*********************************
 		*      POINTS                    *
 		*********************************/
+        var bounds = new google.maps.LatLngBounds();
+        var points_list = pointsLongLat.split(',');
+        var pLat,pLong
+        for (i=0;i<points_list.length - 1;i+=2){
+            pLat = points_list[i+1];
+            pLong = points_list[i];
+            var points_pre, points_post, new_point_list =[]
+            if (i > 0){
+                points_pre = points_list.splice(0,i);
+            }
+            else {
+                var points_pre =[];
+            }
+            if (i < points_list.length - 2) {
+                points_post = points_list.splice(i+2, point_list.length);
+            }
+            else {
+                points_post = [];
+            }
+               
+            window.pointmarker = new google.maps.Marker({
+                position:new google.maps.LatLng(parseFloat(pLat),parseFloat(pLong)),
+                map: map, 
+                draggable: true
+            });
+
+            google.maps.event.addListener(window.pointmarker, 'dragend', function(a) {
+                var div = document.createElement('div');
+                var longitude=a.latLng.lng().toFixed(4);
+                var latitude=a.latLng.lat().toFixed(4);
+                var new_point_list = points_pre.concat([String(longitude),String(latitude)]).concat(points_post);
+                document.getElementById('pointsLongLat').value = new_point_list.join();
+            });
+            window.pointmarker.setVisible(false);
+        }
+
+        /*
 		window.pointmarker = new google.maps.Marker({position:new google.maps.LatLng({{ pointLat }},{{ pointLong }}),
 			     map: map, draggable: true});
 
@@ -134,11 +174,14 @@
 			  var longitude=a.latLng.lng().toFixed(4)
 			  var latitude=a.latLng.lat().toFixed(4)
 			  document.getElementById('pointLatLong').value = longitude+','+latitude;
-			  /*document.getElementById('pointLat').value = latitude;
-			  document.getElementById('pointLong').value = longitude;*/
+			  document.getElementById('pointLat').value = latitude;
+			  document.getElementById('pointLong').value = longitude;
 		});
+        
 		window.pointmarker.setVisible(false); 
-
+        */
+        
+        /*
 		/*********************************
 		*      RECTANGLE                    *
 		*********************************/
