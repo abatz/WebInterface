@@ -13,6 +13,8 @@ $(function(){
         });
 	*/
 
+
+
 	jQuery('#minColorbar,#maxColorbar').keyup( function(){
 		console.log('changed')
                 colorbarsize = parseInt(document.getElementById('colorbarsize').value);

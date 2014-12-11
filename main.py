@@ -47,13 +47,18 @@ class DroughtTool(webapp2.RequestHandler):
         self.domainType = self.request.get('domainType','full')
         self.state = self.request.get('state','California')
         self.anomOrValue = self.request.get('anomOrValue','anom')
+
         #self.pointLatLong = self.request.get('pointLatLong','-112,42')
         #self.pointLatLongX = self.pointLatLong.split(",")
         #self.pointLong = float(self.pointLatLongX[0])
         #self.pointLat = float(self.pointLatLongX[1])
+
+        self.mapCenterLongLat = self.request.get('mapCenterLongLat','-112,42')
+
         self.dateStart = self.request.get('dateStart','2014-06-01')
         self.dateEnd = self.request.get('dateEnd','2014-08-31')
-        self.pointsLongLat = self.request.get('pointsLongLat','-112,42')
+
+        self.pointsLongLat = self.request.get('pointsLongLat','-112.0,42.0')
 
         self.opacity = self.request.get('opacity',str(14*0.05))
         self.NELat = self.request.get('NELat',45)
@@ -73,6 +78,7 @@ class DroughtTool(webapp2.RequestHandler):
             mz= 5;
         elif(self.domainType=='states'):
             mz= 6;
+	    mapCenterLongLat = stateLat[subdomain]+','+stateLon[subdomain]
 	else:
 	    mz=4;
         self.mapzoom = self.request.get('mapzoom',mz)
@@ -103,6 +109,7 @@ class DroughtTool(webapp2.RequestHandler):
             'form_error': self.form_error,
             'opacity': self.opacity,
             'pointsLongLat':self.pointsLongLat,
+            'mapCenterLongLat':self.mapCenterLongLat,
             'NELat': self.NELat,
             'NELong': self.NELong,
             'SWLat': self.SWLat,
@@ -116,6 +123,7 @@ class DroughtTool(webapp2.RequestHandler):
             'dateStart': self.dateStart,
             'dateEnd': self.dateEnd,
             'anomOrValue': self.anomOrValue,
+            'formMapZoom': forms.formMapZoom,
             'formPaletteMap': forms.formPaletteMap,
             'formPaletteSize': forms.formPaletteSize,
             'formOpacity': forms.formOpacity,

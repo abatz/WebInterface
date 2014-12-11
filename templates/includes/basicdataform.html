@@ -166,7 +166,6 @@
 			      <div class="error">{{ form_error.pointsLongLat }}</div>
 				<br>            
 			      {% endif %}
-			      <input id="pointLong" name="pointLatLong" value="{{ pointLong }}" size=5 />E-->
 			</div>
 	       </div><!--end subdomain-->
 
@@ -184,18 +183,11 @@
        <!---------------------------->
        <!--      MAP OPTIONS       -->
        <!----------------------------->
-	<div class="accordion" id="accordionMapOptions">
-	<div class ="accordion-group"
-	<div class="accordion-heading">
 	<tr>
 	   <td>
-		<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMapOptions" href="#collapseOptions">
 		<h4><p style="text-align:left"><u><span style='color:blue'> Map Options:</span></u></p></h4>
 	   </td>
 	</tr>
-	</div><!-- end accordion heading -->
-	</div><!-- end accordion group-->
-	<div id="collapseOptions" class="accordion-body collapse">
 	<tr>
 	    <td>
 	       <!----------------------------->
@@ -278,7 +270,33 @@
 		{% endif %}
 	   </td>
 	</tr>
-	</div> <!-- end of collapsing -->
+	<tr>
+	   <td>
+	       <!----------------------------->
+	       <!--      MAP OPTIONS          -->
+	       <!----------------------------->
+		<b>Map:</b> 
+		<div class="mapcenterzoom">
+		<li>Center: 
+			      <input id="mapCenterLongLat" name="mapCenterLongLat" value="{{ mapCenterLongLat }}" size=10/>
+		</li>
+		<li>Zoom: 
+		 <select id="mapzoom" name="mapzoom" width="95%">
+                        {% for x,y in formMapZoom %}
+                            <option value="{{ x }}" {% if x == mapzoom  %} selected {% endif %}>
+                                {{ y }}</option>
+                        {% endfor %}
+                </select>
+                {% if form_error.mapzoom %}
+                        <br>
+                        <div class="error">{{ form_error.mapzoom }}</div>
+                        <br>
+                {% endif %}
+			     <!-- <input id="mapzoom" name="mapzoom" value="{{ mapzoom }}" size=4 />-->
+		</li>
+		</div>
+	   </td>
+	</tr>
 	 {% if mapid %}
 	 <tr>
 	     <td>

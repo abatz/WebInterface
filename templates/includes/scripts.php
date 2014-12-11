@@ -86,23 +86,21 @@
 	      *********************************/
 	      function initialize() {
 
-		// With JQuery
-$('#ex1').slider({
-	formatter: function(value) {
-		return 'Current value: ' + value;
-	}
-});
-
        		geocoder = new google.maps.Geocoder();
-            var pointsLongLat = "{{ pointsLongLat}}";
-            var pointLat = parseFloat(pointsLongLat.split(',')[1]);
-            var pointLong = parseFloat(pointsLongLat.split(',')[0]);
-		var myCenter = new google.maps.LatLng(pointLat, pointLong);
+            var mapCenterLongLat = "{{ mapCenterLongLat}}";
+            var mapCenterLat = parseFloat(mapCenterLongLat.split(',')[1]);
+            var mapCenterLong = parseFloat(mapCenterLongLat.split(',')[0]);
+            //var pointsLongLat = "{{ pointsLongLat}}";
+            //var pointsLat = parseFloat(pointsLongLat.split(',')[1]);
+            //var pointsLong = parseFloat(pointsLongLat.split(',')[0]);
+
+		var myCenter = new google.maps.LatLng(mapCenterLat, mapCenterLong);
+		//var myCenter = new google.maps.LatLng(pointsLat, pointsLong);
 		var myZoom ={{ mapzoom }}
 		var mapOptions = {
 		  center: myCenter,
 		  zoom: myZoom,
-		  maxZoom: 10,
+		  maxZoom: 12,
 		  streetViewControl: false,
                   mapTypeControl: true,
                    navigationControl: true, 
@@ -176,6 +174,7 @@ $('#ex1').slider({
 		*      POINTS                    *
 		*********************************/
         var bounds = new google.maps.LatLngBounds();
+	var pointsLongLat = "{{ pointsLongLat}}";
         var points_list = pointsLongLat.split(',');
         var pLat,pLong
         for (i=0;i<points_list.length - 1;i+=2){

@@ -111,6 +111,11 @@ formPaletteMap=[
 #    formPaletteSize
 #============================
 formPaletteSize=[(str(x),str(x)) for x in range(3,10,1)]
+#============================
+#    formMapZoom
+#============================
+formMapZoom=[(str(x),str(x)) for x in range(2,13,1)]
+
 
 #============================
 #   formDayStart/formDayEnd, formYearStart/formYearEnd
