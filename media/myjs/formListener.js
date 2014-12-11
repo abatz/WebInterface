@@ -13,6 +13,46 @@ $(function(){
         });
 	*/
 
+	jQuery('#minColorbar,#maxColorbar').keyup( function(){
+		console.log('changed')
+                colorbarsize = parseInt(document.getElementById('colorbarsize').value);
+		colorbarmap = document.getElementById('colorbarmap').value;
+
+                minColorbar = document.getElementById('minColorbar').value
+                maxColorbar = document.getElementById('maxColorbar').value
+
+	 	console.log(colorbarmap)
+
+                myPalette=colorbrewer['GnBu'][colorbarsize];
+
+                myScale = d3.scale.quantile().range(myPalette).domain([minColorbar,maxColorbar]);
+                colorbar1 = Colorbar()
+                   .thickness(30)
+                    .barlength(300)
+                    .orient("horizontal")
+                    .scale(myScale)
+                colorbarObject1 = d3.select("#colorbar1").call(colorbar1)
+        });
+       jQuery('#colorbarmap, #colorbarsize').on('change', function(){
+		console.log('changed')
+                colorbarsize = parseInt(document.getElementById('colorbarsize').value);
+                colorbarmap = document.getElementById('colorbarmap').value;
+
+                minColorbar = document.getElementById('minColorbar').value;
+                maxColorbar = document.getElementById('maxColorbar').value;
+
+                myPalette=colorbrewer[colorbarmap][colorbarsize];
+
+                myScale = d3.scale.quantile().range(myPalette).domain([minColorbar,maxColorbar]);
+                colorbar1 = Colorbar()
+                   .thickness(30)
+                    .barlength(300)
+                    .orient("horizontal")
+                    .scale(myScale)
+                colorbarObject1 = d3.select("#colorbar1").call(colorbar1)
+        });
+
+
 
 	/*--------------------------------------------*/
 	/*       COLORBAR       		      */
@@ -27,12 +67,16 @@ $(function(){
 			minColorbar = -.1;
 			maxColorbar = .9;
 			palette="FFFFE5,F7FCB9,D9F0A3,ADDD8E,93D284,78C679,41AB5D,238443,006837,004529"
+			colorbarmap='Greens'
+			colorbarsize=10
 		}
            }else if(jQuery('.basicvariable').val()=='NDSI' || jQuery('.basicvariable').val()=='NDWI'){
 		 if(jQuery('.anomOrValue').val()=='anom'){
                         minColorbar = -.5;
                         maxColorbar = .5;
                         palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
+			colorbarmap='Blues'
+			colorbarsize=10
                 }else{
                         minColorbar = -.2;
                         maxColorbar = .7;
@@ -114,14 +158,14 @@ $(function(){
                 }
          }else if(jQuery('.basicvariable').val()=='pet'){
                  if(jQuery('.anomOrValue').val()=='anom'){
-                        minColorbar =0;
-                        maxColorbar = 200;
-                        palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
+                        minColorbar =80;
+                        maxColorbar =120;
+                        palette="053061,2166AC,4393C3,92C5DE,D1E5F0,F7F7F7,FDDBC7,F4A582,D6604D,B2182B,67001F"
                         unitColorbar='%';
                 }else{
-                        minColorbar = 0;
-                        maxColorbar = 400; //mm
-                        palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,41B6C4,1D91C0,225EA8,0C2C84"
+                        minColorbar = 300;
+                        maxColorbar = 800; //mm
+                        palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FFF6A7,FEE090,FDAE61,F46D43,D73027,A50026"
                 }
 	 }else if(jQuery('.basicvariable').val()=='wb'){
                  if(jQuery('.anomOrValue').val()=='anom'){
@@ -138,6 +182,8 @@ $(function(){
 	     document.getElementById('minColorbar').value =minColorbar;
 	     document.getElementById('maxColorbar').value =maxColorbar 
 	     document.getElementById('palette').value =palette;
+	     document.getElementById('colorbarmap').value =colorbarmap;
+	     document.getElementById('colorbarsize').value =colorbarsize;
         });
 
 

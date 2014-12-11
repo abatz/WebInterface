@@ -51,11 +51,9 @@ class DroughtTool(webapp2.RequestHandler):
         #self.pointLatLongX = self.pointLatLong.split(",")
         #self.pointLong = float(self.pointLatLongX[0])
         #self.pointLat = float(self.pointLatLongX[1])
-        #self.dateStart = self.request.get('dateStart','2014-06-01')
-        #self.dateEnd = self.request.get('dateEnd','2014-08-31')
+        self.dateStart = self.request.get('dateStart','2014-06-01')
+        self.dateEnd = self.request.get('dateEnd','2014-08-31')
         self.pointsLongLat = self.request.get('pointsLongLat','-112,42')
-        self.dateStart = self.request.get('dateStart','2013-01-01')
-        self.dateEnd = self.request.get('dateEnd','2013-03-31')
 
         self.opacity = self.request.get('opacity',str(14*0.05))
         self.NELat = self.request.get('NELat',45)
@@ -68,6 +66,8 @@ class DroughtTool(webapp2.RequestHandler):
         self.minColorbar = self.request.get('minColorbar', None)
         self.maxColorbar = self.request.get('maxColorbar', None)
         self.palette = self.request.get('palette', None)
+        self.colorbarmap = self.request.get('colorbarmap', 'GnBu')
+        self.colorbarsize = self.request.get('colorbarsize', '8')
 
 	if(self.domainType=='full'):
             mz= 5;
@@ -116,6 +116,8 @@ class DroughtTool(webapp2.RequestHandler):
             'dateStart': self.dateStart,
             'dateEnd': self.dateEnd,
             'anomOrValue': self.anomOrValue,
+            'formPaletteMap': forms.formPaletteMap,
+            'formPaletteSize': forms.formPaletteSize,
             'formOpacity': forms.formOpacity,
             'formAnomOrValue': forms.formAnomOrValue,
             'formVariableGrid': forms.formVariableGrid,
@@ -127,7 +129,13 @@ class DroughtTool(webapp2.RequestHandler):
             'palette': self.palette,
             'minColorbar': self.minColorbar,
             'maxColorbar': self.maxColorbar,
+            'colorbarmap': self.colorbarmap,
+            'colorbarsize': self.colorbarsize,
         }
+        if self.colorbarmap:
+            template_values['colorbarmap']= self.colorbarmap
+        if self.colorbarsize:
+            template_values['colorbarsize']= self.colorbarsize
         if self.palette:
             template_values['palette']= self.palette
         if self.minColorbar:

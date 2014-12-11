@@ -69,6 +69,50 @@ formLocation=[
 formOpacity=[(str(x*0.05),str((1.0-x*0.05)*100)+'%') for x in range(20,-1,-1)]
 
 #============================
+#    formPaletteMap
+#============================
+formPaletteMap=[
+    ('RdBu','Red-Blue'),
+    ('RdYlBu','Red-Yellow-Blue'),
+    ('RdYlGn','Red-Yellow-Green'),
+    ('Greens','Greens'),
+    ('Blues','Blues'),
+    ('Oranges','Oranges'),
+    ('Reds','Reds'),
+    ('YlGn','Yellow-Green'),
+    ('YlGnBu','Yellow-Green-Blue'),
+    ('GnBu','Green-Blue'),
+    ('BuGn','Blue-Green'),
+    ('PuBuGn','Purple-Blue-Green'),
+    ('PuBu','Purple-Blue'),
+    ('BuPu','Blue-Purple'),
+    ('RdPu','Red-Purple'),
+    ('PuRd','Purple-Red'),
+    ('OrRd','Orange-Red'),
+    ('YlOrRd','Yellow-Orange-Red'),
+    ('YlOrBr','Yellow-Orange-Brown'),
+    ('Purples','Purples'),
+    ('Greys','Greys'),
+    ('PuOr','Purple-Orange'),
+    ('BrBG','Brown-BG'),
+    ('PRGn','PR-Green'),
+    ('PiYG','Pi-YG'),
+    ('RdGy','Red-Grey'),
+    ('Spectral','Spectral'),
+    ('Accent','Accent'),
+    ('Dark2','Dark2'),
+    ('Pastel1','Pastel1'),
+    ('Pastel2','Pastel2'),
+    ('Set1','Set1'),
+    ('Set2','Set2'),
+]
+
+#============================
+#    formPaletteSize
+#============================
+formPaletteSize=[(str(x),str(x)) for x in range(3,10,1)]
+
+#============================
 #   formDayStart/formDayEnd, formYearStart/formYearEnd
 #===========================
 formDayStart=((str(x),x) for x in range(1,31+1))

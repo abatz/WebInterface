@@ -526,14 +526,14 @@ def get_colorbar(variable,anomOrValue):
             colorbarLabel=''
     elif(variable=='pet'): #mm
         if(anomOrValue=='anom'):
-            minColorbar=0
-            maxColorbar=200
-            palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
+            minColorbar=80
+            maxColorbar=120
+            palette="053061,2166AC,4393C3,92C5DE,D1E5F0,F7F7F7,FDDBC7,F4A582,D6604D,B2182B,67001F"
             colorbarLabel='Percent of climatology'
         else:
-            minColorbar=0
-            maxColorbar=400
-            palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,41B6C4,1D91C0,225EA8,0C2C84"
+            minColorbar=300
+            maxColorbar=800
+            palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FFF6A7,FEE090,FDAE61,F46D43,D73027,A50026"
             colorbarLabel='mm'
     elif(variable=='wb'): #mm
         if(anomOrValue=='anom'):

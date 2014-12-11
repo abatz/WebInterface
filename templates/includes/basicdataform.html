@@ -9,7 +9,6 @@
 	       <!----------------------------->
 	       <!--           VARIABLE      -->
 	       <!----------------------------->
-          <!--<div class="basicvariable">-->
 			<div class="variableLandsat">
 		  		<b>Variable:</b><br> 
 				<select id="basicvariable" name="basicvariable" class="basicvariable" width="95%">
@@ -28,13 +27,12 @@
 					{% endfor %}
 				</select>
 			</div>
-		<!--</div>-->
 	</td>
 	</tr>
-    {% if form_error.basicvariable %}
+    	{% if form_error.basicvariable %}
         <tr>
         <td>
-        <div class="error">{{ form_error.basicvariable }}</div>
+        	<div class="error">{{ form_error.basicvariable }}</div>
         </td>
         </tr>
     {% endif %}
@@ -187,11 +185,11 @@
 					{{ y }}</option>
 				{% endfor %}
 			</select>
-            {% if form_error.opacity %}
-                <br>
-                <div class="error">{{ form_error.opacity }}</div>
-                <br>            
-            {% endif %}
+		    {% if form_error.opacity %}
+			<br>
+			<div class="error">{{ form_error.opacity }}</div>
+			<br>            
+		    {% endif %}
 			<br>
 			<!--<input type="checkbox" id="colorbaroption" name="colorbaroption">Customize colorbar<br>-->
 
@@ -199,24 +197,43 @@
 				<br>
 				Colorbar Palette:
 				<input id="palette" name="palette" value="{{ palette }}" />
-                {% if form_error.palette %}
-                    <br>
-                    <div class="error">{{ form_error.palette }}</div>
-                {% endif %}
+				{% if form_error.palette %}
+				    <br>
+				    <div class="error">{{ form_error.palette }}</div>
+				{% endif %}
+			<br>
+			<div class="colorbar" style="visibility:hidden">
+    			<b>Color Palette:</b><br>
+				Colormap:
+                                <select id="colorbarmap" name="colorbarmap" class="colorbarmap" width="95%">
+                                        {% for x,y in formPaletteMap %}
+                                            <option value="{{ x }}" {% if x == colorbarmap  %} selected {% endif %}>{{ y }}</option>
+                                        {% endfor %}
+                                </select>
+				Number of Colors:
+                                <select id="colorbarsize" name="colorbarsize" class="colorbarsize" width="95%">
+                                        {% for x,y in formPaletteSize %}
+                                            <option value="{{ x }}" {% if x == colorbarsize  %} selected {% endif %}>{{ y }}</option>
+                                        {% endfor %}
+                                </select>
 				<br>
-				Colorbar Values:
-					 <input id="minColorbar" name="minColorbar" value="{{ minColorbar }}" size=4> to 
-                     {% if form_error.minColorbar %}
-                        <br>
-                        <div class="error">{{ form_error.minColorbar }}</div>
-                        <br>                 
-                     {% endif %}
-					 <input id="maxColorbar" name="maxColorbar" value="{{ maxColorbar }}" size=4 />
-                    {% if form_error.maxColorbar %}
-                        <br>
-                        <div class="error">{{ form_error.maxColorbar }}</div>
-                     {% endif %}	
+                                Colorbar Values:
+                                 <input id="minColorbar" name="minColorbar" value="{{ minColorbar }}" size=4> to
+                                     {% if form_error.minColorbar %}
+                                        <br>
+                                        <div class="error">{{ form_error.minColorbar }}</div>
+                                        <br>
+                                     {% endif %}
+                                  <input id="maxColorbar" name="maxColorbar" value="{{ maxColorbar }}" size=4 />
+                                    {% if form_error.maxColorbar %}
+                                        <br>
+                                        <div class="error">{{ form_error.maxColorbar }}</div>
+                                     {% endif %}
+                         
+                                <div id="colorbar1"><svg style="width:60px;height:30px;"></svg></div>
 			</div>
+			
+
 
 			<!--Show Info Icons:
 			<!--<input type="checkbox" id="infomarkers" class="infomarkers" value="infomarkers"></input>-->
