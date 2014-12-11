@@ -183,43 +183,47 @@
 		<tr>
 		   <td>
 			<h4><p style="text-align:left"><u><span style='color:blue'> Map Options:</span></u></p></h4>
+		       <!----------------------------->
+		       <!--      OPACITY            -->
+		       <!----------------------------->
 			Transparency:
-		<!--<input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="14"/>-->
+			<!--<input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="14"/>-->
 			<select id="opacity" name="opacity" width="95%">
 				{% for x,y in formOpacity %}
 				    <option value="{{ x }}" {% if x == opacity  %} selected {% endif %}>
 					{{ y }}</option>
 				{% endfor %}
 			</select>
-            {% if form_error.opacity %}
-                <br>
-                <div class="error">{{ form_error.opacity }}</div>
-                <br>            
-            {% endif %}
+			{% if form_error.opacity %}
+				<br>
+				<div class="error">{{ form_error.opacity }}</div>
+				<br>            
+			{% endif %}
 			<br>
-			<!--<input type="checkbox" id="colorbaroption" name="colorbaroption">Customize colorbar<br>-->
-
+		       <!----------------------------->
+		       <!--      COLORBAR            -->
+		       <!----------------------------->
 			<div class="colorbar">
 				<br>
 				Colorbar Palette:
 				<input id="palette" name="palette" value="{{ palette }}" />
-                {% if form_error.palette %}
-                    <br>
-                    <div class="error">{{ form_error.palette }}</div>
-                {% endif %}
+				{% if form_error.palette %}
+				    <br>
+				    <div class="error">{{ form_error.palette }}</div>
+				{% endif %}
 				<br>
 				Colorbar Values:
-					 <input id="minColorbar" name="minColorbar" value="{{ minColorbar }}" size=4> to 
-                     {% if form_error.minColorbar %}
-                        <br>
-                        <div class="error">{{ form_error.minColorbar }}</div>
-                        <br>                 
-                     {% endif %}
-					 <input id="maxColorbar" name="maxColorbar" value="{{ maxColorbar }}" size=4 />
-                    {% if form_error.maxColorbar %}
-                        <br>
-                        <div class="error">{{ form_error.maxColorbar }}</div>
-                     {% endif %}	
+				 <input id="minColorbar" name="minColorbar" value="{{ minColorbar }}" size=4> to 
+				     {% if form_error.minColorbar %}
+					<br>
+					<div class="error">{{ form_error.minColorbar }}</div>
+					<br>                 
+				     {% endif %}
+				 <input id="maxColorbar" name="maxColorbar" value="{{ maxColorbar }}" size=4 />
+				    {% if form_error.maxColorbar %}
+					<br>
+					<div class="error">{{ form_error.maxColorbar }}</div>
+				     {% endif %}	
 			</div>
 
 			<!--Show Info Icons:
