@@ -8,6 +8,104 @@ import json
 #   GET_IMAGES
 #===========================================
 def get_images(template_values):
+    from forms import stateLat, stateLong
+
+    TV = {}
+    for key, val in template_values.iteritems():
+        TV[key] = val
+    var = TV['variable'];aOV = TV['anomOrValue']
+    dT = TV['domainType']
+    dS = TV['dateStart']; dE = TV['dateEnd']
+    pointsLongLat = str(TV['pointsLongLat']) #string of comma separates llon,lat pairs
+    pointsLongLatList = pointsLongLat.split(',')
+    pointsLongLatTuples = [[float(pointsLongLatList[i]),float(pointsLongLatList[i+1])] for i in range(0,len(pointsLongLatList) - 1,2)]
+    #get map palette options
+    palette,minColorbar,maxColorbar,colorbarLabel=get_colorbar(str(var),str(aOV))
+    #Override max/minColorbar if user entered custom value
+    if 'minColorbar' in template_values.keys():
+        minColorbar = template_values['minColorbar']
+    if 'maxColorbar' in template_values.keys():
+        maxColorbar = template_values['maxColorbar']
+    if 'palette' in template_values.keys():
+        palette = template_values['palette']
+    #get collection
+    collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(var);
+    #Set title
+    title = statistic + ' ' + variableShortName;
+    if(aOV == 'anom'):
+        title = title + ' Anomaly from Climatology ';
+    #Set source, domain, subdomain
+    source = collectionLongName + ' from ' + dS + '-' + dE + ''
+    points = None
+    subdomain = ee.Feature.MultiPoint(pointsLongLatTuples)
+    if(dT == 'states'):
+        subdomain = template_values['state']
+        mapzoom=4; #would like to zoom in on that state
+    elif(dT == 'full' and product == 'modis'):
+        points = subdomain
+        mapzoom=4
+    elif(dT=='full' and product=='gridded'):
+        points = subdomain
+        mapzoom=5
+    elif(dT=='rectangle'):
+        subdomain = ee.Feature.Rectangle(float(TV['SWLong']),float(TV['SWLat']),float(TV['NELong']),float(TV['NELat']))
+        points = subdomain
+        mapzoom=4
+    else:
+        points = subdomain
+        mapzoom=4
+    timeSeriesData = [];timeSeriesGraphData =[]
+    mapid = {'mapid':[],'token':[]}
+    if var == 'wb':
+        #FIX ME: implement time series for wb
+        collection_pr = ee.ImageCollection(collectionName).filterDate(dS,dE).select(['pr'],['pr'])
+        collection_pet = ee.ImageCollection(collectionName).filterDate(dS,dE).select(['pet'],['pet'])
+        collection_pr = get_statistic(collection_pr,'pr',statistic,'value');
+        collection_pet = get_statistic(collection_pet,'pet',statistic,'value')
+        collection_pr =filter_domain2(collection_pr,dT,subdomain)
+        collection_pet =filter_domain2(collection_pet,dT,subdomain)
+        #form water balance
+        collection = collection_pr.subtract(collection_pet)
+        if  aOV in ['anom','clim']:
+            collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV)
+            TV['climatologyNotes'] = climatologyNotes
+        #the earth engine call
+        mapid = map_collection(collection,TV['opacity'],palette,minColorbar,maxColorbar)
+    else:
+        collection = ee.ImageCollection(collectionName).filterDate(dS,dE).select([var],[var])
+        #Time Series
+        if  dT == 'points' and points:
+            timeSeriesData, timeSeriesGraphData = get_time_series(collection,var,pointsLongLatTuples)
+        #collection = filter_domain1(collection,dT, subdomain)
+        else:
+            collection = get_statistic(collection,var,statistic,aOV);
+            collection = filter_domain2(collection,dT,subdomain)
+            if  aOV in ['anom','clim']:
+                collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV)
+                TV['climatologyNotes'] = climatologyNotes
+            #the earth engine call
+            mapid = map_collection(collection,TV['opacity'],palette,minColorbar,maxColorbar)
+    #Update template values
+    extra_template_values = {
+        'source': source,
+        'product':product,
+        'productLongName': collectionLongName,
+        'title': title,
+        'palette': palette,
+        'colorbarLabel': colorbarLabel,
+        'minColorbar': minColorbar,
+        'maxColorbar': maxColorbar
+    }
+    if mapid and mapid['mapid'] and mapid['token']:
+        extra_template_values['mapid'] = mapid['mapid']
+        extra_template_values['token'] = mapid['token']
+    elif timeSeriesGraphData and timeSeriesData:
+        extra_template_values['timeSeriesData'] = timeSeriesData
+        extra_template_values['timeSeriesGraphData'] = timeSeriesGraphData
+    TV.update(extra_template_values)
+    return TV
+'''
+def get_images(template_values):
     from forms import stateLat, stateLong;
 
     TV = {}
@@ -115,7 +213,7 @@ def get_images(template_values):
     }
     TV.update(extra_template_values)
     return TV
-
+'''
 #===========================================
 #    GET_COLLECTION
 #===========================================
@@ -233,6 +331,63 @@ def get_collection(variable):
 #===========================================
 #    GET_TIMESERIES
 #===========================================
+def get_time_series(collection, variable, pointsLongLatTuples):
+    ######################################################
+    #### Data in list format
+    ######################################################
+    timeSeriesData = []
+    timeSeriesGraphData = []
+    points = ee.Feature.MultiPoint(pointsLongLatTuples)
+    dataList = collection.getRegion(points,1).getInfo()
+    '''
+    try:
+        dataList = collection.getRegion(points,1).getInfo()
+    except:
+        return timeSeriesData
+    '''
+    dataList.pop(0) #remove first row of list ["id","longitude","latitude","time",variable]
+    ######################################################
+    #### Format data for figure and data tabs
+    #### Ech point gets it's own dictionary
+    #### timeSeriesData = {LongLat:ll_string, Data:[[Date1,val1],[Date2, val2]]}
+    ######################################################
+    #Format data
+    for idx, data in enumerate(dataList):
+        lon = round(data[1],4);lat = round(data[2],4)
+        if idx == 0:
+            #To keep track of when data point changes
+            lon_init = lon;lat_init = lat
+            data_dict = {}
+            data_dict_graph = {}
+        else:
+            if abs(float(lon) - float(lon_init)) >0.0001 or abs(float(lat) - float(lat_init)) > 0.0001:
+                #New data point
+                lon_init = lon;lat_init = lat
+                timeSeriesData.append(data_dict)
+                timeSeriesGraphData.append(data_dict_graph)
+                data_dict = {};data_dict_graph = {}
+        if not data_dict:
+            data_dict = {
+                'LongLat': str(lon) + ',' + str(lat),
+                'Data': []
+            }
+            data_dict_graph = {
+                'LongLat': str(lon) + ',' + str(lat),
+                'Data': []
+            }
+        date_string = str(data[0])
+        time = int(data[3])
+        try:
+            date_string = date_string[0:4] + '-' + date_string[4:6] + '-' + date_string[6:8]
+        except:
+            pass
+        val = data[4]
+        data_dict['Data'].append([date_string,val])
+        data_dict_graph['Data'].append([time,val])
+    timeSeriesData.append(data_dict)
+    timeSeriesGraphData.append(data_dict_graph)
+    return timeSeriesData,timeSeriesGraphData
+'''
 def get_time_series(collection, variable, point):
     ######################################################
     #### Data in list format
@@ -270,7 +425,6 @@ def get_time_series(collection, variable, point):
     return timeSeriesData, timeSeriesGraphData
 
 
-'''
 def callTimeseries(collection,variable,domainType,point):
     if(domainType=='points'):
         timeSeriesData=get_timeseries(collection,point,variable)
