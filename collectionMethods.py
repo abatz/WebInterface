@@ -442,14 +442,13 @@ def get_colorbar(variable,anomOrValue):
             minColorbar=0
             maxColorbar=400
             palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,41B6C4,1D91C0,225EA8,0C2C84"
-            #colorbarLabel='mm'
-            colorbarLabel=''
+            colorbarLabel='mm'
     elif(variable=='tmmx' or variable=='tmmn'):
         if(anomOrValue=='anom'):
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
             minColorbar=-5
             maxColorbar=5
-            colorbarLabel='Difference from climatology'
+            colorbarLabel='Difference from climatology (deg C)'
         elif(variable=='tmmx'):
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
             minColorbar=-20
@@ -474,7 +473,7 @@ def get_colorbar(variable,anomOrValue):
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
             minColorbar=0
             maxColorbar=100
-            colorbarLabel='%'
+            colorbarLabel='Percent'
         elif(variable=='rmax'):
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
             minColorbar=0
@@ -485,7 +484,7 @@ def get_colorbar(variable,anomOrValue):
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
             minColorbar=-25
             maxColorbar=25
-            colorbarLabel='Difference from climatology'
+            colorbarLabel='Difference from climatology (W/m2)'
         else:
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
             minColorbar=100
@@ -496,7 +495,7 @@ def get_colorbar(variable,anomOrValue):
             palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
             minColorbar=-2.5
             maxColorbar=2.5
-            colorbarLabel='Difference from climatology'
+            colorbarLabel='Difference from climatology (m/s)'
         else:
             palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,5DC2C1,41B6C4,1D91C0,225EA8,253494,081D58"
             minColorbar=0
@@ -515,9 +514,9 @@ def get_colorbar(variable,anomOrValue):
             colorbarLabel='kg / kg'
     elif(variable=='erc'):
         if(anomOrValue=='anom'):
-            minColorbar=0
-            maxColorbar=200
-            palette="FFFFFF,FFFFCC,FFEDA0,FED976,FEB24C,FEA143,FD8D3C,FC4E2A,E31A1C,BD0026,800026,000000"
+            minColorbar=50
+            maxColorbar=150
+            palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
             colorbarLabel='Percent difference from climatology'
         else:
             palette="FFFFFF,FFFFCC,FFEDA0,FED976,FEB24C,FD8D3C,FC4E2A,E31A1C,BD0026,800026,000000"

@@ -33,13 +33,13 @@
 			</div>
 	</td>
 	</tr>
-    	{% if form_error.basicvariable %}
-        <tr>
-        <td>
-        	<div class="error">{{ form_error.basicvariable }}</div>
-        </td>
-        </tr>
-    {% endif %}
+		{% if form_error.basicvariable %}
+		<tr>
+			<td>
+				<div class="error">{{ form_error.basicvariable }}</div>
+			</td>
+        	</tr>
+    		{% endif %}
 	<tr>
 	<td>
 	       <!----------------------------->
@@ -50,232 +50,240 @@
 			  Start Date:
 			  <input type="text" id="dateStart" value="{{ dateStart }}" name="dateStart">
 			  <br>
-              {% if form_error.dateStart %}
-                <div class="error">{{ form_error.dateStart }}</div>
-                <br>
-              {% endif %} 
+			  {% if form_error.dateStart %}
+				<div class="error">{{ form_error.dateStart }}</div>
+				<br>
+			  {% endif %} 
 			  End Date:
 			  <input type="text" id="dateEnd" value="{{ dateEnd }}" name="dateEnd">
-              {% if form_error.dateEnd %}
-                <br>
-                <div class="error">{{ form_error.dateEnd }}</div>
-              {% endif %}
+			   {% if form_error.dateEnd %}
+				<br>
+				<div class="error">{{ form_error.dateEnd }}</div>
+			   {% endif %}
 		   </div>
 	  </td>
 	</tr>
 	 <tr>
            <td>
-		       <!----------------------------->
-		       <!--      DOMAIN             -->
-		       <!----------------------------->
-				  <b>Domain:</b><br>
-				   <div class="domainType">
-					Select Domain: 
-					<select id="domainType" name="domainType" width="95%">
-						{% for x,y in formLocation %}
-						    <option value="{{ x }}"{% if x == domainType  %} selected {% endif %}>{{ y }}</option>
-						{% endfor %}
-					</select>
-                    {% if form_error.domainType %}
-                        <br>
-                        <div class="error">{{ form_error.domainType }}</div>
-                    {% endif %}
-				 </div>
-			       <!----------------------------->
-			       <!--      SUBDOMAIN (Points,States)   -->
-			       <!----------------------------->
-				   <div class="subdomain">
-                   {% if domainType == "states"%}
-                   <div class="states">
-                   {% else %}
-					<div class="states" style="display:none">
-                    {% endif %}
-						<br>	
-						  Select a State:
-
-						<select id="state" name="state" width="95%" class="textfeld"  
-							onclick="findAddress();return false"  
-							onchange="findAddress();return false" onfocus="">
-							{% for x,y in formStates %}
-							    <option value="{{ x }}" {% if x == state  %} selected {% endif %}>{{ y }}</option>
-							{% endfor %}
-						</select>
-                        {% if form_error.state %}
-                            <br>
-                            <div class="error">{{ form_error.state }}</div>
-                        {% endif %}
-						<br>
-					</div>
-                    {% if domainType == "rectangle"%}
-                    <div class="rectangle">
-                    {% else %}
-					 <div class="rectangle" style="display:none">
-                     {% endif %}
-                                                <table><tr><td>
-                                                 <img src="images/blackrectangle.png"></td>
-                                                <td>
-                                                NE corner:<input id="NELat" name="NELat" value="{{ NELat }}" size=8 />N, 
-							<input id="NELong" name="NELong" value="{{ NELong }}" size=8>E<br>
-                            {% if form_error.NELong %}
-                                <div class="error">{{ form_error.NELong }}</div>
-                                <br>
-                            {% endif %}
-                            {% if form_error.NELat %}
-                                <div class="error">{{ form_error.NELat }}</div>
-                                <br>
-                            {% endif %}
-                            
-                                                SW corner:<input id="SWLat" name="SWLat" value="{{ SWLat }}" size=8/>N, 
-							<input id="SWLong" name="SWLong" value="{{ SWLong }}" size=8/>E<br>
-                            {% if form_error.SWLong %}
-                                <div class="error">{{ form_error.SWLong }}</div>
-                                <br>
-                            {% endif %}
-                            {% if form_error.NSWLat %}
-                                <div class="error">{{ form_error.SWLat }}</div>
-                                <br>            
-                            {% endif %}
-
-                     </td></tr></table>
-                     </div>
-                     {% if domainType == "points" %}
-					<div class="points">
-                    {% else %}
-                    <div class="points" style="display:none;">
-                    {% endif %}
-					  <br>
-                      Select Point(s):<br>
-                      <img src="http://www.google.com/mapfiles/ms/micons/red.png">
-                      <input id="pointsLongLat" name="pointsLongLat" value="{{ pointsLongLat }}" />
-                      {% if form_error.pointsLongLat %}
-                        <br>        
-                        <div class="error">{{ form_error.pointsLongLat }}</div>
-                        <br>            
-                      {% endif %}
-
-                                                  <!--<input name="pointLatLong" value="{{ pointLong }},{{ pointLat }}" />-->
-                                                  <!--<input id="pointLat" name="pointLatLong" value="{{ pointLat }}" size=5/>N,
-                                                  <input id="pointLong" name="pointLatLong" value="{{ pointLong }}" size=5 />E-->
-					</div>
-					<!--<div class="polygon">
-						  Enter a Polygon (Lon(E), Lat(N)):
-						<textarea rows="5" cols="30" id="polygon" name="polygon" >{{ polygon }}</textarea>
-						<br>
-					</div>
-					-->
-			     </div>
-				<br>
-		       <!----------------------------->
-		       <!--      BUTTON            -->
-		       <!----------------------------->
-				   <input type="submit" class="btn btn-large ptn-primary pull-right" value="MAP" 
-						form="form_map"/>
-					 <div id="loading" style="display:none;">
-						<img id="loading-image" src="images/loading_image.gif" alt="Loading..." />
-					</div> 
-	  </td>
-	</tr>
 	       <!----------------------------->
-	       <!--      OUTPUT AREA       -->
+	       <!--      DOMAIN             -->
 	       <!----------------------------->
-		<tr>
-		   <td>
-			<h4><p style="text-align:left"><u><span style='color:blue'> Map Options:</span></u></p></h4>
-		       <!----------------------------->
-		       <!--      OPACITY            -->
-		       <!----------------------------->
-			Transparency:
-			<!--<input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="14"/>-->
-			<select id="opacity" name="opacity" width="95%">
-				{% for x,y in formOpacity %}
-				    <option value="{{ x }}" {% if x == opacity  %} selected {% endif %}>
-					{{ y }}</option>
+	  	<b>Domain:</b><br>
+		   <div class="domainType">
+			Select Domain: 
+			<select id="domainType" name="domainType" width="95%">
+				{% for x,y in formLocation %}
+				    <option value="{{ x }}"{% if x == domainType  %} selected {% endif %}>{{ y }}</option>
 				{% endfor %}
 			</select>
-			{% if form_error.opacity %}
+			{% if form_error.domainType %}
 				<br>
-				<div class="error">{{ form_error.opacity }}</div>
-				<br>            
+				<div class="error">{{ form_error.domainType }}</div>
 			{% endif %}
-			<br>
+		  </div>
+	       <!----------------------------->
+	       <!--      SUBDOMAIN 	    -->
+	       <!----------------------------->
+	  	<div class="subdomain">
 		       <!----------------------------->
-		       <!--      COLORBAR            -->
+		       <!--      STATES             -->
 		       <!----------------------------->
-			<div class="colorbar">
-				<br>
-				Colorbar Palette:
-				<input id="palette" name="palette" value="{{ palette }}" />
-				{% if form_error.palette %}
+		  	{% if domainType == "states"%}
+			<div class="states">
+		   	{% else %}
+			<div class="states" style="display:none">
+			{% endif %}
+				<br>	
+				 Select a State:
+				 <select id="state" name="state" width="95%" class="textfeld"  
+					onclick="findAddress();return false"  
+					onchange="findAddress();return false" onfocus="">
+					{% for x,y in formStates %}
+					    <option value="{{ x }}" {% if x == state  %} selected {% endif %}>{{ y }}</option>
+					{% endfor %}
+				</select>
+				{% if form_error.state %}
 				    <br>
-				    <div class="error">{{ form_error.palette }}</div>
+				    <div class="error">{{ form_error.state }}</div>
 				{% endif %}
-			<br>
-			<div class="colorbar" style="visibility:hidden">
-    			<b>Color Palette:</b><br>
-				Colormap:
-                                <select id="colorbarmap" name="colorbarmap" class="colorbarmap" width="95%">
-                                        {% for x,y in formPaletteMap %}
-                                            <option value="{{ x }}" {% if x == colorbarmap  %} selected {% endif %}>{{ y }}</option>
-                                        {% endfor %}
-                                </select>
-				Number of Colors:
-                                <select id="colorbarsize" name="colorbarsize" class="colorbarsize" width="95%">
-                                        {% for x,y in formPaletteSize %}
-                                            <option value="{{ x }}" {% if x == colorbarsize  %} selected {% endif %}>{{ y }}</option>
-                                        {% endfor %}
-                                </select>
 				<br>
-                                Colorbar Values:
-                                 <input id="minColorbar" name="minColorbar" value="{{ minColorbar }}" size=4> to
-                                     {% if form_error.minColorbar %}
-                                        <br>
-                                        <div class="error">{{ form_error.minColorbar }}</div>
-                                        <br>
-                                     {% endif %}
-                                  <input id="maxColorbar" name="maxColorbar" value="{{ maxColorbar }}" size=4 />
-                                    {% if form_error.maxColorbar %}
-                                        <br>
-                                        <div class="error">{{ form_error.maxColorbar }}</div>
-                                     {% endif %}
-                         
-                                <div id="colorbar1"><svg style="width:60px;height:30px;"></svg></div>
-				<br>
-				Colorbar Values:
-				 <input id="minColorbar" name="minColorbar" value="{{ minColorbar }}" size=4> to 
-				     {% if form_error.minColorbar %}
-					<br>
-					<div class="error">{{ form_error.minColorbar }}</div>
-					<br>                 
-				     {% endif %}
-				 <input id="maxColorbar" name="maxColorbar" value="{{ maxColorbar }}" size=4 />
-				    {% if form_error.maxColorbar %}
-					<br>
-					<div class="error">{{ form_error.maxColorbar }}</div>
-				     {% endif %}	
->>>>>>> optgroup
 			</div>
-			
+		       <!----------------------------->
+		       <!--      RECTANGLE          -->
+		       <!----------------------------->
+		 	{% if domainType == "rectangle"%}
+			<div class="rectangle">
+			{% else %}
+			<div class="rectangle" style="display:none">
+			{% endif %}
+			  	<br>Select a Rectangle:
+				<table>
+				    <tr>
+					<td>
+					 	<img src="images/blackrectangle.png">
+					</td>
+					<td>
+						NE corner:<input id="NELat" name="NELat" value="{{ NELat }}" size=8 />N, 
+						<input id="NELong" name="NELong" value="{{ NELong }}" size=8>E<br>
+						{% if form_error.NELong %}
+							<div class="error">{{ form_error.NELong }}</div>
+							<br>
+						{% endif %}
+						{% if form_error.NELat %}
+							<div class="error">{{ form_error.NELat }}</div>
+							<br>
+						{% endif %}
+		    
+						SW corner:<input id="SWLat" name="SWLat" value="{{ SWLat }}" size=8/>N, 
+							<input id="SWLong" name="SWLong" value="{{ SWLong }}" size=8/>E<br>
+						{% if form_error.SWLong %}
+							<div class="error">{{ form_error.SWLong }}</div>
+							<br>
+					    	{% endif %}
+						{% if form_error.NSWLat %}
+							<div class="error">{{ form_error.SWLat }}</div>
+							<br>            
+						{% endif %}
 
+				     </td>
+			        </tr>
+    			      </table>
+		 	</div>
+		       <!----------------------------->
+		       <!--      POINT              -->
+		       <!----------------------------->
+		        {% if domainType == "points" %}
+			<div class="points">
+		        {% else %}
+		    	<div class="points" style="display:none;">
+		    	{% endif %}
+		  	      <br>
+			      Select Point(s):<br>
+			      <img src="http://www.google.com/mapfiles/ms/micons/red.png">
+			      <input id="pointsLongLat" name="pointsLongLat" value="{{ pointsLongLat }}" />
+			      {% if form_error.pointsLongLat %}
+			      <br>        
+			      <div class="error">{{ form_error.pointsLongLat }}</div>
+				<br>            
+			      {% endif %}
+			      <input id="pointLong" name="pointLatLong" value="{{ pointLong }}" size=5 />E-->
+			</div>
+	       </div><!--end subdomain-->
 
-			<!--Show Info Icons:
-			<!--<input type="checkbox" id="infomarkers" class="infomarkers" value="infomarkers"></input>-->
+		<br>
+	       <!----------------------------->
+	       <!--      BUTTON            -->
+	       <!----------------------------->
+		<input type="submit" class="btn btn-large ptn-primary pull-right" value="MAP" 
+			form="form_map"/>
+		 <div id="loading" style="display:none;">
+			<img id="loading-image" src="images/loading_image.gif" alt="Loading..." />
+		</div> 
+	  </td>
+	</tr>
+       <!---------------------------->
+       <!--      MAP OPTIONS       -->
+       <!----------------------------->
+	<div class="accordion" id="accordionMapOptions">
+	<div class ="accordion-group"
+	<div class="accordion-heading">
+	<tr>
+	   <td>
+		<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMapOptions" href="#collapseOptions">
+		<h4><p style="text-align:left"><u><span style='color:blue'> Map Options:</span></u></p></h4>
+	   </td>
+	</tr>
+	</div><!-- end accordion heading -->
+	</div><!-- end accordion group-->
+	<div id="collapseOptions" class="accordion-body collapse">
+	<tr>
+	    <td>
+	       <!----------------------------->
+	       <!--      OPACITY            -->
+	       <!----------------------------->
+		<b>Transparency:</b>
+		<!--<input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="14"/>-->
+		<select id="opacity" name="opacity" width="95%">
+			{% for x,y in formOpacity %}
+			    <option value="{{ x }}" {% if x == opacity  %} selected {% endif %}>
+				{{ y }}</option>
+			{% endfor %}
+		</select>
+		{% if form_error.opacity %}
 			<br>
-			<!--<input type="checkbox" id="kmloption" name="kmloption">Add kml/kmz layer to map<br>-->
-			<div class="kmlurl">
+			<div class="error">{{ form_error.opacity }}</div>
+			<br>            
+		{% endif %}
+	   </td>
+	</tr>
+	<tr>
+	    <td>
+	       <!----------------------------->
+	       <!--      COLORBAR            -->
+	       <!----------------------------->
+		 <div class="colorbar">
+                        <b>Colorbar:</b><br>
+                        <li>Colorbar Palette:
+                        <input id="palette" name="palette" value="{{ palette }}" /></li>
+			 <li>Colorbar Values:
+                         <input id="minColorbar" name="minColorbar" value="{{ minColorbar }}" size=4> to
+                         <input id="maxColorbar" name="maxColorbar" value="{{ maxColorbar }}" size=4 />
+			</li>
+                </div>
+		<div class="colorbar" style="visibility:hidden">
+			<li>Colormap:
+				<select id="colorbarmap" name="colorbarmap" class="colorbarmap" width="95%">
+					{% for x,y in formPaletteMap %}
+					    <option value="{{ x }}" {% if x == colorbarmap  %} selected {% endif %}>{{ y }}</option>
+					{% endfor %}
+				</select>
+				Colors:
+				<select id="colorbarsize" name="colorbarsize" class="colorbarsize" width="95%">
+					{% for x,y in formPaletteSize %}
+					    <option value="{{ x }}" {% if x == colorbarsize  %} selected {% endif %}>{{ y }}</option>
+					{% endfor %}
+				</select>
+			</li>
+			<li>Colorbar Values:
+			 <input id="minColorbar" name="minColorbar" value="{{ minColorbar }}" size=4> to
+			     {% if form_error.minColorbar %}
+				<br>
+				<div class="error">{{ form_error.minColorbar }}</div>
+				<br>
+			     {% endif %}
+			  <input id="maxColorbar" name="maxColorbar" value="{{ maxColorbar }}" size=4 />
+			    {% if form_error.maxColorbar %}
+				<br>
+				<div class="error">{{ form_error.maxColorbar }}</div>
+			     {% endif %}
+		 	</li>
+			<br>
+			<div id="colorbar1"><svg style="width:60px;height:30px;"></svg></div>
+		</div>
+	   </td>
+	</tr>
+	<tr>
+	   <td>
+	       <!----------------------------->
+	       <!--      KML LAYER          -->
+	       <!----------------------------->
+		<div class="kmlurl">
 			<b>Enter URL for KML/KMZ Layer:</b><br>
-				<input id="kmlurl" name="kmlurl" value="{{ kmlurl }}" size="50" />
-			</div>
-            {% if form_error.kmlurl %}
-                <br>
-                <div class="error">{{ form_error.minColorbar }}</div>
-                <br>
-            {% endif %}
-
-		   </td>
-		   </tr>
-           {% if mapid %}
-		   <tr><td>
-			<button type="button" data-toggle="modal" data-target="#shareLink">Share Link</button>
-		  </td></tr>
-          {% endif %}
+			<input id="kmlurl" name="kmlurl" value="{{ kmlurl }}" size="50" />
+		</div>
+		{% if form_error.kmlurl %}
+			<br>
+			<div class="error">{{ form_error.minColorbar }}</div>
+			<br>
+		{% endif %}
+	   </td>
+	</tr>
+	</div> <!-- end of collapsing -->
+	 {% if mapid %}
+	 <tr>
+	     <td>
+		<button type="button" data-toggle="modal" data-target="#shareLink">Share Link</button>
+	     </td>
+         </tr>
+	 {% endif %}
 	</table>

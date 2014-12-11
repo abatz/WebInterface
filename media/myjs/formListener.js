@@ -148,9 +148,9 @@ $(function(){
                 }
 	 }else if(jQuery('.basicvariable').val()=='erc'){
                  if(jQuery('.anomOrValue').val()=='anom'){
-                        minColorbar =0;
-                        maxColorbar = 200;
-                        palette="FFFFFF,FFFFCC,FFEDA0,FED976,FEB24C,FEA143,FD8D3C,FC4E2A,E31A1C,BD0026,800026,000000"
+                        minColorbar =50;
+                        maxColorbar = 150;
+                        palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
                 }else{
                         minColorbar = 10;
                         maxColorbar = 120; //
