@@ -175,20 +175,20 @@
 		*********************************/
         var bounds = new google.maps.LatLngBounds();
 	var pointsLongLat = "{{ pointsLongLat}}";
-        var points_list = pointsLongLat.split(',');
+        var point_list = pointsLongLat.split(',');
         var pLat,pLong
-        for (i=0;i<points_list.length - 1;i+=2){
-            pLat = points_list[i+1];
-            pLong = points_list[i];
+        for (i=0;i<point_list.length - 1;i+=2){
+            pLat = point_list[i+1];
+            pLong = point_list[i];
             var points_pre, points_post, new_point_list =[]
             if (i > 0){
-                points_pre = points_list.splice(0,i);
+                points_pre = point_list.splice(0,i);
             }
             else {
                 var points_pre =[];
             }
-            if (i < points_list.length - 2) {
-                points_post = points_list.splice(i+2, point_list.length);
+            if (i < point_list.length - 2) {
+                points_post = point_list.splice(i+2, point_list.length);
             }
             else {
                 points_post = [];
