@@ -8,12 +8,20 @@ $(function(){
 		console.log('changed infomarkers')
 		if(jQuery('#infomarkers').is(':checked')){
 		console.log('changed infomarkers')
-
 		}
         });
 	*/
 
-
+ 	jQuery('#mapCenterLongLat').keyup( function(){
+		var mapCenterLongLat = document.getElementById('mapCenterLongLat').value;
+            	var mapCenterLong = parseFloat(mapCenterLongLat.split(',')[0]);
+            	var mapCenterLat = parseFloat(mapCenterLongLat.split(',')[1]);
+		window.map.setCenter(new google.maps.LatLng(mapCenterLat,mapCenterLong));
+        });
+	jQuery('#mapzoom').on('change', function(){
+		mapzoom = parseInt(document.getElementById('mapzoom').value)
+		window.map.setZoom(mapzoom);
+        });
 
 	jQuery('#minColorbar,#maxColorbar').keyup( function(){
 		console.log('changed')
@@ -224,14 +232,13 @@ $(function(){
 	/*--------------------------------------------*/
 	/*        STATE LISTENER 		      */
 	/*--------------------------------------------*/
-	 jQuery('#state').on('change', function(){
-		//state = jQuery('#state').val();
-		//alert(state)
-	     //document.getElementById('pointLat').value =minColorbar;
-	     //document.getElementById('pointLon').value =minColorbar;
-                 //jQuery('.pointLat').val(NewMapCenter.lat());
-                 //jQuery('.pointLon').val(NewMapCenter.lng());
-	});
+	 //jQuery('#state').on('change', function(){
+//		var longitude=map.LatLng.lng().toFixed(4) 
+//		var latitude=map.LatLng.lat().toFixed(4) 
+//          	document.getElementById("mapCenterLatLong").value = longitude+','+latitude;
+ //         	document.getElementById("mapzoom").value = '6';
+//		
+//	});
 	/*--------------------------------------------*/
 	/*        POINT  LISTENER 		      */
 	/*--------------------------------------------*/

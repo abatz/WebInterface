@@ -364,12 +364,12 @@ def format_state(state):
             return st[1]
     return state
 
-def format_mapzoom(mapzoom):
-    try:
-        int(mapzoom)
-    except:
-        return mapzoom
-    return int(mapzoom)
+#def format_mapzoom(mapzoom):
+#    try:
+#        int(mapzoom)
+#    except:
+#        return mapzoom
+#    return int(mapzoom)
 
 def format_dateStart(dateStart):
     #Put date into format yyyy-mm-dd

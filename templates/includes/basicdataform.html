@@ -188,6 +188,51 @@
 		<h4><p style="text-align:left"><u><span style='color:blue'> Map Options:</span></u></p></h4>
 	   </td>
 	</tr>
+	 <tr>
+           <td>
+               <!----------------------------->
+               <!--      KML LAYER          -->
+               <!----------------------------->
+                <div class="kmlurl">
+                        <b>Enter URL for KML/KMZ Layer:</b><br>
+                        <input id="kmlurl" name="kmlurl" value="{{ kmlurl }}" size="50" />
+                </div>
+                {% if form_error.kmlurl %}
+                        <br>
+                        <div class="error">{{ form_error.minColorbar }}</div>
+                        <br>
+                {% endif %}
+           </td>
+        </tr>
+        <tr>
+           <td>
+               <!----------------------------->
+               <!--      MAP ZOOM and CENTER          -->
+               <!----------------------------->
+                <b>Map:</b>
+                <div class="mapcenterzoom">
+                <li>Center:
+                              <input id="mapCenterLongLat" name="mapCenterLongLat" value="{{ mapCenterLongLat }}" size=10/>
+                </li>
+                <li>Zoom:
+                 <select id="mapzoom" name="mapzoom" width="95%">
+                        {% for x,y in formMapZoom %}
+                            <option value="{{ x }}" {% if x == mapzoom  %} selected {% endif %}>
+                                {{ y }}</option>
+                        {% endfor %}
+                </select>
+                <!--{% if form_error.mapzoom %}
+                        <br>
+                        <div class="error">{{ form_error.mapzoom }}</div>
+                        <br>
+                {% endif %}
+		-->
+                             <!-- <input id="mapzoom" name="mapzoom" value="{{ mapzoom }}" size=4 />-->
+                </li>
+                </div>
+           </td>
+        </tr>
+
 	<tr>
 	    <td>
 	       <!----------------------------->
@@ -251,49 +296,6 @@
 		 	</li>
 			<br>
 			<div id="colorbar1"><svg style="width:60px;height:30px;"></svg></div>
-		</div>
-	   </td>
-	</tr>
-	<tr>
-	   <td>
-	       <!----------------------------->
-	       <!--      KML LAYER          -->
-	       <!----------------------------->
-		<div class="kmlurl">
-			<b>Enter URL for KML/KMZ Layer:</b><br>
-			<input id="kmlurl" name="kmlurl" value="{{ kmlurl }}" size="50" />
-		</div>
-		{% if form_error.kmlurl %}
-			<br>
-			<div class="error">{{ form_error.minColorbar }}</div>
-			<br>
-		{% endif %}
-	   </td>
-	</tr>
-	<tr>
-	   <td>
-	       <!----------------------------->
-	       <!--      MAP OPTIONS          -->
-	       <!----------------------------->
-		<b>Map:</b> 
-		<div class="mapcenterzoom">
-		<li>Center: 
-			      <input id="mapCenterLongLat" name="mapCenterLongLat" value="{{ mapCenterLongLat }}" size=10/>
-		</li>
-		<li>Zoom: 
-		 <select id="mapzoom" name="mapzoom" width="95%">
-                        {% for x,y in formMapZoom %}
-                            <option value="{{ x }}" {% if x == mapzoom  %} selected {% endif %}>
-                                {{ y }}</option>
-                        {% endfor %}
-                </select>
-                {% if form_error.mapzoom %}
-                        <br>
-                        <div class="error">{{ form_error.mapzoom }}</div>
-                        <br>
-                {% endif %}
-			     <!-- <input id="mapzoom" name="mapzoom" value="{{ mapzoom }}" size=4 />-->
-		</li>
 		</div>
 	   </td>
 	</tr>

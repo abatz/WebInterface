@@ -45,22 +45,20 @@ def get_images(template_values):
     points = None
     if(dT == 'states'):
         subdomain = template_values['state']
-        mapzoom=6; #would like to zoom in on that state
-        #pLat = stateLat(subdomain);
-        #pLon = stateLon(subdomain);
+        mapzoom='7'; #would like to zoom in on that state
     elif(dT == 'full' and product == 'modis'):
         points = subdomain
-        mapzoom=4
+        mapzoom='4'
     elif(dT=='full' and product=='gridded'):
         points = subdomain
-        mapzoom=5
+        mapzoom='5'
     elif(dT=='rectangle'):
         subdomain = ee.Feature.Rectangle(float(TV['SWLong']),float(TV['SWLat']),float(TV['NELong']),float(TV['NELat']))
         points = subdomain
-        mapzoom=4
+        mapzoom='4'
     else:
         points = subdomain
-        mapzoom=4
+        mapzoom='4'
 
     timeSeriesDataPoints = []
     if var == 'wb':

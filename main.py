@@ -12,7 +12,6 @@ import numpy
 import json
 import httplib2
 
-#from forms import *
 import forms
 import collectionMethods
 from google.appengine.api import urlfetch
@@ -75,12 +74,12 @@ class DroughtTool(webapp2.RequestHandler):
         self.colorbarsize = self.request.get('colorbarsize', '8')
 
 	if(self.domainType=='full'):
-            mz= 5;
+            mz= '5';
         elif(self.domainType=='states'):
-            mz= 6;
-	    mapCenterLongLat = stateLat[subdomain]+','+stateLon[subdomain]
+            mz= '6';
+	    self.mapCenterLongLat = str(forms.stateLong[self.state])+','+str(forms.stateLat[self.state]);
 	else:
-	    mz=4;
+	    mz='4';
         self.mapzoom = self.request.get('mapzoom',mz)
 
         if self.minColorbar is None and self.maxColorbar is None:

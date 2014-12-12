@@ -100,7 +100,7 @@
 		var mapOptions = {
 		  center: myCenter,
 		  zoom: myZoom,
-		  maxZoom: 12,
+		  maxZoom: 18,
 		  streetViewControl: false,
                   mapTypeControl: true,
                    navigationControl: true, 
