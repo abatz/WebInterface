@@ -1,4 +1,4 @@
-	{% if mapid %}
+{% if timeSeriesData %}
 	<table id="table" class="table table-striped table-bordered">
 		  <tr>
 			<td>
@@ -18,13 +18,14 @@
 				#Notes: {{ notes }}<br>
 				#<br>
 				#======================================================<br>
-                {% for DataDict in timeSeriesDataPoints  %}
-				    Location: {{DataDict.LongLat }}<br />
-                    {% for x,y in DataDict.timeSeriesData %}
-					    {{ x }}, {{ y }} <br>
-				    {% endfor %}<br />
-                {% endfor %}
-				#======================================================<br>
+                {% for point in timeSeriesData  %}
+                    Location: {{point.LongLat }}<br>
+                    {% for date_val in point.Data %}
+                        {{ date_val.0 }}, {{ date_val.1 }}<br>
+                    {% endfor %}
+                    <br>
+                {% endfor %}				
+                #======================================================<br>
 		      </td>
 		</tr>
 	</table>

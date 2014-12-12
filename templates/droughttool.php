@@ -41,14 +41,14 @@
 		<!---------------------->
 	      </div>
 
-             {% include 'droughthomemodal.html'%}
+             <!--{% include 'droughthomemodal.html'%}-->
              {% include 'aboutdatamodal.html'%}
              {% include 'contactmodal.html'%}
              {% include 'aboutmetricsmodal.html'%}
              {% include 'sharelinkmodal.html'%}
              {% include 'optionsmodal.html'%}
-             {% include 'figuresmodal.html'%}
-             {% include 'datamodal.html'%}
+             <!--{% include 'figuresmodal.html'%}
+             {% include 'datamodal.html'%}-->
 	  </body> 
 	</div>
         {% include 'includes/basicscripts.php'%}
