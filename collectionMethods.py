@@ -391,60 +391,7 @@ def get_time_series(collection, variable, pointsLongLatTuples):
         data_dict_graph['Data'].append([time,val])
     timeSeriesData.append(data_dict)
     timeSeriesGraphData.append(data_dict_graph)
-    return timeSeriesData,timeSeriesGraphData
-'''
-def get_time_series(collection, variable, point):
-    ######################################################
-    #### Data in list format
-    ######################################################
-    dataString = collection.getRegion(point,1).getInfo()
-    dataString.pop(0) #remove first row of list ["id","longitude","latitude","time",variable]
-    timeList = [row[3] for row in dataString]
-    variableList = [row[4] for row in dataString]
-    ######################################################
-    #### CREATE TIME SERIES ARRAY WITH DATE IN COL 1 AND VALUE IN COL 2
-    ######################################################
-    timeSeriesData = []
-    for i in range(0,len(variableList),1):
-        time_ms = (ee.Algorithms.Date(dataString[i][3])).getInfo()['value']
-        data1 = time.strftime('%m/%d/%Y',  time.gmtime(time_ms/1000))
-        data2 = (dataString[i][4])
-        if data2 is not None:
-            timeSeriesData.append([data1,data2])
-    ######################################################
-    #### SORT IN CHRONOLOGICAL ORDER
-    ######################################################
-    timeSeriesData.sort(key=lambda date: datetime.datetime.strptime(date[0], "%m/%d/%Y"))
-    ######################################################
-    #### ADD HEADER TO SORTED LIST
-    ######################################################
-    timeSeriesData = [['Dates','Values']] + timeSeriesData
-    ######################################################
-    #### GET GRAPH DATA
-    ######################################################
-    timeSeriesGraphData = []
-    n_rows = numpy.array(timeSeriesData).shape[0]
-    for i in range(2,n_rows):
-        entry = {'count':timeSeriesData[i][1],'name':timeSeriesData[i][0]}
-        timeSeriesGraphData.append(entry)
-    return timeSeriesData, timeSeriesGraphData
-
-
-def callTimeseries(collection,variable,domainType,point):
-    if(domainType=='points'):
-        timeSeriesData=get_timeseries(collection,point,variable)
-        timeSeriesGraphData = []
-        n_rows = numpy.array(timeSeriesData).shape[0];
-        for i in range(2,n_rows):
-            entry = {'count':timeSeriesData[i][1],'name':timeSeriesData[i][0]};
-            timeSeriesGraphData.append(entry);
-
-    template_values = {
-        'timeSeriesData': timeSeriesData,
-        'timeSeriesGraphData': timeSeriesGraphData,
-    }
-    return (timeSeriesData,timeSeriesGraphData,template_values);
-'''
+    return timeSeriesData,json.dumps(timeSeriesGraphData)
 #===========================================
 #    GET_ANOMALY
 #===========================================
