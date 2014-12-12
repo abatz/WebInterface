@@ -170,7 +170,6 @@
         //Take first coords form pointsLongLat input variable for marker showing
         pLat = parseFloat(point_list[1]);
         pLong = parseFloat(point_list[0]);
-        console.log(pLat);
         /*
         for (i=0;i<point_list.length - 1;i+=2){
             pLat = parseFloat(point_list[i+1]);
