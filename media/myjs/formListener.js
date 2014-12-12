@@ -158,8 +158,8 @@ $(function(){
                 }
 	 }else if(jQuery('.basicvariable').val()=='erc'){
                  if(jQuery('.anomOrValue').val()=='anom'){
-                        minColorbar =50;
-                        maxColorbar = 150;
+                        minColorbar =-50;
+                        maxColorbar = 50;
                         palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
                 }else{
                         minColorbar = 10;

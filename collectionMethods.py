@@ -321,6 +321,13 @@ def get_collection(variable):
         notes=""
         statistic='Total'
         variableShortName='Water Balance (PPT-PET)'
+    elif(variable=='pdsi'):
+        collectionName = 'IDAHO_EPSCOR/GRIDMET';
+        collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
+        product = 'gridded'
+        notes=""
+        statistic='Mean'
+        variableShortName='Water Balance (PPT-PET)'
 
     collection = ee.ImageCollection(collectionName).select([variable],[variable]);
 
@@ -498,8 +505,6 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
             collection = ee.Image(collection.divide(climatology).multiply(100)); #anomaly
         elif(statistic=='Median'):
             collection = ee.Image(collection.subtract(climatology)); #anomaly
-        elif(statistic=='Mean' and variable=='erc'):
-            collection = ee.Image(collection.divide(climatology).multiply(100));
         elif(statistic=='Mean' and variable=='sph'):
             collection = ee.Image(collection.subtract(climatology).divide(climatology).multiply(100));
         elif(statistic=='Mean'):
@@ -666,10 +671,10 @@ def get_colorbar(variable,anomOrValue):
             colorbarLabel='kg / kg'
     elif(variable=='erc'):
         if(anomOrValue=='anom'):
-            minColorbar=50
-            maxColorbar=150
+            minColorbar=-50
+            maxColorbar=50
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
-            colorbarLabel='Percent difference from climatology'
+            colorbarLabel='Difference from climatology'
         else:
             palette="FFFFFF,FFFFCC,FFEDA0,FED976,FEB24C,FD8D3C,FC4E2A,E31A1C,BD0026,800026,000000"
             minColorbar=10
@@ -687,6 +692,17 @@ def get_colorbar(variable,anomOrValue):
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FFF6A7,FEE090,FDAE61,F46D43,D73027,A50026"
             colorbarLabel='mm'
     elif(variable=='wb'): #mm
+        if(anomOrValue=='anom'):
+            minColorbar=-3
+            maxColorbar=3
+            palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
+            colorbarLabel='Percent of climatology'
+        else:
+            minColorbar=-220
+            maxColorbar=220
+            palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
+            colorbarLabel='mm'
+    elif(variable=='pdsi'): #mm
         if(anomOrValue=='anom'):
             minColorbar=-3
             maxColorbar=3
