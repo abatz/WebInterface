@@ -671,8 +671,8 @@ def get_colorbar(variable,anomOrValue):
             colorbarLabel='kg / kg'
     elif(variable=='erc'):
         if(anomOrValue=='anom'):
-            minColorbar=-50
-            maxColorbar=50
+            minColorbar=-20
+            maxColorbar=20
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
             colorbarLabel='Difference from climatology'
         else:

@@ -158,13 +158,13 @@ $(function(){
                 }
 	 }else if(jQuery('.basicvariable').val()=='erc'){
                  if(jQuery('.anomOrValue').val()=='anom'){
-                        minColorbar =-50;
-                        maxColorbar = 50;
+                        minColorbar =-20;
+                        maxColorbar = 20;
                         palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
                 }else{
                         minColorbar = 10;
                         maxColorbar = 120; //
-                        palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026,D6604D,B2182B,67001F"
+                        palette="FFFFFF,FFFFCC,FFEDA0,FED976,FEB24C,FD8D3C,FC4E2A,E31A1C,BD0026,800026,000000"
                 }
          }else if(jQuery('.basicvariable').val()=='pet'){
                  if(jQuery('.anomOrValue').val()=='anom'){
