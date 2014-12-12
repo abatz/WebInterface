@@ -8,25 +8,23 @@ import numpy as np
 #    formVariableGrid
 #============================
 formVariableGrid=[
-    ('pdsi','PDSI (Palm. Drought Sev. Ind.)'),
     #('spi','SPI (Stand. Prec. Ind.)'),
     #('spei','SPEI (Stand. Prec-Evap. Ind.)'),
     #('eto','ETo (Potential EvapTrans.)'),
     #('eddi','EDDI (Evap Dem. Drought Ind.)'),
+    #('th','TH (Wind Direction)'),
     ('erc','ERC (Energy Release Component)'),
-    #('bi','BI (Burning Index)'),
-    ('tmmn','TMIN (Min Temperature)'),
-    ('tmmx','TMAX (Max Temperature)'),
+    ('pdsi','PDSI (Palm. Drought Sev. Ind.)'),
+    ('pet','PET (Potential Evapotranspiration)'),
+    ('pr','PPT (Precipitation)'),
     ('rmin','RMIN (Min Rel. Humidity)'),
     ('rmax','RMAX (Max Rel. Humidity)'),
-    ('pr','PPT (Precipitation)'),
-    ('pet','PET (Potential Evapotranspiration)'),
-    ('wb','Water Balance (PPT-PET)'),
-    #('dpr','Change in PPT (Precipitation)'),
-    ('srad','SRAD (Downward Radiation)'),
-    ('vs','VS (Wind Speed)'),
-    #('th','TH (Wind Direction)'),
     ('sph','SPH (Specific Humidity)'),
+    ('srad','SRAD (Downward Radiation)'),
+    ('tmmn','TMIN (Min Temperature)'),
+    ('tmmx','TMAX (Max Temperature)'),
+    ('vs','VS (Wind Speed)'),
+    ('wb','Water Balance (PPT-PET)'),
 ]
 
 #============================
@@ -35,12 +33,12 @@ formVariableGrid=[
 formVariableLandsat=[
     #('eto','ETo (Potential Evapotranspiration)'),
     #('eddi','EDDI (Evap. Demand Drought Index)'),
-    ('NDVI','NDVI (Vegetation Index)'),
     #('bi','BI (Burning Index)'),
-    ('EVI','EVI (Enhanced Vegetation Index)'),
-    ('NDSI','NDSI (Snow Index)'),
     #('NBRT','NBRT (Norm. Burn Rat. Thm. Ind)'),
     #('BAI','BAI (Burning Area Index)'),
+    ('EVI','EVI (Enhanced Vegetation Index)'),
+    ('NDSI','NDSI (Snow Index)'),
+    ('NDVI','NDVI (Vegetation Index)'),
     ('NDWI','NDWI (Water Index)'),
 ]
 #============================
