@@ -7,9 +7,9 @@
                 <!--<li class="active"><a href="#optionsModal" data-toggle="modal">Options <img src="images/downarrow.png" height="10px"></a></li>-->
                 <li class="active"><a href="#basicdataform" data-toggle="tab">Options <img src="images/downarrow.png" height="10px"></a></li>
                 <!--<li><a href="#figuresModal" data-toggle="modal">Figures <img src="images/downarrow.png" height="10px"></a></li>-->
-                <li><a href="#figures" data-toggle="tab">Figures <img src="images/downarrow.png" height="10px"></a></li>
+                <li><a href="#timeseriesoutput" data-toggle="tab">Time Series Output <img src="images/downarrow.png" height="10px"></a></li>
                 <!--<li><a href="#dataModal" data-toggle="modal">Data <img src="images/downarrow.png" height="10px"></a></li>-->
-                <li><a href="#data" data-toggle="tab">Data <img src="images/downarrow.png" height="10px"></a></li>
+                <!--<li><a href="#data" data-toggle="tab">Data <img src="images/downarrow.png" height="10px"></a></li>-->
 
 		<div id="progressBar"><div>
         </ul>
@@ -29,18 +29,20 @@
                 <!----------------------------->
 		<!--    FIGURES   -->
                 <!----------------------------->
-	 	<div class="tab-pane" id="figures">
+	 	<div class="tab-pane" id="timeseriesoutput">
                     {% if timeSeriesGraphData%}
-                          {% include 'includes/figuretab.html'%}
+                          {% include 'includes/timeseriesout.html'%}
                     {% endif %}
                 </div>
                 <!----------------------------->
 		<!--    DATA   -->
                 <!----------------------------->
+		<!--
 		 <div class="tab-pane" id="data">
                 {% if timeSeriesData%}
                          {% include 'includes/datatab.html'%}
                 {% endif %}
                 </div>
+		-->
         </div>
 </div>

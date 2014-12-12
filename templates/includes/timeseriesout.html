@@ -1,0 +1,24 @@
+<table>
+	<tr>
+		<td width="50%" valign="top">		
+			<!----------------------------->
+			<!--    FIGURES   -->
+			<!----------------------------->
+			<div class="tab-pane" id="timeseriesout">
+			    {% if timeSeriesGraphData%}
+				  {% include 'includes/figuretab.html'%}
+			    {% endif %}
+			</div>
+			</td>
+			<td width="50%" valign="top">
+			<!----------------------------->
+			<!--    DATA   -->
+			<!----------------------------->
+			 <div class="tab-pane" id="data">
+			{% if timeSeriesData%}
+				 {% include 'includes/datatab.html'%}
+			{% endif %}
+			</div>
+		</td>
+	</tr>
+</table>

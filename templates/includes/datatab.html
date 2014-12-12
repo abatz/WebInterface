@@ -1,4 +1,6 @@
 {% if timeSeriesData %}
+<table border="2" width="100%">
+<tr><td>
 	<table id="table" class="table table-striped table-bordered">
 		  <tr>
 			<td>
@@ -6,9 +8,6 @@
 				value="DOWNLOAD DATA" onClick="">
 			</td>
 		</tr>
-	</table>
-
-	<table border="0" width="100%" height="100%">
 		<tr>
 		     <td style="text-align:left">
 				#Variable: {{ variable }} <br>
@@ -17,16 +16,17 @@
 				#Time Period: {{ dateStart }} to  {{ dateEnd }}<br>
 				#Notes: {{ notes }}<br>
 				#<br>
+				{% for point in timeSeriesData  %}
+				    Location: {{point.LongLat }}<br>
+				    {% for date_val in point.Data %}
+					{{ date_val.0 }}, {{ date_val.1 }}<br>
+				    {% endfor %}
+				    <br>
+				{% endfor %}				
 				#======================================================<br>
-                {% for point in timeSeriesData  %}
-                    Location: {{point.LongLat }}<br>
-                    {% for date_val in point.Data %}
-                        {{ date_val.0 }}, {{ date_val.1 }}<br>
-                    {% endfor %}
-                    <br>
-                {% endfor %}				
-                #======================================================<br>
 		      </td>
 		</tr>
 	</table>
+</td></tr>
+</table>
 {% endif %}
