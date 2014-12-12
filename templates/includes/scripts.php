@@ -64,7 +64,7 @@
 	 <script type="text/javascript">
  	      var MAPID = "{{ mapid }}";
 	      var TOKEN = "{{ token }}";
-	      var eeMapOptions = {
+          var eeMapOptions = {
 			getTileUrl: function(tile, zoom) {
 				  var url = ['https://earthengine.googleapis.com/map',
 					     MAPID, zoom, tile.x, tile.y].join("/");
@@ -90,9 +90,6 @@
             var mapCenterLongLat = "{{ mapCenterLongLat}}";
             var mapCenterLat = parseFloat(mapCenterLongLat.split(',')[1]);
             var mapCenterLong = parseFloat(mapCenterLongLat.split(',')[0]);
-            //var pointsLongLat = "{{ pointsLongLat}}";
-            //var pointsLat = parseFloat(pointsLongLat.split(',')[1]);
-            //var pointsLong = parseFloat(pointsLongLat.split(',')[0]);
 
 		var myCenter = new google.maps.LatLng(mapCenterLat, mapCenterLong);
 		//var myCenter = new google.maps.LatLng(pointsLat, pointsLong);
@@ -109,8 +106,8 @@
 		  clickable:true,
 		};
 
-		window.map = new google.maps.Map(document.getElementById("map"),mapOptions);
-
+		//window.map = new google.maps.Map(document.getElementById("map"),mapOptions);
+        map = new google.maps.Map(document.getElementById("map"),mapOptions);
  		function showNewRect(event) {
                   var ne = rectangle.getBounds().getNorthEast();
                   var sw = rectangle.getBounds().getSouthWest();
@@ -174,12 +171,21 @@
 		*      POINTS                    *
 		*********************************/
         var bounds = new google.maps.LatLngBounds();
-	var pointsLongLat = "{{ pointsLongLat}}";
+        var timeSeriesGraphData = "{{ timeSeriesGraphData }}";
+        var domainType = document.getElementById('domainType').value;
+        var pointsLongLat = document.getElementById('pointsLongLat').value.replace(' ','');
         var point_list = pointsLongLat.split(',');
-        var pLat,pLong
+        var pLat,pLong, pointmarkers = [];
+        //FIX ME: mulyi points not working correctly!!
+        //Take first coords form pointsLongLat input variable for marker showing
+        pLat = parseFloat(point_list[1]);
+        pLong = parseFloat(point_list[0]);
+        console.log(pLat);
+        /*
         for (i=0;i<point_list.length - 1;i+=2){
-            pLat = point_list[i+1];
-            pLong = point_list[i];
+            pLat = parseFloat(point_list[i+1]);
+            pLong = parseFloat(point_list[i]);
+            bounds.extend(new google.maps.LatLng(pLat,pLong));
             var points_pre, points_post, new_point_list =[]
             if (i > 0){
                 points_pre = point_list.splice(0,i);
@@ -193,14 +199,12 @@
             else {
                 points_post = [];
             }
-               
-            window.pointmarker = new google.maps.Marker({
-                position:new google.maps.LatLng(parseFloat(pLat),parseFloat(pLong)),
+            var pointmarker = new google.maps.Marker({
+                position:new google.maps.LatLng(pLat,pLong),
                 map: map, 
                 draggable: true
             });
-
-            google.maps.event.addListener(window.pointmarker, 'dragend', function(a) {
+            google.maps.event.addListener(pointmarker, 'dragend', function(a) {
                 var div = document.createElement('div');
                 var longitude=a.latLng.lng().toFixed(4);
                 var latitude=a.latLng.lat().toFixed(4);
@@ -209,11 +213,13 @@
             });
             window.pointmarker.setVisible(false);
         }
-
-        /*
-		window.pointmarker = new google.maps.Marker({position:new google.maps.LatLng({{ pointLat }},{{ pointLong }}),
-			     map: map, draggable: true});
-
+        window.pointmarkers = pointmarkers;
+        */ 
+        window.pointmarker = new google.maps.Marker({
+                position:new google.maps.LatLng(parseFloat(pLat),parseFloat(pLong)),
+                map: map, 
+                draggable: true
+        });
 		google.maps.event.addListener(window.pointmarker, 'dragend', function(a) {
 			  var div = document.createElement('div');
 			  var longitude=a.latLng.lng().toFixed(4)
@@ -222,10 +228,12 @@
 			  document.getElementById('pointLat').value = latitude;
 			  document.getElementById('pointLong').value = longitude;
 		});
-        
-		window.pointmarker.setVisible(false); 
-        */
-        
+        if (domainType == 'points' && timeSeriesGraphData != '') {
+            window.pointmarker.setVisible(true); 
+        }
+        else {
+		    window.pointmarker.setVisible(false); 
+        }
         /*
 		/*********************************
 		*      RECTANGLE                    *
