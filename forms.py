@@ -8,7 +8,7 @@ import numpy as np
 #    formVariableGrid
 #============================
 formVariableGrid=[
-    #('pdsi','PDSI (Palm. Drought Sev. Ind.)'),
+    ('pdsi','PDSI (Palm. Drought Sev. Ind.)'),
     #('spi','SPI (Stand. Prec. Ind.)'),
     #('spei','SPEI (Stand. Prec-Evap. Ind.)'),
     #('eto','ETo (Potential EvapTrans.)'),
