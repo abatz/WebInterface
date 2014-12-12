@@ -478,7 +478,7 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
          climatology_pr = ee.Image(climatology_pr.sum().divide(num_years));
          climatology_pet = ee.Image(climatology_pet.sum().divide(num_years));
 	 climatology = climatology_pr.subtract(climatology_pet);
-	 climatology_sd = climatology.reduce(ee.Reducer.stdDev());
+	 #climatology_sd = climatology.reduce(ee.Reducer.stdDev());
     elif(statistic=='Total' and variable=='pr'):
          climatology = ee.Image(climatology.sum().divide(num_years));
     elif(statistic=='Total' and variable=='pet'):
@@ -510,7 +510,7 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
         elif(statistic=='Mean'):
             collection = ee.Image(collection.subtract(climatology));
         elif(variable=='wb'):
-            collection = ee.Image(collection.subtract(climatology).divide(climatology_sd));
+            collection = ee.Image(collection.subtract(climatology).divide(climatology).multiply(100));
 
     return(collection,climatologyNote);
 
@@ -693,10 +693,10 @@ def get_colorbar(variable,anomOrValue):
             colorbarLabel='mm'
     elif(variable=='wb'): #mm
         if(anomOrValue=='anom'):
-            minColorbar=-3
-            maxColorbar=3
+            minColorbar=-100
+            maxColorbar=100
             palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
-            colorbarLabel='Percent of climatology'
+            colorbarLabel='Percent change from climatology'
         else:
             minColorbar=-220
             maxColorbar=220

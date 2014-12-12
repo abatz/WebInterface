@@ -137,21 +137,9 @@
 
 
                 /******ON OPTIONS*****/
-                palette_string =document.getElementById('palette').value;
-                palette_list = palette_string.split(",");
-                var myPalette = new Array();
-                for (var i = 0; i < palette_list.length; i++) {
-                        myPalette[i]="#"+palette_list[i];
-                }
-		
-		/*myPalette=colorbrewer['RdBu'][9];*/
-		/*myPalette=colorbrewer["{{ colorbarmap }}"][{{ colorbarsize }}];*/
-
 		colorbarsize = parseInt(document.getElementById('colorbarsize').value);
                 colorbarmap = document.getElementById('colorbarmap').value;
-		/*myPalette=colorbrewer["{{ colorbarmap }}"][{{ colorbarsize }}];*/
                 myPalette=colorbrewer[colorbarmap][colorbarsize];
-
                 minColorbar = document.getElementById('minColorbar').value
                 maxColorbar = document.getElementById('maxColorbar').value
                 myScale = d3.scale.quantile().range(myPalette).domain([minColorbar,maxColorbar]);
@@ -163,9 +151,11 @@
                 colorbarObject1 = d3.select("#colorbar1").call(colorbar1)
 
 		var palette = new String();
-		for (var i=0;i<myPalette.length;i++){
-			palette = palette+','+myPalette[i];
+		palette=myPalette[0].replace(/#/g, '');
+		for (var i=1;i<myPalette.length;i++){
+			palette = palette+','+myPalette[i].replace(/#/g, '');
 		} 
+		jQuery('#palette').val(palette);
 		
 		/*********************************
 		*      POINTS                    *

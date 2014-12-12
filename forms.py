@@ -21,7 +21,7 @@ formVariableGrid=[
     ('rmax','RMAX (Max Rel. Humidity)'),
     ('pr','PPT (Precipitation)'),
     ('pet','PET (Potential Evapotranspiration)'),
-    ('wb','Water Balance (PPT-PT)'),
+    ('wb','Water Balance (PPT-PET)'),
     #('dpr','Change in PPT (Precipitation)'),
     ('srad','SRAD (Downward Radiation)'),
     ('vs','VS (Wind Speed)'),
@@ -71,16 +71,13 @@ formOpacity=[(str(x*0.05),str((1.0-x*0.05)*100)+'%') for x in range(20,-1,-1)]
 #============================
 #    formPaletteMap
 #============================
-formPaletteMap=[
-    ('RdBu','Red-Blue'),
-    ('RdYlBu','Red-Yellow-Blue'),
-    ('RdYlGn','Red-Yellow-Green'),
+formPaletteSeqMap=[
     ('Greens','Greens'),
     ('Blues','Blues'),
+    ('invBlues','invBlues'),
     ('Oranges','Oranges'),
     ('Reds','Reds'),
     ('YlGn','Yellow-Green'),
-    ('YlGnBu','Yellow-Green-Blue'),
     ('GnBu','Green-Blue'),
     ('BuGn','Blue-Green'),
     ('PuBuGn','Purple-Blue-Green'),
@@ -91,20 +88,24 @@ formPaletteMap=[
     ('OrRd','Orange-Red'),
     ('YlOrRd','Yellow-Orange-Red'),
     ('YlOrBr','Yellow-Orange-Brown'),
+    ('YlGnBu','Yellow-Green-Blue'),
+    ('PuBuGn','Purple-Blue-Green'),
     ('Purples','Purples'),
     ('Greys','Greys'),
+]
+
+formPaletteDivMap=[
+    ('RdBu','Red-Blue'),
+    ('BuRd','Blue-Red'),
+    ('RdYlBu','Red-Yellow-Blue'),
+    ('BuYlRd','Blue-Yellow-Red'),
+    ('RdYlGn','Red-Yellow-Green'),
     ('PuOr','Purple-Orange'),
     ('BrBG','Brown-BG'),
     ('PRGn','PR-Green'),
     ('PiYG','Pi-YG'),
     ('RdGy','Red-Grey'),
     ('Spectral','Spectral'),
-    ('Accent','Accent'),
-    ('Dark2','Dark2'),
-    ('Pastel1','Pastel1'),
-    ('Pastel2','Pastel2'),
-    ('Set1','Set1'),
-    ('Set2','Set2'),
 ]
 
 #============================
