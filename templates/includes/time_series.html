@@ -1,0 +1,70 @@
+<div id="container" style="width:800px;height:500px;"></div>
+<!--Getting a $ is not defined error when jquery source is not here Why???-->
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+    var timeSeriesData = {{ timeSeriesGraphData |safe}};
+    var collectionLongName = "{{ collectionLongName }}";
+    //define chart data
+    var series_data = [],s,d;
+    for (var k=0;k<timeSeriesData.length;k++){
+        d = timeSeriesData[k].Data;
+        s = {
+            name:timeSeriesData[k].LongLat,
+            //color:'#'+Math.floor(Math.random()*16777215).toString(16),
+            data:d
+        }
+    series_data.push(s);
+    }
+    $(function() {
+    $('#container').highcharts({
+        title: {
+        text: collectionLongName
+    },
+    xAxis: {
+        gridlineWidth: 1,
+        type:'datetime',  
+
+        type:'datetime',     
+        title: {
+            text: 'Date'
+        },
+        labels: {
+            style: {
+                fontSize: '11px'
+            },
+            formatter: function() {
+                return Highcharts.dateFormat('%e/%m/%y',this.value.toFixed(2));
+            }
+        }
+    },
+    yAxis: {
+        gridLineWidth: 1,
+        title: {
+            text: collectionLongName
+        },
+        tickLength: 5,
+        tickWidth: 1,
+        tickPosition: 'outside',
+        lineWidth:1,
+        labels: {
+            style: {
+            fontSize: '11px'
+            }
+        }
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle',
+        borderWidth: 0
+    },
+    tooltip: {
+        formatter: function() {
+            return  '<b>' + this.series.name +'</b><br/>' +
+            Highcharts.dateFormat('%e/%m/%y',new Date(this.x)) + ': '+ this.y;
+        }
+    },
+    series: series_data
+});
+});
+</script>
