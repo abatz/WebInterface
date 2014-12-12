@@ -322,12 +322,12 @@ def get_collection(variable):
         statistic='Total'
         variableShortName='Water Balance (PPT-PET)'
     elif(variable=='pdsi'):
-        collectionName = 'IDAHO_EPSCOR/GRIDMET';
+        collectionName = 'IDAHO_EPSCOR/PDSI';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
         product = 'gridded'
         notes=""
         statistic='Mean'
-        variableShortName='Water Balance (PPT-PET)'
+        variableShortName='Palmer Drought Severity Index (PDSI)'
 
     collection = ee.ImageCollection(collectionName).select([variable],[variable]);
 
@@ -704,15 +704,15 @@ def get_colorbar(variable,anomOrValue):
             colorbarLabel='mm'
     elif(variable=='pdsi'): #mm
         if(anomOrValue=='anom'):
-            minColorbar=-3
-            maxColorbar=3
+            minColorbar=-.4
+            maxColorbar=.4
             palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
             colorbarLabel='Percent of climatology'
         else:
-            minColorbar=-220
-            maxColorbar=220
+            minColorbar=-3
+            maxColorbar=3
             palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
-            colorbarLabel='mm'
+            colorbarLabel=''
 
     return (palette,minColorbar,maxColorbar,colorbarLabel);
 
