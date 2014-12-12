@@ -173,11 +173,13 @@
 	       <!----------------------------->
 	       <!--      BUTTON            -->
 	       <!----------------------------->
-		<input type="submit" class="btn btn-large ptn-primary pull-right" value="MAP" 
+		<!--
+		<input type="submit" class="btn btn-large ptn-primary pull-right" value="SUBMIT" 
 			form="form_map"/>
 		 <div id="loading" style="display:none;">
 			<img id="loading-image" src="images/loading_image.gif" alt="Loading..." />
 		</div> 
+		-->
 	  </td>
 	</tr>
        <!---------------------------->
@@ -309,11 +311,28 @@
                 </div>
 	   </td>
 	</tr>
-	 {% if mapid %}
 	 <tr>
 	     <td>
+		<!----------------------------->
+               <!--      BUTTON            -->
+               <!----------------------------->
+		<table>
+		<tr><td width="30%">
+                <input type="submit" class="btn btn-large ptn-primary" value="SUBMIT"
+                        form="form_map"/>
+		</td>
+		<td width="70%">
+                 <div id="loading" style="display:none;">
+                        <img id="loading-image" src="images/loading_image.gif" alt="Loading..." />
+                </div>
+		</td></tr>
+		<tr><td>
+		<br>
+	 	{% if mapid %}
 		<button type="button" data-toggle="modal" data-target="#shareLink">Share Link</button>
+	 	{% endif %}
+		</td></tr>
+		</table>
 	     </td>
          </tr>
-	 {% endif %}
 	</table>
