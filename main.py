@@ -83,7 +83,9 @@ class DroughtTool(webapp2.RequestHandler):
         self.mapzoom = self.request.get('mapzoom',mz)
 
         if self.minColorbar is None and self.maxColorbar is None:
-            self.palette,self.minColorbar,self.maxColorbar,self.colorbarLabel=collectionMethods.get_colorbar(self.variable,self.anomOrValue)
+            self.colorbarmap,self.colorbarsize,self.minColorbar,self.maxColorbar,self.colorbarLabel=collectionMethods.get_colorbar(self.variable,self.anomOrValue)
+            #self.minColorbar,self.maxColorbar,self.colorbarLabel=collectionMethods.get_colorbar(self.variable,self.anomOrValue)
+            #self.palette,self.minColorbar,self.maxColorbar,self.colorbarLabel=collectionMethods.get_colorbar(self.variable,self.anomOrValue)
 
     def set_share_link(self, initial_template_values):
         shareLink = 'khegewisch-test.appspot.com?'

@@ -121,7 +121,7 @@
 		/*********************************
 		*     COLORBAR                   *
 		*********************************/
-		palette_string = "{{ palette }}"
+		/*palette_string = "{{ palette }}"
                 palette_list = palette_string.split(",");
 		var myPalette = new Array();
 		for (var i = 0; i < palette_list.length; i++) {
@@ -134,7 +134,7 @@
 		    .orient("horizontal")
 		    .scale(myScale)
 		colorbarObject = d3.select("#colorbar").call(colorbar)
-
+		*/
 
                 /******ON OPTIONS*****/
 		colorbarsize = parseInt(document.getElementById('colorbarsize').value);
@@ -156,7 +156,20 @@
 			palette = palette+','+myPalette[i].replace(/#/g, '');
 		} 
 		jQuery('#palette').val(palette);
-		
+	
+		palette_list = palette.split(",");
+                var myPalette = new Array();
+                for (var i = 0; i < palette_list.length; i++) {
+                        myPalette[i]="#"+palette_list[i];
+                }
+                myScale = d3.scale.quantile().range(myPalette).domain([{{ minColorbar }},{{ maxColorbar}}])
+                colorbar = Colorbar()
+                   .thickness(30)
+                    .barlength(400)
+                    .orient("horizontal")
+                    .scale(myScale)
+                colorbarObject = d3.select("#colorbar").call(colorbar)
+	
 		/*********************************
 		*      POINTS                    *
 		*********************************/

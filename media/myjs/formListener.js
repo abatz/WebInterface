@@ -58,6 +58,15 @@ $(function(){
                     .orient("horizontal")
                     .scale(myScale)
                 colorbarObject1 = d3.select("#colorbar1").call(colorbar1)
+
+		var palette = new String();
+                palette=myPalette[0].replace(/#/g, '');
+                for (var i=1;i<myPalette.length;i++){
+                        palette = palette+','+myPalette[i].replace(/#/g, '');
+                }
+                jQuery('#palette').val(palette);
+
+
         });
 
 
@@ -161,7 +170,7 @@ $(function(){
                         minColorbar =-2.5;
                         maxColorbar = 2.5;
                         palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
-			colorbarmap='RdBu' //need inverse
+			colorbarmap='BuRd' //need inverse
 			colorbarsize=8
                 }else{ 
                         minColorbar = 0;
@@ -189,7 +198,7 @@ $(function(){
                         minColorbar =-20;
                         maxColorbar = 20;
                         palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
-			colorbarmap='YlRdBl' //need inverse
+			colorbarmap='BuRd' 
 			colorbarsize=8
                 }else{
                         minColorbar = 10;
