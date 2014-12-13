@@ -449,7 +449,7 @@ def get_colorbar(variable,anomOrValue):
             maxColorbar=200
             palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
             colorbarLabel='Percent of climatology'
-            colorbarmap='RdBu'
+            colorbarmap='RdYlBu'
             colorbarsize='8';
         else:
             minColorbar=0
@@ -464,7 +464,7 @@ def get_colorbar(variable,anomOrValue):
             minColorbar=-5
             maxColorbar=5
             colorbarLabel='Difference from climatology (deg C)'
-            colorbarmap='BuRd'
+            colorbarmap='BuYlRd'
             colorbarsize='8';
         elif(variable=='tmmx'):
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
@@ -486,7 +486,7 @@ def get_colorbar(variable,anomOrValue):
             minColorbar=-25
             maxColorbar=25
             colorbarLabel='Difference from climatology'
-            colorbarmap='BuRd'
+            colorbarmap='BuYlRd'
             colorbarsize='8';
         elif(variable=='rmin'):
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
@@ -508,7 +508,7 @@ def get_colorbar(variable,anomOrValue):
             minColorbar=-25
             maxColorbar=25
             colorbarLabel='Difference from climatology (W/m2)'
-            colorbarmap='BuRd'
+            colorbarmap='BuYlRd'
             colorbarsize='8';
         else:
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
@@ -523,7 +523,7 @@ def get_colorbar(variable,anomOrValue):
             minColorbar=-2.5
             maxColorbar=2.5
             colorbarLabel='Difference from climatology (m/s)'
-            colorbarmap='BuRd'
+            colorbarmap='BuYlRd'
             colorbarsize='8';
         else:
             palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,5DC2C1,41B6C4,1D91C0,225EA8,253494,081D58"
@@ -538,7 +538,7 @@ def get_colorbar(variable,anomOrValue):
             maxColorbar=30
             palette="053061,2166AC,4393C3,67ADD1,92C5DE,D1E5F0,F7F7F7,FDDBC7,F4A582,E88465,D6604D,B2182B,67001F"
             colorbarLabel='Percent Difference from climatology'
-            colorbarmap='BuRd'
+            colorbarmap='BuYlRd'
             colorbarsize='8';
         else:
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026,D6604D,B2182B,67001F"
@@ -553,7 +553,7 @@ def get_colorbar(variable,anomOrValue):
             maxColorbar=20
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
             colorbarLabel='Difference from climatology'
-            colorbarmap='BuRd'
+            colorbarmap='BuYlRd'
             colorbarsize='8';
         else:
             palette="FFFFFF,FFFFCC,FFEDA0,FED976,FEB24C,FD8D3C,FC4E2A,E31A1C,BD0026,800026,000000"
@@ -568,7 +568,7 @@ def get_colorbar(variable,anomOrValue):
             maxColorbar=120
             palette="053061,2166AC,4393C3,92C5DE,D1E5F0,F7F7F7,FDDBC7,F4A582,D6604D,B2182B,67001F"
             colorbarLabel='Percent of climatology'
-            colorbarmap='BuRd'
+            colorbarmap='BuYlRd'
             colorbarsize='8';
         else:
             minColorbar=300
@@ -583,7 +583,7 @@ def get_colorbar(variable,anomOrValue):
             maxColorbar=100
             palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
             colorbarLabel='Percent change from climatology'
-            colorbarmap='RdBu'
+            colorbarmap='RdYlBu'
             colorbarsize='8';
         else:
             minColorbar=-220
@@ -598,7 +598,7 @@ def get_colorbar(variable,anomOrValue):
             maxColorbar=.4
             palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
             colorbarLabel='Percent of climatology'
-            colorbarmap='RdBu'
+            colorbarmap='RdYlBu'
             colorbarsize='8';
         else:
             minColorbar=-3
