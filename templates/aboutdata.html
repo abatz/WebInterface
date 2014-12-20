@@ -2,77 +2,63 @@
 
 {% block content %}
 
-        <div class="row">
-            <div class="col-lg-12">
-                <h3 class="page-header">
-			About Data
-                </h3>
-            </div>
-        </div>
-	<!----------------------------->
-        <!--      PAGINATION         -->
-        <!----------------------------->
-        <!-- Pagination -->
-        <div class="row text-center">
-            <div class="col-lg-12">
-                <ul class="pagination">
-                    <li class="active">
-                        <a href="#gridmetdescription" data-toggle="tab">GridMet</a>
-                    </li>
-                    <li>
-                        <a href="#landsatdescription" data-toggle="tab">LandSat</a>
-                    </li>
-                    <li>
-                        <a href="#modisdescription" data-toggle="tab">MODIS</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+<div class="row">
+	<div class="col-lg-12">
+    	<h3 class="page-header">About Data</h3>
+    </div>
+</div>
 
-	<div class="tab-content">
-		<div class="tab-pane active" id="gridmetdescription">
-			<!----------------------------->
-			<!--      GRIDMET           -->
-			<!----------------------------->
-			<div class="row">
-			    <div class="col-md-7 img-portfolio">
-                                  {% include 'descriptions/gridmet_description.html'%}
-			    </div>
-			    <div class="col-md-5 img-portfolio">
+<!-- Pagination -->
+<div class="row text-center">
+	<div class="col-lg-12">
+        <ul class="pagination">
+            <li class="active">
+                <a href="#gridmetdescription" data-toggle="tab">GridMet</a>
+            </li>
+            <li>
+                <a href="#landsatdescription" data-toggle="tab">LandSat</a>
+            </li>
+            <li>
+                <a href="#modisdescription" data-toggle="tab">MODIS</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="tab-content">
+	<div class="tab-pane active" id="gridmetdescription">
+		<!-- GRIDMET -->
+		<div class="row">
+			<div class="col-md-7 img-portfolio">
+                {% include 'descriptions/gridmet_description.html'%}
+			</div>
+			<div class="col-md-5 img-portfolio">
 				 <img src="images/METDATA.png" width="100%">
-			    </div>
 			</div>
 		</div>
-		<div class="tab-pane" id="landsatdescription">
-			<!----------------------------->
-			<!--      LANDSAT             -->
-			<!----------------------------->
-			<div class="row">
-			    <div class="col-md-7 img-portfolio">
-                                  {% include 'descriptions/landsat_description.html'%}
-			    </div>
-			    <div class="col-md-5 img-portfolio">
-				 <img src="images/LANDSAT_satellite.jpg" width="100%">
-			    </div>
-			</div>
-		</div>
-		<div class="tab-pane" id="modisdescription">
-			<!----------------------------->
-			<!--      MODIS              -->
-			<!----------------------------->
-			<div class="row">
-			    <div class="col-md-7 img-portfolio">
-                                  {% include 'descriptions/modis_description.html'%}
-			    </div>
-			    <div class="col-md-5 img-portfolio">
-				 <img src="images/MODIS_satellite.png" height="350px">
-			    </div>
-			</div>
-		</div>
-
-
-
-
 	</div>
+	<div class="tab-pane" id="landsatdescription">
+		<!-- LANDSAT  -->
+		<div class="row">
+			<div class="col-md-7 img-portfolio">
+                {% include 'descriptions/landsat_description.html'%}
+			</div>
+			<div class="col-md-5 img-portfolio">
+				<img src="images/LANDSAT_satellite.jpg" width="100%">
+			</div>
+		</div>
+	</div>
+	<div class="tab-pane" id="modisdescription">
+		<!-- MODIS -->
+		<div class="row">
+		    <div class="col-md-7 img-portfolio">
+                {% include 'descriptions/modis_description.html'%}
+			</div>
+			<div class="col-md-5 img-portfolio">
+				<img src="images/MODIS_satellite.png" height="350px">
+			</div>
+		</div>
+	</div>
+</div>
 
 {% endblock %}

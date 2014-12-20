@@ -1,78 +1,66 @@
- 	<!------------------------------------>
-        <!-- JQUERY/JQUERY UI/AJAX          -->
-        <!------------------------------------>
-	<script type="text/javascript"
-            src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<!-- JQUERY/JQUERY UI/AJAX -->
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
-	<!-- for date picker calendar -->
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
-	<script type="text/javascript" src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+<!-- for date picker calendar -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+<script type="text/javascript" src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 
- 	<!------------------------------------>
-        <!--		D3                  -->
-        <!------------------------------------>
+<!-- Load scripts -->
+<script type="text/javascript" src="media/myjs/get_colorbar.js"></script> <!-- COLORBAR --> 
+<script type="text/javascript" src="media/myjs/formListener.js"></script> <!-- FORM LISTENER -->
+<script type="text/javascript" src="media/myjs/showLoadingImage.js"></script> <!-- PROGRESS BAR -->
+<script type="text/javascript" src="media/myjs/zoomStates.js"></script> <!-- ZOOM TO STATE -->
+<script type="text/javascript" src="/media/myjs/colorbar.js"></script><!--DYNAMIC COLORBAR-->
+<script type="text/javascript" src="/media/myjs/colorbrewer.js"></script><!--DYNAMIC COLORBAR-->
+<!--<script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script>--><!--TRANSPARENCY SLIDER-->
 
- 	<!------------------------------------>
-        <!--		MY SCRIPTS           -->
-        <!------------------------------------>
-	<script type="text/javascript" src="media/myjs/get_colorbar.js"></script> <!-- COLORBAR --> 
-	<script type="text/javascript" src="media/myjs/formListener.js"></script> <!-- FORM LISTENER -->
-	<script type="text/javascript" src="media/myjs/showLoadingImage.js"></script> <!-- PROGRESS BAR -->
-	<script type="text/javascript" src="media/myjs/zoomStates.js"></script> <!-- ZOOM TO STATE -->
-	<script type="text/javascript" src="/media/myjs/colorbar.js"></script><!--DYNAMIC COLORBAR-->
-	<script type="text/javascript" src="/media/myjs/colorbrewer.js"></script><!--DYNAMIC COLORBAR-->
-	<!--<script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script>--><!--TRANSPARENCY SLIDER-->
-	<script type="text/javascript"> 
-		$(function(){
-		    $( "#dateStart" ).datepicker({
-		      //setDate: {{ dateStart }},
-		      changeMonth: true,
-		      changeYear: true,
-		      numberOfMonths: 3,
-		      //minDate: "01/01/1979",
-		      minDate: "1979-01-01",
-		      maxDate: "0",
-		      dateFormat: "yy-mm-dd",
-		      onClose: function( selectedDate ) {
-			$( "#dateEnd" ).datepicker( "option", "minDate", selectedDate );
-		      }
-		  }).datepicker('setDate', "{{ dateStart }}");
-		 $( "#dateEnd" ).datepicker({
-		      //defaultDate: {{ dateEnd }},
-		      changeMonth: true,
-		      changeYear: true,
-		      numberOfMonths: 3,
-		      minDate: "1979-01-01",
-		      //minDate: "01/01/1979",
-		      maxDate: "0",
-		      dateFormat: "yy-mm-dd",
-		      onClose: function( selectedDate ) {
-			$( "#dateStart" ).datepicker( "option", "maxDate", selectedDate );
+<script type="text/javascript"> 
+	$(function() {
+	    $( "#dateStart" ).datepicker({
+	    	//setDate: {{ dateStart }},
+		    changeMonth: true,
+		    changeYear: true,
+		    numberOfMonths: 3,
+		    //minDate: "01/01/1979",
+		    minDate: "1979-01-01",
+		    maxDate: "0",
+		    dateFormat: "yy-mm-dd",
+		    onClose: function( selectedDate ) 
+			{
+				$( "#dateEnd" ).datepicker( "option", "minDate", selectedDate );
 			}
-		  }).datepicker('setDate', '{{ dateEnd }}');
-		});
-	</script>
-	<!------------------------------------>
-        <!-- NOT USED YET -->
-        <!------------------------------------>
-	<!--<script type="text/javascript" src="media/myjs/infoMarkers.js"></script>--> <!-- INFO MARKERS -->
+		}).datepicker('setDate', "{{ dateStart }}");
+			$( "#dateEnd" ).datepicker({
+			    //defaultDate: {{ dateEnd }},
+			    changeMonth: true,
+			    changeYear: true,
+			    numberOfMonths: 3,
+			    minDate: "1979-01-01",
+			    //minDate: "01/01/1979",
+			    maxDate: "0",
+			    dateFormat: "yy-mm-dd",
+			    onClose: function( selectedDate ) {
+		$( "#dateStart" ).datepicker( "option", "maxDate", selectedDate );
+		}
+		}).datepicker('setDate', '{{ dateEnd }}');
+	});
+</script>
+	
+<!-- Google Earth Map -->
+<script src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
 
-	<!------------------------------------>
-        <!-- Google Earth Map -->
-        <!------------------------------------>
-	 <script src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
-	 <script type="text/javascript">
- 	      var MAPID = "{{ mapid }}";
-	      var TOKEN = "{{ token }}";
-          var eeMapOptions = {
-			getTileUrl: function(tile, zoom) {
-				  var url = ['https://earthengine.googleapis.com/map',
+<script type="text/javascript">
+    var MAPID = "{{ mapid }}";
+	var TOKEN = "{{ token }}";
+    var eeMapOptions = {
+		getTileUrl: function(tile, zoom) {
+			var url = ['https://earthengine.googleapis.com/map',
 					     MAPID, zoom, tile.x, tile.y].join("/");
-				  url += '?token=' + TOKEN
-				  return url;
+			url += '?token=' + TOKEN
+			return url;
 			},
 			tileSize: new google.maps.Size(256, 256)
-	      };
+	    };
 	      var mapType = new google.maps.ImageMapType(eeMapOptions);
 
 	      var map=null;
