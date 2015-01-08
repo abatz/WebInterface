@@ -25,13 +25,6 @@ template_dir = os.path.join(os.path.dirname(__file__),'templates')
 JINJA_ENVIRONMENT= jinja2.Environment(autoescape=True,
     loader=jinja2.FileSystemLoader(template_dir))
 
-#############################################
-##       HOME PAGE                         ##
-#############################################
-class MainPage(webapp2.RequestHandler):
-    def get(self):
-        template = JINJA_ENVIRONMENT.get_template('home.html')
-        self.response.out.write(template.render({}))
 
 #############################################
 ##       DROUGHT TOOL PAGE                 ##
@@ -244,39 +237,10 @@ class DroughtTool(webapp2.RequestHandler):
         self.response.out.write(template.render(template_values))
 
 #############################################
-##       CONTACT PAGE                      ##
-#############################################
-#class ContactPage(webapp2.RequestHandler):
-#	def get(self):
-#		template = JINJA_ENVIRONMENT.get_template('contact.html')
-#		self.response.out.write(template.render({}))
-
-#############################################
-##       ABOUT DATA PAGE                   ##
-#############################################
-#class DataPage(webapp2.RequestHandler):
-#	def get(self):
-#		template = JINJA_ENVIRONMENT.get_template('aboutdata.html')
-#		self.response.out.write(template.render({}))
-
-#############################################
-##       ABOUT METRIC PAGE                 ##
-#############################################
-#class MetricsPage(webapp2.RequestHandler):
-#	def get(self):
-#		template = JINJA_ENVIRONMENT.get_template('aboutmetrics.html')
-#		self.response.out.write(template.render({}))
-
-#############################################
 ##       URL MAPPING                        ##
 #############################################
 app = webapp2.WSGIApplication(
-    [#('/', MainPage),
+    [
     ('/', DroughtTool),
-    #('/droughttool', DroughtTool),
-    #('/droughttool/', DroughtTool),
-    #('/contact',ContactPage),
-    #('/aboutdata',DataPage),
-    #('/aboutmetrics',MetricsPage)
 ],
 debug=True)
