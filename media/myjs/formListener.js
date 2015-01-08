@@ -223,8 +223,8 @@ $(function(){
                 }
          }else if(jQuery('.basicvariable').val()=='pdsi'){
                  if(jQuery('.anomOrValue').val()=='anom'){
-                        minColorbar =-.4;
-                        maxColorbar =.4;
+                        minColorbar =-6;
+                        maxColorbar =6;
                         palette="053061,2166AC,4393C3,92C5DE,D1E5F0,F7F7F7,FDDBC7,F4A582,D6604D,B2182B,67001F"
                         colorbarmap='RdYlBu' 
                         colorbarsize=8
