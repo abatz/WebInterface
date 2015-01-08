@@ -44,7 +44,7 @@
 		      numberOfMonths: 3,
 		      minDate: "1979-01-01",
 		      //minDate: "01/01/1979",
-		      maxDate: "0",
+		      maxDate: "-2d",
 		      dateFormat: "yy-mm-dd",
 		      onClose: function( selectedDate ) {
 			$( "#dateStart" ).datepicker( "option", "maxDate", selectedDate );
