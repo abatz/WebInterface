@@ -53,6 +53,7 @@
         {% include 'aboutmetricsmodal.html'%}
         {% include 'sharelinkmodal.html'%}
         {% include 'optionsmodal.html'%}
+        {% include 'droughthomemodal.html'%}
 
 	</div>
 

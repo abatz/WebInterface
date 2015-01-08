@@ -229,11 +229,11 @@ $(function(){
                         colorbarmap='RdYlBu' 
                         colorbarsize=8
                 }else{
-                        minColorbar = -3;
-                        maxColorbar = 3; 
+                        minColorbar = -6;
+                        maxColorbar = 6; 
                         palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FFF6A7,FEE090,FDAE61,F46D43,D73027,A50026"
                         colorbarmap='RdBu' //need inverse
-                        colorbarsize=6
+                        colorbarsize=8
                 }
 	 }else if(jQuery('.basicvariable').val()=='wb'){
                  if(jQuery('.anomOrValue').val()=='anom'){

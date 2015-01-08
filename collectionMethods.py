@@ -601,8 +601,8 @@ def get_colorbar(variable,anomOrValue):
             colorbarmap='RdYlBu'
             colorbarsize='8';
         else:
-            minColorbar=-3
-            maxColorbar=3
+            minColorbar=-6
+            maxColorbar=6
             palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
             colorbarLabel=''
             colorbarmap='RdBu'
