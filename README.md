@@ -2,7 +2,7 @@
 
 Code repository for the Google Drought web interface and tool under development by the Desert Research Institute, Google, and the University of Idaho.
 
-You can find the most up-to-date deployments [here] (http://khegewisch-test.appspot.com/) and [here] (http://gd-britta.appspot.com/).
+You can find the most up-to-date deployments [here] (http://drought-monitor.appspot.com/) and [here] (http://gd-britta.appspot.com/).
 
 ### Links & Resources
 - [DRI landing page] (http://www.dri.edu/google-drought)
