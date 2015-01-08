@@ -29,9 +29,9 @@
 		      changeMonth: true,
 		      changeYear: true,
 		      numberOfMonths: 3,
-		      //minDate: "01/01/1979",
 		      minDate: "1979-01-01",
-		      maxDate: "0",
+		      #minDate: {{ minDate }}, #need to fix.. to be dependent on dataset selected
+		      maxDate: "-2d",
 		      dateFormat: "yy-mm-dd",
 		      onClose: function( selectedDate ) {
 			$( "#dateEnd" ).datepicker( "option", "minDate", selectedDate );
@@ -43,7 +43,7 @@
 		      changeYear: true,
 		      numberOfMonths: 3,
 		      minDate: "1979-01-01",
-		      //minDate: "01/01/1979",
+		      #minDate: {{ minDate }}, #need to fix.. to be dependent on dataset selected
 		      maxDate: "-2d",
 		      dateFormat: "yy-mm-dd",
 		      onClose: function( selectedDate ) {
