@@ -54,8 +54,12 @@ class DroughtTool(webapp2.RequestHandler):
 
         self.mapCenterLongLat = self.request.get('mapCenterLongLat','-112,42')
 
-        self.dateStart = self.request.get('dateStart','2014-06-01')
-        self.dateEnd = self.request.get('dateEnd','2014-08-31')
+	tempstart = datetime.date.today()-datetime.timedelta(days=30)
+	tempend = datetime.date.today()-datetime.timedelta(days=2)
+        self.dateStart = self.request.get('dateStart',tempstart.strftime('%Y-%m-%d'))
+        self.dateEnd = self.request.get('dateEnd',tempend.strftime('%Y-%m-%d'))
+        #self.dateStart = self.request.get('dateStart','2014-06-01')
+        #self.dateEnd = self.request.get('dateEnd','2014-08-31')
 
         self.pointsLongLat = self.request.get('pointsLongLat','-112.0,42.0')
 
@@ -88,7 +92,7 @@ class DroughtTool(webapp2.RequestHandler):
             #self.palette,self.minColorbar,self.maxColorbar,self.colorbarLabel=collectionMethods.get_colorbar(self.variable,self.anomOrValue)
 
     def set_share_link(self, initial_template_values):
-        shareLink = 'khegewisch-test.appspot.com?'
+        shareLink = 'drought-monitor.appspot.com?'
         for key, val in initial_template_values.iteritems():
             if str(key[0:4]) == 'form':
                 continue
