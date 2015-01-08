@@ -601,11 +601,11 @@ def get_colorbar(variable,anomOrValue):
             colorbarmap='RdYlBu'
             colorbarsize='8';
         else:
-            minColorbar=-3
-            maxColorbar=3
-            palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
+            minColorbar=-6
+            maxColorbar=6
+            palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061";
             colorbarLabel=''
-            colorbarmap='RdBu'
+            colorbarmap='RdYlBu'
             colorbarsize='8';
 
     return (colorbarmap,colorbarsize,minColorbar,maxColorbar,colorbarLabel);
