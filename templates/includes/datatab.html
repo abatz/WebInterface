@@ -17,7 +17,7 @@
 				#Notes: {{ notes }}<br>
 				#<br>
 				{% for point in timeSeriesData  %}
-				    Location: {{point.LongLat }}<br>
+				    #Location: {{point.LongLat }}<br>
 				    {% for date_val in point.Data %}
 					{{ date_val.0 }}, {{ date_val.1 }}<br>
 				    {% endfor %}

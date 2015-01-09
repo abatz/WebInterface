@@ -24,6 +24,16 @@
 	<script type="text/javascript" src="/media/myjs/colorbar.js"></script><!--DYNAMIC COLORBAR-->
 	<script type="text/javascript" src="/media/myjs/colorbrewer.js"></script><!--DYNAMIC COLORBAR-->
 	<!--<script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script>--><!--TRANSPARENCY SLIDER-->
+	
+	<!-- for revealing modal window on page load -->
+	<!--<script type="text/javascript" src="/media/js/foundation.min.js">-->
+	<script type="text/javascript">
+		<!--$(document).ready(function() {  -->
+		<!--	$('#droughthome').click()-->
+		<!--});-->
+	</script><!--Loads modal window on page load-->
+
+
 	<script type="text/javascript"> 
 		$(function(){
 		    $( "#dateStart" ).datepicker({
