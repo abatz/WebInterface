@@ -13,7 +13,7 @@
 
 		<!-- Menu form -->
 		<div id="menu">
-			<form   {% if timeSeriesData%}action="#timeseriesoutput"{% else %}action="/"{% endif %} id="form_map" method="post" onsubmit="showLoadingImage.show_loading()">
+			<form   {% if timeSeriesData%} action="#timeseriesoutput"{% else %}action="/"{% endif %} id="form_map" method="post" onsubmit="showLoadingImage.show_loading()">
 				{% include 'includes/dataform.html'%}
 			</form>
 		</div>

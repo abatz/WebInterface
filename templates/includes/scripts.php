@@ -28,6 +28,11 @@
 	<!-- for revealing modal window on page load -->
 	<!--<script type="text/javascript" src="/media/js/foundation.min.js">-->
 	<script type="text/javascript">
+		$(document).ready(function() {
+                        setTimeout( function() {
+				$('#droughtHome').click();
+				}, 2000);
+                });
 		<!--$(document).ready(function() {  -->
 		<!--	$('#droughthome').click()-->
 		<!--});-->
@@ -99,7 +104,6 @@
             var mapCenterLong = parseFloat(mapCenterLongLat.split(',')[0]);
 
 		var myCenter = new google.maps.LatLng(mapCenterLat, mapCenterLong);
-		//var myCenter = new google.maps.LatLng(pointsLat, pointsLong);
 		var myZoom ={{ mapzoom }}
 		var mapOptions = {
 		  center: myCenter,
@@ -186,11 +190,11 @@
         var pointsLongLat = document.getElementById('pointsLongLat').value.replace(' ','');
         var point_list = pointsLongLat.split(',');
         var pLat,pLong, pointmarkers = [];
-        //FIX ME: mulyi points not working correctly!!
+	//FIX ME: multi points not working correctly!!
         //Take first coords form pointsLongLat input variable for marker showing
         pLat = parseFloat(point_list[1]);
         pLong = parseFloat(point_list[0]);
-        /*
+	/*
         for (i=0;i<point_list.length - 1;i+=2){
             pLat = parseFloat(point_list[i+1]);
             pLong = parseFloat(point_list[i]);
@@ -223,7 +227,7 @@
             window.pointmarker.setVisible(false);
         }
         window.pointmarkers = pointmarkers;
-        */ 
+	*/
         window.pointmarker = new google.maps.Marker({
                 position:new google.maps.LatLng(parseFloat(pLat),parseFloat(pLong)),
                 map: map, 
@@ -233,9 +237,7 @@
 			  var div = document.createElement('div');
 			  var longitude=a.latLng.lng().toFixed(4)
 			  var latitude=a.latLng.lat().toFixed(4)
-			  document.getElementById('pointLatLong').value = longitude+','+latitude;
-			  document.getElementById('pointLat').value = latitude;
-			  document.getElementById('pointLong').value = longitude;
+			  document.getElementById('pointsLongLat').value = longitude+','+latitude;
 		});
         if (domainType == 'points' && timeSeriesGraphData != '') {
             window.pointmarker.setVisible(true); 

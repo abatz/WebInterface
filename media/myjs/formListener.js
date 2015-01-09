@@ -328,6 +328,7 @@ $(function(){
 	/*--------------------------------------------*/
 	/*        POINT  LISTENER 		      */
 	/*--------------------------------------------*/
+/* Not used because point strings are in a single text box
 	  jQuery('#pointLat').keyup( function(){
 		 var latitude =parseFloat(document.getElementById('pointLat').value);
 		 var longitude=parseFloat(document.getElementById('pointLong').value);
@@ -342,7 +343,7 @@ $(function(){
                 window.pointmarker.setPosition(newLatLng);
 		window.map.setCenter(newLatLng);
         });
-	
+*/	
 	/*--------------------------------------------*/
 	/*        DOMAIN  LISTENER 		      */
 	/*--------------------------------------------*/
