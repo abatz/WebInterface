@@ -100,8 +100,8 @@
 
        		geocoder = new google.maps.Geocoder();
             var mapCenterLongLat = "{{ mapCenterLongLat}}";
-            var mapCenterLat = parseFloat(mapCenterLongLat.split(',')[1]);
-            var mapCenterLong = parseFloat(mapCenterLongLat.split(',')[0]);
+            var mapCenterLat = parseFloat(mapCenterLongLat.split(',')[1]).toFixed(4);
+            var mapCenterLong = parseFloat(mapCenterLongLat.split(',')[0]).toFixed(4);
 
 		var myCenter = new google.maps.LatLng(mapCenterLat, mapCenterLong);
 		var myZoom ={{ mapzoom }}
@@ -142,16 +142,16 @@
 		google.maps.event.addListener(map,'center_changed',function(){
 		  if(map.getCenter()!= myCenter) {
 			newCenter = map.getCenter();
-			newCenter = newCenter.replace('[','').replace(']','');
-			alert(newCenter)
-			newCenter = newCenter.split(',');
-			myCenterLat = newCenter[1];
-			myCenterLong = newCenter[0];
+			//newCenter = newCenter.replace('[','').replace(']','');
+			console.log(newCenter)
+			//newCenter = newCenter.split(',');
+			//myCenterLat = newCenter[1];
+			//myCenterLong = newCenter[0];
 			 //document.getElementById('mapCenterLongLat').value =map.getCenter();
 			//myZoom = map.getZoom();
 		  }
 		});
-		*/
+		*/ 
 
 		/*********************************
 		*     COLORBAR                   *
