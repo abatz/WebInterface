@@ -328,6 +328,51 @@ $(function(){
 	/*--------------------------------------------*/
 	/*        POINT  LISTENER 		      */
 	/*--------------------------------------------*/
+	jQuery('#pointsLongLat').keyup( function(){
+		 var pointsLongLat = document.getElementById('pointsLongLat').value.replace(' ','');
+		 var point_list = pointsLongLat.split(',');
+		 pLat = parseFloat(point_list[1]);
+                 pLong = parseFloat(point_list[0]);
+		 for (i=0;i<point_list.length - 1;i+=2){
+                    pLat = parseFloat(point_list[i+1]);
+                    pLong = parseFloat(point_list[i]);
+                    //bounds.extend(new google.maps.LatLng(pLat,pLong));
+                    var points_pre, points_post, new_point_list =[]
+                    if (i > 0){
+                        points_pre = point_list.splice(0,i);
+                    }
+                    else {
+                        var points_pre =[];
+                    }
+                    if (i < point_list.length - 2) {
+                        points_post = point_list.splice(i+2, point_list.length);
+                    }
+                    else {
+                        points_post = [];
+                    }
+	 	   var pointmarker = new google.maps.Marker({
+                        position:new google.maps.LatLng(pLat,pLong),
+                        map: map,
+                        draggable: true
+                    });
+                    google.maps.event.addListener(pointmarker, 'dragend', function(a) {
+                        var div = document.createElement('div');
+                        var longitude=a.latLng.lng().toFixed(4);
+                        var latitude=a.latLng.lat().toFixed(4);
+                        var new_point_list = points_pre.concat([String(longitude),String(latitude)]).concat(points_post);
+                        document.getElementById('pointsLongLat').value = new_point_list.join();
+                    });
+                    window.pointmarker.setVisible(false);
+                }
+                window.pointmarkers = pointmarkers;
+		console.log(window.pointmarkers)
+	
+		 var newLatLng = new google.maps.LatLng(pLat, pLon); 
+		 window.pointmarker.setPosition(newLatLng);
+		 window.map.setCenter(newLatLng);
+        });
+
+
 /* Not used because point strings are in a single text box
 	  jQuery('#pointLat').keyup( function(){
 		 var latitude =parseFloat(document.getElementById('pointLat').value);
