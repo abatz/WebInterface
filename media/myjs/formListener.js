@@ -231,13 +231,8 @@ $(function(){
                 }else{
                         minColorbar = -6;
                         maxColorbar = 6; 
-<<<<<<< HEAD
-                        palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FFF6A7,FEE090,FDAE61,F46D43,D73027,A50026"
-                        colorbarmap='RdBu' //need inverse
-=======
                         palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061";
                         colorbarmap='RdYlBu' //need inverse
->>>>>>> features
                         colorbarsize=8
                 }
 	 }else if(jQuery('.basicvariable').val()=='wb'){

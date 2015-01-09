@@ -54,6 +54,7 @@
         {% include 'sharelinkmodal.html'%}
         {% include 'optionsmodal.html'%}
         {% include 'droughthomemodal.html'%}
+        {% include 'caseStudiesModal.html'%}
 
 	</div>
 
