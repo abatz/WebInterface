@@ -118,7 +118,7 @@
 		};
 
 		//window.map = new google.maps.Map(document.getElementById("map"),mapOptions);
-        map = new google.maps.Map(document.getElementById("map"),mapOptions);
+        	map = new google.maps.Map(document.getElementById("map"),mapOptions);
  		function showNewRect(event) {
                   var ne = rectangle.getBounds().getNorthEast();
                   var sw = rectangle.getBounds().getSouthWest();
@@ -128,6 +128,30 @@
                     document.getElementById('SWLat').value = sw.lat().toFixed(4);
                     document.getElementById('SWLong').value = sw.lng().toFixed(4);
                 }
+
+		/*********************************
+		*     ZOOM/CENTER CHANGED                   *
+		*********************************/
+		google.maps.event.addListener(map,'zoom_changed',function(){
+		  if(map.getZoom()!= myZoom) {
+			 document.getElementById('mapzoom').value =map.getZoom();
+			myZoom = map.getZoom();
+		  }
+		});
+		/*  This is not right.. trying to listen to map center changes
+		google.maps.event.addListener(map,'center_changed',function(){
+		  if(map.getCenter()!= myCenter) {
+			newCenter = map.getCenter();
+			newCenter = newCenter.replace('[','').replace(']','');
+			alert(newCenter)
+			newCenter = newCenter.split(',');
+			myCenterLat = newCenter[1];
+			myCenterLong = newCenter[0];
+			 //document.getElementById('mapCenterLongLat').value =map.getCenter();
+			//myZoom = map.getZoom();
+		  }
+		});
+		*/
 
 		/*********************************
 		*     COLORBAR                   *
