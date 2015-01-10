@@ -56,6 +56,7 @@
         {% include 'droughthomemodal.html'%}
         {% include 'caseStudiesModal.html'%}
         {% include 'tutorialModal.html'%}
+        {% include 'introvideoModal.html'%}
 
 	</div>
 
