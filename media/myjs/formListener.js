@@ -1,6 +1,19 @@
 $(function(){
 
 
+	jQuery('.layers').on('change','input[type=checkbox]', function(){
+		if($('input[id=stateslayer]:checked').val()=="stateslayer"){
+		  window.statemarkerOverLayer.setMap(window.map);
+		}else{
+		  window.statemarkerOverLayer.setMap(null);
+		};
+		if($('input[id=kmllayer]:checked').val()=="kmllayer"){
+		  window.kmlmarkerLayer.setMap(window.map);
+		}else{
+		  window.kmlmarkerLayer.setMap(null);
+		};
+	});
+
 	/*--------------------------------------------*/
 	/*         INFOMARKER LISTENER **BROKEN       */
 	/*--------------------------------------------*/

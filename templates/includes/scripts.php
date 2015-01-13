@@ -112,7 +112,8 @@
 		  streetViewControl: false,
                   mapTypeControl: true,
                    navigationControl: true, 
-		  mapTypeId: google.maps.MapTypeId.ROADMAP,
+		  //mapTypeId: google.maps.MapTypeId.ROADMAP,
+		  mapTypeId: google.maps.MapTypeId.DEFAULT,
                   mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
 		  clickable:true,
 		};
@@ -314,6 +315,15 @@
 	
           	}); //end listener
 		window.statemarkerLayer.setMap(null);
+		/*********************************
+		*      STATES OVERLAY                   *
+		*********************************/
+		window.statemarkerOverLayer = new google.maps.KmlLayer('http://nimbus.cos.uidaho.edu/hegewisch/USStatesOutline.kmz', {
+                map:map,
+                    preserveViewport: true,
+                    suppressInfoWindows: false
+                 }); //end KmlLayer
+		window.statemarkerOverLayer.setMap(null);
 		/*********************************
 		*      KML LAYER                    *
 		*********************************/

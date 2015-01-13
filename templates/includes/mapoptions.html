@@ -126,15 +126,18 @@
                <!--      LAYERS          -->
                <!----------------------------->
                 <b>Layers:</b>
-                <div class="kmlurl">
-                        <b>KML/KMZ Layer (url of file):</b><br>
-                        <input id="kmlurl" name="kmlurl" value="{{ kmlurl }}" size="50" />
-                </div>
-                {% if form_error.kmlurl %}
-                        <br>
-                        <div class="error">{{ form_error.minColorbar }}</div>
-                        <br>
-                {% endif %}
+		<div class="layers">
+			<input type="checkbox" name="layers[]" value="stateslayer" id="stateslayer">US States Layer<br>
+			<input type="checkbox" name="layers[]" value="kmllayer" id="kmllayer">KML/KMZ Layer (url of file):<br>
+			<div class="kmlurl">
+				<input id="kmlurl" name="kmlurl" value="{{ kmlurl }}" size="50" />
+			</div>
+			{% if form_error.kmlurl %}
+				<br>
+				<div class="error">{{ form_error.minColorbar }}</div>
+				<br>
+			{% endif %}
+		</div>
            </td>
         </tr>
 	</table>
