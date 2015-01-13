@@ -15,22 +15,20 @@ def get_images(template_values):
         TV[key] = val
     var = TV['variable'];aOV = TV['anomOrValue']
     dT = TV['domainType']
-    dS = TV['dateStart']; dE = TV['dateEnd']
+    dS = TV['dateStart']; dE = TV['dateEnd'];
+    units=TV['units'];
     pointsLongLat = str(TV['pointsLongLat']) #string of comma separates llon,lat pairs
     pointsLongLatList = pointsLongLat.split(',')
     pointsLongLatTuples = [[float(pointsLongLatList[i]),float(pointsLongLatList[i+1])] for i in range(0,len(pointsLongLatList) - 1,2)]
     palette=TV['palette'];
     #get map palette options
-    colorbarmap,colorbarsize,minColorbar,maxColorbar,colorbarLabel=get_colorbar(str(var),str(aOV))
-    #palette,minColorbar,maxColorbar,colorbarLabel=get_colorbar(str(var),str(aOV))
+    colorbarmap,colorbarsize,minColorbar,maxColorbar,colorbarLabel=get_colorbar(str(var),str(aOV),units)
 
     #Override max/minColorbar if user entered custom value
     if 'minColorbar' in template_values.keys():
         minColorbar = template_values['minColorbar']
     if 'maxColorbar' in template_values.keys():
         maxColorbar = template_values['maxColorbar']
-    #if 'palette' in template_values.keys():
-    #    palette = template_values['palette']
     if 'colorbarmap' in template_values.keys():
         colorbarmap = template_values['colorbarmap']
     if 'colorbarsize' in template_values.keys():
@@ -48,20 +46,15 @@ def get_images(template_values):
     subdomain = ee.Feature.MultiPoint(pointsLongLatTuples)
     if(dT == 'states'):
         subdomain = template_values['state']
-        mapzoom=4; #would like to zoom in on that state
     elif(dT == 'full' and product == 'modis'):
         points = subdomain
-        mapzoom=4
     elif(dT=='full' and product=='gridded'):
         points = subdomain
-        mapzoom=5
     elif(dT=='rectangle'):
         subdomain = ee.Feature.Rectangle(float(TV['SWLong']),float(TV['SWLat']),float(TV['NELong']),float(TV['NELat']))
         points = subdomain
-        mapzoom=4
     else:
         points = subdomain
-        mapzoom=4
     timeSeriesData = [];timeSeriesGraphData =[]
     mapid = {'mapid':[],'token':[]}
     if var == 'wb':
@@ -81,24 +74,35 @@ def get_images(template_values):
         mapid = map_collection(collection,TV['opacity'],palette,minColorbar,maxColorbar)
     else:
         collection = ee.ImageCollection(collectionName).filterDate(dS,dE).select([var],[var])
+	#==============
         #Time Series
-        if  dT == 'points' and points:
-            timeSeriesData, timeSeriesGraphData = get_time_series(collection,var,pointsLongLatTuples)
-        #collection = filter_domain1(collection,dT, subdomain)
-        collection = get_statistic(collection,var,statistic,aOV);
-        collection = filter_domain2(collection,dT,subdomain)
-        if  aOV in ['anom','clim']:
-            collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV)
-            TV['climatologyNotes'] = climatologyNotes
-        #the earth engine call
-        mapid = map_collection(collection,TV['opacity'],palette,minColorbar,maxColorbar)
+	#==============
+        if  dT == 'points' and points: 
+            #collection=check_units_timeseries(collection,var,'value',units);  
+            timeSeriesData, timeSeriesGraphData = get_time_series(collection,var,pointsLongLatTuples,units); 
+	else: 
+	    #==============
+            #Maps
+	    #==============
+	    #collection = filter_domain1(collection,dT, subdomain)
+	    collection = get_statistic(collection,var,statistic,aOV);
+	    collection = filter_domain2(collection,dT,subdomain)
+	    if  aOV in ['anom','clim']:
+	        collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV)
+	        TV['climatologyNotes'] = climatologyNotes
+	    if aOV in ['value','clim']:
+	        collection=check_units(collection,var,'value',units);
+	    else:
+	        collection=check_units(collection,var,'anom',units);
+	    #the earth engine call
+	    mapid = map_collection(collection,TV['opacity'],palette,minColorbar,maxColorbar)
+	#==============
     #Update template values
     extra_template_values = {
         'source': source,
         'product':product,
         'productLongName': collectionLongName,
         'title': title,
-        #'palette': palette,
         'colorbarLabel': colorbarLabel,
         'minColorbar': minColorbar,
         'maxColorbar': maxColorbar
@@ -235,7 +239,9 @@ def get_collection(variable):
 #===========================================
 #    GET_TIMESERIES
 #===========================================
-def get_time_series(collection, variable, pointsLongLatTuples):
+def get_time_series(collection, variable, pointsLongLatTuples,units):
+    #TO-DO: need to apply check_units to time series data (pref after finding point data)
+    #collection=check_units_timeseries(collection,var,'value',units);  
     ######################################################
     #### Data in list format
     ######################################################
@@ -250,6 +256,7 @@ def get_time_series(collection, variable, pointsLongLatTuples):
         return timeSeriesData
     '''
     dataList.pop(0) #remove first row of list ["id","longitude","latitude","time",variable]
+
     ######################################################
     #### Format data for figure and data tabs
     #### Ech point gets it's own dictionary
@@ -337,9 +344,6 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
          climatology = ee.Image(climatology.mean());
 
     if(anomOrValue=='clim'):
-        if((variable=='tmmx' or variable=='tmmn')):
-            climatology=climatology.subtract(273.15)   #convert to C
-            #climatology=climatology.subtract(273.15).multiply(1.8).add(32); #convert to F
         mask = collection.gt(-9999);
         climatology = climatology.mask(mask);
         collection=climatology;
@@ -379,12 +383,29 @@ def get_statistic(collection,variable,statistic,anomOrValue):
          collection = collection.median();
     elif(statistic=='Total'):
          collection = collection.sum();
-
-    if((anomOrValue=='value' or anomOrValue=='clim') and (variable=='tmmx' or variable=='tmmn')):
-        collection=collection.subtract(273.15)  #convert to C
-        #collection=collection.subtract(273.15).multiply(1.8).add(32); #convert to F
-
     return (collection);
+
+#===========================================
+#   CHECK_UNITS
+#===========================================
+def check_units(collection,variable,anomOrValue,units):
+    #anomOrValue = 'anom' or 'value'... not the variable being passed 
+
+    if(variable=='tmmx' or variable=='tmmn'):
+        if(anomOrValue=='value'):
+            collection=collection.subtract(273.15)  #convert K to C
+        if(units=='english'):
+            collection=collection.multiply(1.8);    #convert C anom to F anom
+	if(units=='english' and anomOrValue=='value'):
+	    collection = collection.add(32);        #convert C values to F values
+    if(variable=='pr' or variable=='pet' or variable=='wb'):
+        if(units=='english' and anomOrValue=='value'):  #don't need to convert for anom
+            collection=collection.divide(25.4); #convert mm to inches
+    if(variable=='vs'):
+        if(units=='english'):
+            collection=collection.multiply(2.23694); #convert m/s to mi/h 
+
+    return(collection);
 
 #===========================================
 #   SECOND_FILTER_DOMAIN (for clipping/masking)
@@ -407,7 +428,7 @@ def filter_domain2(collection,domainType, subdomain):
 #===========================================
 #   GET_COLORBAR
 #===========================================
-def get_colorbar(variable,anomOrValue):
+def get_colorbar(variable,anomOrValue,units):
     #Set defaults to avoid error
     palette = ""
     minColorbar = 999
@@ -418,14 +439,14 @@ def get_colorbar(variable,anomOrValue):
             palette="A50026,D73027,F46D43,FDAE61,FEE08B,FFFFBF,D9EF8B,A6D96A,66BD63,1A9850,006837"
             minColorbar=-.4
             maxColorbar=.4
-            colorbarLabel='Difference from climatology'
+            colorbarLabel=variable+' Difference from climatology'
             colorbarmap='RdYlGn'
             colorbarsize='8';
         else:
             palette="FFFFE5,F7FCB9,D9F0A3,ADDD8E,93D284,78C679,41AB5D,238443,006837,004529"
             minColorbar=-.1
             maxColorbar=.9
-            colorbarLabel=''
+            colorbarLabel=variable;
             colorbarmap='YlGn'
             colorbarsize='9';
     elif(variable=='NDSI' or variable=='NDWI'):
@@ -433,51 +454,70 @@ def get_colorbar(variable,anomOrValue):
             palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
             minColorbar=-.5
             maxColorbar=.5
-            colorbarLabel='Difference from climatology'
+            colorbarLabel=variable+' Difference from climatology'
             colorbarmap='RdYlBu'
             colorbarsize='88888888';
         else:
             palette="08306B,08519C,2171B5,4292C6,6BAED6,9ECAE1,C6DBEF,DEEBF7,F7FBFF"
             minColorbar=-.2
             maxColorbar=.7
-            colorbarLabel=''
+            colorbarLabel=variable;
             colorbarmap='invBlues'
             colorbarsize='8';
     elif(variable=='pr'):
         if(anomOrValue=='anom'):
             minColorbar=0
-            maxColorbar=200
+            maxColorbar=200; #%
             palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
-            colorbarLabel='Percent of climatology'
+            colorbarLabel='Precipitation Amount as Percent of climatology'
             colorbarmap='RdYlBu'
             colorbarsize='8';
         else:
             minColorbar=0
-            maxColorbar=400
             palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,41B6C4,1D91C0,225EA8,0C2C84"
-            colorbarLabel='mm'
+	    if(units=='metric'):
+           	 colorbarLabel='Precipitation Amount( '+'mm'+' )';
+                 maxColorbar=400;
+	    elif(units=='english'):
+           	 colorbarLabel='Precipitation Amount( '+'in'+' )';
+                 maxColorbar=16;
             colorbarmap='YlGnBu'
             colorbarsize='8';
     elif(variable=='tmmx' or variable=='tmmn'):
         if(anomOrValue=='anom'):
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
-            minColorbar=-5
-            maxColorbar=5
-            colorbarLabel='Difference from climatology (deg C)'
+	    if(units=='metric'):
+		 colorbarLabel='Temperature Difference from climatology (deg C)'
+                 minColorbar=-5
+                 maxColorbar=5
+	    elif(units=='english'):
+		 colorbarLabel='Temperature Difference from climatology (deg F)'
+                 minColorbar=-10
+                 maxColorbar=10
             colorbarmap='BuYlRd'
             colorbarsize='8';
         elif(variable=='tmmx'):
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
-            minColorbar=-20
-            maxColorbar=30
-            colorbarLabel='deg C'
+	    if(units=='metric'):
+		 colorbarLabel='Temperature (deg C)'
+                 minColorbar=-20
+                 maxColorbar=30
+	    elif(units=='english'):
+		 colorbarLabel='Temperature (deg F)'
+                 minColorbar=0
+                 maxColorbar=100
             colorbarmap='BuRd'
             colorbarsize='8';
         elif(variable=='tmmn'):
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
-            minColorbar=-30
-            maxColorbar=20
-            colorbarLabel='deg C'
+	    if(units=='metric'):
+		 colorbarLabel='Temperature (deg C)'
+	         minColorbar=-20
+	         maxColorbar=20
+	    elif(units=='english'):
+		 colorbarLabel='Temperature (deg F)'
+	         minColorbar=0
+	         maxColorbar=80
             colorbarmap='BuRd'
             colorbarsize='8';
     elif(variable=='rmin' or variable=='rmax'):
@@ -507,29 +547,44 @@ def get_colorbar(variable,anomOrValue):
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
             minColorbar=-25
             maxColorbar=25
-            colorbarLabel='Difference from climatology (W/m2)'
+	    if(units=='metric'):
+            	colorbarLabel='Radiation Difference from climatology (W/m2)'
+	    elif(units=='english'):
+            	colorbarLabel='Radiation Difference from climatology (W/m2)'
             colorbarmap='BuYlRd'
             colorbarsize='8';
         else:
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
             minColorbar=100
             maxColorbar=350
-            colorbarLabel='W /m2'
+	    if(units=='metric'):
+		colorbarLabel='Radiation(' +'W /m2'+' )';
+	    elif(units=='english'):
+            	colorbarLabel='Radiation(' +'W /m2'+' )';
             colorbarmap='BuRd'
             colorbarsize='8';
     elif(variable=='vs'):
         if(anomOrValue=='anom'):
             palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
-            minColorbar=-2.5
-            maxColorbar=2.5
-            colorbarLabel='Difference from climatology (m/s)'
+	    if(units=='metric'):
+		colorbarLabel='Wind Speed Difference from climatology(' +'m/s'+' )';
+                minColorbar=-2.5;
+                maxColorbar=2.5;
+	    elif(units=='english'):
+		colorbarLabel='Wind Speed Difference from climatology(' +'mi/hr'+' )';
+                minColorbar=-5;
+                maxColorbar=5;
             colorbarmap='BuYlRd'
             colorbarsize='8';
         else:
             palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,5DC2C1,41B6C4,1D91C0,225EA8,253494,081D58"
             minColorbar=0
-            maxColorbar=5
-            colorbarLabel='m/s'
+	    if(units=='metric'):
+		colorbarLabel='Wind Speed(' +'m/s'+' )';
+                maxColorbar=5;
+	    elif(units=='english'):
+		colorbarLabel='Wind Speed(' +'mi/hr'+' )';
+                maxColorbar=10;
             colorbarmap='YlGnBu'
             colorbarsize='8';
     elif(variable=='sph'):
@@ -567,14 +622,21 @@ def get_colorbar(variable,anomOrValue):
             minColorbar=80
             maxColorbar=120
             palette="053061,2166AC,4393C3,92C5DE,D1E5F0,F7F7F7,FDDBC7,F4A582,D6604D,B2182B,67001F"
-            colorbarLabel='Percent of climatology'
+            colorbarLabel='PET Percent of climatology'
             colorbarmap='BuYlRd'
             colorbarsize='8';
         else:
             minColorbar=300
             maxColorbar=800
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FFF6A7,FEE090,FDAE61,F46D43,D73027,A50026"
-            colorbarLabel='mm'
+	    if(units=='metric'):
+		colorbarLabel='PET(' +'mm'+' )';
+                minColorbar=300
+                maxColorbar=800
+	    elif(units=='english'):
+		colorbarLabel='PET(' +'in'+' )';
+                minColorbar=10
+                maxColorbar=30
             colorbarmap='BuRd'
             colorbarsize='8';
     elif(variable=='wb'): #mm
@@ -582,34 +644,38 @@ def get_colorbar(variable,anomOrValue):
             minColorbar=-100
             maxColorbar=100
             palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
-            colorbarLabel='Percent change from climatology'
+            colorbarLabel='Water Balance Percent change from climatology'
             colorbarmap='RdYlBu'
             colorbarsize='8';
         else:
-            minColorbar=-220
-            maxColorbar=220
             palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
-            colorbarLabel='mm'
+	    if(units=='metric'):
+		colorbarLabel='Water Balance(' +'mm'+' )';
+                minColorbar=-220
+                maxColorbar=220
+	    elif(units=='english'):
+		colorbarLabel='Water Balance(' +'in'+' )';
+                minColorbar=-10
+                maxColorbar=10
             colorbarmap='RdBu'
             colorbarsize='8';
-    elif(variable=='pdsi'): #mm
+    elif(variable=='pdsi'):
         if(anomOrValue=='anom'):
             minColorbar=-6
             maxColorbar=6
             palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
-            colorbarLabel='Percent of climatology'
+            colorbarLabel='PDSI Percent of climatology'
             colorbarmap='RdYlBu'
             colorbarsize='8';
         else:
             minColorbar=-6
             maxColorbar=6
             palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061";
-            colorbarLabel=''
+            colorbarLabel='PDSI'
             colorbarmap='RdYlBu'
             colorbarsize='8';
 
     return (colorbarmap,colorbarsize,minColorbar,maxColorbar,colorbarLabel);
-    #return (palette,minColorbar,maxColorbar,colorbarLabel);
 
 #===========================================
 #   MAP_COLLECTION

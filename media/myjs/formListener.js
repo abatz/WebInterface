@@ -74,7 +74,7 @@ $(function(){
 	/*--------------------------------------------*/
 	/*       COLORBAR       		      */
 	/*--------------------------------------------*/
-       jQuery('.basicvariable, .anomOrValue').on('change', function(){
+       jQuery('.basicvariable, .anomOrValue, .units').on('change', function(){
            if(jQuery('.basicvariable').val()=='NDVI' || jQuery('.basicvariable').val()=='EVI' ){
            	if(jQuery('.anomOrValue').val()=='anom'){
 			minColorbar = -.4;
@@ -105,34 +105,55 @@ $(function(){
                 }
 	   }else if(jQuery('.basicvariable').val()=='pr'){
                  if(jQuery('.anomOrValue').val()=='anom'){
-                        minColorbar = 0;
-                        maxColorbar = 200;
+			minColorbar = 0;
+			maxColorbar = 200;
                         palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
 			colorbarmap='RdYlBu' 
 			colorbarsize=8
                 }else{
-                        minColorbar = 0;
-                        maxColorbar = 400; //mm
+			console.log(jQuery('.units').val());
+                 	if(jQuery('.units').val()=='metric'){
+				minColorbar = 0;
+				maxColorbar = 400; //mm
+                 	}else if(jQuery('.units').val()=='english'){
+				minColorbar = 0;
+				maxColorbar = 16; //mm
+			}
                         palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,41B6C4,1D91C0,225EA8,0C2C84"
 			colorbarmap='YlGnBu' 
 			colorbarsize=8
                 }
             }else if(jQuery('.basicvariable').val()=='tmmx' || jQuery('.basicvariable').val()=='tmmn'){
                  if(jQuery('.anomOrValue').val()=='anom'){
-                        minColorbar =-5;
-                        maxColorbar = 5;
+                 	if(jQuery('.units').val()=='metric'){
+				minColorbar =-5;
+				maxColorbar = 5;
+                 	}else if(jQuery('.units').val()=='english'){
+				minColorbar =-10;
+				maxColorbar = 10;
+			}
                         palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
 			colorbarmap='BuYlRd' 
 			colorbarsize=8
                 }else if ( jQuery('.basicvariable').val()=='tmmx'){
-                        minColorbar = -20;
-                        maxColorbar = 30;
+                 	if(jQuery('.units').val()=='metric'){
+				minColorbar = -20;
+				maxColorbar = 30;
+                 	}else if(jQuery('.units').val()=='english'){
+				minColorbar =0;
+				maxColorbar = 100;
+			}
                         palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FFF6A7,FEE090,FDAE61,F46D43,D73027,A50026"
 			colorbarmap='BuRd' //need inverse
 			colorbarsize=8
                 }else if ( jQuery('.basicvariable').val()=='tmmn'){
-                        minColorbar = -25;
-                        maxColorbar = 25; //deg C
+                 	if(jQuery('.units').val()=='metric'){
+				minColorbar = -20;
+				maxColorbar = 20; //deg C
+                 	}else if(jQuery('.units').val()=='english'){
+				minColorbar = 0;
+				maxColorbar = 80; //deg C
+			}
                         palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
 			colorbarmap='BuRd' //need inverse
 			colorbarsize=8
@@ -167,14 +188,24 @@ $(function(){
                 }
 	    }else if(jQuery('.basicvariable').val()=='vs'){
                  if(jQuery('.anomOrValue').val()=='anom'){
-                        minColorbar =-2.5;
-                        maxColorbar = 2.5;
+                 	if(jQuery('.units').val()=='metric'){
+				minColorbar =-2.5;
+				maxColorbar = 2.5;
+                 	}else if(jQuery('.units').val()=='english'){
+				minColorbar =-5;
+				maxColorbar = 5;
+			}
                         palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
 			colorbarmap='BuYlRd' //need inverse
 			colorbarsize=8
                 }else{ 
-                        minColorbar = 0;
-                        maxColorbar = 5; //m/s
+                 	if(jQuery('.units').val()=='metric'){
+				minColorbar = 0;
+				maxColorbar = 5; //m/s
+                 	}else if(jQuery('.units').val()=='english'){
+				minColorbar = 0;
+				maxColorbar = 10; //mi/hr
+			}
                         palette="FFFFD9,EDF8B1,C7E9B4,7FCDBB,5DC2C1,41B6C4,1D91C0,225EA8,253494,081D58"
 			colorbarmap='YlGnBu' //need inverse
 			colorbarsize=8
@@ -209,22 +240,27 @@ $(function(){
                 }
          }else if(jQuery('.basicvariable').val()=='pet'){
                  if(jQuery('.anomOrValue').val()=='anom'){
-                        minColorbar =80;
-                        maxColorbar =120;
+			minColorbar =80;
+			maxColorbar =120;
                         palette="053061,2166AC,4393C3,92C5DE,D1E5F0,F7F7F7,FDDBC7,F4A582,D6604D,B2182B,67001F"
 			colorbarmap='BuYlRd' //need inverse
 			colorbarsize=8
                 }else{
-                        minColorbar = 300;
-                        maxColorbar = 800; //mm
+                 	if(jQuery('.units').val()=='metric'){
+				minColorbar = 300;
+				maxColorbar = 800; //mm
+                 	}else if(jQuery('.units').val()=='english'){
+				minColorbar = 10;
+				maxColorbar = 30; //mm
+			}
                         palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FFF6A7,FEE090,FDAE61,F46D43,D73027,A50026"
 			colorbarmap='BuRd' //need inverse
 			colorbarsize=8
                 }
          }else if(jQuery('.basicvariable').val()=='pdsi'){
                  if(jQuery('.anomOrValue').val()=='anom'){
-                        minColorbar =-6;
-                        maxColorbar =6;
+			minColorbar =-6;
+			maxColorbar =6;
                         palette="053061,2166AC,4393C3,92C5DE,D1E5F0,F7F7F7,FDDBC7,F4A582,D6604D,B2182B,67001F"
                         colorbarmap='RdYlBu' 
                         colorbarsize=8
@@ -243,8 +279,13 @@ $(function(){
 			colorbarmap='RdYlBu' //need inverse
 			colorbarsize=8
                 }else{
-                        minColorbar = -200;
-                        maxColorbar = 200; //mm
+                 	if(jQuery('.units').val()=='metric'){
+				minColorbar = -200;
+				maxColorbar = 200; //mm
+                 	}else if(jQuery('.units').val()=='english'){
+				minColorbar = -10;
+				maxColorbar = 10; //mm
+			}
                         palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
 			colorbarmap='RdBu' //need inverse
 			colorbarsize=8

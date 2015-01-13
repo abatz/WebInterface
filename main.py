@@ -57,6 +57,7 @@ class DroughtTool(webapp2.RequestHandler):
         self.pointsLongLat = self.request.get('pointsLongLat','-112.0,42.0')
 
         self.opacity = self.request.get('opacity',str(14*0.05))
+        self.units = self.request.get('units','metric')
         self.NELat = self.request.get('NELat',45)
         self.NELong= self.request.get('NELong',-95)
         self.SWLat= self.request.get('SWLat',40)
@@ -80,9 +81,9 @@ class DroughtTool(webapp2.RequestHandler):
         self.mapzoom = self.request.get('mapzoom',mz)
 
         if self.minColorbar is None and self.maxColorbar is None:
-            self.colorbarmap,self.colorbarsize,self.minColorbar,self.maxColorbar,self.colorbarLabel=collectionMethods.get_colorbar(self.variable,self.anomOrValue)
-            #self.minColorbar,self.maxColorbar,self.colorbarLabel=collectionMethods.get_colorbar(self.variable,self.anomOrValue)
-            #self.palette,self.minColorbar,self.maxColorbar,self.colorbarLabel=collectionMethods.get_colorbar(self.variable,self.anomOrValue)
+            self.colorbarmap,self.colorbarsize,self.minColorbar,self.maxColorbar,self.colorbarLabel=collectionMethods.get_colorbar(self.variable,self.anomOrValue,self.units)
+            #self.minColorbar,self.maxColorbar,self.colorbarLabel=collectionMethods.get_colorbar(self.variable,self.anomOrValue,self.units)
+            #self.palette,self.minColorbar,self.maxColorbar,self.colorbarLabel=collectionMethods.get_colorbar(self.variable,self.anomOrValue,self.units)
 
     def set_share_link(self, initial_template_values):
         shareLink = 'drought-monitor.appspot.com?'
@@ -106,6 +107,7 @@ class DroughtTool(webapp2.RequestHandler):
         template_values = {
             'form_error': self.form_error,
             'opacity': self.opacity,
+            'units': self.units,
             'pointsLongLat':self.pointsLongLat,
             'mapCenterLongLat':self.mapCenterLongLat,
             'NELat': self.NELat,
@@ -126,6 +128,7 @@ class DroughtTool(webapp2.RequestHandler):
             'formPaletteSeqMap': forms.formPaletteSeqMap,
             'formPaletteSize': forms.formPaletteSize,
             'formOpacity': forms.formOpacity,
+            'formUnits': forms.formUnits,
             'formAnomOrValue': forms.formAnomOrValue,
             'formVariableGrid': forms.formVariableGrid,
             'formLocation': forms.formLocation,
@@ -158,7 +161,7 @@ class DroughtTool(webapp2.RequestHandler):
             template_values['kmlurl'] = self.kmlurl
         if self.kmloption:
             template_values['kmloption'] = self.kmloption
-        #format template values to allow for differnet date formats etc...
+        #format template values to allow for different date formats etc...
         #See format_ functions in forms.py
         formatted_template_values = {}
         for key, val in template_values.iteritems():

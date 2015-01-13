@@ -64,6 +64,26 @@
 		{% endif %}
 	   </td>
 	</tr>
+	 <tr>
+            <td>
+               <!----------------------------->
+               <!--      UNITS            -->
+               <!----------------------------->
+                <b>Units:</b>
+                <select id="units" name="units" class="units" width="95%">
+                        {% for x,y in formUnits %}
+                            <option value="{{ x }}" {% if x == units  %} selected {% endif %}>
+                                {{ y }}</option>
+                        {% endfor %}
+                </select>
+               <!-- {% if form_error.units %}    <!--not sure this works as easy as inserting this->
+                        <br>
+                        <div class="error">{{ form_error.units }}</div>
+                        <br>
+                {% endif %}
+               -->
+           </td>
+        </tr>
 	<tr>
 	    <td>
 	       <!----------------------------->

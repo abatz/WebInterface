@@ -55,7 +55,7 @@ formAnomOrValue=[
 #============================
 formLocation=[
     ('full','Full Domain'),
-    ('conus','CONUS'),
+    #('conus','CONUS'),
     ('rectangle','Rectangle'),
     ('states','States'),
     ('points','Points'),
@@ -65,6 +65,15 @@ formLocation=[
 #    formOpacity
 #============================
 formOpacity=[(str(x*0.05),str((1.0-x*0.05)*100)+'%') for x in range(20,-1,-1)]
+
+
+#============================
+#    formUnits
+#============================
+formUnits=[
+    ('metric','Metric (ie. C,mm,m/s,W/m2)'),
+    ('english','English (ie. F,in,mi/hr)'),
+]
 
 #============================
 #    formPaletteMap
@@ -578,4 +587,6 @@ def check_opacity(opacity):
         options.append(str(tple[0]))
     if str(opacity) not in options:
         return 'Opacity should be one of: %s. You entered: %s' %(','.join(options), str(opacity))
+
+#def check_units(units):
 
