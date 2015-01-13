@@ -4,28 +4,7 @@
        <!----------------------------->
         <tr>
 	    <td>
-		<div class="accordion" id="accordionDATA">
-		  <div class="accordion-group">
-			<div class="accordion-heading">
-				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionDATA" href="#collapseDataOptions">
-				<div class="panel panel-default">
-				    <div class="panel-heading">
-					<h4><p style="text-align:left"><span style='color:blue'> Data Request:</span>
-					<span class="caret"></span>
-					</p></h4>
-				    </div>
-				</div>
-				</a>
-			</div><!--end of accordion-heading-->
-		   </div><!-- end of accordion-group-->
-		    <div id="collapseDataOptions" class="accordion-body collapse in">
-		       <div class="accordion-inner">
-			    <div class="panel-body">
-					{% include 'includes/dataoptions.html'%}
-			    </div>
-			</div><!-- end of accordion-inner-->
-		    </div><!-- end of accordion-body -->
-		  </div><!-- end of accordion-->
+		 {% include 'includes/dataoptions.html'%}
           </td>
        </tr>
        <!---------------------------->
