@@ -35,7 +35,7 @@ class DroughtTool(webapp2.RequestHandler):
         self.ppost = 0
         self.form_error = {}
         self.opacity = self.request.get('opacity',str(14*0.05))
-        self.variable = self.request.get('basicvariable','pr')
+        self.variable = self.request.get('variable','pr')
         self.domainType = self.request.get('domainType','full')
         self.state = self.request.get('state','California')
         self.anomOrValue = self.request.get('anomOrValue','anom')
@@ -94,7 +94,7 @@ class DroughtTool(webapp2.RequestHandler):
             #FIX ME: would be nice to not have to do this
             #ie. change basicvariable form name to variable
             if str(key) == 'variable':
-                param_str = 'basicvariable' + '=' + str(val)
+                param_str = 'variable' + '=' + str(val)
             else:
                 param_str = str(key) + '=' + str(val)
             if shareLink[-1] =='?':

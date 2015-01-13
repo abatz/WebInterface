@@ -502,12 +502,12 @@ def check_dateEnd(dateEnd):
         return 'Wrong date format or invalid End Date: %s'%str(dateEnd)
     return err
 
-def check_basicvariable(basicvariable):
+def check_variable(variable):
     err = None
     vrs = formVariableGrid + formVariableLandsat
     options = [v[0] for v in vrs]
-    if basicvariable not in options:
-        return 'Variable should be one of: %s. You entered: %s' %(','.join(options),str(basicvariable))
+    if variable not in options:
+        return 'Variable should be one of: %s. You entered: %s' %(','.join(options),str(variable))
         pass
     return err
 

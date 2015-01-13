@@ -1,20 +1,4 @@
 	<table id="table" class="table table-striped" width="20%">
-	 <tr>
-           <td>
-               <!----------------------------->
-               <!--      KML LAYER          -->
-               <!----------------------------->
-                <div class="kmlurl">
-                        <b>Enter URL for KML/KMZ Layer (empty for none):</b><br>
-                        <input id="kmlurl" name="kmlurl" value="{{ kmlurl }}" size="50" />
-                </div>
-                {% if form_error.kmlurl %}
-                        <br>
-                        <div class="error">{{ form_error.minColorbar }}</div>
-                        <br>
-                {% endif %}
-           </td>
-        </tr>
         <tr>
            <td>
                <!----------------------------->
@@ -136,4 +120,21 @@
                 </div>
 	   </td>
 	</tr>
+	 <tr>
+           <td>
+               <!----------------------------->
+               <!--      LAYERS          -->
+               <!----------------------------->
+                <b>Layers:</b>
+                <div class="kmlurl">
+                        <b>KML/KMZ Layer (url of file):</b><br>
+                        <input id="kmlurl" name="kmlurl" value="{{ kmlurl }}" size="50" />
+                </div>
+                {% if form_error.kmlurl %}
+                        <br>
+                        <div class="error">{{ form_error.minColorbar }}</div>
+                        <br>
+                {% endif %}
+           </td>
+        </tr>
 	</table>

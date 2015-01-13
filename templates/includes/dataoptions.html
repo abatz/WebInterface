@@ -6,7 +6,7 @@
 	       <!----------------------------->
 			<div class="variableLandsat">
 		  		<b>Variable:</b><br> 
-				<select id="basicvariable" name="basicvariable" class="basicvariable" width="95%">			
+				<select id="variable" name="variable" class="variable" width="95%">			
 				<optgroup label="MODIS">
 					{% for x,y in formVariableLandsat %}
 					    <option value="{{ x }}" {% if x == variable  %} selected {% endif %}>{{ y }}</option>
@@ -28,10 +28,10 @@
 			</div>
 	</td>
 	</tr>
-		{% if form_error.basicvariable %}
+		{% if form_error.variable %}
 		<tr>
 			<td>
-				<div class="error">{{ form_error.basicvariable }}</div>
+				<div class="error">{{ form_error.variable }}</div>
 			</td>
         	</tr>
     		{% endif %}
