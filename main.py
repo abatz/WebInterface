@@ -38,7 +38,8 @@ class DroughtTool(webapp2.RequestHandler):
         self.variable = self.request.get('variable','pr')
         self.domainType = self.request.get('domainType','full')
         self.state = self.request.get('state','California')
-        self.anomOrValue = self.request.get('anomOrValue','anom')
+        self.anomOrValue = self.request.get('anomOrValue','value')
+        self.timeSeriesCalc = self.request.get('timeSeriesCalc','days')
 
         #self.pointLatLong = self.request.get('pointLatLong','-112,42')
         #self.pointLatLongX = self.pointLatLong.split(",")
@@ -82,8 +83,6 @@ class DroughtTool(webapp2.RequestHandler):
 
         if self.minColorbar is None and self.maxColorbar is None:
             self.colorbarmap,self.colorbarsize,self.minColorbar,self.maxColorbar,self.colorbarLabel=collectionMethods.get_colorbar(self.variable,self.anomOrValue,self.units)
-            #self.minColorbar,self.maxColorbar,self.colorbarLabel=collectionMethods.get_colorbar(self.variable,self.anomOrValue,self.units)
-            #self.palette,self.minColorbar,self.maxColorbar,self.colorbarLabel=collectionMethods.get_colorbar(self.variable,self.anomOrValue,self.units)
 
     def set_share_link(self, initial_template_values):
         shareLink = 'drought-monitor.appspot.com?'
@@ -120,9 +119,9 @@ class DroughtTool(webapp2.RequestHandler):
             'state': self.state,
             'domainType': self.domainType,
             'anomOrValue': self.anomOrValue,
+            'timeSeriesCalc': self.timeSeriesCalc,
             'dateStart': self.dateStart,
             'dateEnd': self.dateEnd,
-            'anomOrValue': self.anomOrValue,
             'formMapZoom': forms.formMapZoom,
             'formPaletteDivMap': forms.formPaletteDivMap,
             'formPaletteSeqMap': forms.formPaletteSeqMap,
@@ -130,6 +129,7 @@ class DroughtTool(webapp2.RequestHandler):
             'formOpacity': forms.formOpacity,
             'formUnits': forms.formUnits,
             'formAnomOrValue': forms.formAnomOrValue,
+            'formTimeSeriesCalc': forms.formTimeSeriesCalc,
             'formVariableGrid': forms.formVariableGrid,
             'formLocation': forms.formLocation,
             'formVariableLandsat': forms.formVariableLandsat,

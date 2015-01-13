@@ -24,6 +24,11 @@
 	<script type="text/javascript" src="/media/myjs/colorbar.js"></script><!--DYNAMIC COLORBAR-->
 	<script type="text/javascript" src="/media/myjs/colorbrewer.js"></script><!--DYNAMIC COLORBAR-->
 	<!--<script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script>--><!--TRANSPARENCY SLIDER-->
+	<script type="text/javascript">
+		function activaTab(tab){
+			$('.nav-tabs a[href="#' + tab + '"]').tab('show');
+	        };
+	</script>
 	
 	<!-- for revealing modal window on page load -->
 	<!--<script type="text/javascript" src="/media/js/foundation.min.js">-->
@@ -219,6 +224,26 @@
         //Take first coords form pointsLongLat input variable for marker showing
         pLat = parseFloat(point_list[1]);
         pLong = parseFloat(point_list[0]);
+	/*	
+	color=["red", "orange","green", "blue","purple"];
+	for (i=0;i< 5;i+=1){
+		console.log(color[i])
+	     var pointmarker = new google.maps.Marker({
+                position:new google.maps.LatLng(pLat,pLong),
+                map: map,
+                draggable: true,
+		icon: new google.maps.MarkerImage("http://google.com/mapfiles/ms/micons/" + color[i] + ".png")
+		//icon: new google.maps.MarkerImage("http://google.com/mapfiles/ms/micons/" +"blue" + ".png")
+            });
+            google.maps.event.addListener(pointmarker, 'dragend', function(a) {
+                var div = document.createElement('div');
+                var longitude=a.latLng.lng().toFixed(4);
+                var latitude=a.latLng.lat().toFixed(4);
+                //document.getElementById('pointsLongLat').value = new_point_list.join();
+            });
+            window.pointmarker.setVisible(true);
+	}
+	*/
 	/*
         for (i=0;i<point_list.length - 1;i+=2){
             pLat = parseFloat(point_list[i+1]);
@@ -356,12 +381,12 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript" src="/media/myjs/graph_utils.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
-
-	 <!--<script type="text/javascript" src="media/myjs/d3Example.js"></script>-->
+<!--<script type="text/javascript" src="media/myjs/d3Example.js"></script>-->
 
 <!------------------------------------>
 <!--        DATE PICKER          -->
 <!------------------------------------>
+<!--
 <script type="text/javascript">
 $(function(){
     $( "#dateStart" ).datepicker({
@@ -393,5 +418,5 @@ $(function(){
     }).datepicker('setDate', '{{ dateEnd }}');
 });
 </script>
-
+-->
 

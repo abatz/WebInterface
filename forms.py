@@ -50,6 +50,16 @@ formAnomOrValue=[
     ('anom','Anomaly'),
 ]
 
+
+#============================
+#    formTimeSeriesCalc
+#============================
+formTimeSeriesCalc=[
+    ('season','Time Series of Seasonal Values'),
+    ('days','Time Series of Daily Values'),
+]
+
+
 #============================
 #    formLocation
 #============================

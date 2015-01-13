@@ -10,7 +10,7 @@
 				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionDATA" href="#collapseDataOptions">
 				<div class="panel panel-default">
 				    <div class="panel-heading">
-					<h4><p style="text-align:left"><u><span style='color:blue'> Data Options:</span></u>
+					<h4><p style="text-align:left"><span style='color:blue'> Data Request:</span>
 					<span class="caret"></span>
 					</p></h4>
 				    </div>
@@ -33,47 +33,91 @@
        <!----------------------------->
 	<tr>
 	    <td>
-		<div class="accordion" id="accordionMAP">
+		<div class="accordion" id="accordionBUILDMAP">
 		  <div class="accordion-group">
 			<div class="accordion-heading">
-				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMAP" href="#collapseMapOptions">
+				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionBUILDMAP" href="#collapseBuildMapOptions">
 				<div class="panel panel-default">
 				    <div class="panel-heading">
-					<h4><p style="text-align:left"><u><span style='color:blue'> Map Options:</span></u>
-					<span class="caret"></span></p></h4>
+					<h4><p style="text-align:left"><span style='color:blue'> Build Map:</span>
+					<span class="caret"></span>
+					</p></h4>
 				    </div>
 				</div>
 				</a>
 			</div><!--end of accordion-heading-->
 		   </div><!-- end of accordion-group-->
-		    <div id="collapseMapOptions" class="accordion-body collapse">
+		    <div id="collapseBuildMapOptions" class="accordion-body collapse">
 		       <div class="accordion-inner">
 			    <div class="panel-body">
-					{% include 'includes/mapoptions.html'%}
+					{% include 'includes/buildmap.html'%}
 			    </div>
 			</div><!-- end of accordion-inner-->
 		    </div><!-- end of accordion-body -->
 		</div><!-- end of accordion-->
 	  </td>
+	  <td>
+		 <input type="submit" class="btn btn-large ptn-primary" value="GET MAP"
+                                                form="form_map" onclick="document.getElementById('domainType').value='full';"/>
+                 <div id="loading" style="display:none;">
+                        <img id="loading-image" src="images/loading_image.gif" alt="Loading..." />
+
+	  </td>
 	</tr>
+       <!---------------------------->
+       <!--      TIME SERIES OPTIONS       -->
+       <!----------------------------->
+        <tr>
+            <td>
+                <div class="accordion" id="accordionBUILDTIMESERIES">
+                  <div class="accordion-group">
+                        <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionBUILDTIMESERIES" href="#collapseBuildTimeSeriesOptions">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4><p style="text-align:left"><span style='color:blue'> Build Time Series:</span>
+                                        <span class="caret"></span>
+                                        </p></h4>
+                                    </div>
+                                </div>
+                                </a>
+                        </div><!--end of accordion-heading-->
+                   </div><!-- end of accordion-group-->
+                    <div id="collapseBuildTimeSeriesOptions" class="accordion-body collapse">
+                       <div class="accordion-inner">
+                            <div class="panel-body">
+                                        {% include 'includes/buildtimeseries.html'%}
+                            </div>
+                        </div><!-- end of accordion-inner-->
+                    </div><!-- end of accordion-body -->
+                </div><!-- end of accordion-->
+          </td>
+          <td>
+                 <input type="submit" class="btn btn-large ptn-primary" value="GET TIME SERIES"
+                                                form="form_map" onclick="document.getElementById('domainType').value='points';activaTab('timeseriesoutput')"/>
+                 <div id="loading" style="display:none;">
+                        <img id="loading-image" src="images/loading_image.gif" alt="Loading..." />
+          </td>
+        </tr>
 	<!----------------------------->
        <!--      BUTTON            -->
        <!----------------------------->
 	 <tr>
              <td>
                 <table>
-                <tr><td width="30%">
+                <!--<tr>
+		<td width="30%">
                 <input type="submit" class="btn btn-large ptn-primary" value="SUBMIT"
-                        form="form_map"/>
+                        form="form_map"/>-->
                         <!--form="form_map" onclick="location.href='http://google.com';"/>-->
 			<!--$('.nav-tabs a[href="#timeseriesoutput"]').tab('show');-->
                         <!--form="form_map" onclick="location.href='#timeseriesoutput';"/>-->
-                </td>
+                <!--</td>
                 <td width="70%">
                  <div id="loading" style="display:none;">
                         <img id="loading-image" src="images/loading_image.gif" alt="Loading..." />
                 </div>
-                </td></tr>
+                </td></tr>-->
                 <tr><td>
                 <br>
                 {% if mapid or timeSeriesData %}

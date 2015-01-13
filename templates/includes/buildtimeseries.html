@@ -1,0 +1,32 @@
+<table id="table2" class="table table-striped" width="20%">
+        {% include 'includes/buildtimeseriesoptions.html'%}
+       <!---------------------------->
+       <!--      DATA OPTIONS       -->
+       <!----------------------------->
+        <tr>
+            <td> 
+
+		 <div class="accordion" id="accordionMAP">
+                  <div class="accordion-group">
+                        <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMAP" href="#collapseMapOptions">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h5><p style="text-align:left"><span style='color:red'>Time Series Options:</span>
+                                        <span class="caret"></span></p></h5>
+                                    </div>
+                                </div>
+                                </a>
+                        </div><!--end of accordion-heading-->
+                   </div><!-- end of accordion-group-->
+                    <div id="collapseMapOptions" class="accordion-body collapse">
+                       <div class="accordion-inner">
+                            <div class="panel-body">
+                                        {% include 'includes/timeseriesoptions.html'%}
+                            </div>
+                        </div><!-- end of accordion-inner-->
+                    </div><!-- end of accordion-body -->
+                </div><!-- end of accordion-->
+	    </td>
+	</tr>
+</table>
