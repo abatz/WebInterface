@@ -55,8 +55,8 @@ formAnomOrValue=[
 #    formTimeSeriesCalc
 #============================
 formTimeSeriesCalc=[
-    ('season','Time Series of Seasonal Values'),
-    ('days','Time Series of Daily Values'),
+    ('season','Time Series of Seasonal '),
+    ('days','Time Series of Daily '),
 ]
 
 
@@ -68,6 +68,34 @@ formBackground=[
 ]
 
 
+
+#============================
+#    formMonth
+#============================
+formMonth=[
+    ('1','Jan '),
+    ('2','Feb '),
+    ('3','Mar '),
+    ('4','Apr '),
+    ('5','May '),
+    ('6','Jun '),
+    ('7','Jul '),
+    ('8','Aug '),
+    ('9','Sept '),
+    ('10','Oct '),
+    ('11','Nov '),
+    ('12','Dec '),
+]
+
+#============================
+#    formDay
+#============================
+formDay=[(str(x),str(x)) for x in range(1,32,1)]
+
+#============================
+#    formYear
+#============================
+formYear=[(str(x),str(x)) for x in range(1979,2015,1)]
 
 #============================
 #    formLocation

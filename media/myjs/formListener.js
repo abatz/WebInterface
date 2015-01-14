@@ -1,6 +1,29 @@
 $(function(){
-
-
+	/*--------------------------------------------*/
+	/*         POINTS LISTENER                    */
+	/*--------------------------------------------*/
+	jQuery('.points').on('change','input[type=checkbox]', function(){
+		if($('input[id=point1]:checked').val()=="1"){
+		   window.pointmarker1.setVisible(true);
+		}else{
+		   window.pointmarker1.setVisible(false);
+		}
+		if($('input[id=point2]:checked').val()=="2"){
+		   window.pointmarker2.setVisible(true);
+		}else{
+		   window.pointmarker2.setVisible(false);
+		}
+		if($('input[id=point3]:checked').val()=="3"){
+		   window.pointmarker3.setVisible(true);
+		}else{
+		   window.pointmarker3.setVisible(false);
+		}
+		if($('input[id=point4]:checked').val()=="4"){
+		   window.pointmarker4.setVisible(true);
+		}else{
+		   window.pointmarker4.setVisible(false);
+		}
+	});
 	/*--------------------------------------------*/
 	/*         LAYERS LISTENER                    */
 	/*--------------------------------------------*/
@@ -462,6 +485,27 @@ $(function(){
 		window.map.setCenter(newLatLng);
         });
 */	
+
+
+	/*--------------------------------------------*/
+	/*        TIMESERIES  LISTENER 		      */
+	/*--------------------------------------------*/
+        jQuery('#timeSeriesCalc').on('change', function(){
+		console.log('chagned');
+            if(jQuery(this).val()=='season'){
+                 jQuery('.seasontimeperiod').show();
+                 jQuery('.daytimeperiod').hide();
+
+	    }
+            else if(jQuery(this).val()=='days'){
+                 jQuery('.seasontimeperiod').hide();
+                 jQuery('.daytimeperiod').show();
+
+	    }
+        });
+
+
+
 	/*--------------------------------------------*/
 	/*        DOMAIN  LISTENER 		      */
 	/*--------------------------------------------*/

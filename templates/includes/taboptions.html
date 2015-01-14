@@ -4,44 +4,58 @@
        <!----------------------------->
         <tr>
 	    <td>
-		 <table id="table" class="table table-striped" width="20%">
-			<tr>
-			    <td>
-			       <!----------------------------->
-			       <!--           VARIABLE      -->
-			       <!----------------------------->
-				<div class="variableLandsat">
-					<b>Variable:</b><br>
-					<select id="variable" name="variable" class="variable" width="95%">
-						<optgroup label="MODIS">
-							{% for x,y in formVariableLandsat %}
-							    <option value="{{ x }}" {% if x == variable  %} selected {% endif %}>{{ y }}</option>
-							{% endfor %}
-						</optgroup>
-						<optgroup label="gridMET">
-							{% for x,y in formVariableGrid %}
-							    <option value="{{ x }}"{% if x == variable  %} selected {% endif %}>{{ y }}</option>
-							{% endfor %}
-						</optgroup>
-					</select>
-				</div>
-			</td>
-			</tr>
-				{% if form_error.variable %}
-				<tr>
-					<td>
-						<div class="error">{{ form_error.variable }}</div>
-					</td>
-				</tr>
-				{% endif %}
-			<tr>
-		</table>
-          </td>
-       </tr>
+	       <!----------------------------->
+	       <!--           VARIABLE      -->
+	       <!----------------------------->
+		<div class="variableLandsat">
+			<b>Variable:</b><br>
+			<select id="variable" name="variable" class="variable" width="95%">
+				<optgroup label="MODIS">
+					{% for x,y in formVariableLandsat %}
+					    <option value="{{ x }}" {% if x == variable  %} selected {% endif %}>{{ y }}</option>
+					{% endfor %}
+				</optgroup>
+				<optgroup label="gridMET">
+					{% for x,y in formVariableGrid %}
+					    <option value="{{ x }}"{% if x == variable  %} selected {% endif %}>{{ y }}</option>
+					{% endfor %}
+				</optgroup>
+			</select>
+                </td>
+		<td>
+               <!----------------------------->
+               <!--      UNITS            -->
+               <!----------------------------->
+                <b>Units:</b><br>
+                <select id="units" name="units" class="units" width="95%">
+                        {% for x,y in formUnits %}
+                            <option value="{{ x }}" {% if x == units  %} selected {% endif %}>
+                                {{ y }}</option>
+                        {% endfor %}
+                </select>
+               <!-- {% if form_error.units %}    <!--not sure this works as easy as inserting this->
+                        <br>
+                        <div class="error">{{ form_error.units }}</div>
+                        <br>
+                {% endif %}
+               -->
+           </td>
+        </tr>
+
+		</div>
+	   </td>
+	</tr>
+	{% if form_error.variable %}
+	<tr>
+		<td>
+			<div class="error">{{ form_error.variable }}</div>
+		</td>
+	</tr>
+	{% endif %}
        <!---------------------------->
        <!--      MAP                -->
        <!----------------------------->
-	<tr>
+	<tr style="outline: thin solid">
 	    <td>
 		<div class="accordion" id="accordionBUILDMAP">
 		  <div class="accordion-group">
@@ -65,8 +79,8 @@
 			</div><!-- end of accordion-inner-->
 		    </div><!-- end of accordion-body -->
 		</div><!-- end of accordion-->
-	  </td>
-	  <td>
+		</td>
+		<td style="vertical-align:top">
 		 <input type="submit" class="btn btn-large ptn-primary" value="GET MAP"
                                                 form="form_map" onclick="document.getElementById('domainType').value='full';"/>
                  <div id="loading" style="display:none;">
@@ -77,7 +91,7 @@
        <!---------------------------->
        <!--      TIME SERIES      -->
        <!----------------------------->
-        <tr>
+        <tr style="outline: thin solid">
             <td>
                 <div class="accordion" id="accordionBUILDTIMESERIES">
                   <div class="accordion-group">
@@ -102,11 +116,10 @@
                     </div><!-- end of accordion-body -->
                 </div><!-- end of accordion-->
           </td>
-          <td>
+          <td style="vertical-align:top">
                  <input type="submit" class="btn btn-large ptn-primary" value="GET TIME SERIES"
-                                                form="form_map" onclick="document.getElementById('domainType').value='points';activaTab('timeseriesoutput')"/>
-                 <div id="loading" style="display:none;">
-                        <img id="loading-image" src="images/loading_image.gif" alt="Loading..." />
+                                                form="form_map" onclick="document.getElementById('domainType').value='points'"/>
+                                                <!--form="form_map" onclick="document.getElementById('domainType').value='points';activaTab('tabtimeseries')"/>-->
           </td>
         </tr>
 	<!----------------------------->

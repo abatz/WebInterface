@@ -40,7 +40,7 @@ class DroughtTool(webapp2.RequestHandler):
         self.state = self.request.get('state','California')
         self.anomOrValue = self.request.get('anomOrValue','value')
         self.timeSeriesCalc = self.request.get('timeSeriesCalc','days')
-        self.background = self.request.get('background','whitebackground')
+        self.background = self.request.get('background','nowhitebackground')
 
         #self.pointLatLong = self.request.get('pointLatLong','-112,42')
         #self.pointLatLongX = self.pointLatLong.split(",")
@@ -55,6 +55,12 @@ class DroughtTool(webapp2.RequestHandler):
         self.dateEnd = self.request.get('dateEnd',tempend.strftime('%Y-%m-%d'))
         #self.dateStart = self.request.get('dateStart','2014-06-01')
         #self.dateEnd = self.request.get('dateEnd','2014-08-31')
+        self.dayStart = self.request.get('dayStart','1')
+        self.dayEnd = self.request.get('dayEnd','31')
+        self.monthStart = self.request.get('monthStart',tempstart.strftime('%mm'));
+        self.monthEnd = self.request.get('monthEnd',tempend.strftime('%mm'));
+        self.yearStart = self.request.get('yearStart','1979');
+        self.yearEnd = self.request.get('yearEnd','2015');
 
         self.pointsLongLat = self.request.get('pointsLongLat','-112.0,42.0')
 
@@ -124,6 +130,9 @@ class DroughtTool(webapp2.RequestHandler):
             'timeSeriesCalc': self.timeSeriesCalc,
             'dateStart': self.dateStart,
             'dateEnd': self.dateEnd,
+            'formMonth': forms.formMonth,
+            'formDay': forms.formDay,
+            'formYear': forms.formYear,
             'formMapZoom': forms.formMapZoom,
             'formPaletteDivMap': forms.formPaletteDivMap,
             'formPaletteSeqMap': forms.formPaletteSeqMap,

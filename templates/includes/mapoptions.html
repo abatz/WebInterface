@@ -1,65 +1,53 @@
-<table id="table2" class="table table-striped" width="20%">
-<!----------------------------->
-<!--         MAP REQUIRED    -->
-<!----------------------------->
-       <tr><td>
-                <b>Calculation:</b><br>
-                <select id="anomOrValue" name="anomOrValue" class="anomOrValue" width="95%">
-                        {% for x,y in formAnomOrValue %}
-                            <option value="{{ x }}" {% if x == anomOrValue  %} selected {% endif %}>{{ y }}</option>
-                        {% endfor %}
-                </select>
-        </td></tr>
-        <tr><td>
-               <!----------------------------->
-               <!--         TIME PERIOD     -->
-               <!----------------------------->
-                  <b>Time Period</b><br>
-                   <div class="timeperiod">
-                          Start Date:
-                          <input type="text" id="dateStart" value="{{ dateStart }}" name="dateStart">
-                          <br>
-                          {% if form_error.dateStart %}
-                                <div class="error">{{ form_error.dateStart }}</div>
-                                <br>
-                          {% endif %}
-                          End Date:
-                          <input type="text" id="dateEnd" value="{{ dateEnd }}" name="dateEnd">
-                           {% if form_error.dateEnd %}
-                                <br>
-                                <div class="error">{{ form_error.dateEnd }}</div>
-                           {% endif %}
-                   </div>
-          </td>
-        </tr>
-
-       <!---------------------------->
-       <!--      MAP OPTIONS       -->
-       <!----------------------------->
-        <tr>
-            <td> 
-
-		 <div class="accordion" id="accordionMAP">
-                  <div class="accordion-group">
-                        <div class="accordion-heading">
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMAP" href="#collapseMapOptions">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h5><p style="text-align:left"><span style='color:red'> Map Options:</span>
-                                        <span class="caret"></span></p></h5>
-                                    </div>
-                                </div>
-                                </a>
-                        </div><!--end of accordion-heading-->
-                   </div><!-- end of accordion-group-->
-                    <div id="collapseMapOptions" class="accordion-body collapse">
-                       <div class="accordion-inner">
-                            <div class="panel-body">
+ <ul class="nav nav-pills" id="mapTab" >
+                <li class="active"><a href="#tabmaprequired" data-toggle="tab">Map Request</a></li>
+                <li ><a href="#tabmapoptions" data-toggle="tab">Map Options </a></li>
+</ul>
+<div class="tab-content">
+                <!----------------------------->
+                <!--  MAP REQUEST         -->
+                <!----------------------------->
+                <div class="tab-pane active" id="tabmaprequired">
+		  <table id="table" class="table table-striped" width="20%" border="1">
+		     <tr>
+		   	<td>
+			<!----------------------------->
+			<!--  CALCULATION         -->
+			<!----------------------------->
+			<b>Calculation:</b><br>
+			<select id="anomOrValue" name="anomOrValue" class="anomOrValue" width="95%">
+				{% for x,y in formAnomOrValue %}
+				    <option value="{{ x }}" {% if x == anomOrValue  %} selected {% endif %}>{{ y }}</option>
+				{% endfor %}
+			</select>
+			<br>
+			</td></tr>
+			<tr><td>
+		       <!----------------------------->
+		       <!--         TIME PERIOD     -->
+		       <!----------------------------->
+			  <b>Time Period</b><br>
+			   <div class="timeperiod">
+				  Start Date:
+				  <input type="text" id="dateStart" value="{{ dateStart }}" name="dateStart" class="dateStart">
+				  <br>
+				  {% if form_error.dateStart %}
+					<div class="error">{{ form_error.dateStart }}</div>
+					<br>
+				  {% endif %}
+				  End Date:
+				  <input type="text" id="dateEnd" value="{{ dateEnd }}" name="dateEnd" class="dateEnd">
+				   {% if form_error.dateEnd %}
+					<br>
+					<div class="error">{{ form_error.dateEnd }}</div>
+				   {% endif %}
+			   </div>
+			</td></tr>
+		   </table>
+                </div>
+                <!----------------------------->
+                <!--    MAP OPTIONS        -->
+                <!----------------------------->
+                <div class="tab-pane" id="tabmapoptions">
                                         {% include 'includes/mapcollapsibleoptions.html'%}
-                            </div>
-                        </div><!-- end of accordion-inner-->
-                    </div><!-- end of accordion-body -->
-                </div><!-- end of accordion-->
-	    </td>
-	</tr>
-</table>
+                </div>
+</div>

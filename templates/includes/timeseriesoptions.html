@@ -1,35 +1,24 @@
-<table id="table2" class="table table-striped" width="20%">
-       <!---------------------------->
-       <!--     TIME SERIES REQUIRED      -->
-       <!----------------------------->
-        {% include 'includes/timeseriesrequired.html'%}
-       <!---------------------------->
-       <!--      TIME SERIES OPTIONAL -->
-       <!----------------------------->
-        <tr>
-            <td> 
-
-		 <div class="accordion" id="accordionMAP">
-                  <div class="accordion-group">
-                        <div class="accordion-heading">
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMAP" href="#collapseMapOptions">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h5><p style="text-align:left"><span style='color:red'>Time Series Options:</span>
-                                        <span class="caret"></span></p></h5>
-                                    </div>
-                                </div>
-                                </a>
-                        </div><!--end of accordion-heading-->
-                   </div><!-- end of accordion-group-->
-                    <div id="collapseMapOptions" class="accordion-body collapse">
-                       <div class="accordion-inner">
-                            <div class="panel-body">
-                                        <!-- include 'includes/timeseriescollapsibleoptions.html'-->
-                            </div>
-                        </div><!-- end of accordion-inner-->
-                    </div><!-- end of accordion-body -->
-                </div><!-- end of accordion-->
-	    </td>
-	</tr>
-</table>
+ <ul class="nav nav-pills" id="timeseriesTab" >
+                <li class="active"><a href="#tabtimeseriesrequired" data-toggle="tab">TimeSeries Request</a></li>
+                <li ><a href="#tabtimeseriesoptions" data-toggle="tab">TimeSeries Options </a></li>
+</ul>
+<div class="tab-content">
+                <!----------------------------->
+                <!--  TIMESERIES REQUEST         -->
+                <!----------------------------->
+                <div class="tab-pane active" id="tabtimeseriesrequired">
+                  <table id="table" class="table table-striped" width="20%" border="1">
+                     <tr>
+                        <td>
+        			{% include 'includes/timeseriesrequired.html'%}
+			</td>
+		    </tr>
+		</table>
+		</div>
+   		<!----------------------------->
+                <!--   TIMESERIES OPTIONS    -->
+                <!----------------------------->
+                <div class="tab-pane" id="tabtimeseriesoptions">
+                                       {% include 'includes/timeseriescollapsibleoptions.html'%}
+		</div>
+</div>
