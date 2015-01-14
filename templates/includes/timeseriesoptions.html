@@ -1,143 +1,35 @@
-	<table id="table" class="table table-striped" width="20%">
+<table id="table2" class="table table-striped" width="20%">
+       <!---------------------------->
+       <!--     TIME SERIES REQUIRED      -->
+       <!----------------------------->
+        {% include 'includes/timeseriesrequired.html'%}
+       <!---------------------------->
+       <!--      TIME SERIES OPTIONAL -->
+       <!----------------------------->
         <tr>
-           <td>
-               <!----------------------------->
-               <!--      MAP ZOOM and CENTER          -->
-               <!----------------------------->
-                <b>Map:</b>
-                <div class="mapcenterzoom">
-                <li>Center:
-                              <input id="mapCenterLongLat" name="mapCenterLongLat" value="{{ mapCenterLongLat }}" size=10/>
-                </li>
-                <li>Zoom:
-                 <select id="mapzoom" name="mapzoom" width="95%">
-                        {% for x,y in formMapZoom %}
-                            <option value="{{ x }}" {% if x == mapzoom  %} selected {% endif %}>
-                                {{ y }}</option>
-                        {% endfor %}
-                </select>
-                <!--{% if form_error.mapzoom %}
-                        <br>
-                        <div class="error">{{ form_error.mapzoom }}</div>
-                        <br>
-                {% endif %}
-		-->
-                             <!-- <input id="mapzoom" name="mapzoom" value="{{ mapzoom }}" size=4 />-->
-                </li>
-                </div>
-           </td>
-        </tr>
+            <td> 
 
-	<tr>
-	    <td>
-	       <!----------------------------->
-	       <!--      OPACITY            -->
-	       <!----------------------------->
-		<b>Transparency:</b>
-		<!--<input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="14"/>-->
-		<select id="opacity" name="opacity" width="95%">
-			{% for x,y in formOpacity %}
-			    <option value="{{ x }}" {% if x == opacity  %} selected {% endif %}>
-				{{ y }}</option>
-			{% endfor %}
-		</select>
-		{% if form_error.opacity %}
-			<br>
-			<div class="error">{{ form_error.opacity }}</div>
-			<br>            
-		{% endif %}
-	   </td>
+		 <div class="accordion" id="accordionMAP">
+                  <div class="accordion-group">
+                        <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionMAP" href="#collapseMapOptions">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h5><p style="text-align:left"><span style='color:red'>Time Series Options:</span>
+                                        <span class="caret"></span></p></h5>
+                                    </div>
+                                </div>
+                                </a>
+                        </div><!--end of accordion-heading-->
+                   </div><!-- end of accordion-group-->
+                    <div id="collapseMapOptions" class="accordion-body collapse">
+                       <div class="accordion-inner">
+                            <div class="panel-body">
+                                        <!-- include 'includes/timeseriescollapsibleoptions.html'-->
+                            </div>
+                        </div><!-- end of accordion-inner-->
+                    </div><!-- end of accordion-body -->
+                </div><!-- end of accordion-->
+	    </td>
 	</tr>
-	 <tr>
-            <td>
-               <!----------------------------->
-               <!--      UNITS            -->
-               <!----------------------------->
-                <b>Units:</b>
-                <select id="units" name="units" class="units" width="95%">
-                        {% for x,y in formUnits %}
-                            <option value="{{ x }}" {% if x == units  %} selected {% endif %}>
-                                {{ y }}</option>
-                        {% endfor %}
-                </select>
-               <!-- {% if form_error.units %}    <!--not sure this works as easy as inserting this->
-                        <br>
-                        <div class="error">{{ form_error.units }}</div>
-                        <br>
-                {% endif %}
-               -->
-           </td>
-        </tr>
-	<tr>
-	    <td>
-	       <!----------------------------->
-	       <!--      COLORBAR            -->
-	       <!----------------------------->
-		<!--<div class="colorbar" style="visibility:hidden">-->
-		<div class="colorbar">
-                        <b>Colorbar:</b><br>
-			<li>Colormap:
-				<select id="colorbarmap" name="colorbarmap" class="colorbarmap" width="95%">
-					<optgroup label="Divergent Maps">
-						{% for x,y in formPaletteDivMap %}
-						    <option value="{{ x }}" {% if x == colorbarmap  %} selected {% endif %}>{{ y }}</option>
-						{% endfor %}
-					</optgroup>
-					<optgroup label="Sequential Maps">
-						{% for x,y in formPaletteSeqMap %}
-						    <option value="{{ x }}" {% if x == colorbarmap  %} selected {% endif %}>{{ y }}</option>
-						{% endfor %}
-					</optgroup>
-				</select>
-			</li>
-			<li>
-				Colors:
-				<select id="colorbarsize" name="colorbarsize" class="colorbarsize" width="95%">
-					{% for x,y in formPaletteSize %}
-					    <option value="{{ x }}" {% if x == colorbarsize  %} selected {% endif %}>{{ y }}</option>
-					{% endfor %}
-				</select>
-			</li>
-			<li>Colorbar Values:
-			 <input id="minColorbar" name="minColorbar" value="{{ minColorbar }}" size=4> to
-			     {% if form_error.minColorbar %}
-				<br>
-				<div class="error">{{ form_error.minColorbar }}</div>
-				<br>
-			     {% endif %}
-			  <input id="maxColorbar" name="maxColorbar" value="{{ maxColorbar }}" size=4 />
-			    {% if form_error.maxColorbar %}
-				<br>
-				<div class="error">{{ form_error.maxColorbar }}</div>
-			     {% endif %}
-		 	</li>
-			<br>
-			<div id="colorbar1"><svg style="width:60px;height:30px;"></svg></div>
-		</div>
-		   <div class="colorbar" style="visibility:hidden">
-                        <li>Colorbar Palette:
-                        <input id="palette" name="palette" value="{{ palette }}" /></li>
-                </div>
-	   </td>
-	</tr>
-	 <tr>
-           <td>
-               <!----------------------------->
-               <!--      LAYERS          -->
-               <!----------------------------->
-                <b>Layers:</b>
-		<div class="layers">
-			<input type="checkbox" name="layers[]" value="stateslayer" id="stateslayer">US States Layer<br>
-			<input type="checkbox" name="layers[]" value="kmllayer" id="kmllayer">KML/KMZ Layer (url of file):<br>
-			<div class="kmlurl">
-				<input id="kmlurl" name="kmlurl" value="{{ kmlurl }}" size="50" />
-			</div>
-			{% if form_error.kmlurl %}
-				<br>
-				<div class="error">{{ form_error.minColorbar }}</div>
-				<br>
-			{% endif %}
-		</div>
-           </td>
-        </tr>
-	</table>
+</table>

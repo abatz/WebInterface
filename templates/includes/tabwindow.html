@@ -1,0 +1,58 @@
+<div class="tabbable">
+        <!----------------------------->
+        <!--        NAVIGATION       -->
+        <!----------------------------->
+        <ul class="nav nav-tabs" id="dataTab" >
+                <li><a href="#tabblank" data-toggle="tab"><img src="images/uparrow.png" height="10px"></a></li>
+                <li class="active"><a href="#taboptions" data-toggle="tab">Options <img src="images/downarrow.png" height="10px"></a></li>
+                <li><a href="#tabtimeseries" data-toggle="tab">{% if timeSeriesGraphData%}Time Series Output 
+			<img src="images/downarrow.png" height="10px">{% endif %}</a></li>
+
+		<div id="progressBar"><div>
+        </ul>
+
+        <div class="tab-content">
+		<!----------------------------->
+		<!--  OPTIONS WINDOW 	     -->
+		<!----------------------------->
+		<div class="tab-pane active" id="taboptions">
+			{% include 'includes/taboptions.html'%}
+		</div>
+                <!----------------------------->
+		<!--    BLANK WINDOW         -->
+                <!----------------------------->
+                <div class="tab-pane" id="tabblank">
+                </div>
+                <!----------------------------->
+		<!--    TIME SERIES WINDOW   -->
+                <!----------------------------->
+	 	<div class="tab-pane" id="tabtimeseries">
+                    {% if timeSeriesGraphData%}
+			<table>
+				<tr>
+					<td width="50%" valign="top">
+						<!----------------------------->
+						<!--    FIGURES   -->
+						<!----------------------------->
+						<div class="tab-pane" id="timeseriesout">
+						    {% if timeSeriesGraphData%}
+							  {% include 'includes/tabfigure.html'%}
+						    {% endif %}
+						</div>
+						</td>
+						<td width="50%" valign="top">
+						<!----------------------------->
+						<!--    DATA   -->
+						<!----------------------------->
+						 <div class="tab-pane" id="data">
+						{% if timeSeriesData%}
+							 {% include 'includes/tabdata.html'%}
+						{% endif %}
+						</div>
+					</td>
+				</tr>
+			</table>
+                    {% endif %}
+                </div>
+        </div>
+</div>

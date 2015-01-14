@@ -1,17 +1,36 @@
 $(function(){
 
 
+	/*--------------------------------------------*/
+	/*         LAYERS LISTENER                    */
+	/*--------------------------------------------*/
 	jQuery('.layers').on('change','input[type=checkbox]', function(){
 		if($('input[id=stateslayer]:checked').val()=="stateslayer"){
 		  window.statemarkerOverLayer.setMap(window.map);
 		}else{
 		  window.statemarkerOverLayer.setMap(null);
 		};
+		/*if($('input[id=countylayer]:checked').val()=="countylayer"){
+		  window.countymarkerOverLayer.setMap(window.map);
+		}else{
+		  window.countymarkerOverLayer.setMap(null);
+		};
+		*/
 		if($('input[id=kmllayer]:checked').val()=="kmllayer"){
 		  window.kmlmarkerLayer.setMap(window.map);
 		}else{
 		  window.kmlmarkerLayer.setMap(null);
 		};
+	});
+	/*--------------------------------------------*/
+	/*         BACKGROUND LISTENER                */
+	/*--------------------------------------------*/
+	 jQuery('.backgroundgmap').on('change','input[type=checkbox]', function(){
+                if($('input[id=whitebackground]:checked').val()=="whitebackground"){
+			window.map.setOptions({styles: window.mapOffStyles});
+                }else{
+                	window.map.setOptions({styles: window.mapOnStyles});
+                };
 	});
 
 	/*--------------------------------------------*/

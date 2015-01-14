@@ -61,6 +61,15 @@ formTimeSeriesCalc=[
 
 
 #============================
+#    formBackground
+#============================
+formBackground=[
+    ('whitebackground','White Background'),
+]
+
+
+
+#============================
 #    formLocation
 #============================
 formLocation=[

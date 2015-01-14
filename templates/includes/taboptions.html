@@ -1,14 +1,45 @@
 <table id="table" class="table table-striped" width="20%">
        <!---------------------------->
-       <!--      DATA OPTIONS       -->
+       <!--      DATA               -->
        <!----------------------------->
         <tr>
 	    <td>
-		 {% include 'includes/dataoptions.html'%}
+		 <table id="table" class="table table-striped" width="20%">
+			<tr>
+			    <td>
+			       <!----------------------------->
+			       <!--           VARIABLE      -->
+			       <!----------------------------->
+				<div class="variableLandsat">
+					<b>Variable:</b><br>
+					<select id="variable" name="variable" class="variable" width="95%">
+						<optgroup label="MODIS">
+							{% for x,y in formVariableLandsat %}
+							    <option value="{{ x }}" {% if x == variable  %} selected {% endif %}>{{ y }}</option>
+							{% endfor %}
+						</optgroup>
+						<optgroup label="gridMET">
+							{% for x,y in formVariableGrid %}
+							    <option value="{{ x }}"{% if x == variable  %} selected {% endif %}>{{ y }}</option>
+							{% endfor %}
+						</optgroup>
+					</select>
+				</div>
+			</td>
+			</tr>
+				{% if form_error.variable %}
+				<tr>
+					<td>
+						<div class="error">{{ form_error.variable }}</div>
+					</td>
+				</tr>
+				{% endif %}
+			<tr>
+		</table>
           </td>
        </tr>
        <!---------------------------->
-       <!--      MAP OPTIONS       -->
+       <!--      MAP                -->
        <!----------------------------->
 	<tr>
 	    <td>
@@ -29,7 +60,7 @@
 		    <div id="collapseBuildMapOptions" class="accordion-body collapse">
 		       <div class="accordion-inner">
 			    <div class="panel-body">
-					{% include 'includes/buildmap.html'%}
+					{% include 'includes/mapoptions.html'%}
 			    </div>
 			</div><!-- end of accordion-inner-->
 		    </div><!-- end of accordion-body -->
@@ -44,7 +75,7 @@
 	  </td>
 	</tr>
        <!---------------------------->
-       <!--      TIME SERIES OPTIONS       -->
+       <!--      TIME SERIES      -->
        <!----------------------------->
         <tr>
             <td>
@@ -65,7 +96,7 @@
                     <div id="collapseBuildTimeSeriesOptions" class="accordion-body collapse">
                        <div class="accordion-inner">
                             <div class="panel-body">
-                                        {% include 'includes/buildtimeseries.html'%}
+                                        {% include 'includes/timeseriesoptions.html'%}
                             </div>
                         </div><!-- end of accordion-inner-->
                     </div><!-- end of accordion-body -->

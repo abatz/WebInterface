@@ -40,6 +40,7 @@ class DroughtTool(webapp2.RequestHandler):
         self.state = self.request.get('state','California')
         self.anomOrValue = self.request.get('anomOrValue','value')
         self.timeSeriesCalc = self.request.get('timeSeriesCalc','days')
+        self.background = self.request.get('background','whitebackground')
 
         #self.pointLatLong = self.request.get('pointLatLong','-112,42')
         #self.pointLatLongX = self.pointLatLong.split(",")
@@ -119,6 +120,7 @@ class DroughtTool(webapp2.RequestHandler):
             'state': self.state,
             'domainType': self.domainType,
             'anomOrValue': self.anomOrValue,
+            'background': self.background,
             'timeSeriesCalc': self.timeSeriesCalc,
             'dateStart': self.dateStart,
             'dateEnd': self.dateEnd,
@@ -129,6 +131,7 @@ class DroughtTool(webapp2.RequestHandler):
             'formOpacity': forms.formOpacity,
             'formUnits': forms.formUnits,
             'formAnomOrValue': forms.formAnomOrValue,
+            'formBackground': forms.formBackground,
             'formTimeSeriesCalc': forms.formTimeSeriesCalc,
             'formVariableGrid': forms.formVariableGrid,
             'formLocation': forms.formLocation,

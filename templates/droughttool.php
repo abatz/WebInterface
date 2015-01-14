@@ -7,18 +7,23 @@
 
 <body>
 	<div id="wrapper">
-
-		<!-- Call navigation template -->
+		<!---------------------------->
+		<!-- NAVIGATION             -->
+		<!---------------------------->
 		{% include 'includes/navigation.html'%}
 
-		<!-- Menu form -->
+		<!---------------------------->
+		<!-- TAB WINDOW             -->
+		<!---------------------------->
 		<div id="menu">
 			<form   {% if timeSeriesData%} action="#timeseriesoutput"{% else %}action="/"{% endif %} id="form_map" method="post" onsubmit="showLoadingImage.show_loading()">
-				{% include 'includes/dataform.html'%}
+				{% include 'includes/tabwindow.html'%}
 			</form>
 		</div>
 		
-		<!-- Title and colorbar -->
+		<!---------------------------->
+		<!-- GOOGLE MAP             -->
+		<!---------------------------->
 		{% if mapid %}
 			<br>
 			<table padding="1">
@@ -43,24 +48,26 @@
 				</tr>
 			</table>
 		{% endif %}
-		
 		<!-- Map -->
 		<div id="map"></div>
 		
-		<!-- Call templates -->
-        {% include 'aboutdatamodal.html'%}
-        {% include 'contactmodal.html'%}
-        {% include 'aboutmetricsmodal.html'%}
-        {% include 'sharelinkmodal.html'%}
-        {% include 'optionsmodal.html'%}
-        {% include 'droughthomemodal.html'%}
-        {% include 'caseStudiesModal.html'%}
-        {% include 'tutorialModal.html'%}
-        {% include 'introvideoModal.html'%}
+		<!---------------------------->
+		<!-- MODAL WINDOWS             -->
+		<!---------------------------->
+		{% include 'modal_aboutdata.html'%}
+		{% include 'modal_contact.html'%}
+		{% include 'modal_aboutmetrics.html'%}
+		{% include 'modal_sharelink.html'%}
+		{% include 'modal_home.html'%}
+		{% include 'modal_caseStudies.html'%}
+		{% include 'modal_tutorial.html'%}
+		{% include 'modal_introvideo.html'%}
 
 	</div>
 
-	<!-- Call scripts -->
+	<!---------------------------->
+	<!-- SCRIPTS             -->
+	<!---------------------------->
     {% include 'includes/basicscripts.php'%}
     {% include 'includes/scripts.php'%}
 
