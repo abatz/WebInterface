@@ -452,6 +452,14 @@ def format_dateEnd(dateEnd):
         return dE
     return dE
 
+def format_point(point):
+    p = str(point)
+    #Strip white spaces
+    p = p.replace(', ', ',')
+    #Strip extra comma
+    p = p.rstrip(',')
+    return p
+
 def format_pointsLongLat(pointsLongLat):
     pLL = pointsLongLat
     #if list, turn into string
@@ -569,6 +577,17 @@ def check_domainType(domainType):
     options = [l[0] for l in formLocation]
     if domainType not in options:
         return 'Domain should be one of: %s. You entered: %s' %(','.join(options), str(domainType))
+def check_point(point):
+    err = None
+    #Make sure point is lon, lat string
+    p = str(point)
+    p_list = p.split(',')
+    if len(p_list) <= 1:
+        return 'Point must be entered as a Long,Lat pair. You entered: %s' %str(point)
+    if len(p_list) > 2:
+        return 'Please enter a single point as Long,Lat coordinate. You entered: %s' %str(point)
+    return err
+
 
 def check_pointsLongLat(pointsLongLat):
     err = None
@@ -577,12 +596,12 @@ def check_pointsLongLat(pointsLongLat):
     try:
         pLL_list = pLL.split(',')
     except:
-        return 'Points must be neterd as a comma separated list of Long,Lat pairs! You entered: %' %str(pointsLongLat)
+        return 'Error in point selection. Check for extra commas, etc. Each point should be entered as Long,Lat pair.'
     try:
         Lons = np.array([float(pLL_list[i]) for i in range(0,len(pLL_list),2)])
         Lats = np.array([float(pLL_list[i]) for i in range(1,len(pLL_list),2)])
     except:
-        return 'Points needs to be comma separated list of one or more Long,Lat pairs. You entered: %s' %str(pLL)
+        return 'Error in point selection. Check for extra commas, etc. Each point should be entered as Long,Lat pair.'
     if len(Lats) != len(Lons):
         return 'Number of Latitudes not equal number of latitudes'
     return err

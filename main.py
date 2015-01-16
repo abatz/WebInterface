@@ -78,8 +78,8 @@ class DroughtTool(webapp2.RequestHandler):
         self.palette = self.request.get('palette', None)
         self.colorbarmap = self.request.get('colorbarmap', 'GnBu')
         self.colorbarsize = self.request.get('colorbarsize', '8')
-        self.marker_colors = ['red', 'blue', 'green', 'orange', 'purple',\
-        'yellow', 'pink', 'red-dot', 'blue-dot','green-dot']
+        self.marker_colors = ['blue', 'green', 'orange', 'purple',\
+        'yellow', 'pink','red']
 
 	if(self.domainType=='full'):
             mz= '5';

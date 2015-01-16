@@ -111,11 +111,9 @@
                     </div>
                 {% endif %}
                 {% endfor %}
-
-                {% if form_error.pointsLongLat %}
-                <br><div class="error">{{ form_error.pointsLongLat }}</div>
-                <br>
-                {% endif %}
+                {%if form_error.pointsLongLat%}
+                    <br><div class="error">{{ form_error.pointsLongLat}}</div>
+                {%endif%}
                </div><!--end class=points-->
           </td>
         </tr>
@@ -176,6 +174,8 @@
                         {% endfor %}
                         </select><br>
 		  </div>
-          </td>
-        </tr>
+        </td></tr>
+        <tr><td>
+            <input type="submit" class="btn btn-large ptn-primary" value="GET TIME SERIES" form="form_map" onclick="document.getElementById('domainType').value='points'"/>
+        </td></tr>
 
