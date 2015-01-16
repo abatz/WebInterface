@@ -77,10 +77,10 @@ def get_images(template_values):
 	#==============
         #Time Series
 	#==============
-        if  dT == 'points' and points: 
-            #collection=check_units_timeseries(collection,var,'value',units);  
-            timeSeriesData, timeSeriesGraphData = get_time_series(collection,var,pointsLongLatTuples,units); 
-	else: 
+        if  dT == 'points' and points:
+            #collection=check_units_timeseries(collection,var,'value',units);
+            timeSeriesData, timeSeriesGraphData = get_time_series(collection,var,pointsLongLatTuples,units);
+	else:
 	    #==============
             #Maps
 	    #==============
@@ -241,7 +241,7 @@ def get_collection(variable):
 #===========================================
 def get_time_series(collection, variable, pointsLongLatTuples,units):
     #TO-DO: need to apply check_units to time series data (pref after finding point data)
-    #collection=check_units_timeseries(collection,var,'value',units);  
+    #collection=check_units_timeseries(collection,var,'value',units);
     ######################################################
     #### Data in list format
     ######################################################
@@ -389,7 +389,7 @@ def get_statistic(collection,variable,statistic,anomOrValue):
 #   CHECK_UNITS
 #===========================================
 def check_units(collection,variable,anomOrValue,units):
-    #anomOrValue = 'anom' or 'value'... not the variable being passed 
+    #anomOrValue = 'anom' or 'value'... not the variable being passed
 
     if(variable=='tmmx' or variable=='tmmn'):
         if(anomOrValue=='value'):
@@ -403,7 +403,7 @@ def check_units(collection,variable,anomOrValue,units):
             collection=collection.divide(25.4); #convert mm to inches
     if(variable=='vs'):
         if(units=='english'):
-            collection=collection.multiply(2.23694); #convert m/s to mi/h 
+            collection=collection.multiply(2.23694); #convert m/s to mi/h
 
     return(collection);
 

@@ -101,11 +101,6 @@
 	      var mapType = new google.maps.ImageMapType(eeMapOptions);
 
 	      var map=null;
-	      var pointmarker = null;
-	      var pointmarker1 = null;
-	      var pointmarker2 = null;
-	      var pointmarker3 = null;
-	      var pointmarker4 = null;
 	      var statemarkerLayer = null;
 	      var statemarkerOverLayer = null;
 	      var countymarkerOverLayer = null;
@@ -224,127 +219,43 @@
 		var bounds = new google.maps.LatLngBounds();
 		var timeSeriesGraphData = "{{ timeSeriesGraphData }}";
 		var domainType = document.getElementById('domainType').value;
-		var pointsLongLat = document.getElementById('pointsLongLat').value.replace(' ','');
-		var point_list = pointsLongLat.split(',');
-		var pLat,pLong, pointmarkers = [];
-		//FIX ME: multi points not working correctly!!
-		//Take first coords form pointsLongLat input variable for marker showing
-		pLat = parseFloat(point_list[1]);
-		pLong = parseFloat(point_list[0]);
-
-/*	doesn't work!
-		//katherine's attempt at the points
-		color=['blank','red', 'blue','green', 'orange','purple'];
-		   i=1;
-		   var point1LongLat = document.getElementById('point1LongLat').value.replace(' ','');
-		    var pointmarker1 = new google.maps.Marker({
-			position:new google.maps.LatLng(pLat,pLong),
-			map: map,
-			draggable: true,
-			icon: new google.maps.MarkerImage("http://google.com/mapfiles/ms/micons/" + color[i] + ".png")
-		    });
-		    google.maps.event.addListener(pointmarker1, 'dragend', function(a) {
-			var div = document.createElement('div');
-			var longitude=a.latLng.lng().toFixed(4);
-			var latitude=a.latLng.lat().toFixed(4);
-		    });
-		    window.pointmarker1.setVisible(false);
-		  i=2;
-                   var point2LongLat = document.getElementById('point2LongLat').value.replace(' ','');
-                    var pointmarker2 = new google.maps.Marker({
-                        position:new google.maps.LatLng(pLat,pLong),
-                        map: map,
-                        draggable: true,
-                        icon: new google.maps.MarkerImage("http://google.com/mapfiles/ms/micons/" + color[i] + ".png")
-                    });
-                    google.maps.event.addListener(pointmarker2, 'dragend', function(a) {
-                        var div = document.createElement('div');
-                        var longitude=a.latLng.lng().toFixed(4);
-                        var latitude=a.latLng.lat().toFixed(4);
-                    });
-                    window.pointmarker2.setVisible(true);
-		 i=3;
-                   var point3LongLat = document.getElementById('point3LongLat').value.replace(' ','');
-                    var pointmarker3 = new google.maps.Marker({
-                        position:new google.maps.LatLng(pLat,pLong),
-                        map: map,
-                        draggable: true,
-                        icon: new google.maps.MarkerImage("http://google.com/mapfiles/ms/micons/" + color[i] + ".png")
-                    });
-                    google.maps.event.addListener(pointmarker3, 'dragend', function(a) {
-                        var div = document.createElement('div');
-                        var longitude=a.latLng.lng().toFixed(4);
-                        var latitude=a.latLng.lat().toFixed(4);
-                    });
-                    window.pointmarker3.setVisible(true);
-		   i=4;
-                   var point4LongLat = document.getElementById('point4LongLat').value.replace(' ','');
-                    var pointmarker4 = new google.maps.Marker({
-                        position:new google.maps.LatLng(pLat,pLong),
-                        map: map,
-                        draggable: true,
-                        icon: new google.maps.MarkerImage("http://google.com/mapfiles/ms/micons/" + color[i] + ".png")
-                    });
-                    google.maps.event.addListener(pointmarker4, 'dragend', function(a) {
-                        var div = document.createElement('div');
-                        var longitude=a.latLng.lng().toFixed(4);
-                        var latitude=a.latLng.lat().toFixed(4);
-                    });
-                    window.pointmarker4.setVisible(true);
-*/		   
-/*    britta's multi point
-
-		for (i=0;i<point_list.length - 1;i+=2){
-		    pLat = parseFloat(point_list[i+1]);
-		    pLong = parseFloat(point_list[i]);
-		    bounds.extend(new google.maps.LatLng(pLat,pLong));
-		    var points_pre, points_post, new_point_list =[]
-		    if (i > 0){
-			points_pre = point_list.splice(0,i);
-		    }
-		    else {
-			var points_pre =[];
-		    }
-		    if (i < point_list.length - 2) {
-			points_post = point_list.splice(i+2, point_list.length);
-		    }
-		    else {
-			points_post = [];
-		    }
-		    var pointmarker = new google.maps.Marker({
-			position:new google.maps.LatLng(pLat,pLong),
-			map: map, 
-			draggable: true
-		    });
-		    google.maps.event.addListener(pointmarker, 'dragend', function(a) {
-			var div = document.createElement('div');
-			var longitude=a.latLng.lng().toFixed(4);
-			var latitude=a.latLng.lat().toFixed(4);
-			var new_point_list = points_pre.concat([String(longitude),String(latitude)]).concat(points_post);
-			document.getElementById('pointsLongLat').value = new_point_list.join();
-		    });
-		    window.pointmarker.setVisible(false);
-		}
-		window.pointmarkers = pointmarkers;
-*/
-
-		window.pointmarker = new google.maps.Marker({
-			position:new google.maps.LatLng(parseFloat(pLat),parseFloat(pLong)),
-			map: map, 
-			draggable: true
-		});
-		google.maps.event.addListener(window.pointmarker, 'dragend', function(a) {
-			  var div = document.createElement('div');
-			  var longitude=a.latLng.lng().toFixed(4)
-			  var latitude=a.latLng.lat().toFixed(4)
-			  document.getElementById('pointsLongLat').value = longitude+','+latitude;
-		});
-		if (domainType == 'points' && timeSeriesGraphData != '') {
-		    window.pointmarker.setVisible(true); 
-		}
-		else {
-			    window.pointmarker.setVisible(false); 
-		}
+        var latlong, markers = [];
+        //Set initial markers as invisible
+        $('.pointCheck[type=checkbox]').each(function() {
+            var point_id = $(this).val();
+            var LongLat = String($('#' + String(point_id)).val()).replace(' ','');
+            var Long = parseFloat(LongLat.split(',')[0]);
+            var Lat = parseFloat(LongLat.split(',')[1]);
+            var latlon = new google.maps.LatLng(Lat,Long);
+            var marker_img = document.getElementById('img' + String(point_id)).src;
+            var marker = new google.maps.Marker({
+                map: map,
+                position: latlon,
+                title:String(point_id),
+                draggable:true,
+                visible:false,
+                icon: marker_img
+            });
+            //Assign point_id to marker for tracking
+            marker.id = point_id;
+            google.maps.event.addListener(marker, 'click', function() {
+                //Uncheck checkbox
+                var m_id = marker.id;
+                $('#check' + String(point_id)).attr('checked', false);
+                //Hide marker
+                marker.setVisible(false);
+            });
+            google.maps.event.addListener(marker, 'dragend', function (event) {
+                var m_id = marker.id;
+                //Set new lat,lon
+                var new_lat = event.latLng.lat().toFixed(2);;
+                var new_long = event.latLng.lng().toFixed(2);
+                //Update value in form
+                $('#' + String(point_id)).val(new_long + ',' + new_lat);
+            });
+            markers.push(marker);
+        });
+        window.markers = markers;
 		/*********************************
 		*      RECTANGLE                    *
 		*********************************/

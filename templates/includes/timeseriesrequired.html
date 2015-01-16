@@ -85,47 +85,38 @@
                               </table>
                         </div>
   			<!----------------------------->
-                       <!--      POINT              -->
-                       <!----------------------------->
-                        {% if domainType == "points" %}
-                        <div class="points">
-                        {% else %}
-                        <!--<div class="points" style="display:none;">-->
-                        <div class="points">
+            <!--      POINT              -->
+            <!----------------------------->
+			<div class="points" id="points">
+                <input type="hidden" id="pointsLongLat" name="pointsLongLat" value="" /><br>
+                Select Point(s):<br>
+                {% for c in marker_colors %}
+                {% if loop.index == 1 %}
+                    <!--Show first point-->
+                    <div id="point{{loop.index}}" class="point">
+                       <input type="checkbox" name="point" class="pointCheck" value="{{loop.index}}" id="check{{loop.index}}">
+                       <img src="http://www.google.com/mapfiles/ms/micons/{{c}}.png" id="img{{loop.index}}">
+                       <input type="text" id="{{loop.index}}" class="pointLongLat" name="pointLongLat" value="{{ pointsLongLat }}"/><br />
+                       Add another point: <input type="checkbox" class='addPoint' value="{{loop.index}}" id="add{{loop.index}}">
+                    </div>
+                {% else %}
+                    <div id="point{{loop.index}}" class="point" style="display:none">
+                        <input type="checkbox" name="point" class="pointCheck" value="{{loop.index}}">
+                        <img src="http://www.google.com/mapfiles/ms/micons/{{c}}.png" id="img{{loop.index}}">
+                        <input type="text" id="{{loop.index}}" class="pointLongLat" name="pointLongLat"/>
+                        <br />
+                        {% if loop.revindex != 1 %}
+                        Add another point: <input type="checkbox" class='addPoint' value="{{loop.index}}">
                         {% endif %}
-                        <br>
-			<div class="points">
-				Hidden: <input id="pointsLongLat" name="pointsLongLat" value="{{ pointsLongLat }}" /><br>
-				Select Point(s):<br>
-				<div class="points1">
-					<input type="checkbox" name="points[]" value="1" id="point1">
-					      <img src="http://www.google.com/mapfiles/ms/micons/red.png">
-					      <input id="point1LongLat" name="point1LongLat" value="{{ point1LongLat }}" />
-				<br>
-				</div>
-				<div class="points2">
-					<input type="checkbox" name="points[]" value="2" id="point2">
-					      <img src="http://www.google.com/mapfiles/ms/micons/blue.png">
-					      <input id="point2LongLat" name="point2LongLat" value="{{ point2LongLat }}" />
-				</div>
-				<div class="points3">
-					<input type="checkbox" name="points[]" value="3" id="point3">
-					      <img src="http://www.google.com/mapfiles/ms/micons/green.png">
-					      <input id="point3LongLat" name="point3LongLat" value="{{ point3LongLat }}" />
-				</div>
-				<div class="points4">
-					<input type="checkbox" name="points[]" value="4" id="point4">
-					      <img src="http://www.google.com/mapfiles/ms/micons/orange.png">
-					      <input id="point4LongLat" name="point4LongLat" value="{{ point4LongLat }}" />
-				</div>
+                    </div>
+                {% endif %}
+                {% endfor %}
 
-                              {% if form_error.pointsLongLat %}
-                              <br>
-                              <div class="error">{{ form_error.pointsLongLat }}</div>
-                                <br>
-                              {% endif %}
-                        </div>
-               </div><!--end subdomain-->
+                {% if form_error.pointsLongLat %}
+                <br><div class="error">{{ form_error.pointsLongLat }}</div>
+                <br>
+                {% endif %}
+               </div><!--end class=points-->
           </td>
         </tr>
 	<tr><td>
@@ -135,10 +126,12 @@
 			    <option value="{{ x }}" {% if x == timeSeriesCalc  %} selected {% endif %}>{{ y }}</option>
 			{% endfor %}
 		</select>
+        <!--
 		<select id="" name="" class="" width="95%">
                            <option value="raw" selected >Raw Values</option>
                            <option value="cum" >Cumulative Values</option>
                 </select>
+        -->
 		<br>
                    <div class="daytimeperiod">
                           Start Date:
