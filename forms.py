@@ -592,6 +592,8 @@ def check_point(point):
 def check_pointsLongLat(pointsLongLat):
     err = None
     pLL = pointsLongLat
+    if not pLL:
+        return err
     #make sure its a comma separated list of Long/Lat coordinates
     try:
         pLL_list = pLL.split(',')
