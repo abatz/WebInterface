@@ -43,7 +43,10 @@ def get_images(template_values):
     #Set source, domain, subdomain
     source = collectionLongName + ' from ' + dS + '-' + dE + ''
     points = None
-    subdomain = ee.Feature.MultiPoint(pointsLongLatTuples)
+    if pointsLongLat:
+        subdomain = ee.Feature.MultiPoint(pointsLongLatTuples)
+    else:
+        subdomain = None
     if(dT == 'states'):
         subdomain = template_values['state']
     elif(dT == 'full' and product == 'modis'):
