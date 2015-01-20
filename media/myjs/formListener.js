@@ -1,50 +1,150 @@
 $(function(){
 	/*--------------------------------------------*/
-	/*         POINTS LISTENER                    */
+	/*         POINTS LISTENERS                    */
 	/*--------------------------------------------*/
-	jQuery('.points').on('change','input[type=checkbox]', function(){
-		if($('input[id=point1]:checked').val()=="1"){
-		   window.pointmarker1.setVisible(true);
-		}else{
-		   window.pointmarker1.setVisible(false);
-		}
-		if($('input[id=point2]:checked').val()=="2"){
-		   window.pointmarker2.setVisible(true);
-		}else{
-		   window.pointmarker2.setVisible(false);
-		}
-		if($('input[id=point3]:checked').val()=="3"){
-		   window.pointmarker3.setVisible(true);
-		}else{
-		   window.pointmarker3.setVisible(false);
-		}
-		if($('input[id=point4]:checked').val()=="4"){
-		   window.pointmarker4.setVisible(true);
-		}else{
-		   window.pointmarker4.setVisible(false);
-		}
-	});
+    /*
+    Deal with three inputs
+    1. Checkbox for a marker has changed
+    See if point is checked and update map, pointsLongLat accordingly
+    */
+    jQuery('.point').on('change','input.pointCheck[type=checkbox]', function(){
+        var LongLatStr,LongLatList,LongLat;
+        var Long,Lat,latlon;
+        LongLatStr = $('#pointsLongLat').val();
+        LongLatList = LongLatStr.replace(' ','').split(',');
+        point_id = parseFloat($(this).val());
+        LongLat = String($('#' + point_id).val()).replace(' ','');
+        Long = parseFloat(LongLat.split(',')[0])
+        Lat = parseFloat(LongLat.split(',')[1])
+        //See if point is checked and update map, pointsLongLat accordingly
+        if ($(this).is(':checked')) {
+            //Show marker to map
+            if (LongLat){
+                console.log(point_id);
+                latlon = new google.maps.LatLng(Lat,Long);
+                window.markers[point_id-1].position = latlon;
+                window.markers[point_id-1].setVisible(true);
+            }
+            //Add point to pointsLongLat
+            if (LongLatStr && LongLat){
+                $('#pointsLongLat').val(LongLatStr + ',' + LongLat);
+            }
+            else if ( !LongLatStr && LongLat) {
+                $('#pointsLongLat').val(LongLat);
+            }
+        }
+        else {
+            //Hide marker from map
+            window.markers[point_id-1].setVisible(false);
+            //Remove point from pointsLongLat
+            for (long_idx=0;long_idx<LongLatList.length - 1;long_idx+=2){
+                if (Long != String(LongLatList[long_idx])){
+                    continue;
+                }
+                if (Lat != String(LongLatList[long_idx + 1])){
+                    continue;
+                }
+                //We found point on pointsLongLatList
+                //Remove Long
+                LongLatList.splice(long_idx,1);
+                //Remove Lat
+                LongLatList.splice(long_idx,1);
+                //Update pointsLongLat
+                $('#pointsLongLat').val(LongLatList.toString());
+                    break;
+            }
+        }
+    });
+    //2. Input field for marker
+    jQuery('.point').on('change','input.pointLongLat[type=text]', function(){
+        //Change position of marker on map
+        //Generate new pointsLongLat string
+        var newpointsLongLat = '',point_id,LongLat,Lat,Long,latlon;
+        $('.pointCheck').each(function() {
+            if ($(this).is(':checked')){
+                point_id = parseFloat($(this).val());
+                LongLat = String($('#' + String(point_id)).val()).replace(' ','');
+                Long = parseFloat(LongLat.split(',')[0]);
+                Lat = parseFloat(LongLat.split(',')[1]);
+                latlon = new google.maps.LatLng(Lat,Long);
+                //Update marker on map
+                window.markers[point_id-1].position = latlon;
+                window.markers[point_id-1].setVisible(true);
+                //Update LongLat string
+                if (LongLat && newpointsLongLat) {
+                    newpointsLongLat+=',' + LongLat;
+                }
+                else if (LongLat && !newpointsLongLat){
+                    newpointsLongLat+=LongLat;
+                }
+            }
+        });
+        //Update pointsLongLat
+        $('#pointsLongLat').val(newpointsLongLat);
+    });
+    //3. Add another point checkbox
+    jQuery('.point').on('change','input.addPoint[type=checkbox]', function(){
+        point_id = parseFloat($(this).val());
+        if ($(this).is(':checked')){
+            //Show next marker
+            document.getElementById('point' + String(point_id + 1)).style.display = 'block';
+        }
+        else{
+            //Hide next marker
+            document.getElementById('point' + String(point_id + 1)).style.display = 'none';
+        }
+    });
 	/*--------------------------------------------*/
 	/*         LAYERS LISTENER                    */
 	/*--------------------------------------------*/
-	jQuery('.layers').on('change','input[type=checkbox]', function(){
-		if($('input[id=stateslayer]:checked').val()=="stateslayer"){
-		  window.statemarkerOverLayer.setMap(window.map);
+	jQuery('.layer').on('change','input[type=radio]', function(){
+		if($('input[id=stateoverlayer]:checked').val()=="stateoverlayer"){
+			console.log('state layer checked');
+			 window.statemarkerOverLayer.setMap(window.map);
 		}else{
-		  window.statemarkerOverLayer.setMap(null);
+		  	window.statemarkerOverLayer.setMap(null);
 		};
-		/*if($('input[id=countylayer]:checked').val()=="countylayer"){
-		  window.countymarkerOverLayer.setMap(window.map);
+		if($('input[id=countyoverlayer]:checked').val()=="countyoverlayer"){
+		  	window.countymarkerOverLayer.setMap(window.map);
 		}else{
-		  window.countymarkerOverLayer.setMap(null);
+		  	window.countymarkerOverLayer.setMap(null);
 		};
-		*/
-		if($('input[id=kmllayer]:checked').val()=="kmllayer"){
-		  window.kmlmarkerLayer.setMap(window.map);
+		if($('input[id=hucoverlayer]:checked').val()=="hucoverlayer"){
+                  	window.hucsmarkerOverLayer.setMap(window.map);
+                }else{
+                 	 window.hucsmarkerOverLayer.setMap(null);
+                };
+		if($('input[id=climatedivoverlayer]:checked').val()=="climatedivoverlayer"){
+                  	window.climatedivmarkerOverLayer.setMap(window.map);
+                }else{
+                  	window.climatedivmarkerOverLayer.setMap(null);
+                };
+		if($('input[id=psaoverlayer]:checked').val()=="psaoverlayer"){
+                  	window.psasmarkerOverLayer.setMap(window.map);
+                }else{
+                  	window.psasmarkerOverLayer.setMap(null);
+                };
+		if($('input[id=kmloverlayer]:checked').val()=="kmloverlayer"){
+			kmlurl=document.getElementById('kmlurl').value;
+			alert(kmlurl);
+			window.kmlmarkerLayer = new google.maps.KmlLayer(kmlurl, {
+				map:map,
+			    preserveViewport: true,
+			    suppressInfoWindows: false
+			 });
+		  	window.kmlmarkerLayer.setMap(window.map);
 		}else{
-		  window.kmlmarkerLayer.setMap(null);
+		  	window.kmlmarkerLayer.setMap(null);
 		};
 	});
+ 	jQuery('#kmlurl').keyup( function(){
+		winndow.kmlmarkerLayer = new google.maps.KmlLayer('{{ kmlurl }}', {
+                        map:map,
+                            preserveViewport: true,
+                            suppressInfoWindows: false
+                });
+                window.kmlmarkerLayer.setMap(window.map);
+});
 	/*--------------------------------------------*/
 	/*         BACKGROUND LISTENER                */
 	/*--------------------------------------------*/
@@ -69,8 +169,8 @@ $(function(){
 
  	jQuery('#mapCenterLongLat').keyup( function(){
 		var mapCenterLongLat = document.getElementById('mapCenterLongLat').value;
-            	var mapCenterLong = parseFloat(mapCenterLongLat.split(',')[0]);
-            	var mapCenterLat = parseFloat(mapCenterLongLat.split(',')[1]);
+            	var mapCenterLong = parseFloat(mapCenterLongLat.split(',')[0]).toFixed(4);;
+            	var mapCenterLat = parseFloat(mapCenterLongLat.split(',')[1]).toFixed(4);
 		window.map.setCenter(new google.maps.LatLng(mapCenterLat,mapCenterLong));
         });
 	jQuery('#mapzoom').on('change', function(){
@@ -378,23 +478,6 @@ $(function(){
 
         });
 
-
-	/*--------------------------------------------*/
-	/*        KML LAYER       		      */
-	/*--------------------------------------------*/
-
-	jQuery('#kmloption').on('change', 'input[type=checkbox]',function(){
-			console.log('kml changed')
-		if(jQuery('#kmloption').is(':checked')){
-			console.log('kml added')
-  			window.kmlmarkerLayer.setMap(window.map);
-		}else{
-			console.log('kml removed')
-			window.kmlmarkerLayer.setMap(null);
-		}
-
-        });
-
 	/*--------------------------------------------*/
 	/*         POLYGON LISTENER 		      */
 	/*--------------------------------------------*/
@@ -421,9 +504,11 @@ $(function(){
  //         	document.getElementById("mapzoom").value = '6';
 //		
 //	});
+
 	/*--------------------------------------------*/
 	/*        POINT  LISTENER 		      */
 	/*--------------------------------------------*/
+    /*
 	jQuery('#pointsLongLat').keyup( function(){
 		 var pointsLongLat = document.getElementById('pointsLongLat').value.replace(' ','');
 		 var point_list = pointsLongLat.split(',');
@@ -467,7 +552,7 @@ $(function(){
 		 window.pointmarker.setPosition(newLatLng);
 		 window.map.setCenter(newLatLng);
         });
-
+        */
 
 /* Not used because point strings are in a single text box
 	  jQuery('#pointLat').keyup( function(){

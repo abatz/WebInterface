@@ -41,6 +41,7 @@ class DroughtTool(webapp2.RequestHandler):
         self.anomOrValue = self.request.get('anomOrValue','value')
         self.timeSeriesCalc = self.request.get('timeSeriesCalc','days')
         self.background = self.request.get('background','nowhitebackground')
+        self.layer = self.request.get('layer','none')
 
         #self.pointLatLong = self.request.get('pointLatLong','-112,42')
         #self.pointLatLongX = self.pointLatLong.split(",")
@@ -62,7 +63,7 @@ class DroughtTool(webapp2.RequestHandler):
         self.yearStart = self.request.get('yearStart','1979');
         self.yearEnd = self.request.get('yearEnd','2015');
 
-        self.pointsLongLat = self.request.get('pointsLongLat','-112.0,42.0')
+        self.pointsLongLat = self.request.get('pointsLongLat',self.mapCenterLongLat)
 
         self.opacity = self.request.get('opacity',str(14*0.05))
         self.units = self.request.get('units','metric')
@@ -78,6 +79,8 @@ class DroughtTool(webapp2.RequestHandler):
         self.palette = self.request.get('palette', None)
         self.colorbarmap = self.request.get('colorbarmap', 'GnBu')
         self.colorbarsize = self.request.get('colorbarsize', '8')
+        self.marker_colors = ['blue', 'green', 'orange', 'purple',\
+        'yellow', 'pink','red']
 
 	if(self.domainType=='full'):
             mz= '5';
@@ -127,6 +130,7 @@ class DroughtTool(webapp2.RequestHandler):
             'domainType': self.domainType,
             'anomOrValue': self.anomOrValue,
             'background': self.background,
+            'layer': self.layer,
             'timeSeriesCalc': self.timeSeriesCalc,
             'dateStart': self.dateStart,
             'dateEnd': self.dateEnd,
@@ -146,6 +150,7 @@ class DroughtTool(webapp2.RequestHandler):
             'formLocation': forms.formLocation,
             'formVariableLandsat': forms.formVariableLandsat,
             'formStates': forms.formStates,
+            'formLayers': forms.formLayers,
             'kmlurl': self.kmlurl,
             'kmloption': self.kmloption,
             'palette': self.palette,
@@ -153,6 +158,7 @@ class DroughtTool(webapp2.RequestHandler):
             'maxColorbar': self.maxColorbar,
             'colorbarmap': self.colorbarmap,
             'colorbarsize': self.colorbarsize,
+            'marker_colors':self.marker_colors
         }
         if self.colorbarmap:
             template_values['colorbarmap']= self.colorbarmap

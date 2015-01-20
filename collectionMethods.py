@@ -43,7 +43,10 @@ def get_images(template_values):
     #Set source, domain, subdomain
     source = collectionLongName + ' from ' + dS + '-' + dE + ''
     points = None
-    subdomain = ee.Feature.MultiPoint(pointsLongLatTuples)
+    if pointsLongLat:
+        subdomain = ee.Feature.MultiPoint(pointsLongLatTuples)
+    else:
+        subdomain = None
     if(dT == 'states'):
         subdomain = template_values['state']
     elif(dT == 'full' and product == 'modis'):
@@ -77,10 +80,10 @@ def get_images(template_values):
 	#==============
         #Time Series
 	#==============
-        if  dT == 'points' and points: 
-            #collection=check_units_timeseries(collection,var,'value',units);  
-            timeSeriesData, timeSeriesGraphData = get_time_series(collection,var,pointsLongLatTuples,units); 
-	else: 
+        if  dT == 'points' and points:
+            #collection=check_units_timeseries(collection,var,'value',units);
+            timeSeriesData, timeSeriesGraphData = get_time_series(collection,var,pointsLongLatTuples,units,TV['marker_colors']);
+	else:
 	    #==============
             #Maps
 	    #==============
@@ -239,9 +242,9 @@ def get_collection(variable):
 #===========================================
 #    GET_TIMESERIES
 #===========================================
-def get_time_series(collection, variable, pointsLongLatTuples,units):
+def get_time_series(collection, variable, pointsLongLatTuples,units,marker_colors):
     #TO-DO: need to apply check_units to time series data (pref after finding point data)
-    #collection=check_units_timeseries(collection,var,'value',units);  
+    #collection=check_units_timeseries(collection,var,'value',units);
     ######################################################
     #### Data in list format
     ######################################################
@@ -260,9 +263,10 @@ def get_time_series(collection, variable, pointsLongLatTuples,units):
     ######################################################
     #### Format data for figure and data tabs
     #### Ech point gets it's own dictionary
-    #### timeSeriesData = {LongLat:ll_string, Data:[[Date1,val1],[Date2, val2]]}
+    #### timeSeriesData[idx] = {MarkerColor:marker_colors[idx],LongLat:ll_string, Data:[[Date1,val1],[Date2, val2]]}
     ######################################################
     #Format data
+    point_cnt = 0
     for idx, data in enumerate(dataList):
         lon = round(data[1],4);lat = round(data[2],4)
         if idx == 0:
@@ -270,6 +274,7 @@ def get_time_series(collection, variable, pointsLongLatTuples,units):
             lon_init = lon;lat_init = lat
             data_dict = {}
             data_dict_graph = {}
+            point_cnt+=1
         else:
             if abs(float(lon) - float(lon_init)) >0.0001 or abs(float(lat) - float(lat_init)) > 0.0001:
                 #New data point
@@ -277,12 +282,14 @@ def get_time_series(collection, variable, pointsLongLatTuples,units):
                 timeSeriesData.append(data_dict)
                 timeSeriesGraphData.append(data_dict_graph)
                 data_dict = {};data_dict_graph = {}
+                point_cnt+=1
         if not data_dict:
             data_dict = {
                 'LongLat': str(lon) + ',' + str(lat),
                 'Data': []
             }
             data_dict_graph = {
+                'MarkerColor':marker_colors[point_cnt - 1],
                 'LongLat': str(lon) + ',' + str(lat),
                 'Data': []
             }
@@ -389,7 +396,7 @@ def get_statistic(collection,variable,statistic,anomOrValue):
 #   CHECK_UNITS
 #===========================================
 def check_units(collection,variable,anomOrValue,units):
-    #anomOrValue = 'anom' or 'value'... not the variable being passed 
+    #anomOrValue = 'anom' or 'value'... not the variable being passed
 
     if(variable=='tmmx' or variable=='tmmn'):
         if(anomOrValue=='value'):
@@ -403,7 +410,7 @@ def check_units(collection,variable,anomOrValue,units):
             collection=collection.divide(25.4); #convert mm to inches
     if(variable=='vs'):
         if(units=='english'):
-            collection=collection.multiply(2.23694); #convert m/s to mi/h 
+            collection=collection.multiply(2.23694); #convert m/s to mi/h
 
     return(collection);
 
@@ -692,58 +699,3 @@ def map_collection(collection,opacity,palette,minColorbar,maxColorbar):
 
     return mapid;
 
-'''
-#===========================================
-#   GET_TIMESERIES
-#===========================================
-def get_timeseries(collection,point,variable):
-######################################################
-#### Data in list format
-######################################################
-    dataString = collection.getRegion(point,1).getInfo();
-    dataString.pop(0) #remove first row of list ["id","longitude","latitude","time",variable]
-
-    timeList = [row[3] for row in dataString]
-    variableList = [row[4] for row in dataString]
-
-#newarray=[['Dates','NDVI']]
-#for x in zip(timeList,variableList):
-#    if x[1] is not None:
-#        newarray.append([x[0],x[1]])
-
-######################################################
-#### CREATE TIME SERIES ARRAY WITH DATE IN COL 1 AND VALUE IN COL 2
-######################################################
-    timeSeries = []
-    for i in range(0,len(variableList),1):
-        time_ms = (ee.Algorithms.Date(dataString[i][3])).getInfo()['value']
-        data1 = time.strftime('%m/%d/%Y',  time.gmtime(time_ms/1000))
-        data2 = (dataString[i][4])
-        if data2 is not None:
-            timeSeries.append([data1,data2])
-
-######################################################
-#### SORT IN CHRONOLOGICAL ORDER
-######################################################
-    timeSeries.sort(key=lambda date: datetime.datetime.strptime(date[0], "%m/%d/%Y"))
-
-######################################################
-#### ADD HEADER TO SORTED LIST
-######################################################
-    timeSeries= [['Dates','Values']] + timeSeries
-
-######################################################
-#### CALCULATE NDVI STATS
-######################################################
-#### FILTER OUT "None" VALUES
-#variableList_filt = [x for x in variableList if x is not None]
-#meanNDVI = numpy.mean(variableList_filt,axis=0)
-#medianNDVI = numpy.median(variableList_filt,axis=0)
-#maxNDVI = numpy.max(variableList_filt,axis=0)
-#minNDVI = numpy.min(variableList_filt,axis=0)
-
-######################################################
-#### RETURN
-######################################################
-    return (timeSeries)
-'''

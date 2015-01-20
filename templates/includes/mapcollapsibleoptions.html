@@ -106,13 +106,14 @@
                <!--      LAYERS          -->
                <!----------------------------->
                 <b>Layers:</b>
-		<div class="layers">
-			<input type="checkbox" name="layers[]" value="stateslayer" id="stateslayer">US States Layer<br>
-			<!--<input type="checkbox" name="layers[]" value="countylayer" id="countylayer">US Counties Layer<br>-->
-			<input type="checkbox" name="layers[]" value="kmllayer" id="kmllayer">KML/KMZ Layer (url of file):<br>
+		<div class="layer">
+			{% for x,y in formLayers %}
+                                <input type="radio" name="layer" value="{{ x }}" id="{{ x }}" {% if x == layer  %} checked="checked" {% endif %}>{{ y }}<br>
+                        {% endfor %}
 			<div class="kmlurl">
 				<input id="kmlurl" name="kmlurl" value="{{ kmlurl }}" size="50" />
 			</div>
+
 			{% if form_error.kmlurl %}
 				<br>
 				<div class="error">{{ form_error.minColorbar }}</div>
@@ -126,12 +127,14 @@
                <!----------------------------->
                <!--      BACKGROUND         -->
                <!----------------------------->
+		<!-- not working
                 <b>Map Background:</b>
                 <div class="backgroundgmap">
 			{% for x,y in formBackground %}
                         	<input type="checkbox" name="background[]" value="{{ x }}" id="{{ x }}" {% if x == background  %} checked="checked" {% endif %}>{{ y }}<br>
                         {% endfor %}
                 </div>
+		-->
            </td>
         </tr>
 	</table>
