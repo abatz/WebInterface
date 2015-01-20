@@ -1,4 +1,20 @@
 	<table id="table" class="table table-striped" width="20%" border="1">
+	 <tr>
+           <td>
+               <!----------------------------->
+               <!--      LAYERS          -->
+               <!----------------------------->
+                <b>Layers:</b>
+                <div class="layer">
+                        {% for x,y in formLayers %}
+                                <input type="radio" name="layer" value="{{ x }}" id="{{ x }}" {% if x == layer  %} checked="checked" {% endif %}>{{ y }}<br>
+                        {% endfor %}
+                        <div class="kmlurl">
+                                <input id="kmlurl" name="kmlurl" value="{{ kmlurl }}" size="50" />
+                        </div>
+                </div>
+           </td>
+        </tr>
         <tr>
            <td>
                <!----------------------------->
@@ -100,28 +116,6 @@
                 </div>
 	   </td>
 	</tr>
-	 <tr>
-           <td>
-               <!----------------------------->
-               <!--      LAYERS          -->
-               <!----------------------------->
-                <b>Layers:</b>
-		<div class="layer">
-			{% for x,y in formLayers %}
-                                <input type="radio" name="layer" value="{{ x }}" id="{{ x }}" {% if x == layer  %} checked="checked" {% endif %}>{{ y }}<br>
-                        {% endfor %}
-			<div class="kmlurl">
-				<input id="kmlurl" name="kmlurl" value="{{ kmlurl }}" size="50" />
-			</div>
-
-			{% if form_error.kmlurl %}
-				<br>
-				<div class="error">{{ form_error.minColorbar }}</div>
-				<br>
-			{% endif %}
-		</div>
-           </td>
-        </tr>
  <tr>
            <td>
                <!----------------------------->

@@ -19,6 +19,12 @@
 		function activaTab(tab){
 			$('.tab-pane a[href="#' + tab + '"]').tab('show');
 	        };
+		function setCenter(){
+			newCenter = window.map.getCenter();
+                        myCenterLat = newCenter.lat().toFixed(4);
+                        myCenterLong = newCenter.lon().toFixed(4);
+                        document.getElementById('mapCenterLongLat').value =str(myCenterLat)+','+str(myCenterLong);
+		};
 	</script>
 	
 	<script type="text/javascript"> 
@@ -173,12 +179,16 @@
 			myZoom = map.getZoom();
 		  }
 		});
-		google.maps.event.addListener(map,'center_changed',function(){
+		/*google.maps.event.addListener(map,'center_changed',function(){
+			var mapCenterLongLat = "{{ mapCenterLongLat}}";
+                	var mapCenterLat = parseFloat(mapCenterLongLat.split(',')[1]).toFixed(4);
+                	var mapCenterLong = parseFloat(mapCenterLongLat.split(',')[0]).toFixed(4);
 			newCenter = window.map.getCenter();
-			//myCenterLat = newCenter.lat().toFixed(4);
-			//myCenterLong = newCenter.lon().toFixed(4);
-			//document.getElementById('mapCenterLongLat').value =str(myCenterLat)+','+str(myCenterLong);
+			myCenterLat = newCenter.lat().toFixed(4);
+			myCenterLong = newCenter.lon().toFixed(4);
+			document.getElementById('mapCenterLongLat').value =str(myCenterLat)+','+str(myCenterLong);
 		});
+		*/
 
 		/*********************************
 		*     COLORBAR                   *
@@ -289,18 +299,8 @@
                     suppressInfoWindows: false
                  }); //end KmlLayer
 		 google.maps.event.addListener(statemarkerLayer, 'click', function(kmlEvent) {
-			//alert(kmlEvent.featureData.name);
                         $('#state').val(kmlEvent.featureData.name);
                 	findAddress();
-			//var NewMapCenter = window.map.getCenter();
-			//var longitude = NewMapCenter.lng();
-			//var latitude = NewMapCenter.lat();
-			//document.getElementById('pointLatLong').value = longitude+','+latitude
-			//NewMapCenter = window.map.getCenter();
-			//window.pointmarker.latLng = window.map.getCenter();
-                	//jQuery('#pointLat').html(NewMapCenter.lat());
-                 	//jQuery('#pointLong').hmtl(NewMapCenter.lon());
-	
           	}); //end listener
 		window.statemarkerLayer.setMap(null);
 		/*********************************
@@ -372,21 +372,18 @@
 		/*********************************
 		*      KML LAYER                    *
 		*********************************/
-		window.kmlmarkerLayer = new google.maps.KmlLayer('{{ kmlurl }}', {
-		map:map,
-                    preserveViewport: true,
-                    suppressInfoWindows: false
-                 }); 
-		map.overlayMapTypes.push(mapType);
 		{% if layer=='kmloverlayer' %}
+			window.kmlmarkerLayer = new google.maps.KmlLayer('{{ kmlurl }}', {
+			map:map,
+			    preserveViewport: true,
+			    suppressInfoWindows: false
+			 }); 
+			map.overlayMapTypes.push(mapType);
 			window.kmlmarkerOverLayer.setMap(window.map);
-		{% else %}
-			window.kmlmarkerOverLayer.setMap(null);
 		{% endif %}
 		/*********************************/
 		window.map.overlayMapTypes.push(mapType);
 	      }
-		
 
 	      google.maps.event.addDomListener(window, 'load', initialize);
 	      window.onload = initialize;
