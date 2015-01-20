@@ -36,7 +36,7 @@ formVariableLandsat=[
     #('bi','BI (Burning Index)'),
     #('NBRT','NBRT (Norm. Burn Rat. Thm. Ind)'),
     #('BAI','BAI (Burning Area Index)'),
-    ('EVI','EVI (Enhanced Vegetation Index)'),
+    ('LEVI','EVI (Enhanced Vegetation Index)'),
     ('NDSI','NDSI (Snow Index)'),
     ('NDVI','NDVI (Vegetation Index)'),
     ('NDWI','NDWI (Water Index)'),
