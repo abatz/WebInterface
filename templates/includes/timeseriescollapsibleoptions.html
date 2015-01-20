@@ -1,7 +1,16 @@
 	<table id="table" class="table table-striped" width="20%" border="1">
         <tr>
            <td>
-		No Options Yet
+               <!----------------------------->
+               <!--      UNITS            -->
+               <!----------------------------->
+                <b>Units:</b><br>
+                <select id="unitsT" name="units" class="units" width="95%">
+                        {% for x,y in formUnits %}
+                            <option value="{{ x }}" {% if x == units  %} selected {% endif %}>
+                                {{ y }}</option>
+                        {% endfor %}
+                </select>
 	</td>
 	</tr>
 	</table>

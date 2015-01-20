@@ -22,22 +22,6 @@
 				</optgroup>
 			</select>
                 </td>
-		<td>
-               <!----------------------------->
-               <!--      UNITS            -->
-               <!----------------------------->
-                <b>Units:</b><br>
-                <select id="units" name="units" class="units" width="95%">
-                        {% for x,y in formUnits %}
-                            <option value="{{ x }}" {% if x == units  %} selected {% endif %}>
-                                {{ y }}</option>
-                        {% endfor %}
-                </select>
-           </td>
-        </tr>
-
-		</div>
-	   </td>
 	</tr>
 	{% if form_error.variable %}
 	<tr>
@@ -74,13 +58,6 @@
 		    </div><!-- end of accordion-body -->
 		</div><!-- end of accordion-->
 		</td>
-		<td style="vertical-align:top">
-		 <input type="submit" class="btn btn-large ptn-primary" value="GET MAP"
-                                                form="form_map" onclick="document.getElementById('domainType').value='full';"/>
-                 <div id="loading" style="display:none;">
-                        <img id="loading-image" src="images/loading_image.gif" alt="Loading..." />
-
-	  </td>
 	</tr>
        <!---------------------------->
        <!--      TIME SERIES      -->
@@ -109,11 +86,6 @@
                         </div><!-- end of accordion-inner-->
                     </div><!-- end of accordion-body -->
                 </div><!-- end of accordion-->
-          </td>
-          <td style="vertical-align:top">
-                 <input type="submit" class="btn btn-large ptn-primary" value="GET TIME SERIES"
-                                                form="form_map" onclick="document.getElementById('domainType').value='points'"/>
-                                                <!--form="form_map" onclick="document.getElementById('domainType').value='points';activaTab('tabtimeseries')"/>-->
           </td>
         </tr>
 	<!----------------------------->

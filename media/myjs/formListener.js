@@ -137,6 +137,8 @@ $(function(){
 		  	window.kmlmarkerLayer.setMap(null);
 		};
 	});
+
+
  	jQuery('#kmlurl').keyup( function(){
 		winndow.kmlmarkerLayer = new google.maps.KmlLayer('{{ kmlurl }}', {
                         map:map,
@@ -176,6 +178,14 @@ $(function(){
 	jQuery('#mapzoom').on('change', function(){
 		mapzoom = parseInt(document.getElementById('mapzoom').value)
 		window.map.setZoom(mapzoom);
+        });
+	jQuery('#unitsT').on('change', function(){
+	     units=document.getElementById('unitsT').value;
+	     document.getElementById('units').value =units;
+        });
+	jQuery('#units').on('change', function(){
+	     units=document.getElementById('units').value;
+	     document.getElementById('unitsT').value =units;
         });
 
 	jQuery('#minColorbar,#maxColorbar').keyup( function(){
