@@ -1,6 +1,6 @@
 function Colorbar() {
     var scale, // the input scale this represents;
-        margin = {top: 5, right: 30, bottom: 25, left: 0}
+        margin = {top: 5, right: 35, bottom: 25, left: 0}
     orient = "vertical",
     origin = {
         x: 0,
@@ -10,9 +10,6 @@ function Colorbar() {
     thickness = 50, // how thick is the bar
     title = "", // title for the colorbar
     scaleType = "linear";
-
-
-
 
     checkScaleType = function (scale) {
         // AFAIK, d3 scale types aren't easily accessible from the scale itself.

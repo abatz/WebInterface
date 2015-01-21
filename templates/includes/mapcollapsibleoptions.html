@@ -1,69 +1,10 @@
 	<table id="table" class="table table-striped" width="20%" border="1">
-	 <tr>
-                <td>
-               <!----------------------------->
-               <!--      UNITS            -->
-               <!----------------------------->
-                <b>Units:</b><br>
-                <select id="units" name="units" class="units" width="95%">
-                        {% for x,y in formUnits %}
-                            <option value="{{ x }}" {% if x == units  %} selected {% endif %}>
-                                {{ y }}</option>
-                        {% endfor %}
-                </select>
-           </td>
-        </tr>
-	 <tr>
-           <td>
-               <!----------------------------->
-               <!--      LAYERS          -->
-               <!----------------------------->
-                <b>Layers:</b>
-                <div class="layer">
-                        {% for x,y in formLayers %}
-                                <input type="radio" name="layer" value="{{ x }}" id="{{ x }}" {% if x == layer  %} checked="checked" {% endif %}>{{ y }}<br>
-                        {% endfor %}
-                        <div class="kmlurl">
-                                <input id="kmlurl" name="kmlurl" value="{{ kmlurl }}" size="50" />
-                        </div>
-                </div>
-           </td>
-        </tr>
-        <tr>
-           <td>
-               <!----------------------------->
-               <!--      MAP ZOOM and CENTER          -->
-               <!----------------------------->
-                <b>Map:</b>
-                <div class="mapcenterzoom">
-                <li>Center:
-                              <input id="mapCenterLongLat" name="mapCenterLongLat" value="{{ mapCenterLongLat }}" size=10/>
-                </li>
-                <li>Zoom:
-                 <select id="mapzoom" name="mapzoom" width="95%">
-                        {% for x,y in formMapZoom %}
-                            <option value="{{ x }}" {% if x == mapzoom  %} selected {% endif %}>
-                                {{ y }}</option>
-                        {% endfor %}
-                </select>
-                <!--{% if form_error.mapzoom %}
-                        <br>
-                        <div class="error">{{ form_error.mapzoom }}</div>
-                        <br>
-                {% endif %}
-		-->
-                             <!-- <input id="mapzoom" name="mapzoom" value="{{ mapzoom }}" size=4 />-->
-                </li>
-                </div>
-           </td>
-        </tr>
-
 	<tr>
 	    <td>
 	       <!----------------------------->
 	       <!--      OPACITY            -->
 	       <!----------------------------->
-		<b>Transparency:</b>
+		<b>Map Transparency:</b>
 		<!--<input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="14"/>-->
 		<select id="opacity" name="opacity" width="95%">
 			{% for x,y in formOpacity %}
@@ -86,6 +27,14 @@
 		<!--<div class="colorbar" style="visibility:hidden">-->
 		<div class="colorbar">
                         <b>Colorbar:</b><br>
+			<li>Units:
+                        <select id="units" name="units" class="units" width="95%">
+                                {% for x,y in formUnits %}
+                                    <option value="{{ x }}" {% if x == units  %} selected {% endif %}>
+                                        {{ y }}</option>
+                                {% endfor %}
+                        </select>
+                        </li>
 			<li>Colormap:
 				<select id="colorbarmap" name="colorbarmap" class="colorbarmap" width="95%">
 					<optgroup label="Divergent Maps">
@@ -122,14 +71,62 @@
 			     {% endif %}
 		 	</li>
 			<br>
-			<div id="colorbar1"><svg style="width:60px;height:30px;"></svg></div>
-		</div>
+			 <div id="colorbar1"><svg style="width:60px;height:30px;"></svg></div>
+			<!--<center>{{ colorbarLabel }}</center>-->
+		  </div>
 		   <div class="colorbar" style="visibility:hidden">
                         <li>Colorbar Palette:
                         <input id="palette" name="palette" value="{{ palette }}" /></li>
                 </div>
 	   </td>
 	</tr>
+	<tr>
+           <td>
+               <!----------------------------->
+               <!--      LAYERS          -->
+               <!----------------------------->
+                <b>Additional Layers:</b>
+                <div class="layer">
+                        {% for x,y in formLayers %}
+                                <input type="radio" name="layer" value="{{ x }}" id="{{ x }}" {% if x == layer  %} checked="checked" {% endif %}>{{ y }}<br>
+                        {% endfor %}
+                        <div class="kmlurl">
+                                <input id="kmlurl" name="kmlurl" value="{{ kmlurl }}" size="50" />
+                        </div>
+                </div>
+           </td>
+        </tr>
+	 <tr>
+           <td>
+               <!----------------------------->
+               <!--      MAP ZOOM and CENTER          -->
+               <!----------------------------->
+                <b>Map:</b>
+                <div class="mapcenterzoom">
+                <li>Center:
+                              <input id="mapCenterLongLat" name="mapCenterLongLat" value="{{ mapCenterLongLat }}" size=10/>
+                </li>
+                <li>Zoom:
+                 <select id="mapzoom" name="mapzoom" width="95%">
+                        {% for x,y in formMapZoom %}
+                            <option value="{{ x }}" {% if x == mapzoom  %} selected {% endif %}>
+                                {{ y }}</option>
+                        {% endfor %}
+                </select>
+                <!--{% if form_error.mapzoom %}
+                        <br>
+                        <div class="error">{{ form_error.mapzoom }}</div>
+                        <br>
+                {% endif %}
+                -->
+                             <!-- <input id="mapzoom" name="mapzoom" value="{{ mapzoom }}" size=4 />-->
+                </li>
+                </div>
+           </td>
+        </tr>
+
+
+
  <tr>
            <td>
                <!----------------------------->

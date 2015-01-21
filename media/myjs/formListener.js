@@ -99,7 +99,6 @@ $(function(){
 	/*--------------------------------------------*/
 	jQuery('.layer').on('change','input[type=radio]', function(){
 		if($('input[id=stateoverlayer]:checked').val()=="stateoverlayer"){
-			console.log('state layer checked');
 			 window.statemarkerOverLayer.setMap(window.map);
 		}else{
 		  	window.statemarkerOverLayer.setMap(null);
@@ -126,7 +125,6 @@ $(function(){
                 };
 		if($('input[id=kmloverlayer]:checked').val()=="kmloverlayer"){
 			kmlurl=document.getElementById('kmlurl').value;
-			alert(kmlurl);
 			window.kmlmarkerLayer = new google.maps.KmlLayer(kmlurl, {
 				map:map,
 			    preserveViewport: true,
