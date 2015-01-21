@@ -238,7 +238,14 @@ $(function(){
 	/*       COLORBAR       		      */
 	/*--------------------------------------------*/
        jQuery('.variable, .anomOrValue, .units').on('change', function(){
-           if(jQuery('.variable').val()=='NDVI' || jQuery('.variable').val()=='EVI' ){
+	   
+	   //strip product character off of variable
+	   var variable = jQuery('.variable').val()
+	   variable = variable.substr(1)
+	   var anomOrValue = jQuery('.anomOrValue').val()
+	   var units = jQuery('.units').val()
+
+           if(variable=='NDVI' || variable=='EVI' ){
            	if(jQuery('.anomOrValue').val()=='anom'){
 			minColorbar = -.4;
 			maxColorbar = .4;
@@ -252,8 +259,8 @@ $(function(){
 			colorbarmap='YlGn'
 			colorbarsize=9
 		}
-           }else if(jQuery('.variable').val()=='NDSI' || jQuery('.variable').val()=='NDWI'){
-		 if(jQuery('.anomOrValue').val()=='anom'){
+           }else if(variable=='NDSI' || variable=='NDWI'){
+		 if(anomOrValue=='anom'){
                         minColorbar = -.5;
                         maxColorbar = .5;
                         palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
@@ -266,19 +273,18 @@ $(function(){
 			colorbarmap='invBlues'  //need inverse here
 			colorbarsize=8
                 }
-	   }else if(jQuery('.variable').val()=='pr'){
-                 if(jQuery('.anomOrValue').val()=='anom'){
+	   }else if(variable=='pr'){
+                 if(anomOrValue=='anom'){
 			minColorbar = 0;
 			maxColorbar = 200;
                         palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
 			colorbarmap='RdYlBu' 
 			colorbarsize=8
                 }else{
-			console.log(jQuery('.units').val());
-                 	if(jQuery('.units').val()=='metric'){
+                 	if(units=='metric'){
 				minColorbar = 0;
 				maxColorbar = 400; //mm
-                 	}else if(jQuery('.units').val()=='english'){
+                 	}else if(units=='english'){
 				minColorbar = 0;
 				maxColorbar = 16; //mm
 			}
@@ -286,45 +292,45 @@ $(function(){
 			colorbarmap='YlGnBu' 
 			colorbarsize=8
                 }
-            }else if(jQuery('.variable').val()=='tmmx' || jQuery('.variable').val()=='tmmn' || jQuery('.variable').val()=='tmean'){
-                 if(jQuery('.anomOrValue').val()=='anom'){
-                 	if(jQuery('.units').val()=='metric'){
+            }else if(variable=='tmmx' || variable=='tmmn' || variable=='tmean'){
+                 if(anomOrValue=='anom'){
+                 	if(units=='metric'){
 				minColorbar =-5;
 				maxColorbar = 5;
-                 	}else if(jQuery('.units').val()=='english'){
+                 	}else if(units=='english'){
 				minColorbar =-10;
 				maxColorbar = 10;
 			}
                         palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
 			colorbarmap='BuYlRd' 
 			colorbarsize=8
-                }else if ( jQuery('.variable').val()=='tmmx'){
-                 	if(jQuery('.units').val()=='metric'){
+                }else if ( variable=='tmmx'){
+                 	if(units=='metric'){
 				minColorbar = -20;
 				maxColorbar = 30;
-                 	}else if(jQuery('.units').val()=='english'){
+                 	}else if(units=='english'){
 				minColorbar =0;
 				maxColorbar = 100;
 			}
                         palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FFF6A7,FEE090,FDAE61,F46D43,D73027,A50026"
 			colorbarmap='BuRd' //need inverse
 			colorbarsize=8
-                }else if ( jQuery('.variable').val()=='tmmn'){
-                 	if(jQuery('.units').val()=='metric'){
+                }else if ( variable=='tmmn'){
+                 	if(units=='metric'){
 				minColorbar = -20;
 				maxColorbar = 20; //deg C
-                 	}else if(jQuery('.units').val()=='english'){
+                 	}else if(units=='english'){
 				minColorbar = 0;
 				maxColorbar = 80; //deg C
 			}
                         palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
 			colorbarmap='BuRd' //need inverse
 			colorbarsize=8
-		}else if ( jQuery('.variable').val()=='tmean'){
-                        if(jQuery('.units').val()=='metric'){
+		}else if ( variable=='tmean'){
+                        if(units=='metric'){
                                 minColorbar = -20;
                                 maxColorbar = 20; //deg C
-                        }else if(jQuery('.units').val()=='english'){
+                        }else if(units=='english'){
                                 minColorbar = 0;
                                 maxColorbar = 80; //deg C
                         }
@@ -332,8 +338,8 @@ $(function(){
                         colorbarmap='BuRd' //need inverse
                         colorbarsize=8
                 }
-	    }else if(jQuery('.variable').val()=='rmin' || jQuery('.variable').val()=='rmax'){
-                 if(jQuery('.anomOrValue').val()=='anom'){
+	    }else if(variable=='rmin' || variable=='rmax'){
+                 if(variable=='anom'){
                         minColorbar =-25;
                         maxColorbar = 25;
                         palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
@@ -346,8 +352,8 @@ $(function(){
 			colorbarmap='BuRd' //need inverse
 			colorbarsize=8
                 }
-	    }else if(jQuery('.variable').val()=='srad'){
-                 if(jQuery('.anomOrValue').val()=='anom'){
+	    }else if(variable=='srad'){
+                 if(anomOrValue=='anom'){
                         minColorbar =-25;
                         maxColorbar = 25;
                         palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
@@ -360,12 +366,12 @@ $(function(){
 			colorbarmap='BuRd' //need inverse
 			colorbarsize=8
                 }
-	    }else if(jQuery('.variable').val()=='vs'){
-                 if(jQuery('.anomOrValue').val()=='anom'){
-                 	if(jQuery('.units').val()=='metric'){
+	    }else if(variable=='vs'){
+                 if(anomOrValue=='anom'){
+                 	if(units=='metric'){
 				minColorbar =-2.5;
 				maxColorbar = 2.5;
-                 	}else if(jQuery('.units').val()=='english'){
+                 	}else if(units=='english'){
 				minColorbar =-5;
 				maxColorbar = 5;
 			}
@@ -373,10 +379,10 @@ $(function(){
 			colorbarmap='BuYlRd' //need inverse
 			colorbarsize=8
                 }else{ 
-                 	if(jQuery('.units').val()=='metric'){
+                 	if(units=='metric'){
 				minColorbar = 0;
 				maxColorbar = 5; //m/s
-                 	}else if(jQuery('.units').val()=='english'){
+                 	}else if(units=='english'){
 				minColorbar = 0;
 				maxColorbar = 10; //mi/hr
 			}
@@ -384,8 +390,8 @@ $(function(){
 			colorbarmap='YlGnBu' //need inverse
 			colorbarsize=8
                 }
-	 }else if(jQuery('.variable').val()=='sph'){
-                 if(jQuery('.anomOrValue').val()=='anom'){
+	 }else if(variable=='sph'){
+                 if(anomOrValue=='anom'){
                         minColorbar =-30;
                         maxColorbar = 30;
                         palette="053061,2166AC,4393C3,67ADD1,92C5DE,D1E5F0,F7F7F7,FDDBC7,F4A582,E88465,D6604D,B2182B,67001F"
@@ -398,8 +404,8 @@ $(function(){
 			colorbarmap='BuRd' //need inverse
 			colorbarsize=8
                 }
-	 }else if(jQuery('.variable').val()=='erc'){
-                 if(jQuery('.anomOrValue').val()=='anom'){
+	 }else if(variable=='erc'){
+                 if(anomOrValue=='anom'){
                         minColorbar =-20;
                         maxColorbar = 20;
                         palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
@@ -412,18 +418,18 @@ $(function(){
 			colorbarmap='YlOrRd' 
 			colorbarsize=8
                 }
-         }else if(jQuery('.variable').val()=='pet'){
-                 if(jQuery('.anomOrValue').val()=='anom'){
+         }else if(variable=='pet'){
+                 if(anomOrValue=='anom'){
 			minColorbar =80;
 			maxColorbar =120;
                         palette="053061,2166AC,4393C3,92C5DE,D1E5F0,F7F7F7,FDDBC7,F4A582,D6604D,B2182B,67001F"
 			colorbarmap='BuYlRd' //need inverse
 			colorbarsize=8
                 }else{
-                 	if(jQuery('.units').val()=='metric'){
+                 	if(units='metric'){
 				minColorbar = 300;
 				maxColorbar = 800; //mm
-                 	}else if(jQuery('.units').val()=='english'){
+                 	}else if(units=='english'){
 				minColorbar = 10;
 				maxColorbar = 30; //mm
 			}
@@ -431,8 +437,8 @@ $(function(){
 			colorbarmap='BuRd' //need inverse
 			colorbarsize=8
                 }
-         }else if(jQuery('.variable').val()=='pdsi'){
-                 if(jQuery('.anomOrValue').val()=='anom'){
+         }else if(variable=='pdsi'){
+                 if(anomOrValue=='anom'){
 			minColorbar =-6;
 			maxColorbar =6;
                         palette="053061,2166AC,4393C3,92C5DE,D1E5F0,F7F7F7,FDDBC7,F4A582,D6604D,B2182B,67001F"
@@ -445,18 +451,18 @@ $(function(){
                         colorbarmap='RdYlBu' //need inverse
                         colorbarsize=8
                 }
-	 }else if(jQuery('.variable').val()=='wb'){
-                 if(jQuery('.anomOrValue').val()=='anom'){
+	 }else if(variable=='wb'){
+                 if(anomOrValue=='anom'){
                         minColorbar =-100;
                         maxColorbar = 100;
                         palette="67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
 			colorbarmap='RdYlBu' //need inverse
 			colorbarsize=8
                 }else{
-                 	if(jQuery('.units').val()=='metric'){
+                 	if(units=='metric'){
 				minColorbar = -200;
 				maxColorbar = 200; //mm
-                 	}else if(jQuery('.units').val()=='english'){
+                 	}else if(units=='english'){
 				minColorbar = -10;
 				maxColorbar = 10; //mm
 			}
@@ -471,30 +477,28 @@ $(function(){
 	     document.getElementById('colorbarmap').value =colorbarmap;
 	     document.getElementById('colorbarsize').value =colorbarsize;
 
-                colorbarsize = parseInt(document.getElementById('colorbarsize').value);
-                colorbarmap = document.getElementById('colorbarmap').value;
+             colorbarsize = parseInt(document.getElementById('colorbarsize').value);
+             colorbarmap = document.getElementById('colorbarmap').value;
 
-                minColorbar = document.getElementById('minColorbar').value
-                maxColorbar = document.getElementById('maxColorbar').value
+             minColorbar = document.getElementById('minColorbar').value
+             maxColorbar = document.getElementById('maxColorbar').value
 
-                myPalette=colorbrewer[colorbarmap][colorbarsize];
+             myPalette=colorbrewer[colorbarmap][colorbarsize];
 
-                myScale = d3.scale.quantile().range(myPalette).domain([minColorbar,maxColorbar]);
-                colorbar1 = Colorbar()
+             myScale = d3.scale.quantile().range(myPalette).domain([minColorbar,maxColorbar]);
+             colorbar1 = Colorbar()
                    .thickness(30)
                     .barlength(300)
                     .orient("horizontal")
                     .scale(myScale)
-                colorbarObject1 = d3.select("#colorbar1").call(colorbar1)
+             colorbarObject1 = d3.select("#colorbar1").call(colorbar1)
 
- 		var palette = new String();
-                palette=myPalette[0].replace(/#/g, '');
-                for (var i=1;i<myPalette.length;i++){
-                        palette = palette+','+myPalette[i].replace(/#/g, '');
-                }
-                jQuery('#palette').val(palette);
-
-
+ 	     var palette = new String();
+             palette=myPalette[0].replace(/#/g, '');
+             for (var i=1;i<myPalette.length;i++){
+                    palette = palette+','+myPalette[i].replace(/#/g, '');
+            }
+            jQuery('#palette').val(palette);
         });
 
 	/*--------------------------------------------*/

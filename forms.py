@@ -13,35 +13,52 @@ formVariableGrid=[
     #('eto','ETo (Potential EvapTrans.)'),
     #('eddi','EDDI (Evap Dem. Drought Ind.)'),
     #('th','TH (Wind Direction)'),
-    ('erc','ERC (Energy Release Component)'),
-    ('pdsi','PDSI (Palm. Drought Sev. Ind.)'),
-    ('pet','PET (Potential Evapotranspiration)'),
+    ('Gerc','ERC (Energy Release Component)'),
+    ('Gpdsi','PDSI (Palm. Drought Sev. Ind.)'),
+    ('Gpet','PET (Potential Evapotranspiration)'),
     ('Gpr','PPT (Precipitation)'),
-    ('rmin','RMIN (Min Rel. Humidity)'),
-    ('rmax','RMAX (Max Rel. Humidity)'),
-    ('sph','SPH (Specific Humidity)'),
-    ('srad','SRAD (Downward Radiation)'),
-    ('tmean','TMEAN (Mean Temperature)'),
-    ('tmmn','TMIN (Min Temperature)'),
-    ('tmmx','TMAX (Max Temperature)'),
-    ('vs','VS (Wind Speed)'),
-    ('wb','Water Balance (PPT-PET)'),
+    ('Grmin','RMIN (Min Rel. Humidity)'),
+    ('Grmax','RMAX (Max Rel. Humidity)'),
+    ('Gsph','SPH (Specific Humidity)'),
+    ('Gsrad','SRAD (Downward Radiation)'),
+    ('Gtmean','TMEAN (Mean Temperature)'),
+    ('Gtmmn','TMIN (Min Temperature)'),
+    ('Gtmmx','TMAX (Max Temperature)'),
+    ('Gvs','VS (Wind Speed)'),
+    ('Gwb','Water Balance (PPT-PET)'),
 ]
 
 #============================
-#    formVariableRS
+#    formVariableLandsat
 #============================
-formVariableRS=[
-    #('eto','ETo (Potential Evapotranspiration)'),
-    #('eddi','EDDI (Evap. Demand Drought Index)'),
-    #('bi','BI (Burning Index)'),
-    #('NBRT','NBRT (Norm. Burn Rat. Thm. Ind)'),
-    #('BAI','BAI (Burning Area Index)'),
-    ('EVI','EVI (Enhanced Vegetation Index)'),
-    ('NDSI','NDSI (Snow Index)'),
-    ('NDVI','NDVI (Vegetation Index)'),
-    ('NDWI','NDWI (Water Index)'),
+formVariableLandsat=[
+    #('Leto','ETo (Potential Evapotranspiration)'),
+    #('Leddi','EDDI (Evap. Demand Drought Index)'),
+    #('Lbi','BI (Burning Index)'),
+    #('LNBRT','NBRT (Norm. Burn Rat. Thm. Ind)'),
+    #('LBAI','BAI (Burning Area Index)'),
+    ('LEVI','EVI (Enhanced Vegetation Index)'),
+    ('LNDSI','NDSI (Snow Index)'),
+    ('LNDVI','NDVI (Vegetation Index)'),
+    ('LNDWI','NDWI (Water Index)'),
 ]
+#============================
+#    formVariableModis
+#============================
+formVariableModis=[
+    #('Meto','ETo (Potential Evapotranspiration)'),
+    #('Meddi','EDDI (Evap. Demand Drought Index)'),
+    #('Mbi','BI (Burning Index)'),
+    #('MNBRT','NBRT (Norm. Burn Rat. Thm. Ind)'),
+    #('MBAI','BAI (Burning Area Index)'),
+    ('MEVI','EVI (Enhanced Vegetation Index)'),
+    ('MNDSI','NDSI (Snow Index)'),
+    ('MNDVI','NDVI (Vegetation Index)'),
+    ('MNDWI','NDWI (Water Index)'),
+]
+
+
+
 #============================
 #    formAnomOrValue
 #============================
@@ -572,7 +589,7 @@ def check_dateEnd(dateEnd):
 
 def check_variable(variable):
     err = None
-    vrs = formVariableGrid + formVariableRS
+    vrs = formVariableGrid + formVariableLandsat+formVariableModis
     options = [v[0] for v in vrs]
     if variable not in options:
         return 'Variable should be one of: %s. You entered: %s' %(','.join(options),str(variable))

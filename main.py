@@ -25,7 +25,6 @@ template_dir = os.path.join(os.path.dirname(__file__),'templates')
 JINJA_ENVIRONMENT= jinja2.Environment(autoescape=True,
     loader=jinja2.FileSystemLoader(template_dir))
 
-
 #############################################
 ##       DROUGHT TOOL PAGE                 ##
 #############################################
@@ -136,7 +135,8 @@ class DroughtTool(webapp2.RequestHandler):
             'formTimeSeriesCalc': forms.formTimeSeriesCalc,
             'formVariableGrid': forms.formVariableGrid,
             'formLocation': forms.formLocation,
-            'formVariableRS': forms.formVariableRS,
+            'formVariableLandsat': forms.formVariableLandsat,
+            'formVariableModis': forms.formVariableModis,
             'formStates': forms.formStates,
             'formLayers': forms.formLayers,
             'kmlurl': self.kmlurl,

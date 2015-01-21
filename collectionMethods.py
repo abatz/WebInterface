@@ -38,6 +38,9 @@ def get_images(template_values):
     #collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(var);
     collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(var);
 
+    #remove starting character which indicates the product
+    var = var[1:]
+
     #Set title
     title = statistic + ' ' + variableShortName;
     if(aOV == 'anom'):
@@ -147,13 +150,29 @@ def get_images(template_values):
 #    GET_COLLECTION
 #===========================================
 def get_collection(variable):
+    #strip off product and variable names
+    product = variable[0]
+    if(product=='G'):
+        product = 'gridded'
+    elif(product=='L'):
+        product = 'landsat'
+    elif(product=='M'):
+        product=='modis'
+    variable=variable[1:]
+
     if(variable=='NDVI'):
-        collectionName = 'MCD43A4_NDVI';
-        collectionLongName = 'MODIS 16-day NDVI'
-        product = 'modis'
         notes="NDVI calculated from Norm. Diff. of Infrared and Red bands"
         statistic='Median'
         variableShortName=variable;
+	if(product=='modis'):
+            collectionName = 'MCD43A4_NDVI';
+            collectionLongName = 'MODIS 16-day NDVI'
+        elif(product=='landsat'):
+            collectionName = 'LC8_L1T_8DAY_NDVI';
+            collectionLongName = 'Landsat 8 8-day NDVI'
+        else:
+            collectionName = 'LC8_L1T_8DAY_NDVI';
+            collectionLongName = 'Landsat 8 8-day NDVI'
     elif(variable=='NDSI'):
         collectionName = 'MCD43A4_NDSI';
         collectionLongName = 'MODIS 16-day NDSI Composite'
@@ -482,6 +501,8 @@ def get_colorbar(variable,anomOrValue,units):
     minColorbar = 999
     maxColorbar = 999
     colorbarLabel = ''
+    #remove first character which identifies the product
+    variable = variable[1:]
     if(variable=='NDVI' or variable=='EVI'):
         if(anomOrValue=='anom'):
             palette="A50026,D73027,F46D43,FDAE61,FEE08B,FFFFBF,D9EF8B,A6D96A,66BD63,1A9850,006837"
@@ -741,7 +762,6 @@ def get_colorbar(variable,anomOrValue,units):
 #   MAP_COLLECTION
 #===========================================
 def map_collection(collection,opacity,palette,minColorbar,maxColorbar):
-    #palette = palette.replace('#','')   #might need this to account for difference with svg colorbar palette and GAE palette
     colorbarOptions = {
         'min':minColorbar,
         'max':maxColorbar,

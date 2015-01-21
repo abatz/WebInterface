@@ -11,10 +11,15 @@
 			<b>Variable:</b><br>
 			<select id="variable" name="variable" class="variable" width="95%">
 				<optgroup label="MODIS">
-					{% for x,y in formVariableRS %}
+					{% for x,y in formVariableModis %}
 					    <option value="{{ x }}" {% if x == variable  %} selected {% endif %}>{{ y }}</option>
 					{% endfor %}
 				</optgroup>
+				 <optgroup label="Landsat">
+                                        {% for x,y in formVariableLandsat %}
+                                            <option value="{{ x }}" {% if x == variable  %} selected {% endif %}>{{ y }}</option>
+                                        {% endfor %}
+                                </optgroup>
 				<optgroup label="gridMET">
 					{% for x,y in formVariableGrid %}
 					    <option value="{{ x }}"{% if x == variable  %} selected {% endif %}>{{ y }}</option>
