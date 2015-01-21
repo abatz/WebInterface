@@ -16,9 +16,13 @@
 	<script type="text/javascript" src="/media/myjs/colorbrewer.js"></script><!--DYNAMIC COLORBAR-->
 	<!--<script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script>--><!--TRANSPARENCY SLIDER-->
 	<script type="text/javascript">
-		function activaTab(tab){
-			$('.tab-pane a[href="#' + tab + '"]').tab('show');
-	        };
+		//function activaTab(tab){
+		//	$('#dataTab a[href="#' + tab + '"]').tab('show');
+	        //};
+		$('#dataTab a').click(function (e) {
+			  e.preventDefault()
+			  $(this).tab('show')
+		})
 		function setCenter(){
 			newCenter = window.map.getCenter();
                         myCenterLat = newCenter.lat().toFixed(4);

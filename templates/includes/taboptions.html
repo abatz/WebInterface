@@ -89,31 +89,13 @@
           </td>
         </tr>
 	<!----------------------------->
-       <!--      BUTTON            -->
+       <!--      SHARE LINK            -->
        <!----------------------------->
 	 <tr>
              <td>
-                <table>
-                <!--<tr>
-		<td width="30%">
-                <input type="submit" class="btn btn-large ptn-primary" value="SUBMIT"
-                        form="form_map"/>-->
-                        <!--form="form_map" onclick="location.href='http://google.com';"/>-->
-			<!--$('.nav-tabs a[href="#timeseriesoutput"]').tab('show');-->
-                        <!--form="form_map" onclick="location.href='#timeseriesoutput';"/>-->
-                <!--</td>
-                <td width="70%">
-                 <div id="loading" style="display:none;">
-                        <img id="loading-image" src="images/loading_image.gif" alt="Loading..." />
-                </div>
-                </td></tr>-->
-                <tr><td>
-                <br>
                 {% if mapid or timeSeriesData %}
                 <button type="button" data-toggle="modal" data-target="#shareLink">Share Link</button>
                 {% endif %}
-                </td></tr>
-                </table>
              </td>
          </tr>
 </table>

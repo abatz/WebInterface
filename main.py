@@ -95,7 +95,7 @@ class DroughtTool(webapp2.RequestHandler):
             self.colorbarmap,self.colorbarsize,self.minColorbar,self.maxColorbar,self.colorbarLabel=collectionMethods.get_colorbar(self.variable,self.anomOrValue,self.units)
 
     def set_share_link(self, initial_template_values):
-        shareLink = 'drought-monitor.appspot.com?'
+        shareLink = 'drought-monitor2.appspot.com?'
         for key, val in initial_template_values.iteritems():
             if str(key[0:4]) == 'form':
                 continue
