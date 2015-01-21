@@ -43,19 +43,12 @@ class DroughtTool(webapp2.RequestHandler):
         self.background = self.request.get('background','nowhitebackground')
         self.layer = self.request.get('layer','none')
 
-        #self.pointLatLong = self.request.get('pointLatLong','-112,42')
-        #self.pointLatLongX = self.pointLatLong.split(",")
-        #self.pointLong = float(self.pointLatLongX[0])
-        #self.pointLat = float(self.pointLatLongX[1])
-
         self.mapCenterLongLat = self.request.get('mapCenterLongLat','-112,42')
 
 	tempstart = datetime.date.today()-datetime.timedelta(days=30)
 	tempend = datetime.date.today()-datetime.timedelta(days=2)
         self.dateStart = self.request.get('dateStart',tempstart.strftime('%Y-%m-%d'))
         self.dateEnd = self.request.get('dateEnd',tempend.strftime('%Y-%m-%d'))
-        #self.dateStart = self.request.get('dateStart','2014-06-01')
-        #self.dateEnd = self.request.get('dateEnd','2014-08-31')
         self.dayStart = self.request.get('dayStart','1')
         self.dayEnd = self.request.get('dayEnd','31')
         self.monthStart = self.request.get('monthStart',tempstart.strftime('%mm'));
