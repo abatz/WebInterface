@@ -35,8 +35,8 @@ def get_images(template_values):
         colorbarsize = template_values['colorbarsize']
 
     #get collection
-    #collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(var);
-    collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(var);
+    collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(var);
+    collectionSource=collection;
 
     #remove starting character which indicates the product
     var = var[1:]
@@ -72,17 +72,15 @@ def get_images(template_values):
         collection_pr = get_statistic(collection_pr,'pr',statistic,'value');
         collection_pet = get_statistic(collection_pet,'pet',statistic,'value')
         collection_pr =filter_domain2(collection_pr,dT,subdomain)
-        collection_pet =filter_domain2(collection_pet,dT,subdomain)
-        #form water balance
-        collection = collection_pr.subtract(collection_pet)
+        collection_pet =filter_domain2(collection_pet,dT,subdomain); 
+        collection = collection_pr.subtract(collection_pet); #water balance
         if  aOV in ['anom','clim']:
-            collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV)
+            collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV,collectionSource)
             TV['climatologyNotes'] = climatologyNotes
 	if aOV in ['value','clim']:
             collection=check_units(collection,var,'value',units);
         else:
             collection=check_units(collection,var,'anom',units);
-        #the earth engine call
         mapid = map_collection(collection,TV['opacity'],palette,minColorbar,maxColorbar)
     elif var =='tmean':
         #FIX ME: implement time series for tmean
@@ -92,19 +90,17 @@ def get_images(template_values):
         collection_tmin = get_statistic(collection_tmin,'tmmn',statistic,'value')
         collection_tmax=filter_domain2(collection_tmax,dT,subdomain)
         collection_tmin =filter_domain2(collection_tmin,dT,subdomain)
-        #form water balance
-        collection = collection_tmax.add(collection_tmin).multiply(0.5)
+        collection = collection_tmax.add(collection_tmin).multiply(0.5); #tmean
         if  aOV in ['anom','clim']:
-            collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV)
+            collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV,collectionSource)
             TV['climatologyNotes'] = climatologyNotes
 	if aOV in ['value','clim']:
             collection=check_units(collection,var,'value',units);
         else:
             collection=check_units(collection,var,'anom',units);
-        #the earth engine call
         mapid = map_collection(collection,TV['opacity'],palette,minColorbar,maxColorbar)
     else:
-        collection = ee.ImageCollection(collectionName).filterDate(dS,dE).select([var],[var])
+        collection = collection.filterDate(dS,dE).select([var],[var])
 	#==============
         #Time Series
 	#==============
@@ -119,13 +115,12 @@ def get_images(template_values):
 	    collection = get_statistic(collection,var,statistic,aOV);
 	    collection = filter_domain2(collection,dT,subdomain)
 	    if  aOV in ['anom','clim']:
-	        collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV)
+	        collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV,collectionSource)
 	        TV['climatologyNotes'] = climatologyNotes
 	    if aOV in ['value','clim']:
 	        collection=check_units(collection,var,'value',units);
 	    else:
 	        collection=check_units(collection,var,'anom',units);
-	    #the earth engine call
 	    mapid = map_collection(collection,TV['opacity'],palette,minColorbar,maxColorbar)
 	#==============
     #Update template values
@@ -151,49 +146,71 @@ def get_images(template_values):
 #===========================================
 def get_collection(variable):
     #strip off product and variable names
-    product = variable[0]
+    product = variable[:1]
     if(product=='G'):
         product = 'gridded'
     elif(product=='L'):
         product = 'landsat'
     elif(product=='M'):
-        product=='modis'
+        product='modis'
     variable=variable[1:]
 
     if(variable=='NDVI'):
-        notes="NDVI calculated from Norm. Diff. of Infrared and Red bands"
+        notes="NDSI calculated from Norm. Diff. of Near-IR and Red bands"
         statistic='Median'
         variableShortName=variable;
 	if(product=='modis'):
             collectionName = 'MCD43A4_NDVI';
             collectionLongName = 'MODIS 16-day NDVI'
         elif(product=='landsat'):
-            collectionName = 'LC8_L1T_8DAY_NDVI';
-            collectionLongName = 'Landsat 8 8-day NDVI'
-        else:
-            collectionName = 'LC8_L1T_8DAY_NDVI';
-            collectionLongName = 'Landsat 8 8-day NDVI'
+            collectionName = 'LT4_L1T_8DAY_NDVI,LT5_L1T_8DAY_NDVI,LE7_L1T_8DAY_NDVI,LC8_L1T_8DAY_NDVI';
+            collectionLongName = 'Landsat4/5/7/8 8-day NDVI Composite'
+            collection4 = ee.ImageCollection('LT4_L1T_8DAY_NDVI');
+            collection5 = ee.ImageCollection('LT5_L1T_8DAY_NDVI');
+            collection7 = ee.ImageCollection('LE7_L1T_8DAY_NDVI');
+            collection8 = ee.ImageCollection('LC8_L1T_8DAY_NDVI');
     elif(variable=='NDSI'):
-        collectionName = 'MCD43A4_NDSI';
-        collectionLongName = 'MODIS 16-day NDSI Composite'
-        product = 'modis'
         notes="NDSI calculated from Norm. Diff. of Green and mid-IR bands"
         statistic='Median'
         variableShortName=variable;
+	if(product=='modis'):
+            collectionName = 'MCD43A4_NDSI';
+            collectionLongName = 'MODIS 16-day NDSI'
+        elif(product=='landsat'):
+	    collectionName = 'LT4_L1T_8DAY_NDSI,LT5_L1T_8DAY_NDSI,LE7_L1T_8DAY_NDSI,LC8_L1T_8DAY_NDSI';
+            collectionLongName = 'Landsat4/5/7/8 8-day NDSI Composite'
+            collection4 = ee.ImageCollection('LT4_L1T_8DAY_NDSI');
+            collection5 = ee.ImageCollection('LT5_L1T_8DAY_NDSI');
+            collection7 = ee.ImageCollection('LE7_L1T_8DAY_NDSI');
+            collection8 = ee.ImageCollection('LC8_L1T_8DAY_NDSI');
     elif(variable=='NDWI'):
-        collectionName = 'MCD43A4_NDWI';
-        collectionLongName = 'MODIS 16-day NDWI Composite'
-        product = 'modis'
         notes="NDWI calculated from near-IR and a second IR bands"
         statistic='Median'
         variableShortName=variable;
+	if(product=='modis'):
+            collectionName = 'MCD43A4_NDWI';
+            collectionLongName = 'MODIS 16-day NDWI Composite'
+        elif(product=='landsat'):
+	    collectionName = 'LT5_L1T_8DAY_NDWI,LT5_L1T_8DAY_NDWI,LE7_L1T_8DAY_NDWI,LC8_L1T_8DAY_NDWI';
+            collectionLongName = 'Landsat5/7/8 8-day NDWI Composite'
+            collection4 = ee.ImageCollection('LT5_L1T_8DAY_NDWI');
+            collection5 = ee.ImageCollection('LT5_L1T_8DAY_NDWI');
+            collection7 = ee.ImageCollection('LE7_L1T_8DAY_NDWI');
+            collection8 = ee.ImageCollection('LC8_L1T_8DAY_NDWI');
     elif(variable=='EVI'):
-        collectionName = 'MCD43A4_EVI';
-        collectionLongName = 'MODIS 16-day EVI Composite'
-        product = 'modis'
         notes="EVI calculated from Near-IR,Red and Blue bands"
         statistic='Median'
         variableShortName=variable;
+	if(product=='modis'):
+            collectionName = 'MCD43A4_EVI';
+            collectionLongName = 'MODIS 16-day EVI Composite'
+        elif(product=='landsat'):
+	    collectionName = 'LT4_L1T_8DAY_EVI,LT5_L1T_8DAY_EVI,LE7_L1T_8DAY_EVI,LC8_L1T_8DAY_EVI';
+            collectionLongName = 'Landsat4/5/7/8 8-day EVI Composite'
+            collection4 = ee.ImageCollection('LT4_L1T_8DAY_EVI');
+            collection5 = ee.ImageCollection('LT5_L1T_8DAY_EVI');
+            collection7 = ee.ImageCollection('LE7_L1T_8DAY_EVI');
+            collection8 = ee.ImageCollection('LC8_L1T_8DAY_EVI');
     elif(variable=='pr'):
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
@@ -286,10 +303,12 @@ def get_collection(variable):
         statistic='Mean'
         variableShortName='Palmer Drought Severity Index (PDSI)'
 
-    #collection = ee.ImageCollection(collectionName).select([variable],[variable]);
+    if(product=='gridded' or product=='modis'):
+       	collection = ee.ImageCollection(collectionName);
+    elif(product=='landsat'):
+	collection = ee.ImageCollection(collection4.merge(collection5).merge(collection7).merge(collection8));
 
-    #return (collection,collectionName,collectionLongName,product,variableShortName,notes,statistic);
-    return (collectionName,collectionLongName,product,variableShortName,notes,statistic);
+    return (collection,collectionName,collectionLongName,product,variableShortName,notes,statistic);
 
 #===========================================
 #    GET_TIMESERIES
@@ -360,7 +379,7 @@ def get_time_series(collection, variable, pointsLongLatTuples,units,marker_color
 #===========================================
 #    GET_ANOMALY
 #===========================================
-def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,statistic,anomOrValue):
+def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,statistic,anomOrValue,collectionSource):
     doyStart = ee.Number(ee.Algorithms.Date(dateStart).getRelative('day', 'year')).add(1);
     doyEnd = ee.Number(ee.Algorithms.Date(dateEnd).getRelative('day', 'year')).add(1);
     doy_filter = ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year');
@@ -379,17 +398,17 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
 
     #calculate climatology
     if(variable=='wb'):
-        climatology_pr = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
+        climatology_pr = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
            select(['pr'],['pr']);
-        climatology_pet = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
+        climatology_pet = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
            select(['pet'],['pet']);
     elif(variable=='tmean'):
-        climatology_tmax = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
+        climatology_tmax = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
            select(['tmmx'],['tmmx']);
-        climatology_tmin = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
+        climatology_tmin = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
            select(['tmmn'],['tmmn']);
     else:
-        climatology = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).select([variable],[variable]);
+        climatology = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter).select([variable],[variable]);
 
     if(variable=='wb'):
          climatology_pr = ee.Image(climatology_pr.sum().divide(num_years));
@@ -397,9 +416,8 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
 	 climatology = climatology_pr.subtract(climatology_pet);
     elif(variable=='tmean'):
          climatology_tmax = ee.Image(climatology_tmax.mean());
-         #climatology_tmin = ee.Image(climatology_tmin.mean());
-	 #climatology = climatology_tmax.add(climatology_tmin).multiply(.5);
-	 climatology=climatology_tmax;
+         climatology_tmin = ee.Image(climatology_tmin.mean());
+	 climatology = climatology_tmax.add(climatology_tmin).multiply(.5);
     elif(statistic=='Total' and variable=='pr'):
          climatology = ee.Image(climatology.sum().divide(num_years));
     elif(statistic=='Total' and variable=='pet'):
@@ -503,6 +521,7 @@ def get_colorbar(variable,anomOrValue,units):
     colorbarLabel = ''
     #remove first character which identifies the product
     variable = variable[1:]
+
     if(variable=='NDVI' or variable=='EVI'):
         if(anomOrValue=='anom'):
             palette="A50026,D73027,F46D43,FDAE61,FEE08B,FFFFBF,D9EF8B,A6D96A,66BD63,1A9850,006837"
