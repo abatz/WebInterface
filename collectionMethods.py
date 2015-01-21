@@ -35,7 +35,9 @@ def get_images(template_values):
         colorbarsize = template_values['colorbarsize']
 
     #get collection
-    collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(var);
+    #collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(var);
+    collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(var);
+
     #Set title
     title = statistic + ' ' + variableShortName;
     if(aOV == 'anom'):
@@ -73,6 +75,29 @@ def get_images(template_values):
         if  aOV in ['anom','clim']:
             collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV)
             TV['climatologyNotes'] = climatologyNotes
+	if aOV in ['value','clim']:
+            collection=check_units(collection,var,'value',units);
+        else:
+            collection=check_units(collection,var,'anom',units);
+        #the earth engine call
+        mapid = map_collection(collection,TV['opacity'],palette,minColorbar,maxColorbar)
+    elif var =='tmean':
+        #FIX ME: implement time series for tmean
+        collection_tmax = ee.ImageCollection(collectionName).filterDate(dS,dE).select(['tmmx'],['tmmx'])
+        collection_tmin = ee.ImageCollection(collectionName).filterDate(dS,dE).select(['tmmn'],['tmmn'])
+        collection_tmax= get_statistic(collection_tmax,'tmmx',statistic,'value');
+        collection_tmin = get_statistic(collection_tmin,'tmmn',statistic,'value')
+        collection_tmax=filter_domain2(collection_tmax,dT,subdomain)
+        collection_tmin =filter_domain2(collection_tmin,dT,subdomain)
+        #form water balance
+        collection = collection_tmax.add(collection_tmin).multiply(0.5)
+        if  aOV in ['anom','clim']:
+            collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV)
+            TV['climatologyNotes'] = climatologyNotes
+	if aOV in ['value','clim']:
+            collection=check_units(collection,var,'value',units);
+        else:
+            collection=check_units(collection,var,'anom',units);
         #the earth engine call
         mapid = map_collection(collection,TV['opacity'],palette,minColorbar,maxColorbar)
     else:
@@ -171,6 +196,13 @@ def get_collection(variable):
         notes=""
         statistic='Mean'
         variableShortName='Minimum Temperature'
+    elif(variable=='tmean'):
+        collectionName = 'IDAHO_EPSCOR/GRIDMET';
+        collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
+        product = 'gridded'
+        notes="Calculated as Average of Min/Max Daily Temperature"
+        statistic='Mean'
+        variableShortName='Mean Temperature'
     elif(variable=='rmin'):
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
@@ -235,9 +267,10 @@ def get_collection(variable):
         statistic='Mean'
         variableShortName='Palmer Drought Severity Index (PDSI)'
 
-    collection = ee.ImageCollection(collectionName).select([variable],[variable]);
+    #collection = ee.ImageCollection(collectionName).select([variable],[variable]);
 
-    return (collection,collectionName,collectionLongName,product,variableShortName,notes,statistic);
+    #return (collection,collectionName,collectionLongName,product,variableShortName,notes,statistic);
+    return (collectionName,collectionLongName,product,variableShortName,notes,statistic);
 
 #===========================================
 #    GET_TIMESERIES
@@ -331,6 +364,11 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
            select(['pr'],['pr']);
         climatology_pet = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
            select(['pet'],['pet']);
+    elif(variable=='tmean'):
+        climatology_tmax = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
+           select(['tmmx'],['tmmx']);
+        climatology_tmin = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
+           select(['tmmn'],['tmmn']);
     else:
         climatology = ee.ImageCollection(collectionName).filterDate(yearStartClim, yearEndClim).filter(doy_filter).select([variable],[variable]);
 
@@ -338,7 +376,11 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
          climatology_pr = ee.Image(climatology_pr.sum().divide(num_years));
          climatology_pet = ee.Image(climatology_pet.sum().divide(num_years));
 	 climatology = climatology_pr.subtract(climatology_pet);
-	 #climatology_sd = climatology.reduce(ee.Reducer.stdDev());
+    elif(variable=='tmean'):
+         climatology_tmax = ee.Image(climatology_tmax.mean());
+         #climatology_tmin = ee.Image(climatology_tmin.mean());
+	 #climatology = climatology_tmax.add(climatology_tmin).multiply(.5);
+	 climatology=climatology_tmax;
     elif(statistic=='Total' and variable=='pr'):
          climatology = ee.Image(climatology.sum().divide(num_years));
     elif(statistic=='Total' and variable=='pet'):
@@ -368,7 +410,6 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
             collection = ee.Image(collection.subtract(climatology));
         elif(variable=='wb'):
             collection = ee.Image(collection.subtract(climatology).divide(climatology).multiply(100));
-
     return(collection,climatologyNote);
 
 #===========================================
@@ -398,7 +439,7 @@ def get_statistic(collection,variable,statistic,anomOrValue):
 def check_units(collection,variable,anomOrValue,units):
     #anomOrValue = 'anom' or 'value'... not the variable being passed
 
-    if(variable=='tmmx' or variable=='tmmn'):
+    if(variable=='tmmx' or variable=='tmmn' or variable =='tmean'):
         if(anomOrValue=='value'):
             collection=collection.subtract(273.15)  #convert K to C
         if(units=='english'):
@@ -490,7 +531,7 @@ def get_colorbar(variable,anomOrValue,units):
                  maxColorbar=16;
             colorbarmap='YlGnBu'
             colorbarsize='8';
-    elif(variable=='tmmx' or variable=='tmmn'):
+    elif(variable=='tmmx' or variable=='tmmn' or variable=='tmean'):
         if(anomOrValue=='anom'):
             palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
 	    if(units=='metric'):
@@ -525,6 +566,18 @@ def get_colorbar(variable,anomOrValue,units):
 		 colorbarLabel='Temperature (deg F)'
 	         minColorbar=0
 	         maxColorbar=80
+            colorbarmap='BuRd'
+            colorbarsize='8';
+        elif(variable=='tmean'):
+            palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
+            if(units=='metric'):
+                 colorbarLabel='Temperature (deg C)'
+                 minColorbar=-20
+                 maxColorbar=20
+            elif(units=='english'):
+                 colorbarLabel='Temperature (deg F)'
+                 minColorbar=0
+                 maxColorbar=80
             colorbarmap='BuRd'
             colorbarsize='8';
     elif(variable=='rmin' or variable=='rmax'):

@@ -286,7 +286,7 @@ $(function(){
 			colorbarmap='YlGnBu' 
 			colorbarsize=8
                 }
-            }else if(jQuery('.variable').val()=='tmmx' || jQuery('.variable').val()=='tmmn'){
+            }else if(jQuery('.variable').val()=='tmmx' || jQuery('.variable').val()=='tmmn' || jQuery('.variable').val()=='tmean'){
                  if(jQuery('.anomOrValue').val()=='anom'){
                  	if(jQuery('.units').val()=='metric'){
 				minColorbar =-5;
@@ -320,6 +320,17 @@ $(function(){
                         palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
 			colorbarmap='BuRd' //need inverse
 			colorbarsize=8
+		}else if ( jQuery('.variable').val()=='tmean'){
+                        if(jQuery('.units').val()=='metric'){
+                                minColorbar = -20;
+                                maxColorbar = 20; //deg C
+                        }else if(jQuery('.units').val()=='english'){
+                                minColorbar = 0;
+                                maxColorbar = 80; //deg C
+                        }
+                        palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
+                        colorbarmap='BuRd' //need inverse
+                        colorbarsize=8
                 }
 	    }else if(jQuery('.variable').val()=='rmin' || jQuery('.variable').val()=='rmax'){
                  if(jQuery('.anomOrValue').val()=='anom'){

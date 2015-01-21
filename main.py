@@ -148,7 +148,7 @@ class DroughtTool(webapp2.RequestHandler):
             'formTimeSeriesCalc': forms.formTimeSeriesCalc,
             'formVariableGrid': forms.formVariableGrid,
             'formLocation': forms.formLocation,
-            'formVariableLandsat': forms.formVariableLandsat,
+            'formVariableRS': forms.formVariableRS,
             'formStates': forms.formStates,
             'formLayers': forms.formLayers,
             'kmlurl': self.kmlurl,

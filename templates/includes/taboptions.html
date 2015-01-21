@@ -11,7 +11,7 @@
 			<b>Variable:</b><br>
 			<select id="variable" name="variable" class="variable" width="95%">
 				<optgroup label="MODIS">
-					{% for x,y in formVariableLandsat %}
+					{% for x,y in formVariableRS %}
 					    <option value="{{ x }}" {% if x == variable  %} selected {% endif %}>{{ y }}</option>
 					{% endfor %}
 				</optgroup>

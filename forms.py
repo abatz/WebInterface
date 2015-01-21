@@ -21,6 +21,7 @@ formVariableGrid=[
     ('rmax','RMAX (Max Rel. Humidity)'),
     ('sph','SPH (Specific Humidity)'),
     ('srad','SRAD (Downward Radiation)'),
+    ('tmean','TMEAN (Mean Temperature)'),
     ('tmmn','TMIN (Min Temperature)'),
     ('tmmx','TMAX (Max Temperature)'),
     ('vs','VS (Wind Speed)'),
@@ -28,15 +29,15 @@ formVariableGrid=[
 ]
 
 #============================
-#    formVariableLandsat
+#    formVariableRS
 #============================
-formVariableLandsat=[
+formVariableRS=[
     #('eto','ETo (Potential Evapotranspiration)'),
     #('eddi','EDDI (Evap. Demand Drought Index)'),
     #('bi','BI (Burning Index)'),
     #('NBRT','NBRT (Norm. Burn Rat. Thm. Ind)'),
     #('BAI','BAI (Burning Area Index)'),
-    ('LEVI','EVI (Enhanced Vegetation Index)'),
+    ('EVI','EVI (Enhanced Vegetation Index)'),
     ('NDSI','NDSI (Snow Index)'),
     ('NDVI','NDVI (Vegetation Index)'),
     ('NDWI','NDWI (Water Index)'),
@@ -571,7 +572,7 @@ def check_dateEnd(dateEnd):
 
 def check_variable(variable):
     err = None
-    vrs = formVariableGrid + formVariableLandsat
+    vrs = formVariableGrid + formVariableRS
     options = [v[0] for v in vrs]
     if variable not in options:
         return 'Variable should be one of: %s. You entered: %s' %(','.join(options),str(variable))
