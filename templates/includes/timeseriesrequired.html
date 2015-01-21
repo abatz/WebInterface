@@ -1,177 +1,176 @@
-  <tr>
-           <td>
-               <!----------------------------->
-               <!--      DOMAIN             -->
-               <!----------------------------->
-                   <div class="domainType" style="display:none">
-                <b>Domain:</b><br>
-                        Select Domain:
-                        <select id="domainType" name="domainType" width="95%">
-                                {% for x,y in formLocation %}
-                                    <option value="{{ x }}"{% if x == domainType  %} selected {% endif %}>{{ y }}</option>
-                                {% endfor %}
-                        </select>
-                        {% if form_error.domainType %}
-                                <br>
-                                <div class="error">{{ form_error.domainType }}</div>
-                        {% endif %}
-                  </div>
-               <!----------------------------->
-               <!--      SUBDOMAIN          -->
-               <!----------------------------->
-                <div class="subdomain">
-                       <!----------------------------->
-                       <!--      STATES             -->
-                       <!----------------------------->
-                        {% if domainType == "states"%}
-                        <div class="states">
-                        {% else %}
-                        <div class="states" style="display:none">
-                        {% endif %}
-                                <br>
-                                 Select a State:
-                                 <select id="state" name="state" width="95%" class="textfeld"
-                                        onclick="findAddress();return false"
-                                        onchange="findAddress();return false" onfocus="">
-                                        {% for x,y in formStates %}
-                                            <option value="{{ x }}" {% if x == state  %} selected {% endif %}>{{ y }}</option>
-                                        {% endfor %}
-                                </select>
-                                {% if form_error.state %}
-                                    <br>
-                                    <div class="error">{{ form_error.state }}</div>
-                                {% endif %}
-                                <br>
-                        </div>
-			 <!----------------------------->
-                       <!--      RECTANGLE          -->
-                       <!----------------------------->
-                        {% if domainType == "rectangle"%}
-                        <div class="rectangle">
-                        {% else %}
-                        <div class="rectangle" style="display:none">
-                        {% endif %}
-                                <br>Select a Rectangle:
-                                <table>
-                                    <tr>
-                                        <td>
-                                                <img src="images/blackrectangle.png">
-                                        </td>
-                                        <td>
-                                                NE corner:<input id="NELat" name="NELat" value="{{ NELat }}" size=8 />N,
-                                                <input id="NELong" name="NELong" value="{{ NELong }}" size=8>E<br>
-                                                {% if form_error.NELong %}
-                                                        <div class="error">{{ form_error.NELong }}</div>
-                                                        <br>
-                                                {% endif %}
-                                                {% if form_error.NELat %}
-                                                        <div class="error">{{ form_error.NELat }}</div>
-                                                        <br>
-                                                {% endif %}
-
-                                                SW corner:<input id="SWLat" name="SWLat" value="{{ SWLat }}" size=8/>N,
-                                                        <input id="SWLong" name="SWLong" value="{{ SWLong }}" size=8/>E<br>
-                                                {% if form_error.SWLong %}
-                                                        <div class="error">{{ form_error.SWLong }}</div>
-                                                        <br>
-                                                {% endif %}
-                                                {% if form_error.NSWLat %}
-                                                        <div class="error">{{ form_error.SWLat }}</div>
-                                                        <br>
-                                                {% endif %}
-
-                                     </td>
-                                </tr>
-                              </table>
-                        </div>
-  			<!----------------------------->
-            <!--      POINT              -->
-            <!----------------------------->
-			<div class="points" id="points">
-                <input type="hidden" id="pointsLongLat" name="pointsLongLat" value="" /><br>
-                Select Point(s):<br>
-                {% for c in marker_colors %}
-                {% if loop.index == 1 %}
-                    <!--Show first point-->
-                    <div id="point{{loop.index}}" class="point">
-                       <input type="checkbox" name="point" class="pointCheck" value="{{loop.index}}" id="check{{loop.index}}">
-                       <img src="http://www.google.com/mapfiles/ms/micons/{{c}}.png" id="img{{loop.index}}">
-                       <input type="text" id="{{loop.index}}" class="pointLongLat" name="pointLongLat" value="{{ pointsLongLat }}"/><br />
-                       Add another point: <input type="checkbox" class='addPoint' value="{{loop.index}}" id="add{{loop.index}}">
-                    </div>
-                {% else %}
-                    <div id="point{{loop.index}}" class="point" style="display:none">
-                        <input type="checkbox" name="point" class="pointCheck" value="{{loop.index}}">
-                        <img src="http://www.google.com/mapfiles/ms/micons/{{c}}.png" id="img{{loop.index}}">
-                        <input type="text" id="{{loop.index}}" class="pointLongLat" name="pointLongLat"/>
-                        <br />
-                        {% if loop.revindex != 1 %}
-                        Add another point: <input type="checkbox" class='addPoint' value="{{loop.index}}">
-                        {% endif %}
-                    </div>
-                {% endif %}
-                {% endfor %}
-                {%if form_error.pointsLongLat%}
-                    <br><div class="error">{{ form_error.pointsLongLat}}</div>
-                {%endif%}
-               </div><!--end class=points-->
-          </td>
-        </tr>
-	<tr><td>
-		  <b>Time Series:</b><br>
-		<select id="timeSeriesCalc" name="timeSeriesCalc" class="timeSeriesCalc" width="95%">
-			{% for x,y in formTimeSeriesCalc %}
-			    <option value="{{ x }}" {% if x == timeSeriesCalc  %} selected {% endif %}>{{ y }}</option>
+<tr>
+  <td>
+       <!----------------------------->
+       <!--      DOMAIN             -->
+       <!----------------------------->
+	   <div class="domainType" style="display:none">
+	<b>Domain:</b><br>
+		Select Domain:
+		<select id="domainType" name="domainType" width="95%">
+			{% for x,y in formLocation %}
+			    <option value="{{ x }}"{% if x == domainType  %} selected {% endif %}>{{ y }}</option>
 			{% endfor %}
 		</select>
-        <!--
-		<select id="" name="" class="" width="95%">
-                           <option value="raw" selected >Raw Values</option>
-                           <option value="cum" >Cumulative Values</option>
-                </select>
-        -->
-		<br>
-                   <div class="daytimeperiod">
-                          Start Date:
-                          <input type="text" id="dateStartTS" value="{{ dateStart }}" name="dateStart" class="dateStart">
-                          <br>
-                          End Date:
-                          <input type="text" id="dateEndTS" value="{{ dateEnd }}" name="dateEnd" class="dateEnd">
-                   </div>
-		   <div class="seasontimeperiod" style="display:none">
-                          Season Start Day:
- 			<select id="monthStart" name="monthStart" class="monthStart" width="95%">
-                        {% for x,y in formMonth %}
-                            <option value="{{ x }}" {% if x == monthStart  %} selected {% endif %}>{{ y }}</option>
-                        {% endfor %}
-                	</select>
-			 <select id="dayStart" name="dayStart" class="dayStart" width="95%">
-                        {% for x,y in formDay %}
-                            <option value="{{ x }}" {% if x == dayStart  %} selected {% endif %}>{{ y }}</option>
-                        {% endfor %}
-                        </select>
-                          <br>
-                          Season End Day:
-			 <select id="monthEnd" name="monthEnd" class="monthEnd" width="95%">
-                        {% for x,y in formMonth %}
-                            <option value="{{ x }}" {% if x == monthEnd  %} selected {% endif %}>{{ y }}</option>
-                        {% endfor %}
-                        </select>
-			 <select id="dayEnd" name="dayEnd" class="dayEnd" width="95%">
-                        {% for x,y in formDay %}
-                            <option value="{{ x }}" {% if x == dayEnd  %} selected {% endif %}>{{ y }}</option>
-                        {% endfor %}
-                        </select><br>
-			Year Range:
-			 <select id="yearStart" name="yearStart" class="yearStart" width="95%">
-                        {% for x,y in formYear %}
-                            <option value="{{ x }}" {% if x == yearStart  %} selected {% endif %}>{{ y }}</option>
-                        {% endfor %}
-                        </select>-
-			 <select id="yearEnd" name="yearEnd" class="yearEnd" width="95%">
-                        {% for x,y in formYear %}
-                            <option value="{{ x }}" {% if x == yearEnd %} selected {% endif %}>{{ y }}</option>
-                        {% endfor %}
-                        </select><br>
-		  </div>
-        </td></tr>
+		{% if form_error.domainType %}
+			<br>
+			<div class="error">{{ form_error.domainType }}</div>
+		{% endif %}
+	  </div>
+       <!----------------------------->
+       <!--      SUBDOMAIN          -->
+       <!----------------------------->
+	<div class="subdomain">
+	       <!----------------------------->
+	       <!--      STATES             -->
+	       <!----------------------------->
+		{% if domainType == "states"%}
+		<div class="states">
+		{% else %}
+		<div class="states" style="display:none">
+		{% endif %}
+			<br>
+			 Select a State:
+			 <select id="state" name="state" width="95%" class="textfeld"
+				onclick="findAddress();return false"
+				onchange="findAddress();return false" onfocus="">
+				{% for x,y in formStates %}
+				    <option value="{{ x }}" {% if x == state  %} selected {% endif %}>{{ y }}</option>
+				{% endfor %}
+			</select>
+			{% if form_error.state %}
+			    <br>
+			    <div class="error">{{ form_error.state }}</div>
+			{% endif %}
+			<br>
+		</div>
+		 <!----------------------------->
+	       <!--      RECTANGLE          -->
+	       <!----------------------------->
+		{% if domainType == "rectangle"%}
+		<div class="rectangle">
+		{% else %}
+		<div class="rectangle" style="display:none">
+		{% endif %}
+			<br>Select a Rectangle:
+			<table>
+			    <tr>
+				<td>
+					<img src="images/blackrectangle.png">
+				</td>
+				<td>
+					NE corner:<input id="NELat" name="NELat" value="{{ NELat }}" size=8 />N,
+					<input id="NELong" name="NELong" value="{{ NELong }}" size=8>E<br>
+					{% if form_error.NELong %}
+						<div class="error">{{ form_error.NELong }}</div>
+						<br>
+					{% endif %}
+					{% if form_error.NELat %}
+						<div class="error">{{ form_error.NELat }}</div>
+						<br>
+					{% endif %}
+
+					SW corner:<input id="SWLat" name="SWLat" value="{{ SWLat }}" size=8/>N,
+						<input id="SWLong" name="SWLong" value="{{ SWLong }}" size=8/>E<br>
+					{% if form_error.SWLong %}
+						<div class="error">{{ form_error.SWLong }}</div>
+						<br>
+					{% endif %}
+					{% if form_error.NSWLat %}
+						<div class="error">{{ form_error.SWLat }}</div>
+						<br>
+					{% endif %}
+
+			     </td>
+			</tr>
+		      </table>
+		</div>
+		<!----------------------------->
+                <!--      POINT              -->
+                <!----------------------------->
+		<div class="points" id="points">
+			<input type="hidden" id="pointsLongLat" name="pointsLongLat" value="" /><br>
+			Select Point(s):<br>
+			{% for c in marker_colors %}
+			{% if loop.index == 1 %}
+			    <!--Show first point-->
+			    <div id="point{{loop.index}}" class="point">
+			       <input type="checkbox" name="point" class="pointCheck" value="{{loop.index}}" id="check{{loop.index}}">
+			       <img src="http://www.google.com/mapfiles/ms/micons/{{c}}.png" id="img{{loop.index}}">
+			       <input type="text" id="{{loop.index}}" class="pointLongLat" name="pointLongLat" value="{{ pointsLongLat }}"/><br />
+			       Add another point: <input type="checkbox" class='addPoint' value="{{loop.index}}" id="add{{loop.index}}">
+			    </div>
+			{% else %}
+			    <div id="point{{loop.index}}" class="point" style="display:none">
+				<input type="checkbox" name="point" class="pointCheck" value="{{loop.index}}">
+				<img src="http://www.google.com/mapfiles/ms/micons/{{c}}.png" id="img{{loop.index}}">
+				<input type="text" id="{{loop.index}}" class="pointLongLat" name="pointLongLat"/>
+				<br />
+				{% if loop.revindex != 1 %}
+				Add another point: <input type="checkbox" class='addPoint' value="{{loop.index}}">
+				{% endif %}
+			    </div>
+			{% endif %}
+			{% endfor %}
+			{%if form_error.pointsLongLat%}
+			    <br><div class="error">{{ form_error.pointsLongLat}}</div>
+			{%endif%}
+               </div><!--end class=points-->
+  </td>
+</tr>
+<tr>
+   <td>
+	  <b>Time Series:</b><br>
+	<select id="timeSeriesCalc" name="timeSeriesCalc" class="timeSeriesCalc" width="95%">
+		{% for x,y in formTimeSeriesCalc %}
+		    <option value="{{ x }}" {% if x == timeSeriesCalc  %} selected {% endif %}>{{ y }}</option>
+		{% endfor %}
+	</select>
+   </td>
+</tr>
+<tr>
+  <td>
+	   <div class="daytimeperiod">
+		  Start Date:
+		  <input type="text" id="dateStartTS" value="{{ dateStart }}" name="dateStart" class="dateStart">
+		  <br>
+		  End Date:
+		  <input type="text" id="dateEndTS" value="{{ dateEnd }}" name="dateEnd" class="dateEnd">
+	   </div>
+	   <div class="seasontimeperiod" style="display:none">
+		 Start Day:
+		<select id="monthStart" name="monthStart" class="monthStart" width="95%">
+		{% for x,y in formMonth %}
+		    <option value="{{ x }}" {% if x == monthStart  %} selected {% endif %}>{{ y }}</option>
+		{% endfor %}
+		</select>
+		 <select id="dayStart" name="dayStart" class="dayStart" width="95%">
+		{% for x,y in formDay %}
+		    <option value="{{ x }}" {% if x == dayStart  %} selected {% endif %}>{{ y }}</option>
+		{% endfor %}
+		</select>
+		  <br>
+		  End Day:
+		 <select id="monthEnd" name="monthEnd" class="monthEnd" width="95%">
+		{% for x,y in formMonth %}
+		    <option value="{{ x }}" {% if x == monthEnd  %} selected {% endif %}>{{ y }}</option>
+		{% endfor %}
+		</select>
+		 <select id="dayEnd" name="dayEnd" class="dayEnd" width="95%">
+		{% for x,y in formDay %}
+		    <option value="{{ x }}" {% if x == dayEnd  %} selected {% endif %}>{{ y }}</option>
+		{% endfor %}
+		</select><br>
+		Year Range:
+		 <select id="yearStart" name="yearStart" class="yearStart" width="95%">
+		{% for x,y in formYear %}
+		    <option value="{{ x }}" {% if x == yearStart  %} selected {% endif %}>{{ y }}</option>
+		{% endfor %}
+		</select>-
+		 <select id="yearEnd" name="yearEnd" class="yearEnd" width="95%">
+		{% for x,y in formYear %}
+		    <option value="{{ x }}" {% if x == yearEnd %} selected {% endif %}>{{ y }}</option>
+		{% endfor %}
+		</select><br>
+	  </div>
+ </td>
+</tr>
