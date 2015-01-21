@@ -35,7 +35,7 @@ class DroughtTool(webapp2.RequestHandler):
         self.ppost = 0
         self.form_error = {}
         self.opacity = self.request.get('opacity',str(14*0.05))
-        self.variable = self.request.get('variable','pr')
+        self.variable = self.request.get('variable','Gpr')
         self.domainType = self.request.get('domainType','full')
         self.state = self.request.get('state','California')
         self.anomOrValue = self.request.get('anomOrValue','value')
@@ -100,12 +100,7 @@ class DroughtTool(webapp2.RequestHandler):
             if str(key[0:4]) == 'form':
                 continue
             if key == 'ppost':continue
-            #FIX ME: would be nice to not have to do this
-            #ie. change basicvariable form name to variable
-            if str(key) == 'variable':
-                param_str = 'variable' + '=' + str(val)
-            else:
-                param_str = str(key) + '=' + str(val)
+            param_str = str(key) + '=' + str(val)
             if shareLink[-1] =='?':
                 shareLink+=param_str
             else:
