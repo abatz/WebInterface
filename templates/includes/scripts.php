@@ -15,15 +15,14 @@
 	<script type="text/javascript" src="/media/myjs/colorbar.js"></script><!--DYNAMIC COLORBAR-->
 	<script type="text/javascript" src="/media/myjs/colorbrewer.js"></script><!--DYNAMIC COLORBAR-->
 	<!--<script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script>--><!--TRANSPARENCY SLIDER-->
-//	<script type="text/javascript">
-		// Still doesn't work to call this to set the center upon POST
-		//function setCenter(){
-		//	newCenter = window.map.getCenter();
-                //        myCenterLat = newCenter.lat().toFixed(4);
-                //        myCenterLong = newCenter.lon().toFixed(4);
-                //        document.getElementById('mapCenterLongLat').value =str(myCenterLat)+','+str(myCenterLong);
-		//};
-	//</script>
+	<script type="text/javascript">
+		function setCenter(){
+			var newCenter = window.map.getCenter();
+			var newLat = newCenter.lat().toFixed(4);
+			var newLong = newCenter.lng().toFixed(4);
+                       document.getElementById('mapCenterLongLat').value =String(newLong)+','+String(newLat);
+		};
+	</script>
 	
 	<script type="text/javascript"> 
 		$(function(){
@@ -185,7 +184,7 @@
 			newCenter = window.map.getCenter();
 			myCenterLat = newCenter.lat().toFixed(4);
 			myCenterLong = newCenter.lon().toFixed(4);
-			document.getElementById('mapCenterLongLat').value =str(myCenterLat)+','+str(myCenterLong);
+			document.getElementById('mapCenterLongLat').value =string(myCenterLat)+','+string(myCenterLong);
 		});*/
 
 		/*********************************
