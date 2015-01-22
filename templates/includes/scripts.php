@@ -15,21 +15,22 @@
 	<script type="text/javascript" src="/media/myjs/colorbar.js"></script><!--DYNAMIC COLORBAR-->
 	<script type="text/javascript" src="/media/myjs/colorbrewer.js"></script><!--DYNAMIC COLORBAR-->
 	<!--<script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script>--><!--TRANSPARENCY SLIDER-->
-	<script type="text/javascript">
+//	<script type="text/javascript">
 		//function activaTab(tab){
 		//	$('#dataTab a[href="#' + tab + '"]').tab('show');
 	        //};
-		$('#dataTab a').click(function (e) {
-			  e.preventDefault()
-			  $(this).tab('show')
-		})
-		function setCenter(){
-			newCenter = window.map.getCenter();
-                        myCenterLat = newCenter.lat().toFixed(4);
-                        myCenterLong = newCenter.lon().toFixed(4);
-                        document.getElementById('mapCenterLongLat').value =str(myCenterLat)+','+str(myCenterLong);
-		};
-	</script>
+		//$('#dataTab a').click(function (e) {
+		//	  e.preventDefault()
+		//	  $(this).tab('show')
+		//})
+		// Still doesn't work to call this to set the center upon POST
+		//function setCenter(){
+		//	newCenter = window.map.getCenter();
+                //        myCenterLat = newCenter.lat().toFixed(4);
+                //        myCenterLong = newCenter.lon().toFixed(4);
+                //        document.getElementById('mapCenterLongLat').value =str(myCenterLat)+','+str(myCenterLong);
+		//};
+	//</script>
 	
 	<script type="text/javascript"> 
 		$(function(){
@@ -399,6 +400,12 @@
 
 	      google.maps.event.addDomListener(window, 'load', initialize);
 	      window.onload = initialize;
+
+	      //$('#dataTab a').click(function (e) {
+              //            e.preventDefault()
+              //           $(this).tab('show')
+            // })
+
 	</script>
 
  	<!------------------------------------>

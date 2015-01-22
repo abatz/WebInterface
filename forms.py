@@ -57,8 +57,6 @@ formVariableModis=[
     ('MNDWI','NDWI (Water Index)'),
 ]
 
-
-
 #============================
 #    formAnomOrValue
 #============================

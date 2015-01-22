@@ -4,27 +4,27 @@
         <!----------------------------->
         <ul class="nav nav-tabs" id="dataTab" >
                 <li><a href="#tabblank" data-toggle="tab"><img src="images/uparrow.png" height="10px"></a></li>
-                <li class="active"><a href="#taboptions" data-toggle="tab">Options <img src="images/downarrow.png" height="10px"></a></li>
-                <li><a href="#tabtimeseries" data-toggle="tab">{% if timeSeriesGraphData%}Time Series Output 
+                <li {% if not timeSeriesData %}class="active"{% endif %}><a href="#taboptions" data-toggle="tab">Options <img src="images/downarrow.png" height="10px"></a></li>
+                <li {% if timeSeriesData %}class="active"{% endif %}><a href="#tabtimeseries" data-toggle="tab">{% if timeSeriesGraphData%}Time Series Output 
 			<img src="images/downarrow.png" height="10px">{% endif %}</a></li>
         </ul>
 
         <div class="tab-content">
 		<!----------------------------->
-		<!--  MAP WINDOW 	     -->
-		<!----------------------------->
-		<div class="tab-pane active" id="taboptions">
-			{% include 'includes/taboptions.html'%}
-		</div>
-                <!----------------------------->
-		<!--    BLANK WINDOW         -->
+                <!--    BLANK WINDOW         -->
                 <!----------------------------->
                 <div class="tab-pane" id="tabblank">
                 </div>
+		<!----------------------------->
+		<!--  MAP WINDOW 	     -->
+		<!----------------------------->
+		<div class="tab-pane {% if not timeSeriesData %}active{% endif %}" id="taboptions">
+			{% include 'includes/taboptions.html'%}
+		</div>
                 <!----------------------------->
 		<!--    TIME SERIES WINDOW   -->
                 <!----------------------------->
-	 	<div class="tab-pane" id="tabtimeseries">
+	 	<div class="tab-pane {% if timeSeriesData %}active{% endif %}" id="tabtimeseries">
                     {% if timeSeriesGraphData%}
 			<table>
 				<tr>
