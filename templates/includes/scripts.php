@@ -238,38 +238,45 @@
 		var domainType = document.getElementById('domainType').value;
 
 		var latlong, markers = [];
-		//Set initial markers as invisible
+		//Set initial markers
 		$('.pointCheck[type=checkbox]').each(function() {
 		    var point_id = $(this).val();
-		    var LongLat = String($('#' + String(point_id)).val()).replace(' ','');
+		    var LongLat = String($('#p' + String(point_id)).val()).replace(' ','');
 		    var Long = parseFloat(LongLat.split(',')[0]);
 		    var Lat = parseFloat(LongLat.split(',')[1]);
 		    var latlon = new google.maps.LatLng(Lat,Long);
 		    var marker_img = document.getElementById('img' + String(point_id)).src;
-		    var marker = new google.maps.Marker({
+		    if ($('#check' + String(point_id)).attr('checked') == true){
+                var mv = true;
+            }
+            else{
+                var mv = false;
+            } 
+            var marker = new google.maps.Marker({
 			map: map,
 			position: latlon,
 			title:String(point_id),
 			draggable:true,
-			visible:false,
+			visible:mv,
 			icon: marker_img
 		    });
+            //Set visibility depending on checkbox
 		    //Assign point_id to marker for tracking
 		    marker.id = point_id;
 		    google.maps.event.addListener(marker, 'click', function() {
-			//Uncheck checkbox
-			var m_id = marker.id;
-			$('#check' + String(point_id)).attr('checked', false);
-			//Hide marker
-			marker.setVisible(false);
+			    //Uncheck checkbox
+			    var m_id = marker.id;
+			    $('#check' + String(point_id)).attr('checked', false);
+			    //Hide marker
+			    marker.setVisible(false);
 		    });
 		    google.maps.event.addListener(marker, 'dragend', function (event) {
-			var m_id = marker.id;
-			//Set new lat,lon
-			var new_lat = event.latLng.lat().toFixed(2);;
-			var new_long = event.latLng.lng().toFixed(2);
-			//Update value in form
-			$('#' + String(point_id)).val(new_long + ',' + new_lat);
+			    var m_id = marker.id;
+			    //Set new lat,lon
+			    var new_lat = event.latLng.lat().toFixed(4);;
+			    var new_long = event.latLng.lng().toFixed(4);
+			    //Update value in form
+			    $('#' + String(point_id)).val(new_long + ',' + new_lat);
 		    });
 		    markers.push(marker);
 		});
