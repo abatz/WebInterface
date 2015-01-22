@@ -90,31 +90,116 @@
 		<div class="points" id="points">
 			<input type="hidden" id="pointsLongLat" name="pointsLongLat" value="" /><br>
 			Select Point(s):<br>
+            CHECK: {{p1check}}
+            {%if p1check == "checked"%}
+            <div id="point1" class="point">
+            {%else%}
+             <div id="point1" class="point" style="display:none">
+            {%endif%}
+                   <!--hidden input to keep track of which markers are checked-->
+                   <input type="hidden" id="p1check" name="p1check" value="{{p1check}}">
+                   <input type="checkbox" name="point" class="pointCheck" value="1" id="check1" {{p1check}}>
+                   <img src="http://www.google.com/mapfiles/ms/micons/{{marker_colors.0}}.png" id="img1">
+                   <input type="text" id="p1" class="pointLongLat" name="p1" value="{{p1}}"/><br />
+                   Add another point: <input type="checkbox" class='addPoint' value="1" id="add1">
+            </div>
+            CHECK2:{{p2check}}
+            {%if p2check == "checked"%}
+            <div id="point2" class="point">
+            {%else%}
+            <div id="point2" class="point" style="display:none">
+            {%endif%}
+                    <!--hidden input to keep track of which markers are checked-->
+                   <input type="hidden" id="p2check" name="p2check" value="{{p2check}}">
+                   <input type="checkbox" name="point" class="pointCheck" value="2" id="check2" {{p2check}}>
+                   <img src="http://www.google.com/mapfiles/ms/micons/{{marker_colors.1}}.png" id="img2">
+                   <input type="text" id="p2" class="pointLongLat" name="p2" value="{{p2}}"/><br />
+                   Add another point: <input type="checkbox" class='addPoint' value="2" id="add2">
+            </div>
+            {%if p3check == "true"%}
+            <div id="point3" class="point">
+            {%else%}   
+            <div id="point3" class="point" style="display:none">
+            {%endif%}
+                   <!--hidden input to keep track of which markers are checked-->
+                   <input type="hidden" id="p3check" name="p3check" value="{{p3check}}">
+                   <input type="checkbox" name="point" class="pointCheck" value="3" id="check3" checked="{{p3check}}">
+                   <img src="http://www.google.com/mapfiles/ms/micons/{{marker_colors.2}}.png" id="img3">
+                   <input type="text" id="p3" class="pointLongLat" name="p3" value="{{p3}}"/><br />
+                   Add another point: <input type="checkbox" class='addPoint' value="3" id="add3">
+            </div> 
+            {%if p4check == "true"%}
+            <div id="point4" class="point">
+            {%else%}
+            <div id="point4" class="point" style="display:none">
+            {%endif%}
+                   <!--hidden input to keep track of which markers are checked-->
+                   <input type="hidden" id="p4check" name="p4check" value="{{p4check}}">
+                   <input type="checkbox" name="point" class="pointCheck" value="4" id="check4" checked="{{p4check}}">
+                   <img src="http://www.google.com/mapfiles/ms/micons/{{marker_colors.3}}.png" id="img4">
+                   <input type="text" id="p4" class="pointLongLat" name="p4" value="{{p4}}"/><br />
+                   Add another point: <input type="checkbox" class='addPoint' value="4" id="add4">
+            </div> 
+            {%if p5check == "true"%}
+            <div id="point5" class="point">
+            {%else%}  
+            <div id="point5" class="point" style="display:none">
+            {%endif%}
+                   <!--hidden input to keep track of which markers are checked-->
+                   <input type="hidden" id="p5check" name="p5check" value="{{p5check}}">
+                   <input type="checkbox" name="point" class="pointCheck" value="5" id="check5" checked="{{p5check}}">
+                   <img src="http://www.google.com/mapfiles/ms/micons/{{marker_colors.4}}.png" id="img5">
+                   <input type="text" id="p5" class="pointLongLat" name="p5" value="{{p5}}"/><br />
+                   Add another point: <input type="checkbox" class='addPoint' value="5" id="add5">
+            </div> 
+            {%if p6check == "true"%}
+            <div id="point6" class="point">
+            {%else%}
+            <div id="point6" class="point" style="display:none">
+            {%endif%}
+                   <!--hidden input to keep track of which markers are checked-->
+                   <input type="hidden" id="p6check" name="p6check" value="{{p6check}}">
+                   <input type="checkbox" name="point" class="pointCheck" value="6" id="check6" checked="{{p6check}}">
+                   <img src="http://www.google.com/mapfiles/ms/micons/{{marker_colors.5}}.png" id="img6">
+                   <input type="text" id="p6" class="pointLongLat" name="p6" value="{{p6}}"/><br />
+                   Add another point: <input type="checkbox" class='addPoint' value="6" id="add6">
+            </div> 
+            {%if p7check == "true"%}
+            <div id="point7" class="point">
+            {%else%}  
+            <div id="point7" class="point" style="display:none">
+            {%endif%}
+                    <!--hidden input to keep track of which markers are checked-->
+                   <input type="hidden" id="p7check" name="p7check" value="{{p7check}}">
+                   <input type="checkbox" name="point" class="pointCheck" value="7" id="check7" checked="{{p7check}}">
+                   <img src="http://www.google.com/mapfiles/ms/micons/{{marker_colors.6}}.png" id="img7">
+                   <input type="text" id="p7" class="pointLongLat" name="p7" value="{{p7}}"/><br />
+            </div> 
+            <!--
 			{% for c in marker_colors %}
 			{% if loop.index == 1 %}
-			    <!--Show first point-->
 			    <div id="point{{loop.index}}" class="point">
-			       <input type="checkbox" name="point" class="pointCheck" value="{{loop.index}}" id="check{{loop.index}}">
+			       <input type="checkbox" name="point" class="pointCheck" value="{{loop.index}}" id="check{{loop.index}}" checked="p{{loop.index}}check">
 			       <img src="http://www.google.com/mapfiles/ms/micons/{{c}}.png" id="img{{loop.index}}">
-			       <input type="text" id="{{loop.index}}" class="pointLongLat" name="pointLongLat" value="{{ pointsLongLat }}"/><br />
+			       <input type="text" id="p{{loop.index}}" class="pointLongLat" name="p{{loop.index}}" value={{loop.index}}/><br />
 			       Add another point: <input type="checkbox" class='addPoint' value="{{loop.index}}" id="add{{loop.index}}">
 			    </div>
 			{% else %}
 			    <div id="point{{loop.index}}" class="point" style="display:none">
-				<input type="checkbox" name="point" class="pointCheck" value="{{loop.index}}">
+				<input type="checkbox" name="point" class="pointCheck" value="{{loop.index}}" checked="p{{loop.index}}check">
 				<img src="http://www.google.com/mapfiles/ms/micons/{{c}}.png" id="img{{loop.index}}">
-				<input type="text" id="{{loop.index}}" class="pointLongLat" name="pointLongLat"/>
+				<input type="text" id="p{{loop.index}}" class="p{{loop.index}}" name="pointLongLat" value=p{{loop.index}} />
 				<br />
 				{% if loop.revindex != 1 %}
 				Add another point: <input type="checkbox" class='addPoint' value="{{loop.index}}">
 				{% endif %}
 			    </div>
 			{% endif %}
-			{% endfor %}
+			{% endfor %} -->
 			{%if form_error.pointsLongLat%}
 			    <br><div class="error">{{ form_error.pointsLongLat}}</div>
 			{%endif%}
-               </div><!--end class=points-->
+        </div><!--end class=points-->
   </td>
 </tr>
 <tr>
