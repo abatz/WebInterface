@@ -71,6 +71,17 @@ class DroughtTool(webapp2.RequestHandler):
         self.palette = self.request.get('palette', None)
         self.colorbarmap = self.request.get('colorbarmap', 'GnBu')
         self.colorbarsize = self.request.get('colorbarsize', '8')
+        #Points/markers
+        #Long,Lat inputs
+        self.p1 = self.request.get('p1','-112,42');self.p2 = self.request.get('p2','')
+        self.p3 = self.request.get('p3','');self.p4 = self.request.get('p4','')
+        self.p5 = self.request.get('p5','');self.p6 = self.request.get('p6','')
+        self.p7 = self.request.get('p7','')
+        #checkboxes
+        self.p1check =self.request.get('p1check','checked');self.p2check=self.request.get('p2check','')
+        self.p3check =self.request.get('p3check','');self.p4check=self.request.get('p4check','')
+        self.p5check =self.request.get('p5check','');self.p6check=self.request.get('p6check','')
+        self.p7check =self.request.get('p7check','')
         self.marker_colors = ['blue', 'green', 'orange', 'purple',\
         'yellow', 'pink','red']
 
@@ -146,7 +157,21 @@ class DroughtTool(webapp2.RequestHandler):
             'maxColorbar': self.maxColorbar,
             'colorbarmap': self.colorbarmap,
             'colorbarsize': self.colorbarsize,
-            'marker_colors':self.marker_colors
+            'marker_colors':self.marker_colors,
+            'p1':self.p1,
+            'p2':self.p2,
+            'p3':self.p3,
+            'p4':self.p4,
+            'p5':self.p5,
+            'p6':self.p6,
+            'p7':self.p7,
+            'p1check':self.p1check,
+            'p2check':self.p2check,
+            'p3check':self.p3check,
+            'p4check':self.p4check,
+            'p5check':self.p5check,
+            'p6check':self.p6check,
+            'p7check':self.p7check
         }
         if self.colorbarmap:
             template_values['colorbarmap']= self.colorbarmap
