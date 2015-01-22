@@ -128,6 +128,7 @@ def get_images(template_values):
         'source': source,
         'product':product,
         'productLongName': collectionLongName,
+        'variableShortName': variableShortName,
         'title': title,
         'colorbarLabel': colorbarLabel,
         'minColorbar': minColorbar,

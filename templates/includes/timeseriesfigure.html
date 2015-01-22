@@ -2,7 +2,7 @@
     //Script to generate highcharts time series graph
     var timeSeriesData = {{ timeSeriesGraphData |safe}};
     var variable = "{{ variable }}";
-    var title = "{{ title }}";
+    var title = "{% if timeSeriesCalc=='days' %}Daily {%else%} {%endif%}{{ variableShortName }}";
     var axis_min = null;
     var y_label = "{{ colorbarLabel }}";
     if (variable == 'vs' || variable == 'pr'){

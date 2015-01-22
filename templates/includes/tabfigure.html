@@ -1,29 +1,28 @@
 <table border="2" width="100%">
 <tr><td>
-<table id="table" class="table table-striped table-bordered">
-  <tr>
-     <td>
-	   <input type="button"  class="btn btn-large btn-primary pull-right"
-				value="DOWNLOAD FIGURE" onClick="">
-    </td>
-  </tr>
-  <tr>
-    <td>
-	<div class="row">
-	   <div class="col-md-12 img-portfolio">
-	       <div id="container" style="width:800px;height:500px;"></div>
-			<!--Getting a $ is not defined error when jquery source is not right here Why???-->
-			<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-			<script src="http://code.highcharts.com/highcharts.js"></script>
-			<script src="http://code.highcharts.com/modules/exporting.js"></script>
-            <!------------------------------------->
-            <!--         GET DATA       -->
-            <!------------------------------------->
-            {% include 'includes/timeseriesfigure.html'%} 
-        	</div>
-	    </div>
-        </td>
-     </tr>
-</table>
+	<table id="table" class="table table-striped table-bordered">
+	  <tr>
+	     <td>
+		   <input type="button"  class="btn btn-large btn-primary pull-right"
+					value="DOWNLOAD FIGURE" onClick="">
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+		       <div id="container" style="width:800px;height:500px;"></div>
+				<!--Getting a $ is not defined error when jquery source is not right here Why???-->
+				<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+				<script src="http://code.highcharts.com/highcharts.js"></script>
+				<script src="http://code.highcharts.com/modules/exporting.js"></script>
+				<!------------------------------------->
+				<!--         MAKE HIGH CHARTS FIGURE      -->
+				<!------------------------------------->
+				{% include 'includes/timeseriesfigure.html'%}
+				<div id="chart_div"><svg class="chart"></svg></div>
+				 <!-- include 'includes/d3figure.html' -->
+			</div>
+		</td>
+	     </tr>
+	</table>
 </td></tr>
 </table>
