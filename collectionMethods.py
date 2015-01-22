@@ -351,7 +351,10 @@ def get_time_series(collection, variable, pointsLongLatTuples,units,marker_color
             date_string = date_string[0:4] + '-' + date_string[4:6] + '-' + date_string[6:8]
         except:
             pass
-        val = data[4]
+        try:
+            val = round(data[4],4)
+        except:
+            val = data[4]
         data_dict['Data'].append([date_string,val])
         data_dict_graph['Data'].append([time,val])
     timeSeriesData.append(data_dict)
