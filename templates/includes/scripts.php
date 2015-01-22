@@ -15,15 +15,6 @@
 	<script type="text/javascript" src="/media/myjs/colorbar.js"></script><!--DYNAMIC COLORBAR-->
 	<script type="text/javascript" src="/media/myjs/colorbrewer.js"></script><!--DYNAMIC COLORBAR-->
 	<!--<script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script>--><!--TRANSPARENCY SLIDER-->
-	<script type="text/javascript">
-		function setCenter(){
-			var newCenter = window.map.getCenter();
-			var newLat = newCenter.lat().toFixed(4);
-			var newLong = newCenter.lng().toFixed(4);
-                       document.getElementById('mapCenterLongLat').value =String(newLong)+','+String(newLat);
-		};
-	</script>
-	
 	<script type="text/javascript"> 
 		$(function(){
 		    $( "#dateStartTS" ).datepicker({
@@ -176,16 +167,12 @@
 			myZoom = map.getZoom();
 		  }
 		});
-		/* does not work... too often updates 
 		google.maps.event.addListener(map,'center_changed',function(){
-			var mapCenterLongLat = "{{ mapCenterLongLat}}";
-                	var mapCenterLat = parseFloat(mapCenterLongLat.split(',')[1]).toFixed(4);
-                	var mapCenterLong = parseFloat(mapCenterLongLat.split(',')[0]).toFixed(4);
 			newCenter = window.map.getCenter();
 			myCenterLat = newCenter.lat().toFixed(4);
-			myCenterLong = newCenter.lon().toFixed(4);
-			document.getElementById('mapCenterLongLat').value =string(myCenterLat)+','+string(myCenterLong);
-		});*/
+			myCenterLong = newCenter.lng().toFixed(4);
+			document.getElementById('mapCenterLongLat').value =String(myCenterLat)+','+String(myCenterLong);
+		});
 
 		/*********************************
 		*     COLORBAR                   *
