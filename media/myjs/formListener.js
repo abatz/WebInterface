@@ -13,7 +13,7 @@ $(function(){
         LongLatStr = $('#pointsLongLat').val();
         LongLatList = LongLatStr.replace(' ','').split(',');
         point_id = parseFloat($(this).val());
-        LongLat = String($('#' + point_id).val()).replace(' ','');
+        LongLat = String($('#p' + point_id).val()).replace(' ','');
         Long = parseFloat(LongLat.split(',')[0])
         Lat = parseFloat(LongLat.split(',')[1])
         //See if point is checked and update map, pointsLongLat accordingly
@@ -32,8 +32,12 @@ $(function(){
             else if ( !LongLatStr && LongLat) {
                 $('#pointsLongLat').val(LongLat);
             }
+            //Update hidden checkbox variable
+            $('p' + String(point_id) + 'check').attr('checked') == 'checked';
         }
         else {
+            //Update hidden checkbox variable
+            $('p' + String(point_id) + 'check').attr('checked') == 'checked';
             //Hide marker from map
             window.markers[point_id-1].setVisible(false);
             //Remove point from pointsLongLat
@@ -63,7 +67,7 @@ $(function(){
         $('.pointCheck').each(function() {
             if ($(this).is(':checked')){
                 point_id = parseFloat($(this).val());
-                LongLat = String($('#' + String(point_id)).val()).replace(' ','');
+                LongLat = String($('#p' + String(point_id)).val()).replace(' ','');
                 Long = parseFloat(LongLat.split(',')[0]);
                 Lat = parseFloat(LongLat.split(',')[1]);
                 latlon = new google.maps.LatLng(Lat,Long);
