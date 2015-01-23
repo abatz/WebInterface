@@ -99,8 +99,8 @@
                    <input type="hidden" id="p1check" name="p1check" value="{{p1check}}">
                    <input type="checkbox" name="point" class="pointCheck" value="1" id="check1" {{p1check}}>
                    <img src="http://www.google.com/mapfiles/ms/micons/{{marker_colors.0}}.png" id="img1">
-                   <input type="text" id="p1" class="pointLongLat" name="p1" value="{{p1}}"/><br />
-                   Add another point: <input type="checkbox" class='addPoint' value="1" id="add1">
+                   <input type="text" id="p1" class="pointLongLat" name="p1" value="{{p1}}"/>
+                   +<input type="checkbox" class='addPoint' value="1" id="add1">
             </div>
             CHECK2:{{p2check}}
             {%if p2check == "checked"%}
@@ -112,8 +112,8 @@
                    <input type="hidden" id="p2check" name="p2check" value="{{p2check}}">
                    <input type="checkbox" name="point" class="pointCheck" value="2" id="check2" {{p2check}}>
                    <img src="http://www.google.com/mapfiles/ms/micons/{{marker_colors.1}}.png" id="img2">
-                   <input type="text" id="p2" class="pointLongLat" name="p2" value="{{p2}}"/><br />
-                   Add another point: <input type="checkbox" class='addPoint' value="2" id="add2">
+                   <input type="text" id="p2" class="pointLongLat" name="p2" value="{{p2}}"/>
+                   +<input type="checkbox" class='addPoint' value="2" id="add2">
             </div>
             {%if p3check == "true"%}
             <div id="point3" class="point">
