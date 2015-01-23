@@ -32,21 +32,17 @@
 						<!----------------------------->
 						<!--    FIGURES   -->
 						<!----------------------------->
-						<div class="tab-pane" id="timeseriesout">
 						    {% if timeSeriesGraphData%}
 							  {% include 'includes/tabfigure.html'%}
 						    {% endif %}
-						</div>
-						</td>
-						<td width="50%" valign="top">
+					</td>
+					<td width="50%" valign="top">
 						<!----------------------------->
 						<!--    DATA   -->
 						<!----------------------------->
-						 <div class="tab-pane" id="data">
 						{% if timeSeriesData%}
 							 {% include 'includes/tabdata.html'%}
 						{% endif %}
-						</div>
 					</td>
 				</tr>
 			</table>

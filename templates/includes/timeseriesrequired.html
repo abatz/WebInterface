@@ -88,7 +88,6 @@
                 <!--      POINT              -->
                 <!----------------------------->
 		<div class="points" id="points">
-			<input type="hidden" id="pointsLongLat" name="pointsLongLat" value="" /><br>
 			Select Point(s):<br>
             CHECK: {{p1check}}
             {%if p1check == "checked"%}
@@ -181,17 +180,16 @@
 			    <div id="point{{loop.index}}" class="point">
 			       <input type="checkbox" name="point" class="pointCheck" value="{{loop.index}}" id="check{{loop.index}}" checked="p{{loop.index}}check">
 			       <img src="http://www.google.com/mapfiles/ms/micons/{{c}}.png" id="img{{loop.index}}">
-			       <input type="text" id="p{{loop.index}}" class="pointLongLat" name="p{{loop.index}}" value={{loop.index}}/><br />
-			       Add another point: <input type="checkbox" class='addPoint' value="{{loop.index}}" id="add{{loop.index}}">
+			       <input type="text" id="{{loop.index}}" class="pointLongLat" name="pointLongLat" value="{{ pointsLongLat }}"/>
+			       +<input type="checkbox" class='addPoint' value="{{loop.index}}" id="add{{loop.index}}">
 			    </div>
 			{% else %}
 			    <div id="point{{loop.index}}" class="point" style="display:none">
 				<input type="checkbox" name="point" class="pointCheck" value="{{loop.index}}" checked="p{{loop.index}}check">
 				<img src="http://www.google.com/mapfiles/ms/micons/{{c}}.png" id="img{{loop.index}}">
-				<input type="text" id="p{{loop.index}}" class="p{{loop.index}}" name="pointLongLat" value=p{{loop.index}} />
-				<br />
+				<input type="text" id="{{loop.index}}" class="pointLongLat" name="pointLongLat"/>
 				{% if loop.revindex != 1 %}
-				Add another point: <input type="checkbox" class='addPoint' value="{{loop.index}}">
+				+<input type="checkbox" class='addPoint' value="{{loop.index}}">
 				{% endif %}
 			    </div>
 			{% endif %}
@@ -200,6 +198,8 @@
 			    <br><div class="error">{{ form_error.pointsLongLat}}</div>
 			{%endif%}
         </div><!--end class=points-->
+			<input type="hidden" id="pointsLongLat" name="pointsLongLat" value="" /><br>
+               </div><!--end class=points-->
   </td>
 </tr>
 <tr>
