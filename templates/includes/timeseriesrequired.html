@@ -88,7 +88,6 @@
                 <!--      POINT              -->
                 <!----------------------------->
 		<div class="points" id="points">
-			<input type="hidden" id="pointsLongLat" name="pointsLongLat" value="" /><br>
 			Select Point(s):<br>
 			{% for c in marker_colors %}
 			{% if loop.index == 1 %}
@@ -96,17 +95,16 @@
 			    <div id="point{{loop.index}}" class="point">
 			       <input type="checkbox" name="point" class="pointCheck" value="{{loop.index}}" id="check{{loop.index}}">
 			       <img src="http://www.google.com/mapfiles/ms/micons/{{c}}.png" id="img{{loop.index}}">
-			       <input type="text" id="{{loop.index}}" class="pointLongLat" name="pointLongLat" value="{{ pointsLongLat }}"/><br />
-			       Add another point: <input type="checkbox" class='addPoint' value="{{loop.index}}" id="add{{loop.index}}">
+			       <input type="text" id="{{loop.index}}" class="pointLongLat" name="pointLongLat" value="{{ pointsLongLat }}"/>
+			       +<input type="checkbox" class='addPoint' value="{{loop.index}}" id="add{{loop.index}}">
 			    </div>
 			{% else %}
 			    <div id="point{{loop.index}}" class="point" style="display:none">
 				<input type="checkbox" name="point" class="pointCheck" value="{{loop.index}}">
 				<img src="http://www.google.com/mapfiles/ms/micons/{{c}}.png" id="img{{loop.index}}">
 				<input type="text" id="{{loop.index}}" class="pointLongLat" name="pointLongLat"/>
-				<br />
 				{% if loop.revindex != 1 %}
-				Add another point: <input type="checkbox" class='addPoint' value="{{loop.index}}">
+				+<input type="checkbox" class='addPoint' value="{{loop.index}}">
 				{% endif %}
 			    </div>
 			{% endif %}
@@ -114,6 +112,7 @@
 			{%if form_error.pointsLongLat%}
 			    <br><div class="error">{{ form_error.pointsLongLat}}</div>
 			{%endif%}
+			<input type="hidden" id="pointsLongLat" name="pointsLongLat" value="" /><br>
                </div><!--end class=points-->
   </td>
 </tr>
