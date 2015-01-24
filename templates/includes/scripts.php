@@ -260,7 +260,7 @@
 		    google.maps.event.addListener(marker, 'click', function() {
 			    //Uncheck checkbox
 			    var m_id = marker.id;
-			    $('#check' + String(point_id)).attr('checked',false);
+			    $('#check' + String(m_id)).attr('checked',false);
 			    //Hide marker
 			    marker.setVisible(false);
 		    });
