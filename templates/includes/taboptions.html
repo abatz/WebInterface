@@ -40,6 +40,7 @@
        <!--      MAP                -->
        <!----------------------------->
 	<tr style="outline: thin solid">
+	  <table width="100%">
 	    <td>
 		<div class="accordion" id="accordionBUILDMAP">
 		  <div class="accordion-group">
@@ -55,6 +56,18 @@
 				</a>
 			</div><!--end of accordion-heading-->
 		   </div><!-- end of accordion-group-->
+		   </td>
+		<td>
+<input type="submit" class="btn btn-large ptn-primary pull-right" value="GET MAP"
+                                form="form_map" onclick="document.getElementById('domainType').value='full';"/>
+ <div id="loading" style="display:none;">
+        <img id="loading-image" src="images/progressbar.gif" alt="Loading..." />
+</div>
+		</td></tr>
+	   </table>
+	  <table>
+		<tr><td>
+
 		    <div id="collapseBuildMapOptions" class="accordion-body collapse">
 		       <div class="accordion-inner">
 			    <div class="panel-body">
@@ -69,6 +82,7 @@
        <!--      TIME SERIES      -->
        <!----------------------------->
         <tr style="outline: thin solid">
+	    <table width="100%" padding="1">
             <td>
                 <div class="accordion" id="accordionBUILDTIMESERIES">
                   <div class="accordion-group">
@@ -84,6 +98,17 @@
                                 </a>
                         </div><!--end of accordion-heading-->
                    </div><!-- end of accordion-group-->
+		   </td>
+		<td>
+		<input type="submit" class="btn btn-large ptn-primary pull-right" value="GET TIME SERIES"
+	       	 form="form_map" onclick="document.getElementById('domainType').value='points';"/>
+		<div id="loading2" style="display:none;">
+        		<img id="loading-image2" src="images/progressbar.gif" alt="Loading..." />
+		</div>
+		</td></tr>
+	   </table>
+	  <table>
+		<tr><td>
                     <div id="collapseBuildTimeSeriesOptions" class="accordion-body collapse">
                        <div class="accordion-inner">
                             <div class="panel-body">
