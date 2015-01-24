@@ -236,7 +236,7 @@
                     marker_visible = true;
                 }
                 else {
-                    if ($('#point' + String(point_id)).is(':visible') && $('#check' + String(point_id)).is('checked')){
+                    if ($('#point' + String(point_id)).css('display') == 'block' && $('#p' + String(point_id) + 'check').val('checked')){
                         marker_visible = true;
                     }
                     else{
