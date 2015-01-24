@@ -83,7 +83,7 @@ formLayers=[
 #    formTimeSeriesCalc
 #============================
 formTimeSeriesCalc=[
-    ('season','Time Series of Seasonal '),
+    #('season','Time Series of Seasonal '),
     ('days','Time Series of Daily '),
 ]
 

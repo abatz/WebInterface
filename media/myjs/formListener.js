@@ -3,13 +3,14 @@ $(function(){
 	/*         POINTS LISTENERS                    */
 	/*--------------------------------------------*/
     /*
+    /*
     Deal with three inputs
     1. Checkbox for a marker has changed
     See if point is checked and update map, pointsLongLat accordingly
     */
-    jQuery('.point').on('change','input.pointCheck[type=checkbox]', function(){
+    $(".pointCheck").bind("keyup change", function(e) {
         var LongLatStr,LongLatList,LongLat;
-        var Long,Lat,latlon;
+        var Long,Lat,latlong;
         LongLatStr = $('#pointsLongLat').val();
         LongLatList = LongLatStr.replace(' ','').split(',');
         point_id = parseFloat($(this).val());
@@ -20,59 +21,34 @@ $(function(){
         if ($(this).is(':checked')) {
             //Show marker to map
             if (LongLat){
-                console.log(point_id);
-                latlon = new google.maps.LatLng(Lat,Long);
-                window.markers[point_id-1].position = latlon;
+                latlong = new google.maps.LatLng(Lat,Long);
+                window.markers[point_id-1].position = latlong;
                 window.markers[point_id-1].setVisible(true);
             }
-            //Add point to pointsLongLat
-            if (LongLatStr && LongLat){
-                $('#pointsLongLat').val(LongLatStr + ',' + LongLat);
-            }
-            else if ( !LongLatStr && LongLat) {
-                $('#pointsLongLat').val(LongLat);
-            }
-            //Update hidden checkbox variable
-            $('p' + String(point_id) + 'check').attr('checked') == 'checked';
+            //Update hidden variable that keeps track of checkboxes
+            $('#p' + String(point_id) + 'check').val('checked');
         }
         else {
-            //Update hidden checkbox variable
-            $('p' + String(point_id) + 'check').attr('checked') == 'checked';
+            //Update hidden variable that keeps track of checkboxes
+            $('#p' + String(point_id) + 'check').val('');
             //Hide marker from map
             window.markers[point_id-1].setVisible(false);
-            //Remove point from pointsLongLat
-            for (long_idx=0;long_idx<LongLatList.length - 1;long_idx+=2){
-                if (Long != String(LongLatList[long_idx])){
-                    continue;
-                }
-                if (Lat != String(LongLatList[long_idx + 1])){
-                    continue;
-                }
-                //We found point on pointsLongLatList
-                //Remove Long
-                LongLatList.splice(long_idx,1);
-                //Remove Lat
-                LongLatList.splice(long_idx,1);
-                //Update pointsLongLat
-                $('#pointsLongLat').val(LongLatList.toString());
-                    break;
-            }
         }
     });
     //2. Input field for marker
     jQuery('.point').on('change','input.pointLongLat[type=text]', function(){
         //Change position of marker on map
         //Generate new pointsLongLat string
-        var newpointsLongLat = '',point_id,LongLat,Lat,Long,latlon;
-        $('.pointCheck').each(function() {
-            if ($(this).is(':checked')){
-                point_id = parseFloat($(this).val());
+        var newpointsLongLat = '',point_id,LongLat,Lat,Long,latlong;
+        $('.point').each(function() {
+            if ($(this).css('display') == 'block'){
+                point_id = parseFloat($(this).attr('id').split('point')[1]);
                 LongLat = String($('#p' + String(point_id)).val()).replace(' ','');
                 Long = parseFloat(LongLat.split(',')[0]);
                 Lat = parseFloat(LongLat.split(',')[1]);
-                latlon = new google.maps.LatLng(Lat,Long);
+                latlong = new google.maps.LatLng(Lat,Long);
                 //Update marker on map
-                window.markers[point_id-1].position = latlon;
+                window.markers[point_id-1].position = latlong;
                 window.markers[point_id-1].setVisible(true);
                 //Update LongLat string
                 if (LongLat && newpointsLongLat) {
@@ -83,21 +59,70 @@ $(function(){
                 }
             }
         });
-        //Update pointsLongLat
-        $('#pointsLongLat').val(newpointsLongLat);
     });
-    //3. Add another point checkbox
-    jQuery('.point').on('change','input.addPoint[type=checkbox]', function(){
-        point_id = parseFloat($(this).val());
-        if ($(this).is(':checked')){
+    //3. Add another point button
+    jQuery('.point').on('click','.add', function(){
+        var point_id = parseFloat($(this).attr('id').split('pm')[1]);
+        LongLatStr = $('#pointsLongLat').val();
+        LongLatList = LongLatStr.replace(' ','').split(',');
+        if ( $(this).attr('src') == 'media/img/PlusButton.png' ) {
+            //Show next point
+            $('#point' + String(point_id + 1)).css('display','block');
             //Show next marker
-            document.getElementById('point' + String(point_id + 1)).style.display = 'block';
+            window.markers[point_id].setVisible(true);            
+            //Change button from + to - 
+            $(this).attr('src','media/img/MinusButton.jpg');
+            //Update check value
+            $('#p' + String(point_id) + 'check').val('checked');
         }
-        else{
+        else {
+            //Hide next point
+            $('#point' + String(point_id + 1)).css('display','none');
             //Hide next marker
-            document.getElementById('point' + String(point_id + 1)).style.display = 'none';
-        }
+            window.markers[point_id].setVisible(false);
+            //Change button from - to +
+            $(this).attr('src','media/img/PlusButton.png');
+            //Update check value
+            $('#p' + String(point_id) + 'check').val('');
+        } 
     });
+    //onsubmit of form , update pointsLongLat
+    //This function is called in templates/includes/timeseriesoptions.html on form_map submit
+    jQuery('#form_map').submit(function( event ) {
+        if ( $('#domainType').val() == 'points') {
+            var LongLatStr = '';
+            $('.point').each(function() {
+                point_id = parseFloat($(this).attr('id').split('point')[1]);
+                if ($(this).is(':visible') && $('#check' + String(point_id)).is(':checked')) {
+                    //Update hidden check variables for display and checkbox
+                    $('#p' + String(point_id) + 'check').val('checked');
+                    $('#p' + String(point_id) + 'display').val('block');
+                    //Point visible and checkbox checked, add to pointsLongLat variable
+                    LongLat = String($('#p' + String(point_id)).val()).replace(' ','');
+                    Long = parseFloat(LongLat.split(',')[0]);
+                    Lat = parseFloat(LongLat.split(',')[1]);
+                    //Update LongLat string
+                    if (LongLatStr != '') {
+                        LongLatStr+=',' + LongLat;
+                    }
+                    else{
+                        LongLatStr+=LongLat;
+                    }
+                }
+                else {
+                    //Update hidden variables for display and checkbox
+                    if ($(this).not(':visible')){
+                        $('#p' + String(point_id) + 'display').val('none');
+                    }
+                    if ($('#check' + String(point_id)).not(':checked')){
+                        $('#p' + String(point_id) + 'check').val('checked');
+                    }
+                }
+            });
+            //Update pointsLongLat
+            $('#pointsLongLat').val(LongLatStr);
+        }
+    }); 
 	/*--------------------------------------------*/
 	/*         LAYERS LISTENER                    */
 	/*--------------------------------------------*/
@@ -603,7 +628,6 @@ $(function(){
 	/*        TIMESERIES  LISTENER 		      */
 	/*--------------------------------------------*/
         jQuery('#timeSeriesCalc').on('change', function(){
-		console.log('chagned');
             if(jQuery(this).val()=='season'){
                  jQuery('.seasontimeperiod').show();
                  jQuery('.daytimeperiod').hide();
