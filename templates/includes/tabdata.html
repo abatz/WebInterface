@@ -1,6 +1,6 @@
 <ul class="nav nav-tabs">
 	{% for point in timeSeriesData  %}
-	<li {% if loop.index==1 %}class="active" {% endif %}><a href="#data{{ loop.index }}" data-toggle="tab"> Location: {{point.LongLat }}</li>
+	<li {% if loop.index==1 %}class="active" {% endif %}><a href="#data{{ loop.index }}" data-toggle="tab"> Location: <br>{{point.LongLat }}</a></li>
 	{% endfor %}
 </ul>
 

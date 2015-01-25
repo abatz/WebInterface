@@ -89,7 +89,7 @@
                 <!----------------------------->
 		<div class="points" id="points">
 			Select Point(s):<br>
-            CHECK: {{p1check}}
+            <!--CHECK: {{p1check}}-->
             {%if p1check == "checked"%}
             <div id="point1" class="point">
             {%else%}
@@ -102,7 +102,8 @@
                    <input type="text" id="p1" class="pointLongLat" name="p1" value="{{p1}}"/>
                    +<input type="checkbox" class='addPoint' value="1" id="add1">
             </div>
-            CHECK2:{{p2check}}
+		<!--
+            CHECK2:{{p2check}} -->
             {%if p2check == "checked"%}
             <div id="point2" class="point">
             {%else%}
