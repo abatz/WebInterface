@@ -217,46 +217,60 @@
 		var timeSeriesGraphData = "{{ timeSeriesGraphData }}";
 		var domainType = document.getElementById('domainType').value;
 
-		var latlong, markers = [];
+		var marker_img, markers = [], marker_visible;
+        var latlong, point_id, LongLat, Long, Lat; 
 		//Set initial markers
 		$('.pointCheck[type=checkbox]').each(function() {
-		    var point_id = $(this).val();
-		    var LongLat = String($('#p' + String(point_id)).val()).replace(' ','');
-		    var Long = parseFloat(LongLat.split(',')[0]);
-		    var Lat = parseFloat(LongLat.split(',')[1]);
-		    var latlon = new google.maps.LatLng(Lat,Long);
-		    var marker_img = document.getElementById('img' + String(point_id)).src;
-		    if ($('#check' + String(point_id)).attr('checked') == true){
-                var mv = true;
+		    point_id = $(this).val();
+		    LongLat = String($('#p' + String(point_id)).val()).replace(' ','');
+		    Long = parseFloat(LongLat.split(',')[0]);
+		    Lat = parseFloat(LongLat.split(',')[1]);
+		    latlong = new google.maps.LatLng(Lat,Long);
+		    marker_img = document.getElementById('img' + String(point_id)).src;
+            //Set marker visibility depending on visibility and checkbox
+            //FIX ME: this is not working
+            console.log($('#domainType').val());
+            if ($('#domainType').val('points')){
+                //Show first marker
+                if (String(point_id) == '1'){
+                    marker_visible = true;
+                }
+                else {
+                    if ($('#point' + String(point_id)).css('display') == 'block' && $('#p' + String(point_id) + 'check').val('checked')){
+                        marker_visible = true;
+                    }
+                    else{
+                        marker_visible = false;
+                    }
+                }
             }
-            else{
-                var mv = false;
-            } 
+            else {
+                marker_visible = false;
+            }
             var marker = new google.maps.Marker({
 			map: map,
-			position: latlon,
+			position: latlong,
 			title:String(point_id),
 			draggable:true,
-			visible:mv,
+			visible:marker_visible,
 			icon: marker_img
 		    });
-            //Set visibility depending on checkbox
 		    //Assign point_id to marker for tracking
 		    marker.id = point_id;
 		    google.maps.event.addListener(marker, 'click', function() {
 			    //Uncheck checkbox
 			    var m_id = marker.id;
-			    $('#check' + String(point_id)).attr('checked', false);
+			    $('#check' + String(m_id)).attr('checked',false);
 			    //Hide marker
 			    marker.setVisible(false);
 		    });
 		    google.maps.event.addListener(marker, 'dragend', function (event) {
-			    var m_id = marker.id;
+			    var point_id = marker.id;
 			    //Set new lat,lon
 			    var new_lat = event.latLng.lat().toFixed(4);;
 			    var new_long = event.latLng.lng().toFixed(4);
 			    //Update value in form
-			    $('#' + String(point_id)).val(new_long + ',' + new_lat);
+			    $('#p' + String(point_id)).val(new_long + ',' + new_lat);
 		    });
 		    markers.push(marker);
 		});
@@ -391,6 +405,5 @@
         <!-- Script for charts            (these D3 graphs have problems right now.. because of needing javascript array inputs.. not python array inputs-->
         <!------------------------------------>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script type="text/javascript" src="/media/myjs/graph_utils.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <!--<script type="text/javascript" src="media/myjs/d3Example.js"></script>-->

@@ -1,4 +1,5 @@
 <table id="table" class="table table-striped" width="20%">
+
        <!---------------------------->
        <!--      DATA               -->
        <!----------------------------->
@@ -66,8 +67,11 @@
 	   </table>
 	  <table>
 		<tr><td>
-
+            {%if mapid%}
+            <div id="collapseBuildMapOptions" class="accordion-body">
+            {%else%}
 		    <div id="collapseBuildMapOptions" class="accordion-body collapse">
+            {%endif%}
 		       <div class="accordion-inner">
 			    <div class="panel-body">
 					{% include 'includes/mapoptions.html'%}
@@ -108,7 +112,11 @@
 	   </table>
 	  <table>
 		<tr><td>
+                    {%if timeSeriesData%}
+                    <div id="collapseBuildTimeSeriesOptions" class="accordion-body">
+                    {%else%}
                     <div id="collapseBuildTimeSeriesOptions" class="accordion-body collapse">
+                    {%endif%}
                        <div class="accordion-inner">
                             <div class="panel-body">
                                         {% include 'includes/timeseriesoptions.html'%}

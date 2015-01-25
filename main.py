@@ -73,15 +73,22 @@ class DroughtTool(webapp2.RequestHandler):
         self.colorbarsize = self.request.get('colorbarsize', '8')
         #Points/markers
         #Long,Lat inputs
-        self.p1 = self.request.get('p1','-112,42');self.p2 = self.request.get('p2','')
-        self.p3 = self.request.get('p3','');self.p4 = self.request.get('p4','')
-        self.p5 = self.request.get('p5','');self.p6 = self.request.get('p6','')
-        self.p7 = self.request.get('p7','')
-        #checkboxes
-        self.p1check =self.request.get('p1check','checked');self.p2check=self.request.get('p2check','')
-        self.p3check =self.request.get('p3check','');self.p4check=self.request.get('p4check','')
-        self.p5check =self.request.get('p5check','');self.p6check=self.request.get('p6check','')
-        self.p7check =self.request.get('p7check','')
+        self.p1 = self.request.get('p1',self.mapCenterLongLat);
+        self.p2 = self.request.get('p2',self.mapCenterLongLat);
+        self.p3 = self.request.get('p3',self.mapCenterLongLat);
+        self.p4 = self.request.get('p4',self.mapCenterLongLat);
+        self.p5 = self.request.get('p5',self.mapCenterLongLat);
+        self.p6 = self.request.get('p6',self.mapCenterLongLat);
+        self.p7 = self.request.get('p7',self.mapCenterLongLat);
+        #checkboxes and displays
+        self.p1check =self.request.get('p1check','checked');self.p2check=self.request.get('p2check','checked')
+        self.p3check =self.request.get('p3check','checked');self.p4check=self.request.get('p4check','checked')
+        self.p5check =self.request.get('p5check','checked');self.p6check=self.request.get('p6check','checked')
+        self.p7check =self.request.get('p7check','checked')
+        self.p1display =self.request.get('p1display','block');self.p2display=self.request.get('p2display','none')
+        self.p3display =self.request.get('p3display','none');self.p4display=self.request.get('p4display','none')
+        self.p5display =self.request.get('p5display','none');self.p6display=self.request.get('p6display','none')
+        self.p7display =self.request.get('p7display','none');
         self.marker_colors = ['blue', 'green', 'orange', 'purple',\
         'yellow', 'pink','red']
 
@@ -171,7 +178,14 @@ class DroughtTool(webapp2.RequestHandler):
             'p4check':self.p4check,
             'p5check':self.p5check,
             'p6check':self.p6check,
-            'p7check':self.p7check
+            'p7check':self.p7check,
+            'p1display':self.p1display,
+            'p2display':self.p2display,
+            'p3display':self.p3display,
+            'p4display':self.p4display,
+            'p5display':self.p5display,
+            'p6display':self.p6display,
+            'p7display':self.p7display
         }
         if self.colorbarmap:
             template_values['colorbarmap']= self.colorbarmap
