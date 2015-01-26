@@ -14,7 +14,6 @@
 	<script type="text/javascript" src="media/myjs/zoomStates.js"></script> <!-- ZOOM TO STATE -->
 	<script type="text/javascript" src="/media/myjs/colorbar.js"></script><!--DYNAMIC COLORBAR-->
 	<script type="text/javascript" src="/media/myjs/colorbrewer.js"></script><!--DYNAMIC COLORBAR-->
-	<!--<script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script>--><!--TRANSPARENCY SLIDER-->
 	<script type="text/javascript"> 
 		$(function(){
 		    $( "#dateStartTS" ).datepicker({
@@ -87,16 +86,18 @@
 <script type="text/javascript">
     	var MAPID = "{{ mapid }}";
 	var TOKEN = "{{ token }}";
-    	var eeMapOptions = {
-		getTileUrl: function(tile, zoom) {
-			var url = ['https://earthengine.googleapis.com/map',
-					     MAPID, zoom, tile.x, tile.y].join("/");
-			url += '?token=' + TOKEN
-			return url;
+	{% if mapid %}
+		var eeMapOptions = {
+			getTileUrl: function(tile, zoom) {
+				var url = ['https://earthengine.googleapis.com/map',
+						     MAPID, zoom, tile.x, tile.y].join("/");
+				url += '?token=' + TOKEN
+				return url;
 			},
-			tileSize: new google.maps.Size(256, 256)
-	    };
-	      var mapType = new google.maps.ImageMapType(eeMapOptions);
+				tileSize: new google.maps.Size(256, 256)
+		};
+		var mapType = new google.maps.ImageMapType(eeMapOptions);
+	{% endif %}
 
 	      var map=null;
 	      var statemarkerLayer = null;
@@ -135,6 +136,7 @@
 			  backgroundColor: '#FFFFFF',
 			  //disableDefaultUI: true,
 		};
+        	map = new google.maps.Map(document.getElementById("map"),mapOptions);
 		var mapOffStyles = [
 		  {
 		    featureType: "all",
@@ -147,7 +149,6 @@
                     stylers: [
                       { visibility: "on" }]
                     }];
-        	map = new google.maps.Map(document.getElementById("map"),mapOptions);
 		{% if background =="whitebackground" %}
 		map.setOptions({styles: mapOffStyles});
 		{% endif %}
@@ -316,7 +317,6 @@
 		/*********************************
 		*      STATES OVERLAY                   *
 		*********************************/
-		//window.statemarkerOverLayer = new google.maps.KmlLayer('http://nimbus.cos.uidaho.edu/hegewisch/states_backup.kml', {
 		window.statemarkerOverLayer = new google.maps.KmlLayer('http://nimbus.cos.uidaho.edu/DROUGHT/KML/states_outlined.kmz', {
                 map:map,
                     preserveViewport: true,
@@ -388,7 +388,7 @@
 			    preserveViewport: true,
 			    suppressInfoWindows: false
 			 }); 
-			map.overlayMapTypes.push(mapType);
+			//map.overlayMapTypes.push(mapType);
 			window.kmlmarkerOverLayer.setMap(window.map);
 		{% endif %}
 		/*********************************/
@@ -397,11 +397,6 @@
 
 	      google.maps.event.addDomListener(window, 'load', initialize);
 	      window.onload = initialize;
-
-	      //$('#dataTab a').click(function (e) {
-              //            e.preventDefault()
-              //           $(this).tab('show')
-            // })
 
 	</script>
 
