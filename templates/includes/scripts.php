@@ -153,6 +153,10 @@
 		map.setOptions({styles: mapOffStyles});
 		{% endif %}
 		//map.setOptions({styles: mapOnStyles});
+		{% if mapid %}
+                	window.map.overlayMapTypes.push(mapType);
+                {% endif %}
+
 
  		function showNewRect(event) {
                     var ne = rectangle.getBounds().getNorthEast();
@@ -232,27 +236,25 @@
 		    Lat = parseFloat(LongLat.split(',')[1]);
 		    latlong = new google.maps.LatLng(Lat,Long);
 		    marker_img = document.getElementById('img' + String(point_id)).src;
-            //Set marker visibility depending on visibility and checkbox
-            //FIX ME: this is not working
-            console.log($('#domainType').val());
-            if ($('#domainType').val()=='points'){
-                //Show first marker
-                if (String(point_id) == '1'){
-                    marker_visible = true;
-                }
-                else {
-                    if ($('#point' + String(point_id)).css('display') == 'block' && $('#p' + String(point_id) + 'check').val('checked')){
-                        marker_visible = true;
-                    }
-                    else{
-                        marker_visible = false;
-                    }
-                }
-            }
-            else {
-                marker_visible = false;
-            }
-            var marker = new google.maps.Marker({
+            	//Set marker visibility depending on visibility and checkbox
+		    if ($('#domainType').val()=='points'){
+			//Show first marker
+			if (String(point_id) == '1'){
+			    marker_visible = true;
+			}
+			else {
+			    if ($('#point' + String(point_id)).css('display') == 'block' && $('#p' + String(point_id) + 'check').val('checked')){
+				marker_visible = true;
+			    }
+			    else{
+				marker_visible = false;
+			    }
+			}
+		    }
+		    else {
+			marker_visible = false;
+		    }
+		    var marker = new google.maps.Marker({
 			map: map,
 			position: latlong,
 			title:String(point_id),
@@ -387,17 +389,13 @@
 		    preserveViewport: true,
 		    suppressInfoWindows: false
 		 }); 
-		//map.overlayMapTypes.push(mapType);
 		{% if layer=='kmloverlayer' %}
 			window.kmlmarkerOverLayer.setMap(window.map);
 		{% endif %}
 		/*********************************/
-		{% if mapid %}
-		window.map.overlayMapTypes.push(mapType);
-		{% endif %}
 	      }
-	      google.maps.event.addDomListener(window, 'load', initialize);
-	      //window.onload = initialize;
+	      //google.maps.event.addDomListener(window, 'load', initialize);
+	      window.onload = initialize;
 
 	</script>
 
