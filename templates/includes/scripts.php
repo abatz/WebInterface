@@ -223,7 +223,7 @@
 		var domainType = document.getElementById('domainType').value;
 
 		var marker_img, markers = [], marker_visible;
-        var latlong, point_id, LongLat, Long, Lat; 
+        	var latlong, point_id, LongLat, Long, Lat; 
 		//Set initial markers
 		$('.pointCheck[type=checkbox]').each(function() {
 		    point_id = $(this).val();
@@ -235,7 +235,7 @@
             //Set marker visibility depending on visibility and checkbox
             //FIX ME: this is not working
             console.log($('#domainType').val());
-            if ($('#domainType').val('points')){
+            if ($('#domainType').val()=='points'){
                 //Show first marker
                 if (String(point_id) == '1'){
                     marker_visible = true;
@@ -382,21 +382,22 @@
 		/*********************************
 		*      KML LAYER                    *
 		*********************************/
+		window.kmlmarkerLayer = new google.maps.KmlLayer('{{ kmlurl }}', {
+		map:map,
+		    preserveViewport: true,
+		    suppressInfoWindows: false
+		 }); 
+		//map.overlayMapTypes.push(mapType);
 		{% if layer=='kmloverlayer' %}
-			window.kmlmarkerLayer = new google.maps.KmlLayer('{{ kmlurl }}', {
-			map:map,
-			    preserveViewport: true,
-			    suppressInfoWindows: false
-			 }); 
-			//map.overlayMapTypes.push(mapType);
 			window.kmlmarkerOverLayer.setMap(window.map);
 		{% endif %}
 		/*********************************/
+		{% if mapid %}
 		window.map.overlayMapTypes.push(mapType);
+		{% endif %}
 	      }
-
 	      google.maps.event.addDomListener(window, 'load', initialize);
-	      window.onload = initialize;
+	      //window.onload = initialize;
 
 	</script>
 
