@@ -1,4 +1,4 @@
- <ul class="nav nav-pills" id="timeseriesTab" >
+<ul class="nav nav-tabs" id="timeseriesTab" >
                 <li class="active"><a href="#tabtimeseriesrequired" data-toggle="tab">TimeSeries Request</a></li>
                 <li ><a href="#tabtimeseriesoptions" data-toggle="tab">Plot Options </a></li>
 </ul>
@@ -7,25 +7,32 @@
                 <!--  TIMESERIES REQUEST         -->
                 <!----------------------------->
                 <div class="tab-pane active" id="tabtimeseriesrequired">
-                  <table id="table" class="table table-striped" width="20%" border="1">
-        			{% include 'includes/timeseriesrequired.html'%}
-		</table>
+			{% include 'includes/timeseriesrequired.html'%}
 		</div>
    		<!----------------------------->
                 <!--   TIMESERIES OPTIONS    -->
                 <!----------------------------->
                 <div class="tab-pane" id="tabtimeseriesoptions">
-                                       {% include 'includes/timeseriescollapsibleoptions.html'%}
+                        {% include 'includes/timeseriescollapsibleoptions.html'%}
 		</div>
+   		<!----------------------------->
+                <!--  TIME SERIES BUTTON    -->
+                <!----------------------------->
+		<table width="100%">
+		    <tr>
+			<td width="60%">
+				<div id="loading2" style="display:none;">
+					<img id="loading-image2" src="images/progressbar.gif" alt="Loading..." />
+				</div>
+			</td>
+			<td width="40%">
+				<input type="submit" class="btn btn-large ptn-primary pull-right" value="GET TIME SERIES"
+					 form="form_map" onclick="document.getElementById('domainType').value='points';"/>
+				{% if timeSeriesData %}
+					<!--<button type="button" data-toggle="modal" data-target="#shareLink">Share Link</button>-->
+					 <a href="#shareLink" data-toggle="modal">Share Link</a>
+			       {% endif %}
+			</td>
+		    </tr>
+		</table>
 </div>
-<!----------------------------->
-<!--   BUTTON    -->
-<!----------------------------->
-<!--<input type="submit" class="btn btn-large ptn-primary pull-right" value="GET TIME SERIES"
-	form="form_map" onclick="document.getElementById('domainType').value='points';"/>
-<div id="loading2" style="display:none;">
-        <img id="loading-image2" src="images/progressbar.gif" alt="Loading..." />
-</div>
--->
-
-

@@ -1,4 +1,4 @@
-<table id="table" class="table table-striped" width="20%">
+<table id="table" class="table table-striped" width="100%">
 
        <!---------------------------->
        <!--      DATA               -->
@@ -40,8 +40,10 @@
        <!--      MAP                -->
        <!----------------------------->
 	<tr style="outline: thin solid">
-	  <table width="100%">
 	    <td>
+	      <table width="100%">
+	       <tr>
+	       <td>
 		<div class="accordion" id="accordionBUILDMAP">
 		  <div class="accordion-group">
 			<div class="accordion-heading">
@@ -56,22 +58,9 @@
 				</a>
 			</div><!--end of accordion-heading-->
 		   </div><!-- end of accordion-group-->
-		   </td>
-		<td>
-<input type="submit" class="btn btn-large ptn-primary pull-right" value="GET MAP"
-                                form="form_map" onclick="document.getElementById('domainType').value='full';"/>
- <div id="loading" style="display:none;">
-        <img id="loading-image" src="images/progressbar.gif" alt="Loading..." />
-</div>
 		</td></tr>
-	   </table>
-	  <table>
 		<tr><td>
-            {%if mapid%}
-            <div id="collapseBuildMapOptions" class="accordion-body">
-            {%else%}
-		    <div id="collapseBuildMapOptions" class="accordion-body collapse">
-            {%endif%}
+		 <div id="collapseBuildMapOptions" class="accordion-body collapse {%if mapid%} in {% endif %}">
 		       <div class="accordion-inner">
 			    <div class="panel-body">
 					{% include 'includes/mapoptions.html'%}
@@ -79,14 +68,18 @@
 			</div><!-- end of accordion-inner-->
 		    </div><!-- end of accordion-body -->
 		</div><!-- end of accordion-->
-		</td>
+		</td></tr>
+	    </table>
+         </td>
 	</tr>
        <!---------------------------->
        <!--      TIME SERIES      -->
        <!----------------------------->
         <tr style="outline: thin solid">
-	    <table width="100%" padding="1">
             <td>
+	      <table width="100%">
+	       <tr>
+	       <td>
                 <div class="accordion" id="accordionBUILDTIMESERIES">
                   <div class="accordion-group">
                         <div class="accordion-heading">
@@ -101,22 +94,9 @@
                                 </a>
                         </div><!--end of accordion-heading-->
                    </div><!-- end of accordion-group-->
-		   </td>
-		<td>
-		<input type="submit" class="btn btn-large ptn-primary pull-right" value="GET TIME SERIES"
-	       	 form="form_map" onclick="document.getElementById('domainType').value='points';"/>
-		<div id="loading2" style="display:none;">
-        		<img id="loading-image2" src="images/progressbar.gif" alt="Loading..." />
-		</div>
 		</td></tr>
-	   </table>
-	  <table>
 		<tr><td>
-                    {%if timeSeriesData%}
-                    <div id="collapseBuildTimeSeriesOptions" class="accordion-body">
-                    {%else%}
-                    <div id="collapseBuildTimeSeriesOptions" class="accordion-body collapse">
-                    {%endif%}
+                    <div id="collapseBuildTimeSeriesOptions" class="accordion-body collapse {% if timeSeriesData %} in {% endif %}}">
                        <div class="accordion-inner">
                             <div class="panel-body">
                                         {% include 'includes/timeseriesoptions.html'%}
@@ -124,16 +104,8 @@
                         </div><!-- end of accordion-inner-->
                     </div><!-- end of accordion-body -->
                 </div><!-- end of accordion-->
+		</td></tr>	
+	  </table>
           </td>
         </tr>
-	<!----------------------------->
-       <!--      SHARE LINK            -->
-       <!----------------------------->
-	 <tr>
-             <td>
-                {% if mapid or timeSeriesData %}
-                <button type="button" data-toggle="modal" data-target="#shareLink">Share Link</button>
-                {% endif %}
-             </td>
-         </tr>
 </table>

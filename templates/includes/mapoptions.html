@@ -1,4 +1,4 @@
- <ul class="nav nav-pills" id="mapTab" >
+<ul class="nav nav-tabs" id="mapTab" >
                 <li class="active"><a href="#tabmaprequired" data-toggle="tab">Map Request</a></li>
                 <li ><a href="#tabmapoptions" data-toggle="tab">Map Options </a></li>
 </ul>
@@ -7,7 +7,7 @@
                 <!--  MAP REQUEST         -->
                 <!----------------------------->
                 <div class="tab-pane active" id="tabmaprequired">
-		  <table id="table" class="table table-striped" width="20%" border="1">
+		  <table id="table" class="table table-striped" width="100%" border="1">
 		     <tr>
 		   	<td>
 			<!----------------------------->
@@ -20,8 +20,10 @@
 				{% endfor %}
 			</select>
 			<br>
-			</td></tr>
-			<tr><td>
+			</td>
+    		    </tr>
+		    <tr>
+			<td>
 		       <!----------------------------->
 		       <!--         TIME PERIOD     -->
 		       <!----------------------------->
@@ -41,7 +43,8 @@
 					<div class="error">{{ form_error.dateEnd }}</div>
 				   {% endif %}
 			   </div>
-			</td></tr>
+			</td>
+		   </tr>
 		   </table>
                 </div>
                 <!----------------------------->
@@ -50,14 +53,45 @@
                 <div class="tab-pane" id="tabmapoptions">
                                         {% include 'includes/mapcollapsibleoptions.html'%}
                 </div>
+		<!----------------------------->
+		<!--    MAP BUTTON               -->
+		<!----------------------------->
+		<table width="100%">
+		    <tr>
+			<td width="60%">
+				<div id="loading2" style="display:none;">
+					<img id="loading-image2" src="images/progressbar.gif" alt="Loading..." />
+				</div>
+			</td>
+			<td width="40%">
+				<center>
+				<input type="submit" class="btn btn-large ptn-primary pull-right" value="GET MAP"
+					 form="form_map" onclick="document.getElementById('domainType').value='full';"/>
+				<br>
+				{% if mapid %}
+					<!--<button type="button" data-toggle="modal" data-target="#shareLink">Share Link</button>-->
+					 <a href="#shareLink" data-toggle="modal">Share Link</a>
+			       {% endif %}
+				</center>
+			</td>
+		    </tr>
+		</table>
 </div>
 
 <!----------------------------->
-<!--    BUTTON        -->
+<!--    HIDDEN                -->
 <!----------------------------->
-<!-- <input type="submit" class="btn btn-large ptn-primary pull-right" value="GET MAP"
-				form="form_map" onclick="document.getElementById('domainType').value='full';"/>
- <div id="loading" style="display:none;">
-	<img id="loading-image" src="images/progressbar.gif" alt="Loading..." />
+<div class="colorbar" style="visibility:hidden">
+         <input id="palette" name="palette" value="{{ palette }}" />
 </div>
--->
+<div class="mapcenterzoom" style="visibility:hidden">
+         <input id="mapCenterLongLat" name="mapCenterLongLat" value="{{ mapCenterLongLat }}" size=10/>
+         <select id="mapzoom" name="mapzoom" width="95%">
+                {% for x,y in formMapZoom %}
+                    <option value="{{ x }}" {% if x == mapzoom  %} selected {% endif %}>
+                        {{ y }}</option>
+                {% endfor %}
+        </select>
+</div>
+
+

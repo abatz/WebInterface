@@ -24,7 +24,6 @@
 	       <!----------------------------->
 	       <!--      COLORBAR            -->
 	       <!----------------------------->
-		<!--<div class="colorbar" style="visibility:hidden">-->
 		<div class="colorbar">
                         <b>Colorbar:</b><br>
 			<li>Units:
@@ -74,10 +73,6 @@
 			 <div id="colorbar1"><svg style="width:60px;height:30px;"></svg></div>
 			<!--<center>{{ colorbarLabel }}</center>-->
 		  </div>
-		   <div class="colorbar" style="visibility:hidden">
-                        <li>Colorbar Palette:
-                        <input id="palette" name="palette" value="{{ palette }}" /></li>
-                </div>
 	   </td>
 	</tr>
 	<tr>
@@ -96,42 +91,6 @@
                 </div>
            </td>
         </tr>
-	 <tr>
-           <td>
-               <!----------------------------->
-               <!--      MAP ZOOM and CENTER          -->
-               <!----------------------------->
-                <b>Map:</b>
-                <div class="mapcenterzoom">
-                <li>Center:
-                              <input id="mapCenterLongLat" name="mapCenterLongLat" value="{{ mapCenterLongLat }}" size=10/>
-                </li>
-                <li>Zoom:
-                 <select id="mapzoom" name="mapzoom" width="95%">
-                        {% for x,y in formMapZoom %}
-                            <option value="{{ x }}" {% if x == mapzoom  %} selected {% endif %}>
-                                {{ y }}</option>
-                        {% endfor %}
-                </select>
-                <!--{% if form_error.mapzoom %}
-                        <br>
-                        <div class="error">{{ form_error.mapzoom }}</div>
-                        <br>
-                {% endif %}
-                -->
-                             <!-- <input id="mapzoom" name="mapzoom" value="{{ mapzoom }}" size=4 />-->
-                </li>
-                </div>
-           </td>
-        </tr>
-
-
-
- <tr>
-           <td>
-               <!----------------------------->
-               <!--      BACKGROUND         -->
-               <!----------------------------->
 		<!-- not working
                 <b>Map Background:</b>
                 <div class="backgroundgmap">
@@ -140,6 +99,8 @@
                         {% endfor %}
                 </div>
 		-->
-           </td>
-        </tr>
-	</table>
+</table>
+<!----------------------------->
+<!--    HIDDEN         	      -->
+<!-- palette and mapCenterLongLat and mapzoom are in mapoptions -->
+<!----------------------------->
