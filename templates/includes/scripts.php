@@ -14,7 +14,7 @@
 	<script type="text/javascript" src="media/myjs/zoomStates.js"></script> <!-- ZOOM TO STATE -->
 	<script type="text/javascript" src="/media/myjs/colorbar.js"></script><!--DYNAMIC COLORBAR-->
 	<script type="text/javascript" src="/media/myjs/colorbrewer.js"></script><!--DYNAMIC COLORBAR-->
-	<!--<script type="text/javascript" src="/media/myjs/gmaps_styles.js"></script>--><!--GMAPS STYLES-->
+	<script type="text/javascript" src="/media/myjs/gmaps_styles.js"></script><!--GMAPS STYLES-->
 	<script type="text/javascript"> 
 		$(function(){
 		    $( "#dateStartTS" ).datepicker({
@@ -110,8 +110,6 @@
 	      var kmlmarkerLayer = null;
 	      var myZoom;	
 	      var infomarkers;
-	      var mapOnStyles;
-	      var mapOffStyles;
 	      /*********************************
 	      *    INITIALIZE CALL
 	      *********************************/
@@ -138,38 +136,13 @@
 			  //disableDefaultUI: true,
 		};
         	map = new google.maps.Map(document.getElementById("map"),mapOptions);
-		var mapOffStyles = [
-		  {
-		    featureType: "all",
-		    stylers: [
-		      { visibility: "off" }]
-		    }];
-		 var mapOnStyles = [
-                  {
-                    featureType: "all",
-                    stylers: [
-                      { visibility: "on" }]
-                    }];
-		{% if background =="whitebackground" %}
-		map.setOptions({styles: mapOffStyles});
-		{% endif %}
-		//map.setOptions({styles: mapOnStyles});
+
+
+		{% include 'includes/light-political.html'%}
+		map.setOptions({styles: lightPoliticalStyles});
 		{% if mapid %}
-                	window.map.overlayMapTypes.push(mapType);
-                {% endif %}
-
-		
-
-/*
-var map_styles = new GMaps_styles();
-        var data_styles = map_styles.datas('light-political');
-        map.addStyle({
-          styles            : data_styles.styles,
-          styledMapName     : data_styles.mapName,
-          mapTypeId         : 'map_style'
-        });
-        map.setStyle( 'map_style' );
-*/
+               	window.map.overlayMapTypes.push(mapType);
+		{% endif %}
 
  		function showNewRect(event) {
                     var ne = rectangle.getBounds().getNorthEast();

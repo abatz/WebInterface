@@ -1,6 +1,31 @@
 $(function(){
 
 	/*--------------------------------------------*/
+	/*        TIMESERIES ACCORDION LISTENERS      */
+	/*--------------------------------------------*/
+	jQuery('#accordionBUILDTIMESERIES').on('hidden.bs.collapse', function (e) {
+		 //Hide all markers
+		for (var i=0;i<window.markers.length;i++){
+		    window.markers[i].setVisible(false);
+		}
+	});
+	jQuery('#accordionBUILDTIMESERIES').on('shown.bs.collapse', function (e) {
+		 var point_id,LongLat,Lat,Long,latlong;
+		$('.point').each(function() {
+		    point_id = parseFloat($(this).attr('id').split('point')[1]);
+		    if ($(this).css('display') == 'block' && $('#check' + String(point_id)).is(':checked')){
+			LongLat = String($('#p' + String(point_id)).val()).replace(' ','');
+			Long = parseFloat(LongLat.split(',')[0]);
+			Lat = parseFloat(LongLat.split(',')[1]);
+			latlong = new google.maps.LatLng(Lat,Long);
+			//Update marker on map
+			window.markers[point_id-1].position = latlong;
+			window.markers[point_id-1].setVisible(true);
+		    }
+		});
+	});
+
+	/*--------------------------------------------*/
 	/*         POINTS LISTENERS                    */
 	/*--------------------------------------------*/
     /*
@@ -176,27 +201,8 @@ $(function(){
                 window.kmlmarkerLayer.setMap(window.map);
 });
 	/*--------------------------------------------*/
-	/*         BACKGROUND LISTENER                */
+	/*--                                         --*/
 	/*--------------------------------------------*/
-	 jQuery('.backgroundgmap').on('change','input[type=checkbox]', function(){
-                if($('input[id=whitebackground]:checked').val()=="whitebackground"){
-			window.map.setOptions({styles: window.mapOffStyles});
-                }else{
-                	window.map.setOptions({styles: window.mapOnStyles});
-                };
-	});
-
-	/*--------------------------------------------*/
-	/*         INFOMARKER LISTENER **BROKEN       */
-	/*--------------------------------------------*/
-	/*--jQuery('.infomarkers').on('change', 'input[type=checkbox]',function(){
-		console.log('changed infomarkers')
-		if(jQuery('#infomarkers').is(':checked')){
-		console.log('changed infomarkers')
-		}
-        });
-	*/
-
  	jQuery('#mapCenterLongLat').keyup( function(){
 		var mapCenterLongLat = document.getElementById('mapCenterLongLat').value;
             	var mapCenterLong = parseFloat(mapCenterLongLat.split(',')[0]).toFixed(4);;
