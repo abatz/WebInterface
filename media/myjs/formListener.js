@@ -1,9 +1,16 @@
 $(function(){
-
 	/*--------------------------------------------*/
 	/*         POINTS LISTENERS                    */
 	/*--------------------------------------------*/
-    /*
+    /*Show markesr only of time series option is expanded*/
+    $('#accordionBUILDTIMESERIES').on('shown.bs.collapse', function (e) {
+        //Show markers
+        alert("Showing");
+    });
+    $('#accordionBUILDTIMESERIES').on('hidden.bs.collapse', function (e) {
+        alert("Hidden");
+    }); 
+
     /*
     Deal with three inputs
     1. Checkbox for a marker has changed
@@ -40,9 +47,9 @@ $(function(){
     jQuery('.point').on('change','input.pointLongLat[type=text]', function(){
         //Change position of marker on map
         //Generate new pointsLongLat string
-        var newpointsLongLat = '',point_id,LongLat,Lat,Long,latlong;
+        var point_id,LongLat,Lat,Long,latlong;
         $('.point').each(function() {
-            if ($(this).css('display') == 'block'){
+            if ($(this).css('display') == 'block' && $('#check' + String(point_id)).is(':checked')){
                 point_id = parseFloat($(this).attr('id').split('point')[1]);
                 LongLat = String($('#p' + String(point_id)).val()).replace(' ','');
                 Long = parseFloat(LongLat.split(',')[0]);
@@ -51,13 +58,6 @@ $(function(){
                 //Update marker on map
                 window.markers[point_id-1].position = latlong;
                 window.markers[point_id-1].setVisible(true);
-                //Update LongLat string
-                if (LongLat && newpointsLongLat) {
-                    newpointsLongLat+=',' + LongLat;
-                }
-                else if (LongLat && !newpointsLongLat){
-                    newpointsLongLat+=LongLat;
-                }
             }
         });
     });
@@ -267,7 +267,24 @@ $(function(){
 	/*--------------------------------------------*/
 	/*       COLORBAR       		      */
 	/*--------------------------------------------*/
-       jQuery('.variable, .anomOrValue, .units').on('change', function(){
+    jQuery('.variable').on('change', function(){
+        //strip product character off of variable
+        var variable = jQuery('.variable').val();
+        product = variable.substr(0,1);
+        minYear = "1979";
+        if(product=='G'){
+            minYear = "1979";
+        }
+        else if (product=='L'){
+            minYear = "1972";
+        }
+        else if (product=='M'){
+            minYear = "1999";
+        }
+        document.getElementById('minYear').value = minYear;
+    });
+
+    jQuery('.variable, .anomOrValue, .units').on('change', function(){
 	   
 	   //strip product character off of variable
 	   var variable = jQuery('.variable').val()
@@ -557,73 +574,6 @@ $(function(){
  //         	document.getElementById("mapzoom").value = '6';
 //		
 //	});
-
-	/*--------------------------------------------*/
-	/*        POINT  LISTENER 		      */
-	/*--------------------------------------------*/
-    /*
-	jQuery('#pointsLongLat').keyup( function(){
-		 var pointsLongLat = document.getElementById('pointsLongLat').value.replace(' ','');
-		 var point_list = pointsLongLat.split(',');
-		 pLat = parseFloat(point_list[1]);
-                 pLong = parseFloat(point_list[0]);
-		 for (i=0;i<point_list.length - 1;i+=2){
-                    pLat = parseFloat(point_list[i+1]);
-                    pLong = parseFloat(point_list[i]);
-                    //bounds.extend(new google.maps.LatLng(pLat,pLong));
-                    var points_pre, points_post, new_point_list =[]
-                    if (i > 0){
-                        points_pre = point_list.splice(0,i);
-                    }
-                    else {
-                        var points_pre =[];
-                    }
-                    if (i < point_list.length - 2) {
-                        points_post = point_list.splice(i+2, point_list.length);
-                    }
-                    else {
-                        points_post = [];
-                    }
-	 	   var pointmarker = new google.maps.Marker({
-                        position:new google.maps.LatLng(pLat,pLong),
-                        map: map,
-                        draggable: true
-                    });
-                    google.maps.event.addListener(pointmarker, 'dragend', function(a) {
-                        var div = document.createElement('div');
-                        var longitude=a.latLng.lng().toFixed(4);
-                        var latitude=a.latLng.lat().toFixed(4);
-                        var new_point_list = points_pre.concat([String(longitude),String(latitude)]).concat(points_post);
-                        document.getElementById('pointsLongLat').value = new_point_list.join();
-                    });
-                    window.pointmarker.setVisible(false);
-                }
-                window.pointmarkers = pointmarkers;
-		console.log(window.pointmarkers)
-	
-		 var newLatLng = new google.maps.LatLng(pLat, pLon); 
-		 window.pointmarker.setPosition(newLatLng);
-		 window.map.setCenter(newLatLng);
-        });
-        */
-
-/* Not used because point strings are in a single text box
-	  jQuery('#pointLat').keyup( function(){
-		 var latitude =parseFloat(document.getElementById('pointLat').value);
-		 var longitude=parseFloat(document.getElementById('pointLong').value);
-		var newLatLng = new google.maps.LatLng(latitude, longitude); 
-		window.pointmarker.setPosition(newLatLng);
-		window.map.setCenter(newLatLng);
-        });
-         jQuery('#pointLong').keyup( function(){
-                var latitude =parseFloat(document.getElementById('pointLat').value);
-                 var longitude=parseFloat(document.getElementById('pointLong').value);
-		var newLatLng = new google.maps.LatLng(latitude, longitude); 
-                window.pointmarker.setPosition(newLatLng);
-		window.map.setCenter(newLatLng);
-        });
-*/	
-
 
 	/*--------------------------------------------*/
 	/*        TIMESERIES  LISTENER 		      */
