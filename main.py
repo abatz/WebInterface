@@ -35,7 +35,7 @@ class DroughtTool(webapp2.RequestHandler):
         self.form_error = {}
         self.opacity = self.request.get('opacity',str(14*0.05))
         self.variable = self.request.get('variable','Gpr')
-        self.minYear = self.request.get('variable','1979')
+        self.minYear = self.request.get('minYear','1979')
         self.domainType = self.request.get('domainType','full')
         self.state = self.request.get('state','California')
         self.anomOrValue = self.request.get('anomOrValue','value')

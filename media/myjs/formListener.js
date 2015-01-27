@@ -5,10 +5,10 @@ $(function(){
     /*Show markesr only of time series option is expanded*/
     $('#accordionBUILDTIMESERIES').on('shown.bs.collapse', function (e) {
         //Show markers
-        alert("Showing");
+        console.log("Showing");
     });
     $('#accordionBUILDTIMESERIES').on('hidden.bs.collapse', function (e) {
-        alert("Hidden");
+        console.log("Hidden");
     }); 
 
     /*
