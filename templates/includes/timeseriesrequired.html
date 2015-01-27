@@ -71,10 +71,8 @@
                    <input type="checkbox" name="point" class="pointCheck" value="1" id="check1" {{p1check}} />
                    <img src="http://www.google.com/mapfiles/ms/micons/{{marker_colors.0}}.png" id="img1">
                    <input type="text" id="p1" class="pointLongLat" name="p1" value="{{p1}}"/>
-                   {% if p2display == "none" %}
-                   <img class="add" id="pm1" src="media/img/PlusButton.png">
-                   {%else%}
-                   <img class="add" id="pm1" src="media/img/MinusButton.jpg">
+                   {%if p2display == "none"%}
+                   <img class="add" id="pl2" src="media/img/PlusButton.png"> 
                    {%endif%}
             </div>
             <div id="point2" class="point" style="display:{{p2display}}">
@@ -84,11 +82,10 @@
                    <input type="checkbox" name="point" class="pointCheck" value="2" id="check2" {{p2check}}/>
                    <img src="http://www.google.com/mapfiles/ms/micons/{{marker_colors.1}}.png" id="img2">
                    <input type="text" id="p2" class="pointLongLat" name="p2" value="{{p2}}"/>
-                   {% if p3display == "none" %}
-                   <img class="add" id="pm2" src="media/img/PlusButton.png">
-                   {%else%}
-                   <img class="add" id="pm2" src="media/img/MinusButton.jpg">
-                   {%endif%}  
+                   <img class="minus" id="mi2" src="media/img/MinusButton.jpg">
+                   {%if p3display == "none"%}
+                   <img class="add" id="pl3" src="media/img/PlusButton.png">
+                   {%endif%}
             </div>
             <div id="point3" class="point" style="display:{{p3display}}">
                    <!--hidden input to keep track of which markers are displayed-->
@@ -97,11 +94,11 @@
                    <input type="checkbox" name="point" class="pointCheck" value="3" id="check3" {{p3check}}/>
                    <img src="http://www.google.com/mapfiles/ms/micons/{{marker_colors.2}}.png" id="img3">
                    <input type="text" id="p3" class="pointLongLat" name="p3" value="{{p3}}"/>
-                   {% if p4display == "none" %}
-                   <img class="add" id="pm3" src="media/img/PlusButton.png">
-                   {%else%}
-                   <img class="add" id="pm3" src="media/img/MinusButton.jpg">
-                   {%endif%} 
+                   <img class="minus" id="mi3" src="media/img/MinusButton.jpg">
+                   {%if p4display == "none"%}
+                   <img class="add" id="pl4" src="media/img/PlusButton.png">
+                   {%endif%}
+ 
             </div> 
             <div id="point4" class="point" style="display:{{p4display}}">
                    <!--hidden input to keep track of which markers are displayed-->
@@ -110,11 +107,11 @@
                    <input type="checkbox" name="point" class="pointCheck" value="4" id="check4" {{p4check}}/>
                    <img src="http://www.google.com/mapfiles/ms/micons/{{marker_colors.3}}.png" id="img4">
                    <input type="text" id="p4" class="pointLongLat" name="p4" value="{{p4}}"/>
-                   {% if p5display == "none" %}
-                   <img class="add" id="pm4" src="media/img/PlusButton.png">
-                   {%else%}
-                   <img class="add" id="pm4" src="media/img/MinusButton.jpg">
-                   {%endif%} 
+                   <img class="minus" id="mi4" src="media/img/MinusButton.jpg">
+                   {%if p5display == "none"%}
+                   <img class="add" id="pl5" src="media/img/PlusButton.png">
+                   {%endif%}
+ 
             </div> 
             <div id="point5" class="point" style="display:{{p5display}}">
                    <!--hidden input to keep track of which markers are displayed-->
@@ -123,11 +120,11 @@
                    <input type="checkbox" name="point" class="pointCheck" value="5" id="check5" {{p5check}}/>
                    <img src="http://www.google.com/mapfiles/ms/micons/{{marker_colors.4}}.png" id="img5">
                    <input type="text" id="p5" class="pointLongLat" name="p5" value="{{p5}}"/>
-                   {% if p6display == "none" %}
-                   <img class="add" id="pm5" src="media/img/PlusButton.png">
-                   {%else%}
-                   <img class="add" id="pm5" src="media/img/MinusButton.jpg">
-                   {%endif%} 
+                   <img class="minus" id="mi5" src="media/img/MinusButton.jpg">
+                   {%if p6display == "none"%}
+                   <img class="add" id="pl6" src="media/img/PlusButton.png">
+                   {%endif%}
+ 
             </div> 
             <div id="point6" class="point" style="display:{{p6display}}">
                    <!--hidden input to keep track of which markers are displayed-->
@@ -136,11 +133,12 @@
                    <input type="checkbox" name="point" class="pointCheck" value="6" id="check6" {{p6check}}/>
                    <img src="http://www.google.com/mapfiles/ms/micons/{{marker_colors.5}}.png" id="img6">
                    <input type="text" id="p6" class="pointLongLat" name="p6" value="{{p6}}"/>
-                   {% if p7display == "none" %}
-                   <img class="add" id="pm6" src="media/img/PlusButton.png">
-                   {%else%}
-                   <img class="add" id="pm6" src="media/img/MinusButton.jpg">
+                   <img class="minus" id="mi6" src="media/img/MinusButton.jpg">
+                   {%if p7display == "none"%}
+                   <img class="add" id="pl7" src="media/img/PlusButton.png">
                    {%endif%}
+                
+ 
             </div> 
             <div id="point7" class="point" style="display:{{p7display}}">
                     <!--hidden input to keep track of which markers are displayed-->
@@ -149,6 +147,7 @@
                    <input type="checkbox" name="point" class="pointCheck" value="7" id="check7" {{p7check}}/>
                    <img src="http://www.google.com/mapfiles/ms/micons/{{marker_colors.6}}.png" id="img7">
                    <input type="text" id="p7" class="pointLongLat" name="p7" value="{{p7}}"/>
+                   <img class="minus" id="mi7" src="media/img/MinusButton.jpg">
             </div> 
         </div><!--end class=points-->
      </div><!--End subdomain-->

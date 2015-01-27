@@ -9,7 +9,7 @@
 	       <!--           VARIABLE      -->
 	       <!----------------------------->
 		<div class="variableLandsat">
-            <input type="text" id="minYear" name="minYear" value="{{ minYear }}" />
+            <input type="hidden" id="minYear" name="minYear" value="{{ minYear }}" />
 			<b>Variable:</b><br>
 			<select id="variable" name="variable" class="variable" width="95%">
 				<optgroup label="MODIS">
@@ -28,6 +28,7 @@
 					{% endfor %}
 				</optgroup>
 			</select>
+        </div>
                 </td>
 	</tr>
 	{% if form_error.variable %}
@@ -42,9 +43,6 @@
        <!----------------------------->
 	<tr style="outline: thin solid">
 	    <td>
-	      <table width="100%">
-	       <tr>
-	       <td>
 		<div class="accordion" id="accordionBUILDMAP">
 		  <div class="accordion-group">
 			<div class="accordion-heading">
@@ -59,8 +57,6 @@
 				</a>
 			</div><!--end of accordion-heading-->
 		   </div><!-- end of accordion-group-->
-		</td></tr>
-		<tr><td>
 		 <div id="collapseBuildMapOptions" class="accordion-body collapse {%if mapid%} in {% endif %}">
 		       <div class="accordion-inner">
 			    <div class="panel-body">
@@ -69,18 +65,13 @@
 			</div><!-- end of accordion-inner-->
 		    </div><!-- end of accordion-body -->
 		</div><!-- end of accordion-->
-		</td></tr>
-	    </table>
-         </td>
+    </td>
 	</tr>
        <!---------------------------->
        <!--      TIME SERIES      -->
        <!----------------------------->
         <tr style="outline: thin solid">
             <td>
-	      <table width="100%">
-	       <tr>
-	       <td>
                 <div class="accordion" id="accordionBUILDTIMESERIES">
                   <div class="accordion-group">
                         <div class="accordion-heading">
@@ -95,8 +86,6 @@
                                 </a>
                         </div><!--end of accordion-heading-->
                    </div><!-- end of accordion-group-->
-		</td></tr>
-		<tr><td>
                     <div id="collapseBuildTimeSeriesOptions" class="accordion-body collapse {% if timeSeriesData %} in {% endif %}}">
                        <div class="accordion-inner">
                             <div class="panel-body">
@@ -105,8 +94,6 @@
                         </div><!-- end of accordion-inner-->
                     </div><!-- end of accordion-body -->
                 </div><!-- end of accordion-->
-		</td></tr>	
-	  </table>
           </td>
         </tr>
 </table>

@@ -3,14 +3,23 @@ $(function(){
 	/*         POINTS LISTENERS                    */
 	/*--------------------------------------------*/
     /*Show markesr only of time series option is expanded*/
-    $('#accordionBUILDTIMESERIES').on('shown.bs.collapse', function (e) {
+     $('#accordionBUILDTIMESERIES').on('shown.bs.collapse', function (e) {
         //Show markers
-        console.log("Showing");
+       var point_id;
+        $('.point').each(function() {
+            point_id = parseFloat($(this).attr('id').split('point')[1]);
+            if ($(this).css('display') == 'block' && $('#check' + String(point_id)).is(':checked')){
+                //Update marker on map
+                window.markers[point_id-1].setVisible(true);
+            }
+        });
     });
     $('#accordionBUILDTIMESERIES').on('hidden.bs.collapse', function (e) {
-        console.log("Hidden");
+        //Hide all markers
+        for (var i=0;i<window.markers.length;i++){
+            window.markers[i].setVisible(false);
+        }
     }); 
-
     /*
     Deal with three inputs
     1. Checkbox for a marker has changed
@@ -61,31 +70,36 @@ $(function(){
             }
         });
     });
+    
     //3. Add another point button
     jQuery('.point').on('click','.add', function(){
-        var point_id = parseFloat($(this).attr('id').split('pm')[1]);
-        LongLatStr = $('#pointsLongLat').val();
-        LongLatList = LongLatStr.replace(' ','').split(',');
-        if ( $(this).attr('src') == 'media/img/PlusButton.png' ) {
-            //Show next point
-            $('#point' + String(point_id + 1)).css('display','block');
-            //Show next marker
-            window.markers[point_id].setVisible(true);            
-            //Change button from + to - 
-            $(this).attr('src','media/img/MinusButton.jpg');
-            //Update check value
-            $('#p' + String(point_id) + 'check').val('checked');
+        var next_point_id = parseFloat($(this).attr('id').split('pl')[1]);
+        //Hide plus icon of this marker
+        $(this).css('display','none');
+        //Show next point
+        $('#point' + String(next_point_id)).css('display','block');
+        //Show next marker
+        window.markers[next_point_id - 1].setVisible(true);            
+        //Update check value
+        $('#p' + String(next_point_id) + 'check').val('checked');
+    });
+
+    //3. Take point button away
+    jQuery('.point').on('click','.minus', function(){
+        var point_id = parseFloat($(this).attr('id').split('mi')[1]);
+        //Find last marker and show the plus sign on that marker
+        idx = point_id -1;
+        if (String(point_id)== '1' ||  String(point_id) == 7){
+            while ($('#point' + idx).css('display') == 'none' ){
+                idx-=1;
+            }
         }
-        else {
-            //Hide next point
-            $('#point' + String(point_id + 1)).css('display','none');
-            //Hide next marker
-            window.markers[point_id].setVisible(false);
-            //Change button from - to +
-            $(this).attr('src','media/img/PlusButton.png');
-            //Update check value
-            $('#p' + String(point_id) + 'check').val('');
-        } 
+        $('#pl' + String(idx +1)).css('display','inline')
+        //Hide this point
+        $('#point' + String(point_id)).css('display','none');
+        //Hide this marker
+        window.markers[point_id - 1].setVisible(false);
+        $('#p' + String(point_id) + 'check').val('');
     });
     //onsubmit of form , update pointsLongLat
     //This function is called in templates/includes/timeseriesoptions.html on form_map submit
