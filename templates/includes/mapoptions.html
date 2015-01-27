@@ -78,20 +78,3 @@
 		</table>
 </div>
 
-<!----------------------------->
-<!--    HIDDEN                -->
-<!----------------------------->
-<div class="colorbar" style="visibility:hidden">
-         <input id="palette" name="palette" value="{{ palette }}" />
-</div>
-<div class="mapcenterzoom" >
-        <b>Map:</b>
-         <li>Center:<input id="mapCenterLongLat" name="mapCenterLongLat" value="{{ mapCenterLongLat }}" size=15/></li>
-         <li>ZoomLevel:<select id="mapzoom" name="mapzoom" width="95%">
-                {% for x,y in formMapZoom %}
-                    <option value="{{ x }}" {% if x == mapzoom  %} selected {% endif %}>
-                        {{ y }}</option>
-                {% endfor %}
-        </select>
-        </li>
-</div>

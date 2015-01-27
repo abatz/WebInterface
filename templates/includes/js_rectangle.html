@@ -1,0 +1,27 @@
+/*********************************
+*      RECTANGLE                    *
+*********************************/
+function showNewRect(event) {
+    var ne = rectangle.getBounds().getNorthEast();
+    var sw = rectangle.getBounds().getSouthWest();
+    document.getElementById('NELat').value = ne.lat().toFixed(4);
+    document.getElementById('NELong').value = ne.lng().toFixed(4);
+    document.getElementById('SWLat').value = sw.lat().toFixed(4);
+    document.getElementById('SWLong').value = sw.lng().toFixed(4);
+}
+
+bounds = new google.maps.LatLngBounds(
+	      new google.maps.LatLng(40.490, -111.649),  //SW corner
+	      new google.maps.LatLng(44.599, -97.443)    //NE corner
+  );
+
+  // Define the rectangle and set its editable property to true.
+  rectangle = new google.maps.Rectangle({
+    bounds: bounds,
+    editable: true,
+    draggable: true
+  });
+
+  // Add an event listener on the rectangle.
+  google.maps.event.addListener(rectangle, 'bounds_changed', showNewRect);
+

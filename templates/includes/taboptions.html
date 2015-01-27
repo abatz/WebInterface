@@ -8,7 +8,7 @@
 	       <!----------------------------->
 	       <!--           VARIABLE      -->
 	       <!----------------------------->
-		<!--<div class="variableLandsat">-->
+            <input type="hidden" id="minYear" name="minYear" value="{{ minYear }}" />
 			<b>Variable:</b><br>
 			<select id="variable" name="variable" class="variable" width="95%">
 				<optgroup label="MODIS">
@@ -27,8 +27,7 @@
 					{% endfor %}
 				</optgroup>
 			</select>
-		<!--</div>-->
-           </td>
+                </td>
 	</tr>
 	{% if form_error.variable %}
 	<tr>

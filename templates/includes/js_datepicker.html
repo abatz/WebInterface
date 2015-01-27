@@ -1,0 +1,62 @@
+<script type="text/javascript"> 
+	$(function(){
+	    $( "#dateStartTS" ).datepicker({
+	      changeMonth: true,
+	      changeYear: true,
+	      numberOfMonths: 3,
+	      minDate: "{{ minYear }}-01-01",
+	      //maxDate: "-1d",
+	      maxDate: "2014-12-31",
+	      yearRange: "{{ minYear }}:2014",
+	      dateFormat: "yy-mm-dd",
+	      onClose: function( selectedDate ) {
+		    $( ".dateEnd" ).datepicker( "option", "minDate", selectedDate );
+		    document.getElementById('dateStart').value =document.getElementById('dateStartTS').value;
+	      }
+	    }).datepicker('setDate', "{{ dateStart }}");
+	    $( "#dateEndTS" ).datepicker({
+	      changeMonth: true,
+	      changeYear: true,
+	      numberOfMonths: 3,
+	      minDate: "{{ minYear }}-01-01",
+	      //maxDate: "-1d",
+	      maxDate: "2014-12-31",
+	      yearRange: "{{ minYear }}:2014", 
+	      dateFormat: "yy-mm-dd",
+	      onClose: function( selectedDate ) {
+		    $( ".dateStart" ).datepicker( "option", "maxDate", selectedDate );
+			document.getElementById('dateEnd').value =document.getElementById('dateEndTS').value;
+		    }
+	   }).datepicker('setDate', '{{ dateEnd }}');
+        });
+ 	$(function(){
+        $( "#dateStart" ).datepicker({
+          changeMonth: true,
+          changeYear: true,
+          numberOfMonths: 3,
+          minDate: "{{ minYear }}-01-01",
+          //maxDate: "-1d",
+          maxDate: "2014-12-31",
+          yearRange: "{{ minYear }}:2014",
+          dateFormat: "yy-mm-dd",
+          onClose: function( selectedDate ) {
+                $( ".dateEnd" ).datepicker( "option", "minDate", selectedDate );
+                document.getElementById('dateStartTS').value =document.getElementById('dateStart').value;
+          }
+        }).datepicker('setDate', "{{ dateStart }}");
+        $( "#dateEnd" ).datepicker({
+            changeMonth: true,
+            changeYear: true,
+            numberOfMonths: 3,
+            minDate: "{{ minYear }}-01-01",
+            //maxDate: "-1d",
+            maxDate: "2014-12-31",
+            yearRange: "{{ minYear }}:2014",
+            dateFormat: "yy-mm-dd",
+            onClose: function( selectedDate ) {
+                $( ".dateStart" ).datepicker( "option", "maxDate", selectedDate );
+                document.getElementById('dateEndTS').value =document.getElementById('dateEnd').value;
+            }
+        }).datepicker('setDate', '{{ dateEnd }}');
+     });
+</script>
