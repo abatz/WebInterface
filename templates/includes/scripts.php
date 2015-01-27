@@ -1,5 +1,5 @@
 	<!-- JQUERY/JQUERY UI/AJAX -->
-	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<!--<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
 
 	<!-- for date picker calendar -->
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
@@ -14,6 +14,7 @@
 	<script type="text/javascript" src="media/myjs/zoomStates.js"></script> <!-- ZOOM TO STATE -->
 	<script type="text/javascript" src="/media/myjs/colorbar.js"></script><!--DYNAMIC COLORBAR-->
 	<script type="text/javascript" src="/media/myjs/colorbrewer.js"></script><!--DYNAMIC COLORBAR-->
+	<!--<script type="text/javascript" src="/media/myjs/gmaps_styles.js"></script>--><!--GMAPS STYLES-->
 	<script type="text/javascript"> 
 		$(function(){
 		    $( "#dateStartTS" ).datepicker({
@@ -157,6 +158,18 @@
                 	window.map.overlayMapTypes.push(mapType);
                 {% endif %}
 
+		
+
+/*
+var map_styles = new GMaps_styles();
+        var data_styles = map_styles.datas('light-political');
+        map.addStyle({
+          styles            : data_styles.styles,
+          styledMapName     : data_styles.mapName,
+          mapTypeId         : 'map_style'
+        });
+        map.setStyle( 'map_style' );
+*/
 
  		function showNewRect(event) {
                     var ne = rectangle.getBounds().getNorthEast();

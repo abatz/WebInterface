@@ -1,12 +1,6 @@
 <table border="2" width="100%">
 <tr><td>
 	<table id="table" class="table table-striped table-bordered">
-	  <!--<tr>
-	     <td>
-		   <input type="button"  class="btn btn-large btn-primary pull-right"
-					value="DOWNLOAD FIGURE" onClick="">
-	    </td>
-	  </tr>-->
 	  <tr>
 	      <td>
 			<!------------------------------------->
@@ -14,13 +8,6 @@
 			<!------------------------------------->
 		        <div id="container" style="width:800px;height:500px;">
 			</div>
-
-			<!--Getting a $ is not defined error when jquery source is not right here Why???-->
-			<!-- I think I know why... scripts.js is executed at the bottom of each .html page...KH -->
-
-			<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-			<script src="http://code.highcharts.com/highcharts.js"></script>
-			<script src="http://code.highcharts.com/modules/exporting.js"></script>
 			{% include 'includes/timeseriesfigure.html'%}
 			<!------------------------------------->
 			<!--  SVG Attempt -->

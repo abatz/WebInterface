@@ -4,6 +4,7 @@
 
 <!-- Call HTML head template -->
 {% include 'includes/head.html'%}
+{% include 'includes/basicscripts.php'%}
 
 <body>
 	<div id="wrapper">
@@ -68,8 +69,7 @@
 	<!---------------------------->
 	<!-- SCRIPTS             -->
 	<!---------------------------->
-    {% include 'includes/basicscripts.php'%}
-    {% include 'includes/scripts.php'%}
+    	{% include 'includes/scripts.php'%}
 
 </body>
 
