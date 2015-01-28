@@ -51,7 +51,7 @@
             minDate: $('#minYear').val() + "-01-01",
             //maxDate: "-1d",
             maxDate: "2014-12-31",
-            yearRange: $('#minYear').val() + "+0",
+            yearRange: $('#minYear').val() + ":+0",
             dateFormat: "yy-mm-dd",
             onClose: function( selectedDate ) {
                 $( ".dateStart" ).datepicker( "option", "maxDate", selectedDate );
