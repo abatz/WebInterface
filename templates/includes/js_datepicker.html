@@ -4,10 +4,10 @@
 	      changeMonth: true,
 	      changeYear: true,
 	      numberOfMonths: 3,
-	      minDate: "{{ minYear }}-01-01",
+	      minDate: $('#minYear').val() + "-01-01",
 	      //maxDate: "-1d",
 	      maxDate: "2014-12-31",
-	      yearRange: "{{ minYear }}:2014",
+	      yearRange: $('#minYear').val() + ":+0",
 	      dateFormat: "yy-mm-dd",
 	      onClose: function( selectedDate ) {
 		    $( ".dateEnd" ).datepicker( "option", "minDate", selectedDate );
@@ -18,10 +18,10 @@
 	      changeMonth: true,
 	      changeYear: true,
 	      numberOfMonths: 3,
-	      minDate: "{{ minYear }}-01-01",
+	      minDate: $('#minYear').val() + "-01-01",
 	      //maxDate: "-1d",
 	      maxDate: "2014-12-31",
-	      yearRange: "{{ minYear }}:2014", 
+	      yearRange: $('#minYear').val() + ":+0", 
 	      dateFormat: "yy-mm-dd",
 	      onClose: function( selectedDate ) {
 		    $( ".dateStart" ).datepicker( "option", "maxDate", selectedDate );
@@ -34,10 +34,10 @@
           changeMonth: true,
           changeYear: true,
           numberOfMonths: 3,
-          minDate: "{{ minYear }}-01-01",
+          minDate: $('#minYear').val() + "-01-01",
           //maxDate: "-1d",
           maxDate: "2014-12-31",
-          yearRange: "{{ minYear }}:2014",
+          yearRange:  $('#minYear').val() + ":+0",
           dateFormat: "yy-mm-dd",
           onClose: function( selectedDate ) {
                 $( ".dateEnd" ).datepicker( "option", "minDate", selectedDate );
@@ -48,10 +48,10 @@
             changeMonth: true,
             changeYear: true,
             numberOfMonths: 3,
-            minDate: "{{ minYear }}-01-01",
+            minDate: $('#minYear').val() + "-01-01",
             //maxDate: "-1d",
             maxDate: "2014-12-31",
-            yearRange: "{{ minYear }}:2014",
+            yearRange: $('#minYear').val() + "+0",
             dateFormat: "yy-mm-dd",
             onClose: function( selectedDate ) {
                 $( ".dateStart" ).datepicker( "option", "maxDate", selectedDate );
