@@ -337,8 +337,8 @@ $(function(){
     jQuery('.variable').on('change', function(){
         //strip product character off of variable
         var variable = jQuery('.variable').val();
-        product = variable.substr(0,1);
-        minYear = "1979";
+        var product = variable.substr(0,1);
+        var minYear = "1979";
         if(product=='G'){
             minYear = "1979";
         }
@@ -348,7 +348,11 @@ $(function(){
         else if (product=='M'){
             minYear = "1999";
         }
-        document.getElementById('minYear').value = minYear;
+        $('#minYear').val(minYear);
+        $('.dateStart').datepicker( "option", "minDate", minYear + '-01-01');
+        $('.dateStart').datepicker( "option", "yearRange", minYear + ':+0');
+        $('.dateEnd').datepicker( "option", "minDate", minYear + '-01-01');
+        $('.dateEnd').datepicker( "option", "yearRange", minYear + ':+0');
     });
 
     jQuery('.variable, .anomOrValue, .units').on('change', function(){
