@@ -17,9 +17,6 @@ def get_images(template_values):
     dT = TV['domainType']
     dS = TV['dateStart']; dE = TV['dateEnd'];
     units=TV['units'];
-    pointsLongLat = str(TV['pointsLongLat']) #string of comma separates llon,lat pairs
-    pointsLongLatList = pointsLongLat.split(',')
-    pointsLongLatTuples = [[float(pointsLongLatList[i]),float(pointsLongLatList[i+1])] for i in range(0,len(pointsLongLatList) - 1,2)]
     palette=TV['palette'];
     #get map palette options
     colorbarmap,colorbarsize,minColorbar,maxColorbar,colorbarLabel=get_colorbar(str(var),str(aOV),units)
@@ -34,7 +31,7 @@ def get_images(template_values):
     if 'colorbarsize' in template_values.keys():
         colorbarsize = template_values['colorbarsize']
 
-    #get collection
+    #Get initial collection
     collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(var);
     collectionSource=collection;
 
@@ -47,23 +44,13 @@ def get_images(template_values):
         title = title + ' Anomaly from Climatology ';
     #Set source, domain, subdomain
     source = collectionLongName + ' from ' + dS + '-' + dE + ''
-    points = None
-    if pointsLongLat:
-        subdomain = ee.Feature.MultiPoint(pointsLongLatTuples)
-    else:
-        subdomain = None
+    subdomain = None
     if(dT == 'states'):
         subdomain = template_values['state']
-    elif(dT == 'full' and product == 'modis'):
-        points = subdomain
-    elif(dT=='full' and product=='gridded'):
-        points = subdomain
-    elif(dT=='rectangle'):
+    if(dT=='rectangle'):
         subdomain = ee.Feature.Rectangle(float(TV['SWLong']),float(TV['SWLat']),float(TV['NELong']),float(TV['NELat']))
-        points = subdomain
-    else:
-        points = subdomain
-    timeSeriesData = [];timeSeriesGraphData =[]
+
+    #Format collection
     mapid = {'mapid':[],'token':[]}
     if var == 'wb':
         #FIX ME: implement time series for wb
@@ -71,58 +58,28 @@ def get_images(template_values):
         collection_pet = ee.ImageCollection(collectionName).filterDate(dS,dE).select(['pet'],['pet'])
         collection_pr = get_statistic(collection_pr,'pr',statistic,'value');
         collection_pet = get_statistic(collection_pet,'pet',statistic,'value')
-        collection_pr =filter_domain2(collection_pr,dT,subdomain)
-        collection_pet =filter_domain2(collection_pet,dT,subdomain); 
         collection = collection_pr.subtract(collection_pet); #water balance
-        if  aOV in ['anom','clim']:
-            collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV,collectionSource)
-            TV['climatologyNotes'] = climatologyNotes
-	if aOV in ['value','clim']:
-            collection=check_units(collection,var,'value',units);
-        else:
-            collection=check_units(collection,var,'anom',units);
-        mapid = map_collection(collection,TV['opacity'],palette,minColorbar,maxColorbar)
     elif var =='tmean':
         #FIX ME: implement time series for tmean
         collection_tmax = ee.ImageCollection(collectionName).filterDate(dS,dE).select(['tmmx'],['tmmx'])
         collection_tmin = ee.ImageCollection(collectionName).filterDate(dS,dE).select(['tmmn'],['tmmn'])
         collection_tmax= get_statistic(collection_tmax,'tmmx',statistic,'value');
         collection_tmin = get_statistic(collection_tmin,'tmmn',statistic,'value')
-        collection_tmax=filter_domain2(collection_tmax,dT,subdomain)
-        collection_tmin =filter_domain2(collection_tmin,dT,subdomain)
         collection = collection_tmax.add(collection_tmin).multiply(0.5); #tmean
-        if  aOV in ['anom','clim']:
-            collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV,collectionSource)
-            TV['climatologyNotes'] = climatologyNotes
-	if aOV in ['value','clim']:
-            collection=check_units(collection,var,'value',units);
-        else:
-            collection=check_units(collection,var,'anom',units);
-        mapid = map_collection(collection,TV['opacity'],palette,minColorbar,maxColorbar)
     else:
         collection = collection.filterDate(dS,dE).select([var],[var])
-	#==============
-        #Time Series
-	#==============
-        if  dT == 'points' and points:
-            #collection=check_units_timeseries(collection,var,'value',units);
-            timeSeriesData, timeSeriesGraphData = get_time_series(collection,var,pointsLongLatTuples,units,TV['marker_colors']);
-	else:
-	    #==============
-            #Maps
-	    #==============
-	    #collection = filter_domain1(collection,dT, subdomain)
-	    collection = get_statistic(collection,var,statistic,aOV);
-	    collection = filter_domain2(collection,dT,subdomain)
-	    if  aOV in ['anom','clim']:
-	        collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV,collectionSource)
-	        TV['climatologyNotes'] = climatologyNotes
-	    if aOV in ['value','clim']:
-	        collection=check_units(collection,var,'value',units);
-	    else:
-	        collection=check_units(collection,var,'anom',units);
-	    mapid = map_collection(collection,TV['opacity'],palette,minColorbar,maxColorbar)
-	#==============
+        collection = get_statistic(collection,var,statistic,aOV)
+
+    #Anomaly
+	if aOV in ['anom','clim']:
+	    collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV,collectionSource)
+	    TV['climatologyNotes'] = climatologyNotes
+	#Units
+    collection=check_units(collection,var,aOV,units);
+	#Get mapid
+    mapid = map_collection(collection,TV['opacity'],palette,minColorbar,maxColorbar)
+
+    #==============
     #Update template values
     extra_template_values = {
         'source': source,
@@ -137,9 +94,92 @@ def get_images(template_values):
     if mapid and mapid['mapid'] and mapid['token']:
         extra_template_values['mapid'] = mapid['mapid']
         extra_template_values['token'] = mapid['token']
-    if timeSeriesGraphData and timeSeriesData:
-        extra_template_values['timeSeriesData'] = timeSeriesData
-        extra_template_values['timeSeriesGraphData'] = timeSeriesGraphData
+    TV.update(extra_template_values)
+    return TV
+
+#===========================================
+#    TIME_SERIES
+#===========================================
+def get_time_series(template_values):
+    TV = {}
+    for key, val in template_values.iteritems():
+        TV[key] = val
+    var = TV['variable'];mc = TV['marker_colors']
+    dS = TV['dateStart'];dE = TV['dateEnd']
+    units=TV['units'];
+    pointsLongLat = str(TV['pointsLongLat']) #string of comma separates llon,lat pairs
+    pointsLongLatList = pointsLongLat.replace(' ','').split(',')
+    pointsLongLatTuples = [[float(pointsLongLatList[i]),float(pointsLongLatList[i+1])] for i in range(0,len(pointsLongLatList) - 1,2)]
+    timeSeriesData = [];timeSeriesGraphData =[]
+    points = ee.Feature.MultiPoint(pointsLongLatTuples)
+    #get the collection
+    #Note get_collecton needs full var name with prefix
+    collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(var);
+    #Next we strip data type of variable name
+    var = var[1:]
+    collection = collection.filterDate(dS,dE).select([var],[var])
+    source = collectionLongName + ' from ' + dS + '-' + dE + ''
+
+    dataList = collection.getRegion(points,1).getInfo()
+    #remove first row of list ["id","longitude","latitude","time",variable]
+    dataList.pop(0)
+    ######################################################
+    #### Format data for figure and data tabs
+    #### Each point gets it's own dictionary
+    #### timeSeriesData[idx] = {MarkerColor:marker_colors[idx],LongLat:ll_string, Data:[[Date1,val1],[Date2, val2]]}
+    ######################################################
+    #Format data
+    point_cnt = 0
+    for idx, data in enumerate(dataList):
+        lon = round(data[1],4);lat = round(data[2],4)
+        if idx == 0:
+            #To keep track of when data point changes
+            lon_init = lon;lat_init = lat
+            data_dict = {}
+            data_dict_graph = {}
+            point_cnt+=1
+        else:
+            if abs(float(lon) - float(lon_init)) >0.0001 or abs(float(lat) - float(lat_init)) > 0.0001:
+                #New data point
+                lon_init = lon;lat_init = lat
+                timeSeriesData.append(data_dict)
+                timeSeriesGraphData.append(data_dict_graph)
+                data_dict = {};data_dict_graph = {}
+                point_cnt+=1
+        if not data_dict:
+            data_dict = {
+                'LongLat': str(lon) + ',' + str(lat),
+                'Data': []
+            }
+            data_dict_graph = {
+                'MarkerColor':mc[point_cnt - 1],
+                'LongLat': str(lon) + ',' + str(lat),
+                'Data': []
+            }
+        date_string = str(data[0])
+        time = int(data[3])
+        try:
+            date_string = date_string[0:4] + '-' + date_string[4:6] + '-' + date_string[6:8]
+        except:
+            pass
+        try:
+            val = round(data[4],4)
+        except:
+            val = data[4]
+        data_dict['Data'].append([date_string,val])
+        data_dict_graph['Data'].append([time,val])
+    timeSeriesData.append(data_dict)
+    timeSeriesGraphData.append(data_dict_graph)
+    timeSeriesGraphData = json.dumps(timeSeriesGraphData)
+    #Update template values
+    extra_template_values = {
+        'source':source,
+        'product':product,
+        'productLongName':collectionLongName,
+        'variableShortName':variableShortName,
+        'timeSeriesData':timeSeriesData,
+        'timeSeriesGraphData':timeSeriesGraphData
+    }
     TV.update(extra_template_values)
     return TV
 #===========================================
@@ -311,75 +351,6 @@ def get_collection(variable):
 
     return (collection,collectionName,collectionLongName,product,variableShortName,notes,statistic);
 
-#===========================================
-#    GET_TIMESERIES
-#===========================================
-def get_time_series(collection, variable, pointsLongLatTuples,units,marker_colors):
-    #TO-DO: need to apply check_units to time series data (pref after finding point data)
-    #collection=check_units_timeseries(collection,var,'value',units);
-    ######################################################
-    #### Data in list format
-    ######################################################
-    timeSeriesData = []
-    timeSeriesGraphData = []
-    points = ee.Feature.MultiPoint(pointsLongLatTuples)
-    dataList = collection.getRegion(points,1).getInfo()
-    '''
-    try:
-        dataList = collection.getRegion(points,1).getInfo()
-    except:
-        return timeSeriesData
-    '''
-    dataList.pop(0) #remove first row of list ["id","longitude","latitude","time",variable]
-
-    ######################################################
-    #### Format data for figure and data tabs
-    #### Ech point gets it's own dictionary
-    #### timeSeriesData[idx] = {MarkerColor:marker_colors[idx],LongLat:ll_string, Data:[[Date1,val1],[Date2, val2]]}
-    ######################################################
-    #Format data
-    point_cnt = 0
-    for idx, data in enumerate(dataList):
-        lon = round(data[1],4);lat = round(data[2],4)
-        if idx == 0:
-            #To keep track of when data point changes
-            lon_init = lon;lat_init = lat
-            data_dict = {}
-            data_dict_graph = {}
-            point_cnt+=1
-        else:
-            if abs(float(lon) - float(lon_init)) >0.0001 or abs(float(lat) - float(lat_init)) > 0.0001:
-                #New data point
-                lon_init = lon;lat_init = lat
-                timeSeriesData.append(data_dict)
-                timeSeriesGraphData.append(data_dict_graph)
-                data_dict = {};data_dict_graph = {}
-                point_cnt+=1
-        if not data_dict:
-            data_dict = {
-                'LongLat': str(lon) + ',' + str(lat),
-                'Data': []
-            }
-            data_dict_graph = {
-                'MarkerColor':marker_colors[point_cnt - 1],
-                'LongLat': str(lon) + ',' + str(lat),
-                'Data': []
-            }
-        date_string = str(data[0])
-        time = int(data[3])
-        try:
-            date_string = date_string[0:4] + '-' + date_string[4:6] + '-' + date_string[6:8]
-        except:
-            pass
-        try:
-            val = round(data[4],4)
-        except:
-            val = data[4]
-        data_dict['Data'].append([date_string,val])
-        data_dict_graph['Data'].append([time,val])
-    timeSeriesData.append(data_dict)
-    timeSeriesGraphData.append(data_dict_graph)
-    return timeSeriesData,json.dumps(timeSeriesGraphData)
 #===========================================
 #    GET_ANOMALY
 #===========================================

@@ -262,7 +262,11 @@ class DroughtTool(webapp2.RequestHandler):
         fieldID,input_err = self.check_user_input(template_values)
         if not input_err:
             if self.request.arguments():
-                template_values = collectionMethods.get_images(template_values)
+                #Update template values with mapid or time series data
+                if self.domainType != 'points':
+                    template_values = collectionMethods.get_images(template_values)
+                else:
+                    template_values = collectionMethods.get_time_series(template_values)
         else:
             template_values['form_error'] = {fieldID:input_err}
 
@@ -280,8 +284,11 @@ class DroughtTool(webapp2.RequestHandler):
         if not input_err:
             #Override ppost default
             template_values['ppost'] = 1
-            #get the collection and update template values
-            template_values = collectionMethods.get_images(template_values)
+            #Update template values with mapid or time series data
+            if self.domainType != 'points':
+                template_values = collectionMethods.get_images(template_values)
+            else:
+                template_values = collectionMethods.get_time_series(template_values)
         else:
             #write error message to html
             template_values['form_error'] = {fieldID:input_err}
