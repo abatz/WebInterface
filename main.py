@@ -16,7 +16,7 @@ import forms
 import collectionMethods
 from google.appengine.api import urlfetch
 urlfetch.set_default_fetch_deadline(60)
-httplib2.Http(timeout=15)
+httplib2.Http(timeout=30)
 
 #############################################
 ##       SET DIRECTORY FOR PAGES          ##

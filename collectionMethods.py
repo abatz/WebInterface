@@ -33,7 +33,8 @@ def get_images(template_values):
 
     #Get initial collection
     collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(var);
-    collectionSource=collection;
+    if aOV in ['anom','clim']:
+        collectionSource=collection;
 
     #remove starting character which indicates the product
     var = var[1:]
@@ -42,6 +43,7 @@ def get_images(template_values):
     title = statistic + ' ' + variableShortName;
     if(aOV == 'anom'):
         title = title + ' Anomaly from Climatology ';
+
     #Set source, domain, subdomain
     source = collectionLongName + ' from ' + dS + '-' + dE + ''
     subdomain = None
@@ -53,16 +55,14 @@ def get_images(template_values):
     #Format collection
     mapid = {'mapid':[],'token':[]}
     if var == 'wb':
-        #FIX ME: implement time series for wb
-        collection_pr = ee.ImageCollection(collectionName).filterDate(dS,dE).select(['pr'],['pr'])
-        collection_pet = ee.ImageCollection(collectionName).filterDate(dS,dE).select(['pet'],['pet'])
+        collection_pr = collection.filterDate(dS,dE).select(['pr'],['pr'])
+        collection_pet = collection.filterDate(dS,dE).select(['pet'],['pet'])
         collection_pr = get_statistic(collection_pr,'pr',statistic,'value');
         collection_pet = get_statistic(collection_pet,'pet',statistic,'value')
         collection = collection_pr.subtract(collection_pet); #water balance
     elif var =='tmean':
-        #FIX ME: implement time series for tmean
-        collection_tmax = ee.ImageCollection(collectionName).filterDate(dS,dE).select(['tmmx'],['tmmx'])
-        collection_tmin = ee.ImageCollection(collectionName).filterDate(dS,dE).select(['tmmn'],['tmmn'])
+        collection_tmax = collection.filterDate(dS,dE).select(['tmmx'],['tmmx'])
+        collection_tmin = collection.filterDate(dS,dE).select(['tmmn'],['tmmn'])
         collection_tmax= get_statistic(collection_tmax,'tmmx',statistic,'value');
         collection_tmin = get_statistic(collection_tmin,'tmmn',statistic,'value')
         collection = collection_tmax.add(collection_tmin).multiply(0.5); #tmean
@@ -76,7 +76,8 @@ def get_images(template_values):
 	    TV['climatologyNotes'] = climatologyNotes
 	#Units
     collection=check_units(collection,var,aOV,units);
-	#Get mapid
+
+    #Get mapid
     mapid = map_collection(collection,TV['opacity'],palette,minColorbar,maxColorbar)
 
     #==============
@@ -101,6 +102,8 @@ def get_images(template_values):
 #    TIME_SERIES
 #===========================================
 def get_time_series(template_values):
+#currently this doesn't work with wb and tmean
+
     TV = {}
     for key, val in template_values.iteritems():
         TV[key] = val
@@ -112,14 +115,24 @@ def get_time_series(template_values):
     pointsLongLatTuples = [[float(pointsLongLatList[i]),float(pointsLongLatList[i+1])] for i in range(0,len(pointsLongLatList) - 1,2)]
     timeSeriesData = [];timeSeriesGraphData =[]
     points = ee.Feature.MultiPoint(pointsLongLatTuples)
+
     #get the collection
     #Note get_collecton needs full var name with prefix
     collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(var);
+
     #Next we strip data type of variable name
     var = var[1:]
+
+    #if(var=='wb'):
+    #    FIX collection = collection.filterDate(dS,dE).select([var],[var])
+    #elif(var=='tmean'):
+    #    FIX collection = collection.filterDate(dS,dE).select([var],[var])
+    #else:
     collection = collection.filterDate(dS,dE).select([var],[var])
+
     source = collectionLongName + ' from ' + dS + '-' + dE + ''
 
+    #extracting data
     dataList = collection.getRegion(points,1).getInfo()
     #remove first row of list ["id","longitude","latitude","time",variable]
     dataList.pop(0)

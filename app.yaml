@@ -6,20 +6,10 @@ threadsafe: true
 handlers:
 - url: /images/team
   static_dir: templates/images/team
-- url: /images/colorbars
-  static_dir: templates/images/colorbars
-- url: /images/formulas
-  static_dir: templates/images/formulas
 - url: /images
   static_dir: templates/images
 - url: /media
   static_dir: media
-- url: /contact
-  script: main.app
-- url: /aboutdata
-  script: main.app
-- url: /aboutmetrics
-  script: main.app
 - url: /droughttool
   script: main.app
 - url: /oauth2callback
@@ -35,6 +25,6 @@ libraries:
   version: "2.6"
 - name: numpy
   version: "1.6.1"
-#inbound_services:
-#- warmup
+inbound_services:
+- warmup
 
