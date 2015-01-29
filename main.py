@@ -44,6 +44,7 @@ class DroughtTool(webapp2.RequestHandler):
         self.layer = self.request.get('layer','none')
 
         self.mapid = self.request.get('mapid','')
+        self.token = self.request.get('token','')
         self.mapCenterLongLat = self.request.get('mapCenterLongLat','-112,42')
 
 	#tempstart = datetime.date.today()-datetime.timedelta(days=30)
@@ -124,6 +125,7 @@ class DroughtTool(webapp2.RequestHandler):
     def set_initial_template_values(self):
         template_values = {
             'mapid':self.mapid,
+            'token':self.token,
             'form_error': self.form_error,
             'opacity': self.opacity,
             'units': self.units,
