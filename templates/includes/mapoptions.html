@@ -58,18 +58,12 @@
 		<!----------------------------->
 		<table width="100%">
 		    <tr>
-			<td width="60%">
-				<div id="loading2" style="display:none;">
-					<img id="loading-image2" src="images/progressbar.gif" alt="Loading..." />
-				</div>
-			</td>
-			<td width="40%">
+			<td>
 				<center>
 				<input type="submit" class="btn btn-large ptn-primary pull-right" value="GET MAP"
 					 form="form_map" onclick="document.getElementById('domainType').value='full';"/>
 				<br>
 				{% if mapid %}
-					<!--<button type="button" data-toggle="modal" data-target="#shareLink">Share Link</button>-->
 					 <a href="#shareLink" data-toggle="modal">Share Link</a>
 			       {% endif %}
 				</center>

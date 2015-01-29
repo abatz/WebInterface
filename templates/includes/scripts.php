@@ -10,7 +10,8 @@
         <!------------------------------------>
 	<script type="text/javascript" src="media/myjs/get_colorbar.js"></script> <!-- COLORBAR --> 
 	<script type="text/javascript" src="media/myjs/formListener.js"></script> <!-- FORM LISTENER -->
-	<script type="text/javascript" src="media/myjs/showLoadingImage.js"></script> <!-- PROGRESS BAR -->
+	<!--<script type="text/javascript" src="media/myjs/showLoadingImage.js"></script>--> <!-- PROGRESS BAR -->
+	<script type="text/javascript" src="media/myjs/progressWindow.js"></script> <!-- PROGRESS BAR -->
 	<script type="text/javascript" src="media/myjs/zoomStates.js"></script> <!-- ZOOM TO STATE -->
 	<script type="text/javascript" src="/media/myjs/colorbar.js"></script><!--DYNAMIC COLORBAR-->
 	<script type="text/javascript" src="/media/myjs/colorbrewer.js"></script><!--DYNAMIC COLORBAR-->

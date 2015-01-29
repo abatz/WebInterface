@@ -17,9 +17,12 @@
 		<!-- TAB WINDOW             -->
 		<!---------------------------->
 		<div id="menu">
-			<form   {% if timeSeriesData%} action="#timeseriesoutput"{% else %} action="/"{% endif %} id="form_map" method="post" onsubmit="showLoadingImage.show_loading()">
-				{% include 'includes/tabwindow.html'%}
-			</form>
+			 <form action="/" id="form_map" method="post"
+                                onsubmit="waitingDialog.show('Processing Request',
+                                        {dialogSize: 'sm', progressType: 'warning'});
+                                setTimeout(function () {waitingDialog.hide();document.form.submit();}, 9000);">
+                                {% include 'includes/tabwindow.html'%}
+                        </form>
 		</div>
 		
 		<!---------------------------->
