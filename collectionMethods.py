@@ -45,29 +45,29 @@ def get_images(template_values):
         title = title + ' Anomaly from Climatology ';
 
     #Set source, domain, subdomain
-    source = collectionLongName + ' from ' + dS + '-' + dE + ''
-    subdomain = None
+    source = collectionLongName + ' from ' + dS + '-' + dE + '';
+    subdomain = None;
     if(dT == 'states'):
         subdomain = template_values['state']
     if(dT=='rectangle'):
-        subdomain = ee.Feature.Rectangle(float(TV['SWLong']),float(TV['SWLat']),float(TV['NELong']),float(TV['NELat']))
+        subdomain = ee.Feature.Rectangle(float(TV['SWLong']),float(TV['SWLat']),float(TV['NELong']),float(TV['NELat']));
 
     #Format collection
     mapid = {'mapid':[],'token':[]}
     if var == 'wb':
-        collection_pr = collection.filterDate(dS,dE).select(['pr'],['pr'])
-        collection_pet = collection.filterDate(dS,dE).select(['pet'],['pet'])
+        collection_pr = collection.filterDate(dS,dE).select('pr');
+        collection_pet = collection.filterDate(dS,dE).select('pet');
         collection_pr = get_statistic(collection_pr,'pr',statistic,'value');
-        collection_pet = get_statistic(collection_pet,'pet',statistic,'value')
+        collection_pet = get_statistic(collection_pet,'pet',statistic,'value');
         collection = collection_pr.subtract(collection_pet); #water balance
     elif var =='tmean':
-        collection_tmax = collection.filterDate(dS,dE).select(['tmmx'],['tmmx'])
-        collection_tmin = collection.filterDate(dS,dE).select(['tmmn'],['tmmn'])
+        collection_tmax = collection.filterDate(dS,dE).select('tmmx');
+        collection_tmin = collection.filterDate(dS,dE).select('tmmn');
         collection_tmax= get_statistic(collection_tmax,'tmmx',statistic,'value');
-        collection_tmin = get_statistic(collection_tmin,'tmmn',statistic,'value')
+        collection_tmin = get_statistic(collection_tmin,'tmmn',statistic,'value');
         collection = collection_tmax.add(collection_tmin).multiply(0.5); #tmean
     else:
-        collection = collection.filterDate(dS,dE).select([var],[var])
+        collection = collection.filterDate(dS,dE).select(var)
         collection = get_statistic(collection,var,statistic,aOV)
 
     #Anomaly
@@ -124,11 +124,11 @@ def get_time_series(template_values):
     var = var[1:]
 
     #if(var=='wb'):
-    #    FIX collection = collection.filterDate(dS,dE).select([var],[var])
+    #    FIX collection = collection.filterDate(dS,dE).select(var)
     #elif(var=='tmean'):
-    #    FIX collection = collection.filterDate(dS,dE).select([var],[var])
+    #    FIX collection = collection.filterDate(dS,dE).select(var)
     #else:
-    collection = collection.filterDate(dS,dE).select([var],[var])
+    collection = collection.filterDate(dS,dE).select(var)
 
     source = collectionLongName + ' from ' + dS + '-' + dE + ''
 
@@ -389,16 +389,16 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
     #calculate climatology
     if(variable=='wb'):
         climatology_pr = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
-           select(['pr'],['pr']);
+           select('pr');
         climatology_pet = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
-           select(['pet'],['pet']);
+           select('pet');
     elif(variable=='tmean'):
         climatology_tmax = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
-           select(['tmmx'],['tmmx']);
+           select('tmmx');
         climatology_tmin = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
-           select(['tmmn'],['tmmn']);
+           select('tmmn');
     else:
-        climatology = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter).select([variable],[variable]);
+        climatology = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter).select(variable);
 
     if(variable=='wb'):
          climatology_pr = ee.Image(climatology_pr.sum().divide(num_years));

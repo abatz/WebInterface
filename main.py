@@ -15,8 +15,8 @@ import httplib2
 import forms
 import collectionMethods
 from google.appengine.api import urlfetch
-urlfetch.set_default_fetch_deadline(60)
-httplib2.Http(timeout=30)
+urlfetch.set_default_fetch_deadline(60000)
+httplib2.Http(timeout=30000)
 
 #############################################
 ##       SET DIRECTORY FOR PAGES          ##
@@ -257,6 +257,7 @@ class DroughtTool(webapp2.RequestHandler):
     def get(self):
         ppost=0
         ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
+	ee.data.setDeadline(60000);
 
         #initialize forms
         self.set_form_params()
@@ -281,6 +282,8 @@ class DroughtTool(webapp2.RequestHandler):
     #############################################
     def post(self):
         ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
+	ee.data.setDeadline(60000);
+
         self.set_form_params()
         template_values = self.set_initial_template_values()
         #Check user input for errors:
