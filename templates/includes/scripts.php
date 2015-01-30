@@ -17,7 +17,16 @@
 	<script type="text/javascript" src="/media/myjs/colorbrewer.js"></script><!--DYNAMIC COLORBAR-->
 	<script type="text/javascript" src="/media/myjs/gmaps_styles.js"></script><!--GMAPS STYLES-->
 	{% include 'includes/js_datepicker.html'%}<!--DATE PICKER-->
-	
+	<script type="text/javascript">
+		function setCenter(){
+		newCenter = window.map.getCenter();
+		myCenterLat = newCenter.lat().toFixed(4);
+		myCenterLong = newCenter.lng().toFixed(4);
+		document.getElementById('mapCenterLongLat').value =String(myCenterLat)+','+String(myCenterLong);
+		}
+	</script>	
+
+
  	<!------------------------------------>
         <!-	GOOGLE EARTH MAP SCRIPTS    -->
         <!------------------------------------>
@@ -94,12 +103,12 @@
 			myZoom = map.getZoom();
 		  }
 		});
-		google.maps.event.addListener(map,'center_changed',function(){
+		/*google.maps.event.addListener(map,'center_changed',function(){
 			newCenter = window.map.getCenter();
 			myCenterLat = newCenter.lat().toFixed(4);
 			myCenterLong = newCenter.lng().toFixed(4);
 			document.getElementById('mapCenterLongLat').value =String(myCenterLat)+','+String(myCenterLong);
-		});
+		});*/
 
 		/*********************************
 		*     COLORBAR                   *
