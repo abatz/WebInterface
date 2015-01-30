@@ -168,6 +168,7 @@
 		/*********************************/
 	      }
 	      //google.maps.event.addDomListener(window, 'load', initialize);
-	      window.onload = initialize;
+	      //window.onload = initialize;
+	      jQuery(document).ready(initialize);
 
 	</script>
