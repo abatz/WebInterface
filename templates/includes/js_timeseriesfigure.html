@@ -4,7 +4,7 @@
     var variable = "{{ variable }}";
     var title = "{% if timeSeriesCalc=='days' %}Daily {%else%} {%endif%}{{ variableShortName }}";
     var axis_min = null;
-    var y_label = "{{ colorbarLabel }}";
+    var y_label = "{{ variableShortName }} ({{ varUnits }})";
     if (variable == 'vs' || variable == 'pr'){
     axis_min = 0;
     }
