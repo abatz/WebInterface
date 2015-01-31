@@ -14,6 +14,7 @@ import httplib2
 
 import forms
 import collectionMethods
+import figureFormatting
 from google.appengine.api import urlfetch
 urlfetch.set_default_fetch_deadline(60000)
 httplib2.Http(timeout=30000)

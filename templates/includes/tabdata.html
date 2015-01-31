@@ -18,7 +18,8 @@
 					</tr>-->
 					<tr>
 					     <td style="text-align:left">
-							#Variable: {% if timeSeriesCalc=='days' %}Daily {%else%} {%endif%} {{ variableShortName }} <br>
+							#Variable: {% if timeSeriesCalc=='days' %}Daily {%else%} {%endif%} {{ variableShortName }} 
+							{% if varUnits %} ({{ varUnits }}){% endif %}<br>
 							#Data Source: {{ productLongName }} <br>
 							#Time Period: {{ dateStart }} to  {{ dateEnd }}<br>
 							#Notes: {{ notes }}<br>
