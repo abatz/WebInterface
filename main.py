@@ -295,7 +295,7 @@ class DroughtTool(webapp2.RequestHandler):
             #Override ppost default
             template_values['ppost'] = 1
             #Update template values with mapid or time series data
-            if self.domainType != 'points':
+            if self.domainType == 'full':
                 template_values = collectionMethods.get_images(template_values)
             else:
                 template_values = collectionMethods.get_time_series(template_values)

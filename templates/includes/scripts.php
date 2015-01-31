@@ -26,7 +26,6 @@
 		}
 	</script>	
 -->
-
  	<!------------------------------------>
         <!-	GOOGLE EARTH MAP SCRIPTS    -->
         <!------------------------------------>
@@ -84,7 +83,6 @@
 			  mapTypeControl: true,
 			  navigationControl: true, 
 			  mapTypeId: google.maps.MapTypeId.TERRAIN,
-			  //mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
 			  mapTypeControlOptions: {
 				style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
 				position: google.maps.ControlPosition.TOP_RIGHT
@@ -120,14 +118,36 @@
 				});
 			});
 		{% endif %}
-		/*
+/*
 		// Set mouseover event for each feature.
                  google.maps.event.addListener(map,'click', function(event) {
 			var lat = event.latLng.lat().toFixed(4);
 			var long = event.latLng.lng().toFixed(4);
+
+			function getPointData(lat,long){
+                    	//alert("Get Point Value Function ");
+                        $.ajax({
+                            type: 'POST',
+                            url: '/',
+			    data:{
+				'lat': lat, 
+				'long': long, 
+				},
+                            success: function(){alert('DONE!');},
+                            error:function(){alert('ERROR!');},
+                    });
+
+                    var pointValue=parseFloat(lat)+parseFloat(long);
+
+                    return pointValue;
+                }
+
+
+			var value=getPointData(lat,long);
+
 			 var infowindow = new google.maps.InfoWindow({});
 			 window.infomarkers = new Array();
-			 messageString='<b>Value</b>    : '+
+			 messageString='<b>Value</b>    : '+value+' {{ varUnits }}'+
 				'<br><b>Latitude</b>   : '+lat+
 				'<br><b>Longitude</b> : '+long+'<br>';
 			 var locations = [messageString,lat,long];
@@ -142,8 +162,7 @@
 			  	infomarker.setMap(null); //removes the marker
 			});
                  });
-		*/
-
+*/
 		/*********************************
 		*     ZOOM/CENTER CHANGED                   *
 		*********************************/
