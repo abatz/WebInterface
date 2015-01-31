@@ -522,14 +522,14 @@ def check_units(collection,variable,anomOrValue,units):
     #anomOrValue = 'anom' or 'value'... not the variable being passed
 
     if(variable=='tmmx' or variable=='tmmn' or variable =='tmean'):
-        if(anomOrValue=='value'):
+        if(anomOrValue=='value' or anomOrValue=='clim'):
             collection=collection.subtract(273.15)  #convert K to C
         if(units=='english'):
             collection=collection.multiply(1.8);    #convert C anom to F anom
-	if(units=='english' and anomOrValue=='value'):
+	if(units=='english' and (anomOrValue=='value' or anomOrValue=='clim')):
 	    collection = collection.add(32);        #convert C values to F values
     if(variable=='pr' or variable=='pet' or variable=='wb'):
-        if(units=='english' and anomOrValue=='value'):  #don't need to convert for anom
+        if(units=='english' and (anomOrValue=='value' or anomOrValue=='clim')):  #don't need to convert for anom
             collection=collection.divide(25.4); #convert mm to inches
     if(variable=='vs'):
         if(units=='english'):
