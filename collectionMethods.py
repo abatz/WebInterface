@@ -104,61 +104,69 @@ def get_images(template_values):
 def get_time_series(template_values):
 #currently this doesn't work with wb and tmean
 
-    TV = {}
+    TV = {};
     for key, val in template_values.iteritems():
         TV[key] = val
-    var = TV['variable'];mc = TV['marker_colors']
-    dS = TV['dateStart'];dE = TV['dateEnd']
+    var = TV['variable'];mc = TV['marker_colors'];
+    dS = TV['dateStart'];dE = TV['dateEnd'];
     units=TV['units'];
     pointsLongLat = str(TV['pointsLongLat']) #string of comma separates llon,lat pairs
-    pointsLongLatList = pointsLongLat.replace(' ','').split(',')
-    pointsLongLatTuples = [[float(pointsLongLatList[i]),float(pointsLongLatList[i+1])] for i in range(0,len(pointsLongLatList) - 1,2)]
-    timeSeriesData = [];timeSeriesGraphData =[]
-    points = ee.Feature.MultiPoint(pointsLongLatTuples)
+    pointsLongLatList = pointsLongLat.replace(' ','').split(',');
+    pointsLongLatTuples = [[float(pointsLongLatList[i]),float(pointsLongLatList[i+1])] for i in range(0,len(pointsLongLatList) - 1,2)];
+    timeSeriesData = [];timeSeriesGraphData =[];
+    points = ee.Feature.MultiPoint(pointsLongLatTuples);
 
     #get the collection
     #Note get_collecton needs full var name with prefix
     collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(var);
 
     #Next we strip data type of variable name
-    var = var[1:]
-
-    #if(var=='wb'):
-    #    FIX collection = collection.filterDate(dS,dE).select(var)
-    #elif(var=='tmean'):
-    #    FIX collection = collection.filterDate(dS,dE).select(var)
-    #else:
-    collection = collection.filterDate(dS,dE).select(var)
-
-    source = collectionLongName + ' from ' + dS + '-' + dE + ''
+    var = var[1:];
 
     #extracting data
-    dataList = collection.getRegion(points,1).getInfo()
     #remove first row of list ["id","longitude","latitude","time",variable]
-    dataList.pop(0)
+    if(var=='wb'):
+        dataList = collection.filterDate(dS,dE).select('pr').getRegion(points,1).getInfo(); #pr
+        datapet = collection.filterDate(dS,dE).select('pet').getRegion(points,1).getInfo();
+	datapet.pop(0);
+    elif(var=='tmean'):
+        dataList = collection.filterDate(dS,dE).select('tmmx').getRegion(points,1).getInfo(); #tmax
+        datatmin = collection.filterDate(dS,dE).select('tmmn').getRegion(points,1).getInfo();
+	datatmin.pop(0);
+    else:
+        dataList = collection.filterDate(dS,dE).select(var).getRegion(points,1).getInfo();
+
+    dataList.pop(0);
+
+    source = collectionLongName + ' from ' + dS + '-' + dE + '';
+
     ######################################################
-    #### Format data for figure and data tabs
+    #### Format data for highcharts figure and data tabs
     #### Each point gets it's own dictionary
     #### timeSeriesData[idx] = {MarkerColor:marker_colors[idx],LongLat:ll_string, Data:[[Date1,val1],[Date2, val2]]}
     ######################################################
     #Format data
-    point_cnt = 0
+    point_cnt = 0;
     for idx, data in enumerate(dataList):
-        lon = round(data[1],4);lat = round(data[2],4)
+        lon = round(data[1],4);
+        lat = round(data[2],4);
         if idx == 0:
             #To keep track of when data point changes
-            lon_init = lon;lat_init = lat
-            data_dict = {}
-            data_dict_graph = {}
-            point_cnt+=1
+            lon_init = lon;
+            lat_init = lat;
+            data_dict = {};
+            data_dict_graph = {};
+            point_cnt+=1;
         else:
             if abs(float(lon) - float(lon_init)) >0.0001 or abs(float(lat) - float(lat_init)) > 0.0001:
                 #New data point
-                lon_init = lon;lat_init = lat
-                timeSeriesData.append(data_dict)
-                timeSeriesGraphData.append(data_dict_graph)
-                data_dict = {};data_dict_graph = {}
-                point_cnt+=1
+                lon_init = lon;
+                lat_init = lat;
+                timeSeriesData.append(data_dict);
+                timeSeriesGraphData.append(data_dict_graph);
+                data_dict = {};
+                data_dict_graph = {};
+                point_cnt+=1;
         if not data_dict:
             data_dict = {
                 'LongLat': str(lon) + ',' + str(lat),
@@ -169,18 +177,65 @@ def get_time_series(template_values):
                 'LongLat': str(lon) + ',' + str(lat),
                 'Data': []
             }
-        date_string = str(data[0])
-        time = int(data[3])
+	#=============
+        #extract the time
+	#=============
+        time = int(data[3]);
+	#=============
+        #extract the date
+	#=============
+        date_string = str(data[0]);
         try:
-            date_string = date_string[0:4] + '-' + date_string[4:6] + '-' + date_string[6:8]
+            date_string = date_string[0:4] + '-' + date_string[4:6] + '-' + date_string[6:8];
         except:
             pass
-        try:
-            val = round(data[4],4)
-        except:
-            val = data[4]
+	#=============
+        #extract the data
+	#=============
+        if(var=='wb'):
+           try:
+               prval = round(data[4],4);
+           except:
+               prval = data[4];
+
+           try:
+               petval = round(datapet[idx][4],4);
+           except:
+               petval = datapet[idx][4];
+	   val = prval-petval;
+        elif(var=='tmean'):
+           try:
+               tmaxval = round(data[4],4);
+           except:
+               tmaxval = data[4];
+
+           try:
+               tminval = round(datatmin[idx][4],4);
+           except:
+               tminval = datatmin[idx][4];
+	   val = (tmaxval+tminval)/2;
+	else:
+           try:
+               val = round(data[4],4);
+           except:
+               val = data[4];
+	#=============
+	# check units
+	#=============
+	if(var=='tmmx' or var=='tmmn' or var=='tmean'):
+            val=val-273.15;  #convert K to C
+            if(units=='english'):
+                val=1.8*val+32;    #convert C to F
+        if(var=='pr' or var=='pet' or var=='wb'):
+            if(units=='english'): 
+                val=val/25.4; #convert mm to inches
+        if(var=='vs' and units=='english'):
+            val=2.23694*val; #convert m/s to mi/h
+	#=============
         data_dict['Data'].append([date_string,val])
         data_dict_graph['Data'].append([time,val])
+
+
     timeSeriesData.append(data_dict)
     timeSeriesGraphData.append(data_dict_graph)
     timeSeriesGraphData = json.dumps(timeSeriesGraphData)

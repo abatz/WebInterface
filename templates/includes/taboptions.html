@@ -25,11 +25,7 @@
                                 </optgroup>
 				<optgroup label="gridMET">
 					{% for x,y in formVariableGrid %}
-                        {% if  x == 'Gtmean' or x == 'Gwb' %}
-                            <option value="{{ x }}" disabled>{{ y }}</option>
-                        {% else %}
 					        <option value="{{ x }}"{% if x == variable  %} selected {% endif %}>{{ y }}</option>
-                        {% endif %}
 					{% endfor %}
 				</optgroup>
 			</select>
