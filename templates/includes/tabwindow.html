@@ -4,9 +4,9 @@
         <!----------------------------->
         <ul class="nav nav-tabs" id="dataTab" >
                 <li><a href="#tabblank" data-toggle="tab"><img src="images/uparrow.png" height="10px"></a></li>
-                <li {% if not timeSeriesData %}class="active"{% endif %}><a href="#taboptions" data-toggle="tab">Options <img src="images/downarrow.png" height="10px"></a></li>
-                <li {% if timeSeriesData %}class="active"{% endif %}><a href="#tabtimeseries" data-toggle="tab">{% if timeSeriesGraphData%}Time Series Output 
-			<img src="images/downarrow.png" height="10px">{% endif %}</a></li>
+                <li {% if not timeSeriesData %}class="active"{% endif %}><a href="#taboptions" data-toggle="tab"><img src="images/downarrow.png" height="10px"></a></li>
+                 {% if timeSeriesData %}<li class="active"><a href="#tabtimeseries" data-toggle="tab">Time Series Output 
+			<img src="images/downarrow.png" height="10px"></a></li>{% endif %}
         </ul>
 
         <div class="tab-content">

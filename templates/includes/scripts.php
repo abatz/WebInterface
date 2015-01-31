@@ -10,13 +10,13 @@
         <!------------------------------------>
 	<script type="text/javascript" src="media/myjs/get_colorbar.js"></script> <!-- COLORBAR --> 
 	<script type="text/javascript" src="media/myjs/formListener.js"></script> <!-- FORM LISTENER -->
-	<!--<script type="text/javascript" src="media/myjs/showLoadingImage.js"></script>--> <!-- PROGRESS BAR -->
 	<script type="text/javascript" src="media/myjs/progressWindow.js"></script> <!-- PROGRESS BAR -->
 	<script type="text/javascript" src="media/myjs/zoomStates.js"></script> <!-- ZOOM TO STATE -->
 	<script type="text/javascript" src="/media/myjs/colorbar.js"></script><!--DYNAMIC COLORBAR-->
 	<script type="text/javascript" src="/media/myjs/colorbrewer.js"></script><!--DYNAMIC COLORBAR-->
 	<script type="text/javascript" src="/media/myjs/gmaps_styles.js"></script><!--GMAPS STYLES-->
 	{% include 'includes/js_datepicker.html'%}<!--DATE PICKER-->
+<!--
 	<script type="text/javascript">
 		function setCenter(){
 		newCenter = window.map.getCenter();
@@ -25,11 +25,14 @@
 		document.getElementById('mapCenterLongLat').value =String(myCenterLat)+','+String(myCenterLong);
 		}
 	</script>	
-
+-->
 
  	<!------------------------------------>
         <!-	GOOGLE EARTH MAP SCRIPTS    -->
         <!------------------------------------>
+	<!- for layer control on map -->
+	<!--<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>-->
+
 	<script src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
 
 	<script type="text/javascript">
@@ -57,7 +60,10 @@
 	      var psasmarkerOverLayer = null;
 	      var kmlmarkerOverLayer = null;
 	      var myZoom;	
-	      var infomarkers;
+	      var infomarkers;  
+	      var timeoutID;
+
+
 	      /*********************************
 	      *    INITIALIZE CALL
 	      *********************************/
@@ -77,11 +83,24 @@
 			  streetViewControl: false,
 			  mapTypeControl: true,
 			  navigationControl: true, 
-			  mapTypeId: google.maps.MapTypeId.ROADMAP,
-			  mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
+			  mapTypeId: google.maps.MapTypeId.TERRAIN,
+			  //mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
+			  mapTypeControlOptions: {
+				style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+				position: google.maps.ControlPosition.TOP_RIGHT
+			    },
 			  clickable:true,
 			  backgroundColor: '#FFFFFF',
-			  //disableDefaultUI: true,
+			  disableDefaultUI: false,
+			  zoomControl: true,
+				    zoomControlOptions: {
+					style: google.maps.ZoomControlStyle.LARGE,
+					position: google.maps.ControlPosition.TOP_LEFT
+				    },
+			 panControl: false,
+				    panControlOptions: {
+					position: google.maps.ControlPosition.TOP_RIGHT
+				    },
 		};
         	map = new google.maps.Map(document.getElementById("map"),mapOptions);
 
@@ -92,7 +111,38 @@
 		map.setOptions({styles: lightPoliticalStyles});
 		{% if mapid %}
                		window.map.overlayMapTypes.push(mapType);
+			window.infomarkers = new Array();
+			google.maps.event.addListenerOnce(mapType, 'tilesloaded', function() {
+			 //this part runs when the mapobject is created and rendered			
+				google.maps.event.addListenerOnce(map, 'idle', function() {
+				  //this part runs when the mapobject shown for the first time
+					window.clearTimeout(timeoutID);
+				});
+			});
 		{% endif %}
+		/*
+		// Set mouseover event for each feature.
+                 google.maps.event.addListener(map,'click', function(event) {
+			var lat = event.latLng.lat().toFixed(4);
+			var long = event.latLng.lng().toFixed(4);
+			 var infowindow = new google.maps.InfoWindow({});
+			 window.infomarkers = new Array();
+			 messageString='<b>Value</b>    : '+
+				'<br><b>Latitude</b>   : '+lat+
+				'<br><b>Longitude</b> : '+long+'<br>';
+			 var locations = [messageString,lat,long];
+			 infomarker = new google.maps.Marker({
+                                position: new google.maps.LatLng(locations[1], locations[2]),
+                                map: map,
+                              });
+			 //window.infomarkers.push(infomarker);
+			 infowindow.setContent(locations[0]);
+			 infowindow.open(map, infomarker);
+			 google.maps.event.addListener(infowindow,'closeclick',function(){
+			  	infomarker.setMap(null); //removes the marker
+			});
+                 });
+		*/
 
 		/*********************************
 		*     ZOOM/CENTER CHANGED                   *
@@ -177,6 +227,7 @@
 		/*********************************/
 	      }
 	      //google.maps.event.addDomListener(window, 'load', initialize);
+
 	      //window.onload = initialize;
 	      jQuery(document).ready(initialize);
 

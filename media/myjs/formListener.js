@@ -266,7 +266,7 @@ $(function(){
 	/*--------------------------------------------*/
  	jQuery('#mapCenterLongLat').keyup( function(){
 		var mapCenterLongLat = document.getElementById('mapCenterLongLat').value;
-            	var mapCenterLong = parseFloat(mapCenterLongLat.split(',')[0]).toFixed(4);;
+            	var mapCenterLong = parseFloat(mapCenterLongLat.split(',')[0]).toFixed(4);
             	var mapCenterLat = parseFloat(mapCenterLongLat.split(',')[1]).toFixed(4);
 		window.map.setCenter(new google.maps.LatLng(mapCenterLat,mapCenterLong));
         });
