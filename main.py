@@ -64,6 +64,7 @@ class DroughtTool(webapp2.RequestHandler):
 
         self.opacity = self.request.get('opacity',str(14*0.05))
         self.units = self.request.get('units','metric')
+        self.varUnits = self.request.get('varUnits','mm')
         self.NELat = self.request.get('NELat',45)
         self.NELong= self.request.get('NELong',-95)
         self.SWLat= self.request.get('SWLat',40)
@@ -107,7 +108,8 @@ class DroughtTool(webapp2.RequestHandler):
         self.mapzoom = self.request.get('mapzoom',mz)
 
         if self.minColorbar is None and self.maxColorbar is None:
-            self.colorbarmap,self.colorbarsize,self.minColorbar,self.maxColorbar,self.colorbarLabel=collectionMethods.get_colorbar(self.variable,self.anomOrValue,self.units)
+            self.colorbarmap,self.colorbarsize,self.minColorbar,self.maxColorbar,self.colorbarLabel,self.varUnits,\
+                 =collectionMethods.get_colorbar(self.variable,self.anomOrValue,self.units)
 
     def set_share_link(self, initial_template_values):
         shareLink = 'drought-monitor2.appspot.com?'
@@ -129,6 +131,7 @@ class DroughtTool(webapp2.RequestHandler):
             'form_error': self.form_error,
             'opacity': self.opacity,
             'units': self.units,
+            'varUnits': self.varUnits,
             'pointsLongLat':self.pointsLongLat,
             'mapCenterLongLat':self.mapCenterLongLat,
             'NELat': self.NELat,
