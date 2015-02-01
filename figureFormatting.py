@@ -7,7 +7,7 @@ import collectionMethods
 #===========================================
 #  FORMAT_DATA_FOR_HIGHCHARTS 
 #===========================================
-def format_data_for_highcharts(mc,units,dataList,var,dataList2):
+def format_data_for_highcharts(mc,units,dataList,var,dataList2,timeSeriesData,timeSeriesGraphData):
  ######################################################
     #### Format data for highcharts figure and data tabs
     #### Each point gets it's own dictionary
@@ -57,4 +57,7 @@ def format_data_for_highcharts(mc,units,dataList,var,dataList2):
         data_dict['Data'].append([date_string,val])
         data_dict_graph['Data'].append([time,val])
 
-    return (data_dict,data_dict_graph);
+    timeSeriesData.append(data_dict)
+    timeSeriesGraphData.append(data_dict_graph)
+
+    return (timeSeriesData,timeSeriesGraphData);

@@ -15,7 +15,7 @@ formVariableGrid=[
     #('th','TH (Wind Direction)'),
     ('Gerc','ERC (Energy Release Component)'),
     ('Gpdsi','PDSI (Palm. Drought Sev. Ind.)'),
-    ('Gpet','PET (Potential Evapotranspiration)'),
+    ('Gpet','PET (Reference Evapotranspiration)'),
     ('Gpr','PPT (Precipitation)'),
     ('Grmin','RMIN (Min Rel. Humidity)'),
     ('Grmax','RMAX (Max Rel. Humidity)'),

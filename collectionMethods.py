@@ -164,14 +164,11 @@ def get_time_series(template_values):
          #format data for highcharts figure and for data in datatab
          #==================
          if(var=='wb'):
-             data_dict,data_dict_graph=figureFormatting.format_data_for_highcharts(mc,units,dataList,var,datapet);
+             timeSeriesData,timeSeriesGraphData=figureFormatting.format_data_for_highcharts(mc,units,dataList,var,datapet,timeSeriesData,timeSeriesGraphData);
          elif(var=='tmean'):
-             data_dict,data_dict_graph=figureFormatting.format_data_for_highcharts(mc,units,dataList,var,datatmin);
+             timeSeriesData,timeSeriesGraphData=figureFormatting.format_data_for_highcharts(mc,units,dataList,var,datatmin,timeSeriesData,timeSeriesGraphData);
          else:
-             data_dict,data_dict_graph=figureFormatting.format_data_for_highcharts(mc,units,dataList,var,[]);
-
-         timeSeriesData.append(data_dict)
-         timeSeriesGraphData.append(data_dict_graph)
+             timeSeriesData,timeSeriesGraphData=figureFormatting.format_data_for_highcharts(mc,units,dataList,var,[],timeSeriesData,timeSeriesGraphData);
 
     timeSeriesGraphData = json.dumps(timeSeriesGraphData)
     source = collectionLongName + ' from ' + dS + '-' + dE + '';
@@ -381,9 +378,9 @@ def get_collection(variable):
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
         product = 'gridded'
-        notes=""
+        notes="ASCE Standardized Reference ET, estimated using the Penmann Monteith method. See Equation 1 in http://www.kimberly.uidaho.edu/water/asceewri/ascestzdetmain2005.pdf"
         statistic='Total'
-        variableShortName='Potential Evapotranspiration'
+        variableShortName='Reference Evapotranspiration'
     elif(variable=='wb'):
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
