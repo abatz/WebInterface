@@ -140,6 +140,10 @@ class DroughtTool(webapp2.RequestHandler):
             'anomOrValue': self.anomOrValue,
             'units': self.units,
             'varUnits': self.varUnits,
+            #Time Options
+            'minYear':self.minYear,
+            'dateStart': self.dateStart,
+            'dateEnd': self.dateEnd,
             #Map Options
             'opacity': self.opacity,
             'pointsLongLat':self.pointsLongLat,
@@ -156,18 +160,14 @@ class DroughtTool(webapp2.RequestHandler):
             'layer': self.layer,
             'kmlurl': self.kmlurl,
             'kmloption': self.kmloption,
-            #TimeSeries Options
-            'timeSeriesCalc': self.timeSeriesCalc,
-            #Time Options
-            'minYear':self.minYear,
-            'dateStart': self.dateStart,
-            'dateEnd': self.dateEnd,
             #Colorbar Options
             'palette': self.palette,
             'minColorbar': self.minColorbar,
             'maxColorbar': self.maxColorbar,
             'colorbarmap': self.colorbarmap,
             'colorbarsize': self.colorbarsize,
+            #TimeSeries Options
+            'timeSeriesCalc': self.timeSeriesCalc,
             #PointMarker Options
             'marker_colors':self.marker_colors,
             'p1':self.p1,
@@ -191,6 +191,7 @@ class DroughtTool(webapp2.RequestHandler):
             'p5display':self.p5display,
             'p6display':self.p6display,
             'p7display':self.p7display,
+             #Forms
             'formMonth': forms.formMonth,
             'formDay': forms.formDay,
             'formYear': forms.formYear,
@@ -211,6 +212,8 @@ class DroughtTool(webapp2.RequestHandler):
             'formStates': forms.formStates,
             'formLayers': forms.formLayers
         }
+
+        #why is this section necessary? -kch
         if self.colorbarmap:
             template_values['colorbarmap']= self.colorbarmap
         if self.colorbarsize:
@@ -230,6 +233,7 @@ class DroughtTool(webapp2.RequestHandler):
             template_values['kmlurl'] = self.kmlurl
         if self.kmloption:
             template_values['kmloption'] = self.kmloption
+
         #format template values to allow for different date formats etc...
         #See format_ functions in forms.py
         formatted_template_values = {}
@@ -284,9 +288,9 @@ class DroughtTool(webapp2.RequestHandler):
         if not input_err:
             if self.request.arguments():
                 #Update template values with mapid or time series data
-                if self.domainType != 'points':
+                if self.domainType == 'full':
                     template_values = collectionMethods.get_images(template_values)
-                else:
+                else:  #want ability in future to look at time series for states,etc
                     template_values = collectionMethods.get_time_series(template_values)
         else:
             template_values['form_error'] = {fieldID:input_err}
@@ -310,7 +314,7 @@ class DroughtTool(webapp2.RequestHandler):
             #Update template values with mapid or time series data
             if self.domainType == 'full':
                 template_values = collectionMethods.get_images(template_values)
-            else:
+            else: #want ability in future to do time series of states,etc
                 template_values = collectionMethods.get_time_series(template_values)
         else:
             #write error message to html

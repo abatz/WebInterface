@@ -20,9 +20,12 @@ def get_images(template_values):
     statistic=TV['statistic'];
     units=TV['units'];
     palette=TV['palette'];
-    #get map palette options
+
+    #get map palette options  
     colorbarmap,colorbarsize,minColorbar,maxColorbar,colorbarLabel,varUnits=get_colorbar(str(var),str(aOV),units)
 
+    #Britta - don't we definitely have all of these in the templates so that we should just extract these above
+    # i.e minColorbar=TV['minColorbar']; and then don't get them from get_colorbar and don't do the following? -kch
     #Override value if user entered custom value
     if 'minColorbar' in template_values.keys():
         minColorbar = template_values['minColorbar']
@@ -35,51 +38,62 @@ def get_images(template_values):
 
     #Get initial collection
     collection,collectionName,collectionLongName,product,variableShortName,notes=get_collection(var);
-    if aOV in ['anom','clim']:
-        collectionSource=collection;
+    if aOV in ['anom','anompercentof','anompercentchange','clim']:
+        collectionInitial=collection;
 
     #remove starting character which indicates the product
     var = var[1:]
 
     #Set title
     title = statistic + ' ' + variableShortName;
-    if(aOV == 'anom'):
-        title = title + ' Anomaly from Climatology ';
+    if(aOV == 'clim'):
+        title = title + ' Climatology ';
+    elif(aOV == 'anom'):
+        title = title + ' Change from Climatology ';
+    elif(aOV == 'anompercentchange'):
+        title = title + ' Percent Change from Climatology ';
+    elif(aOV == 'anompercentof'):
+        title = title + ' Percent Of Climatology ';
 
     #Set source, domain, subdomain
     source = collectionLongName + ' from ' + dS + '-' + dE + '';
-    subdomain = None;
-    if(dT == 'states'):
-        subdomain = template_values['state']
-    if(dT=='rectangle'):
-        subdomain = ee.Feature.Rectangle(float(TV['SWLong']),float(TV['SWLat']),float(TV['NELong']),float(TV['NELat']));
 
+    #not currently used
+    subdomain = None;
+    #if(dT == 'states'):
+    #    subdomain = template_values['state']
+    #if(dT=='rectangle'):
+    #    subdomain = ee.Feature.Rectangle(float(TV['SWLong']),float(TV['SWLat']),float(TV['NELong']),float(TV['NELat']));
+
+    #==============
     #Format collection
-    mapid = {'mapid':[],'token':[]}
     if var == 'wb':
         collection_pr = collection.filterDate(dS,dE).select('pr');
         collection_pet = collection.filterDate(dS,dE).select('pet');
-        collection_pr = get_statistic(collection_pr,'pr',statistic,'value');
-        collection_pet = get_statistic(collection_pet,'pet',statistic,'value');
+        collection_pr = get_statistic(collection_pr,statistic);
+        collection_pet = get_statistic(collection_pet,statistic);
         collection = collection_pr.subtract(collection_pet); #water balance
     elif var =='tmean':
         collection_tmax = collection.filterDate(dS,dE).select('tmmx');
         collection_tmin = collection.filterDate(dS,dE).select('tmmn');
-        collection_tmax= get_statistic(collection_tmax,'tmmx',statistic,'value');
-        collection_tmin = get_statistic(collection_tmin,'tmmn',statistic,'value');
+        collection_tmax= get_statistic(collection_tmax,statistic);
+        collection_tmin = get_statistic(collection_tmin,statistic);
         collection = collection_tmax.add(collection_tmin).multiply(0.5); #tmean
     else:
         collection = collection.filterDate(dS,dE).select(var)
-        collection = get_statistic(collection,var,statistic,aOV)
+        collection = get_statistic(collection,statistic)
 
+    #==============
     #Anomaly
-	if aOV in ['anom','clim']:
-	    collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV,collectionSource)
+	if aOV in ['anom','anompercentof','anompercentchange','clim']:
+	    collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV,collectionInitial)
 	    TV['climatologyNotes'] = climatologyNotes
 	#Units
     collection=check_units(collection,var,aOV,units);
 
+    #==============
     #Get mapid
+    mapid = {'mapid':[],'token':[]}
     mapid = map_collection(collection,TV['opacity'],palette,minColorbar,maxColorbar)
 
     #==============
@@ -322,49 +336,49 @@ def get_collection(variable):
         product = 'gridded'
         notes=""
         statistic='Mean'
-        variableShortName='Maximum Temperature'
+        variableShortName='"Maximum Temperature"'
     elif(variable=='tmmn'):
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
         product = 'gridded'
         notes=""
         statistic='Mean'
-        variableShortName='Minimum Temperature'
+        variableShortName='"Minimum Temperature"'
     elif(variable=='tmean'):
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
         product = 'gridded'
         notes="Calculated as Average of Min/Max Daily Temperature"
         statistic='Mean'
-        variableShortName='Mean Temperature'
+        variableShortName='"Average Temperature"'
     elif(variable=='rmin'):
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
         product = 'gridded'
         notes=""
         statistic='Mean'
-        variableShortName='Minimum Relative Humidity'
+        variableShortName='"Minimum Relative Humidity"'
     elif(variable=='rmax'):
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
         product = 'gridded'
         notes=""
         statistic='Mean'
-        variableShortName='Maximum Relative Humidity'
+        variableShortName='"Maximum Relative Humidity"'
     elif(variable=='srad'):
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
         product = 'gridded'
         notes=""
         statistic='Mean'
-        variableShortName='Downwelling Shortwave Radiation'
+        variableShortName='"Downwelling Shortwave Radiation"'
     elif(variable=='vs'):
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
         product = 'gridded'
         notes=""
         statistic='Mean'
-        variableShortName='Wind Speed Near Surface'
+        variableShortName='"Wind Speed Near Surface"'
     elif(variable=='sph'):
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
@@ -413,6 +427,8 @@ def get_collection(variable):
 #    GET_ANOMALY
 #===========================================
 def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,statistic,anomOrValue,collectionSource):
+    #here anomOrValue =['anom','anompercentof','anompercentchange','clim'] only
+    
     doyStart = ee.Number(ee.Algorithms.Date(dateStart).getRelative('day', 'year')).add(1);
     doyEnd = ee.Number(ee.Algorithms.Date(dateEnd).getRelative('day', 'year')).add(1);
     doy_filter = ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year');
@@ -431,29 +447,24 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
 
     #calculate climatology
     if(variable=='wb'):
-        climatology_pr = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
-           select('pr');
-        climatology_pet = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
-           select('pet');
+        climatology_pr = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter)\
+           .select('pr');
+        climatology_pet = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter)\
+           .select('pet');
     elif(variable=='tmean'):
-        climatology_tmax = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
-           select('tmmx');
-        climatology_tmin = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter).\
-           select('tmmn');
+        climatology_tmax = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter)\
+           .select('tmmx');
+        climatology_tmin = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter)\
+           .select('tmmn');
     else:
         climatology = collectionSource.filterDate(yearStartClim, yearEndClim).filter(doy_filter).select(variable);
 
     if(variable=='wb'):
-         climatology_pr = ee.Image(climatology_pr.sum().divide(num_years));
-         climatology_pet = ee.Image(climatology_pet.sum().divide(num_years));
 	 climatology = climatology_pr.subtract(climatology_pet);
     elif(variable=='tmean'):
-         climatology_tmax = ee.Image(climatology_tmax.mean());
-         climatology_tmin = ee.Image(climatology_tmin.mean());
 	 climatology = climatology_tmax.add(climatology_tmin).multiply(.5);
-    elif(statistic=='Total' and variable=='pr'):
-         climatology = ee.Image(climatology.sum().divide(num_years));
-    elif(statistic=='Total' and variable=='pet'):
+
+    if(statistic=='Total'):
          climatology = ee.Image(climatology.sum().divide(num_years));
     elif(statistic=='Median'):
          climatology = ee.Image(climatology.median());
@@ -461,27 +472,20 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
          climatology = ee.Image(climatology.max());
     elif(statistic=='Min'):
          climatology = ee.Image(climatology.min());
-    elif(statistic=='Mean' and variable=='erc'):
-         climatology = ee.Image(climatology.mean());
     elif(statistic=='Mean'):
          climatology = ee.Image(climatology.mean());
 
-    if(anomOrValue=='clim'):
+    if(anomOrValue=='anom'):
+        collection = ee.Image(collection.subtract(climatology));
+    elif(anomOrValue=='anompercentof'):
+            collection = ee.Image(collection.divide(climatology).multiply(100)); #anomaly
+    elif(anomOrValue=='anompercentchange'):
+            collection = ee.Image(collection.subtract(climatology).divide(climatology).multiply(100)); #anomaly
+    else:
         mask = collection.gt(-9999);
         climatology = climatology.mask(mask);
         collection=climatology;
-    elif(anomOrValue=='anom'):
-        #calculate anomaly
-        if(statistic=='Total' and variable=='pr'):
-            collection = ee.Image(collection.divide(climatology).multiply(100)); #anomaly
-        elif(statistic=='Total' and variable=='pet'):
-            collection = ee.Image(collection.divide(climatology).multiply(100)); #anomaly
-        elif(statistic=='Mean' and variable=='sph'):
-            collection = ee.Image(collection.subtract(climatology).divide(climatology).multiply(100));
-        elif(variable=='wb'):
-            collection = ee.Image(collection.subtract(climatology).divide(climatology).multiply(100));
-        else: #mean,median,min,max
-            collection = ee.Image(collection.subtract(climatology));
+
     return(collection,climatologyNote);
 
 #===========================================
@@ -496,9 +500,13 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
 #===========================================
 #   GET_STATISTIC
 #===========================================
-def get_statistic(collection,variable,statistic,anomOrValue):
+def get_statistic(collection,statistic):
     if(statistic=='Mean'):
          collection = collection.mean();
+    elif(statistic=='Max'):
+         collection = collection.max();
+    elif(statistic=='Min'):
+         collection = collection.min();
     elif(statistic=='Median'):
          collection = collection.median();
     elif(statistic=='Total'):
@@ -509,22 +517,21 @@ def get_statistic(collection,variable,statistic,anomOrValue):
 #   CHECK_UNITS
 #===========================================
 def check_units(collection,variable,anomOrValue,units):
-    #anomOrValue = 'anom' or 'value'... not the variable being passed
+    #don't modify if anomOrValue=='anompercentof' or 'anompercentchange'
 
-    if(variable=='tmmx' or variable=='tmmn' or variable =='tmean'):
-        if(anomOrValue=='value' or anomOrValue=='clim'):
-            collection=collection.subtract(273.15)  #convert K to C
-        if(units=='english'):
-            collection=collection.multiply(1.8);    #convert C anom to F anom
-	if(units=='english' and (anomOrValue=='value' or anomOrValue=='clim')):
-	    collection = collection.add(32);        #convert C values to F values
-    if(variable=='pr' or variable=='pet' or variable=='wb'):
-        if(units=='english' and (anomOrValue=='value' or anomOrValue=='clim')):  #don't need to convert for anom
-            collection=collection.divide(25.4); #convert mm to inches
-    if(variable=='vs'):
-        if(units=='english'):
+    if(not(anomOrValue=='anompercentof' or anomOrValue=='anompercentchange')): 
+        if(variable=='tmmx' or variable=='tmmn' or variable =='tmean'):
+            if(anomOrValue=='value' or anomOrValue=='clim'):
+                collection=collection.subtract(273.15)  #convert K to C
+            if(units=='english'):
+                collection=collection.multiply(1.8);    #convert C anom to F anom
+	    if(units=='english' and (anomOrValue=='value' or anomOrValue=='clim')):
+	        collection = collection.add(32);        #convert C values to F values
+            if(variable=='pr' or variable=='pet' or variable=='wb'):
+                if(units=='english'):
+                    collection=collection.divide(25.4); #convert mm to inches
+        if(variable=='vs'):
             collection=collection.multiply(2.23694); #convert m/s to mi/h
-
     return(collection);
 
 def check_units_in_timeseries(val,var,units):
