@@ -37,10 +37,10 @@ formVariableLandsat=[
     #('Lbi','BI (Burning Index)'),
     #('LNBRT','NBRT (Norm. Burn Rat. Thm. Ind)'),
     #('LBAI','BAI (Burning Area Index)'),
-    ('LEVI','EVI (Enhanced Vegetation Index)'),
-    ('LNDSI','NDSI (Snow Index)'),
-    ('LNDVI','NDVI (Vegetation Index)'),
-    ('LNDWI','NDWI (Water Index)'),
+    ('LEVI','Landsat EVI (Enhanced Vegetation Index)'),
+    ('LNDSI','Landsat NDSI (Snow Index)'),
+    ('LNDVI','Landsat NDVI (Vegetation Index)'),
+    ('LNDWI','Landsat NDWI (Water Index)'),
 ]
 #============================
 #    formVariableModis
@@ -51,10 +51,10 @@ formVariableModis=[
     #('Mbi','BI (Burning Index)'),
     #('MNBRT','NBRT (Norm. Burn Rat. Thm. Ind)'),
     #('MBAI','BAI (Burning Area Index)'),
-    ('MEVI','EVI (Enhanced Vegetation Index)'),
-    ('MNDSI','NDSI (Snow Index)'),
-    ('MNDVI','NDVI (Vegetation Index)'),
-    ('MNDWI','NDWI (Water Index)'),
+    ('MEVI','MODIS EVI (Enhanced Vegetation Index)'),
+    ('MNDSI','MODIS NDSI (Snow Index)'),
+    ('MNDVI','MODIS NDVI (Vegetation Index)'),
+    ('MNDWI','MODIS NDWI (Water Index)'),
 ]
 
 #============================

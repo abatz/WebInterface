@@ -45,7 +45,7 @@ class DroughtTool(webapp2.RequestHandler):
 
         #Time Options
         self.minYear = self.request.get('minYear','1979')
-	tempstart = datetime.date.today()-datetime.timedelta(days=30)
+	tempstart = datetime.date.today()-datetime.timedelta(days=60)
 	tempend = datetime.date.today()-datetime.timedelta(days=2)
         self.dateStart = self.request.get('dateStart',tempstart.strftime('%Y-%m-%d'))
         self.dateEnd = self.request.get('dateEnd',tempend.strftime('%Y-%m-%d'))

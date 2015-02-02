@@ -7,7 +7,7 @@ import collectionMethods
 #===========================================
 #  FORMAT_DATA_FOR_HIGHCHARTS 
 #===========================================
-def format_data_for_highcharts(mc,units,dataList,var,dataList2,timeSeriesData,timeSeriesGraphData):
+def format_data_for_highcharts(mc,units,dataList,var,dataList2,timeSeriesData,timeSeriesGraphData,product):
  ######################################################
     #### Format data for highcharts figure and data tabs
     #### Each point gets it's own dictionary
@@ -48,7 +48,7 @@ def format_data_for_highcharts(mc,units,dataList,var,dataList2,timeSeriesData,ti
         #=============
         #extract the time,date_string,val
         #=============
-        time,date_string,val=collectionMethods.extract_data_from_timeseries_element(idx,data,var,dataList2);
+        time,date_string,val=collectionMethods.extract_data_from_timeseries_element(idx,data,var,dataList2,product);
         #=============
         # check units
         #=============

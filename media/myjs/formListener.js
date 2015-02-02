@@ -257,6 +257,15 @@ $(function(){
 	/*--------------------------------------------*/
 	/*--                                         --*/
 	/*--------------------------------------------*/
+	jQuery('#variableT').on('change', function(){
+	     variable=document.getElementById('variableT').value;
+	     document.getElementById('variable').value =variable;
+	});
+	jQuery('#variable').on('change', function(){
+	     variable=document.getElementById('variable').value;
+	     document.getElementById('variableT').value =variable;
+	});
+
  	jQuery('#mapCenterLongLat').keyup( function(){
 		var mapCenterLongLat = document.getElementById('mapCenterLongLat').value;
             	var mapCenterLong = parseFloat(mapCenterLongLat.split(',')[0]).toFixed(4);
@@ -327,7 +336,7 @@ $(function(){
 	/*--------------------------------------------*/
 	/*       COLORBAR       		      */
 	/*--------------------------------------------*/
-    jQuery('.variable').on('change', function(){
+    jQuery('.variable,.variableT').on('change', function(){
         //strip product character off of variable
         var variable = jQuery('.variable').val();
         var product = variable.substr(0,1);
@@ -362,7 +371,7 @@ $(function(){
     });
 
 
-    jQuery('.variable, .anomOrValue, .units').on('change', function(){
+    jQuery('.variable, .variableT,.anomOrValue, .units').on('change', function(){
 	   
 	   //strip product character off of variable
 	   var variable = jQuery('.variable').val()
@@ -507,14 +516,14 @@ $(function(){
                         palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
 			colorbarmap='BuYlRd' //need inverse
 			colorbarsize=8
-			varUnits='W/m^2'
+			varUnits='W/m2'
                 }else{
                         minColorbar =100 ;
                         maxColorbar = 350; ///W/m2
                         palette="313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
 			colorbarmap='BuRd' //need inverse
 			colorbarsize=8
-			varUnits='W/m^2'
+			varUnits='W/m2'
                 }
 	    }else if(variable=='vs'){
                  statistic='Mean';

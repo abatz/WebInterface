@@ -2,17 +2,18 @@
         <!----------------------------->
         <!--        NAVIGATION       -->
         <!----------------------------->
-        <ul class="nav nav-tabs" id="dataTab" >
+        <ul class="nav nav-pills nav-default" id="dataTab" >
                 <li>
 			<a href="#tabblank" data-toggle="tab"><img src="images/uparrow.png" height="10px"></a>
 		</li>
                 <li {% if not timeSeriesData %}class="active"{% endif %}>
 			<a href="#tabmapoptions" data-toggle="tab">
-			<span style='color:blue'>Map</span>
-	  	     	<img src="images/downarrow.png" height="10px"></a>
+			Map</a>
 		</li>
 		<li>
-			<a href="#tabtimeseriesoptions" data-toggle="tab"><span style='color:blue'>Time Series</span></a>
+			<a href="#tabtimeseriesoptions" data-toggle="tab">
+			Time Series
+			</a>
 		</li>
 		{% if timeSeriesData %}
 		<li class="active">
@@ -59,7 +60,7 @@
                     {% if timeSeriesGraphData%}
 			<table>
 				<tr>
-					<td width="50%" valign="top">
+					<td width="60%" valign="top">
 						<!----------------------------->
 						<!--    FIGURES   -->
 						<!----------------------------->
@@ -67,7 +68,7 @@
 							  {% include 'includes/tabfigure.html'%}
 						    {% endif %}
 					</td>
-					<td width="50%" valign="top">
+					<td width="40%" valign="top">
 						<!----------------------------->
 						<!--    DATA   -->
 						<!----------------------------->

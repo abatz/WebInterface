@@ -137,6 +137,7 @@ def get_time_series(template_values):
     #get the collection  (Note get_collecton needs full var name with prefix)
     collection,collectionName,collectionLongName,product,variableShortName,notes=get_collection(var);
     var = var[1:]; #strip product of variable name
+    product=var[0:1];
 
     #check if there is more than 2500 records requested here
     yearStart = int(dS[0:3]);
@@ -182,11 +183,11 @@ def get_time_series(template_values):
          #format data for highcharts figure and for data in datatab
          #==================
          if(var=='wb'):
-             timeSeriesData,timeSeriesGraphData=figureFormatting.format_data_for_highcharts(mc,units,dataList,var,datapet,timeSeriesData,timeSeriesGraphData);
+             timeSeriesData,timeSeriesGraphData=figureFormatting.format_data_for_highcharts(mc,units,dataList,var,datapet,timeSeriesData,timeSeriesGraphData,product);
          elif(var=='tmean'):
-             timeSeriesData,timeSeriesGraphData=figureFormatting.format_data_for_highcharts(mc,units,dataList,var,datatmin,timeSeriesData,timeSeriesGraphData);
+             timeSeriesData,timeSeriesGraphData=figureFormatting.format_data_for_highcharts(mc,units,dataList,var,datatmin,timeSeriesData,timeSeriesGraphData,product);
          else:
-             timeSeriesData,timeSeriesGraphData=figureFormatting.format_data_for_highcharts(mc,units,dataList,var,[],timeSeriesData,timeSeriesGraphData);
+             timeSeriesData,timeSeriesGraphData=figureFormatting.format_data_for_highcharts(mc,units,dataList,var,[],timeSeriesData,timeSeriesGraphData,product);
 
     timeSeriesGraphData = json.dumps(timeSeriesGraphData)
     source = collectionLongName + ' from ' + dS + '-' + dE + '';
@@ -211,7 +212,7 @@ def get_time_series(template_values):
 #===========================================
 #   EXTRACT_DATA_FROM_TIMESERIES_ELEMENT 
 #===========================================
-def extract_data_from_timeseries_element(idx,data,var,data2):
+def extract_data_from_timeseries_element(idx,data,var,data2,product):
     #=============
     #extract the time
     #=============
@@ -219,11 +220,30 @@ def extract_data_from_timeseries_element(idx,data,var,data2):
     #=============
     #extract the date
     #=============
+    #Note MODIS has date string like this: MCD43A4_0005_2011_12_03
+    #Landsat has date string like this: 1_2_20120422, 2_20111203
     date_string = str(data[0]);
-    try:
-        date_string = date_string[0:4] + '-' + date_string[4:6] + '-' + date_string[6:8];
-    except:
-        pass
+    if(date_string[0:7]=='MCD43A4'):
+        date_string = date_string[12:16] + '-' + date_string[17:19] + '-' + date_string[20:22];
+    else:
+        idx=date_string.rfind('_');
+        if(idx==-1):
+             date_string = date_string[0:4] + '-' + date_string[4:6] + '-' + date_string[6:8];
+	else:
+             date_string = date_string[idx+1:idx+5] + '-' + date_string[idx+5:idx+7] + '-' + date_string[idx+7:idx+9];
+
+
+    #elif(date_string[0:4]=='1_2_'):
+    #    date_string = date_string[5:9] + '-' + date_string[9:11] + '-' + date_string[11:13];
+    #elif(date_string[0:3]=='2_'):
+    #    date_string = date_string[3:7] + '-' + date_string[7:9] + '-' + date_string[9:11];
+    #else:
+    #    date_string = date_string[0:4] + '-' + date_string[4:6] + '-' + date_string[6:8];
+
+    #try:
+    #    date_string = date_string[0:4] + '-' + date_string[4:6] + '-' + date_string[6:8];
+    #except:
+    #    pass
     #=============
     #extract the data
     #=============
@@ -338,49 +358,49 @@ def get_collection(variable):
         product = 'gridded'
         notes=""
         statistic='Mean'
-        variableShortName='"Maximum Temperature"'
+        variableShortName='Maximum Temperature'
     elif(variable=='tmmn'):
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
         product = 'gridded'
         notes=""
         statistic='Mean'
-        variableShortName='"Minimum Temperature"'
+        variableShortName='Minimum Temperature'
     elif(variable=='tmean'):
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
         product = 'gridded'
         notes="Calculated as Average of Min/Max Daily Temperature"
         statistic='Mean'
-        variableShortName='"Average Temperature"'
+        variableShortName='Average Temperature'
     elif(variable=='rmin'):
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
         product = 'gridded'
         notes=""
         statistic='Mean'
-        variableShortName='"Minimum Relative Humidity"'
+        variableShortName='Minimum Relative Humidity'
     elif(variable=='rmax'):
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
         product = 'gridded'
         notes=""
         statistic='Mean'
-        variableShortName='"Maximum Relative Humidity"'
+        variableShortName='Maximum Relative Humidity'
     elif(variable=='srad'):
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
         product = 'gridded'
         notes=""
         statistic='Mean'
-        variableShortName='"Downwelling Shortwave Radiation"'
+        variableShortName='Downwelling Shortwave Radiation'
     elif(variable=='vs'):
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
         product = 'gridded'
         notes=""
         statistic='Mean'
-        variableShortName='"Wind Speed Near Surface"'
+        variableShortName='Wind Speed Near Surface'
     elif(variable=='sph'):
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
@@ -714,10 +734,10 @@ def get_colorbar(variable,anomOrValue,units):
             minColorbar=-25
             maxColorbar=25
 	    if(units=='metric'):
-            	colorbarLabel='Radiation Difference from climatology (W/m^2)'
+            	colorbarLabel='Radiation Difference from climatology (W/m2)'
 	    elif(units=='english'):
-            	colorbarLabel='Radiation Difference from climatology (W/m^2)'
-            varUnits='W/m^2';
+            	colorbarLabel='Radiation Difference from climatology (W/m2)'
+            varUnits='W/m2';
             colorbarmap='BuYlRd'
             colorbarsize='8';
         else:

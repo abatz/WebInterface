@@ -1,4 +1,4 @@
-<ul class="nav nav-tabs">
+<ul class="nav nav-pills">
 	{% for point in timeSeriesData  %}
 	<li {% if loop.index==1 %}class="active" {% endif %}><a href="#data{{ loop.index }}" data-toggle="tab"> Location: <br>{{point.LongLat }}</a></li>
 	{% endfor %}
@@ -6,7 +6,7 @@
 
 <div class="tab-content">
     {% for point in timeSeriesData  %}
-		<div class="tab-pane {% if loop.index==1 %}active{% endif %}" id="data{{ loop.index }}">
+		<div class="tab-pane {% if loop.index==1 %}active{% endif %}" id="data{{ loop.index }}" style="height: 650px; overflow: auto;" >
 			<table border="2" width="100%">
 			<tr><td>
 				<table id="table" class="table table-striped table-bordered">
@@ -21,7 +21,8 @@
 							#Variable: {% if timeSeriesCalc=='days' %}Daily {%else%} {%endif%} {{ variableShortName_time }} 
 							{% if varUnits %} ({{ varUnits }}){% endif %}<br>
 							#Data Source: {{ productLongName_time }} <br>
-							{% if notes_time %} #Notes: {{ notes_time }}<br>{% endif %}
+							#Notes:{% if notes_time %}  {{ notes_time }}{% endif %}<br>
+							#Missing Value:{% if variable[0]=='G'%}-9999{% else %}None{% endif %}<br>
 							#Time Period: {{ dateStart }} to  {{ dateEnd }}<br>
 							#Location: {{ point.LongLat }}<br>
 							#======================================================<br>

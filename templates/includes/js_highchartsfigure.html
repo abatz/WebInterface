@@ -1,0 +1,191 @@
+<script type="text/javascript">
+    //Script to generate highcharts time series graph
+
+    //------------------------
+    // Script for ability to drag legend around
+    //------------------------
+    {% include 'includes/js_legend_drag.html'%} 
+
+    //------------------------
+    //     OPTIONS
+    //------------------------
+    var timeSeriesData = {{ timeSeriesGraphData |safe}};
+    var variable = "{{ variable }}";
+    if(variable=='Gpr' || variable=='Gpet' || variable=='Gwb'){
+	var chartType='column';
+    }else{
+	var chartType='spline';
+    }
+    var title = "{% if timeSeriesCalc=='days' %}Daily {%else%} {%endif%} {{ variableShortName_time }}"
+    var subtitle="Data Source: {{ productLongName_time }}";
+    var legendtitle='<b>Point Locations (Long/Lat):</b>';
+    var credittext='Data Source: {{ productLongName_time }}';
+
+    var axis_min = null;
+    var yLabel = "{{ variableShortName_time }} {% if varUnits %}({{ varUnits }}){% endif %}";
+    if (variable == 'Gvs' || variable == 'Gpr' || variable=='Gpet'){
+    	axis_min = 0;
+    }
+
+    axisFontSize = '16px';
+    labelsFontSize = '20px';
+
+
+    //------------------------
+    //define chart data
+    //------------------------
+    var series_data = [],s,d;
+    for (var k=0;k<timeSeriesData.length;k++){
+	    d = timeSeriesData[k].Data;
+	    s = {
+		name:timeSeriesData[k].LongLat,
+		color:timeSeriesData[k].MarkerColor,
+		data:d
+	    }
+	    series_data.push(s);
+    }
+    //------------------------
+    //HIGH CHARTS
+    //------------------------
+    $('#container').highcharts({
+	    chart: {
+                renderTo: 'container',
+                //type: 'spline',
+                type:  chartType,
+		zoomType: 'x',
+		// Edit chart spacing
+		spacingBottom: 30,
+		spacingTop: 10,
+		spacingLeft: 10,
+		spacingRight: 10,
+		// Explicitly tell the width and height of a chart
+		//width: null,
+		height: 700,
+            },
+    	    title: {
+   	        text: title,
+    	    },
+ 	   subtitle: {
+               text: subtitle,
+           },
+	    //------------------------
+	    //XAXIS
+	    //------------------------
+	    xAxis: {
+		    gridlineWidth: 1,
+		    type:'datetime',  
+                    showLastTickLabel: true,
+                    maxZoom: 1 * 24 * 3600*1000, // one day
+                    plotBands: [{
+                        id: 'mask-before',
+                        from: Date.parse({{ dateStart }}),
+                        to: Date.parse({{ dateEnd }}),
+                        color: 'rgba(0, 0, 0, 0.2)'
+                    }],
+		    title: {
+			text: '', //no need to label this as Date
+			style: {
+				fontSize: labelsFontSize,
+			},
+		    },
+		    labels: {
+			format: '{value:%Y-%m-%d}',
+			rotation: 80,
+			align: 'left',
+			style: {
+				fontSize: axisFontSize,
+				zIndex: 6,
+			},
+			//formatter: function() {
+			//return Highcharts.dateFormat('%m/%e/%y',this.value.toFixed(2));
+			//}
+		    }
+	    },
+	    //------------------------
+	    //YAXIS
+	    //------------------------
+	    yAxis: {
+		    gridLineWidth: 1,
+		    title: {
+			text: yLabel,
+			style: {
+				fontSize: labelsFontSize,
+			    },
+		    },
+		    min: axis_min,
+		    tickLength: 5,
+		    tickWidth: 1,
+		    tickPosition: 'outside',
+		    lineWidth:1,
+		    labels: {
+			style: {
+				fontSize: axisFontSize,
+				zIndex: 6,
+			}
+		    }
+	    },
+	    //------------------------
+	    //LEGEND
+	    //------------------------
+	    legend: {
+		    layout: 'vertical',
+		    backgroundColor: 'white',
+		    align: 'right',
+		    verticalAlign: 'top',
+		    y: 50, // >0 moves down
+		    x: -500, // >0 moves right
+		    borderWidth: 1,
+		    borderRadius: 5,
+		    floating: true,
+		    draggable: true,
+		    zIndex: 20,
+		    title: {
+			    text: legendtitle,
+			    style: {
+			    },
+		    }
+	    },
+	    //------------------------
+	    // PLOT OPTIONS
+	    //------------------------
+		plotOptions: {
+		    series: {
+			states: {
+			    hover: {
+				brightness: 0.2
+			    }
+			}
+		    }
+		},
+	    //------------------------
+	    //TOOLTIP -What happens when hover over the item
+	    //------------------------
+/*
+	    tooltip: {
+		formatter: function() {
+       			 return  '<b>'+this.series.name +'</b><br /> ' +
+        	Highcharts.dateFormat('%m/%e/%y',new Date(this.x)) + ': <b>'+ this.y +'</b>'{% if varUnits %}+' {{varUnits}}'{% endif %};
+    	  	}
+	    },
+*/
+	    //------------------------
+	    // CREDITS OR FOOTNOTE
+	    //------------------------
+	    //This is how we'd do it if we wanted this
+//	    credits: {
+//		     text: '',
+//                      position: {
+//                            x: 0,
+//                            y: -10, // position of credits
+//                            align: 'right',
+//                            verticalAlign: 'bottom',
+//                     },
+//                      style: {
+//                          fontSize: '9pt',
+//                      },
+//	    },
+	    //------------------------
+	    series: series_data,
+      });	   
+
+</script>
