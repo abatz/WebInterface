@@ -54,7 +54,10 @@ class DroughtTool(webapp2.RequestHandler):
         self.monthStart = self.request.get('monthStart',tempstart.strftime('%mm'));
         self.monthEnd = self.request.get('monthEnd',tempend.strftime('%mm'));
         self.yearStart = self.request.get('yearStart','1979');
-        self.yearEnd = self.request.get('yearEnd','2015');
+        self.yearEnd = self.request.get('yearEnd',tempend.strftime('%Y'));
+        self.yearStartClim = self.request.get('yearStartClim',self.minYear);
+        self.yearEndClim= self.request.get('yearEndClim','2010');
+        #self.yearEndClim= self.request.get('yearEndClim',tempend.strftime('%Y'));
 
         #Map Options
         self.mapid = self.request.get('mapid','')
@@ -144,6 +147,10 @@ class DroughtTool(webapp2.RequestHandler):
             'minYear':self.minYear,
             'dateStart': self.dateStart,
             'dateEnd': self.dateEnd,
+            'yearStart': self.yearStart,
+            'yearEnd': self.yearEnd,
+            'yearStartClim': self.yearStartClim,
+            'yearEndClim': self.yearEndClim,
             #Map Options
             'opacity': self.opacity,
             'pointsLongLat':self.pointsLongLat,

@@ -17,6 +17,7 @@ def get_images(template_values):
     var = TV['variable'];aOV = TV['anomOrValue']
     dT = TV['domainType']
     dS = TV['dateStart']; dE = TV['dateEnd'];
+    yearStartClim = TV['yearStartClim']; yearEndClim = TV['yearEndClim'];
     statistic=TV['statistic'];
     units=TV['units'];
     palette=TV['palette'];
@@ -86,7 +87,8 @@ def get_images(template_values):
     #==============
     #Anomaly
 	if aOV in ['anom','anompercentof','anompercentchange','clim']:
-	    collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV,collectionInitial)
+	    collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV,\
+                   collectionInitial,yearStartClim,yearEndClim)
 	    TV['climatologyNotes'] = climatologyNotes
 	#Units
     collection=check_units(collection,var,aOV,units);
@@ -426,22 +428,14 @@ def get_collection(variable):
 #===========================================
 #    GET_ANOMALY
 #===========================================
-def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,statistic,anomOrValue,collectionSource):
+def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,statistic,anomOrValue,collectionSource,\
+                 yearStartClim,yearEndClim):
     #here anomOrValue =['anom','anompercentof','anompercentchange','clim'] only
     
     doyStart = ee.Number(ee.Algorithms.Date(dateStart).getRelative('day', 'year')).add(1);
     doyEnd = ee.Number(ee.Algorithms.Date(dateEnd).getRelative('day', 'year')).add(1);
     doy_filter = ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year');
 
-    if(product=='gridded'):
-        yearStartClim ='1981';
-        yearEndClim='2010';
-    elif(product=='landsat'):
-        yearStartClim ='1999';
-        yearEndClim='2010';
-    elif(product=='modis'):
-        yearStartClim ='2000';
-        yearEndClim='2010';
     num_years = int(yearEndClim) - int(yearStartClim) + 1;
     climatologyNote='Climatology calculated from '+yearStartClim+'-'+yearEndClim;
 

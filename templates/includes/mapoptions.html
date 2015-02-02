@@ -78,6 +78,28 @@
 			   </div>
 			</td>
 		   </tr>
+  		   <tr> 
+		       <td>
+		       <!----------------------------->
+		       <!--        CLIMATOLOGY YEARS     -->
+		       <!----------------------------->
+			<b>Climatology Year Range:</b><br> 
+			 <select id="yearStartClim" name="yearStartClim" class="yearStartClim">
+			{% for x,y in formYear %}
+			     {% if x>minYear and x<yearEnd %}
+			    <option value="{{ x }}" {% if x == yearStartClim  %} selected {% endif %}>{{ y }}</option>
+ 			     {% endif %}
+			{% endfor %}
+			</select>-
+			 <select id="yearEndClim" name="yearEndClim" class="yearEndClim">
+			{% for x,y in formYear %}
+			     {% if x>minYear and x<yearEnd %}
+			    <option value="{{ x }}" {% if x == yearEndClim %} selected {% endif %}>{{ y }}</option>
+ 			     {% endif %}
+			{% endfor %}
+			</select>
+			</td>
+		   </tr>
 		   </table>
                 </div>
                 <!----------------------------->
