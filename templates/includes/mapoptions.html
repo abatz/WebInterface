@@ -60,8 +60,8 @@
 		       <!----------------------------->
 		       <!--         TIME PERIOD     -->
 		       <!----------------------------->
-			  <b>Time Period</b><br>
 			   <div class="timeperiod">
+			  <b>Time Period</b><br>
 				  Start Date:
 				  <input type="text" id="dateStart" value="{{ dateStart }}" name="dateStart" class="dateStart">
 				  <br>
@@ -80,24 +80,30 @@
 		   </tr>
   		   <tr> 
 		       <td>
-		       <!----------------------------->
-		       <!--        CLIMATOLOGY YEARS     -->
-		       <!----------------------------->
-			<b>Climatology Year Range:</b><br> 
-			 <select id="yearStartClim" name="yearStartClim" class="yearStartClim">
-			{% for x,y in formYear %}
-			     {% if x>minYear and x<yearEnd %}
-			    <option value="{{ x }}" {% if x == yearStartClim  %} selected {% endif %}>{{ y }}</option>
- 			     {% endif %}
-			{% endfor %}
-			</select>-
-			 <select id="yearEndClim" name="yearEndClim" class="yearEndClim">
-			{% for x,y in formYear %}
-			     {% if x>minYear and x<yearEnd %}
-			    <option value="{{ x }}" {% if x == yearEndClim %} selected {% endif %}>{{ y }}</option>
- 			     {% endif %}
-			{% endfor %}
-			</select>
+		  	<div class="climatologyYears" 
+				{% if anomOrValue == "value" %}
+					style="display:none"
+				{% endif %}
+				>
+			       <!----------------------------->
+			       <!--        CLIMATOLOGY YEARS     -->
+			       <!----------------------------->
+				<b>Climatology Year Range:</b><br> 
+				 <select id="yearStartClim" name="yearStartClim" class="yearStartClim">
+				{% for x,y in formYear %}
+				     {% if x>=1972 and x<=yearEnd %}
+				    <option value="{{ x }}" {% if x == yearStartClim  %} selected {% endif %}>{{ y }}</option>
+				     {% endif %}
+				{% endfor %}
+				</select>-
+				 <select id="yearEndClim" name="yearEndClim" class="yearEndClim">
+				{% for x,y in formYear %}
+				     {% if x>=1972 and x<=yearEnd %}
+				    <option value="{{ x }}" {% if x == yearEndClim %} selected {% endif %}>{{ y }}</option>
+				     {% endif %}
+				{% endfor %}
+				</select>
+			</div>
 			</td>
 		   </tr>
 		   </table>

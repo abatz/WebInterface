@@ -135,7 +135,7 @@ formDay=[(str(x),str(x)) for x in range(1,32,1)]
 #============================
 #    formYear
 #============================
-formYear=[(str(x),str(x)) for x in range(1979,2025,1)]
+formYear=[(str(x),str(x)) for x in range(1972,2025,1)]
 
 #============================
 #    formLocation

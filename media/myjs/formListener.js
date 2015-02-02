@@ -348,7 +348,19 @@ $(function(){
         $('.dateStart').datepicker( "option", "yearRange", yearRange);
         $('.dateEnd').datepicker( "option", "minDate", minDate);
         $('.dateEnd').datepicker( "option", "yearRange",yearRange);
+
+	document.getElementById('yearStartClim').value =minYear;
     });
+
+    jQuery('.anomOrValue').on('change', function(){
+	   var anomOrValue = jQuery('.anomOrValue').val()
+	  if(anomOrValue=='clim' || anomOrValue=='anom' || anomOrValue=='anompercentof' ||anomOrValue=='anompercentchange'){
+                 jQuery('.climatologyYears').show();
+	  }else{
+                 jQuery('.climatologyYears').hide();
+	 }
+    });
+
 
     jQuery('.variable, .anomOrValue, .units').on('change', function(){
 	   
