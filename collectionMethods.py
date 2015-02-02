@@ -312,7 +312,7 @@ def get_collection(variable):
             collectionLongName = 'MODIS 16-day NDSI'
         elif(product=='landsat'):
 	    collectionName = 'LT4_L1T_8DAY_NDSI,LT5_L1T_8DAY_NDSI,LE7_L1T_8DAY_NDSI';
-            collectionLongName = 'Landsat4/5/7/8 8-day NDSI Composite'
+            collectionLongName = 'Landsat4/5/7 8-day NDSI Composite'
             collection4 = ee.ImageCollection('LT4_L1T_8DAY_NDSI');
             collection5 = ee.ImageCollection('LT5_L1T_8DAY_NDSI');
             collection7 = ee.ImageCollection('LE7_L1T_8DAY_NDSI');
@@ -326,7 +326,7 @@ def get_collection(variable):
             collectionLongName = 'MODIS 16-day NDWI Composite'
         elif(product=='landsat'):
 	    collectionName = 'LT5_L1T_8DAY_NDWI,LT5_L1T_8DAY_NDWI,LE7_L1T_8DAY_NDWI';
-            collectionLongName = 'Landsat5/7/8 8-day NDWI Composite'
+            collectionLongName = 'Landsat5/7 8-day NDWI Composite'
             collection4 = ee.ImageCollection('LT5_L1T_8DAY_NDWI');
             collection5 = ee.ImageCollection('LT5_L1T_8DAY_NDWI');
             collection7 = ee.ImageCollection('LE7_L1T_8DAY_NDWI');
@@ -340,7 +340,7 @@ def get_collection(variable):
             collectionLongName = 'MODIS 16-day EVI Composite'
         elif(product=='landsat'):
 	    collectionName = 'LT4_L1T_8DAY_EVI,LT5_L1T_8DAY_EVI,LE7_L1T_8DAY_EVI';
-            collectionLongName = 'Landsat4/5/7/8 8-day EVI Composite'
+            collectionLongName = 'Landsat4/5/7 8-day EVI Composite'
             collection4 = ee.ImageCollection('LT4_L1T_8DAY_EVI');
             collection5 = ee.ImageCollection('LT5_L1T_8DAY_EVI');
             collection7 = ee.ImageCollection('LE7_L1T_8DAY_EVI');
