@@ -2,9 +2,9 @@
     //Script to generate highcharts time series graph
     var timeSeriesData = {{ timeSeriesGraphData |safe}};
     var variable = "{{ variable }}";
-    var title = "{% if timeSeriesCalc=='days' %}Daily {%else%} {%endif%}{{ variableShortName }}";
+    var title = "{% if timeSeriesCalc=='days' %}Daily {%else%} {%endif%} {{ variableShortName_time }}";
     var axis_min = null;
-    var y_label = "{{ variableShortName }} ({{ varUnits }})";
+    var y_label = "{{ variableShortName_time }} {% if varUnits %}({{ varUnits }}){% endif %}";
     if (variable == 'vs' || variable == 'pr'){
     axis_min = 0;
     }

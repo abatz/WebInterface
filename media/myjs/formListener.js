@@ -2,17 +2,76 @@ $(function(){
 	/*--------------------------------------------*/
 	/*        TIMESERIES ACCORDION LISTENERS      */
 	/*--------------------------------------------*/
-	jQuery('#accordionBUILDTIMESERIES').on('hidden.bs.collapse', function (e) {
-		 //Hide all markers
-		for (var i=0;i<window.markers.length;i++){
-		    window.markers[i].setVisible(false);
-		}
+        /*Show markers only of time series option is expanded*/
+	/*jQuery('#accordionBUILDTIMESERIES').on('hidden.bs.collapse', function (e) {     //for accordion*/  
+	/*jQuery('#tab2mapoptions,#tabmaprequired,#tabmapoptions').on('show.bs.tab', function (e) {*/
+	jQuery('[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+	        var target = $(e.target).attr("href") // activated tab
+		if(target=='#tabmapoptions' || target=='#tabblank'){
+			 //Hide all markers
+			for (var i=0;i<window.markers.length;i++){
+			    window.markers[i].setVisible(false);
+			};
+		}else if(target=='#tabtimeseriesoptions'){
+			var point_id,LongLat,Lat,Long,latlong;
+			$('.point').each(function() {
+			    point_id = parseFloat($(this).attr('id').split('point')[1]);
+			    if ($(this).css('display') == 'block' && $('#check' + String(point_id)).is(':checked')){
+				LongLat = String($('#p' + String(point_id)).val()).replace(' ','');
+				Long = parseFloat(LongLat.split(',')[0]);
+				Lat = parseFloat(LongLat.split(',')[1]);
+				latlong = new google.maps.LatLng(Lat,Long);
+				//Update marker on map
+				window.markers[point_id-1].position = latlong;
+				window.markers[point_id-1].setVisible(true);
+			    };
+			});
+		};
 	});
-	jQuery('#accordionBUILDTIMESERIES').on('shown.bs.collapse', function (e) {
-		 var point_id,LongLat,Lat,Long,latlong;
+
+	/*--------------------------------------------*/
+	/*         POINTS LISTENERS                    */
+	/*--------------------------------------------*/
+	    /*
+	    Deal with three inputs
+	    1. Checkbox for a marker has changed
+	    See if point is checked and update map, pointsLongLat accordingly
+	    */
+	    $(".pointCheck").bind("keyup change", function(e) {
+		var LongLatStr,LongLatList,LongLat;
+		var Long,Lat,latlong;
+		LongLatStr = $('#pointsLongLat').val();
+		LongLatList = LongLatStr.replace(' ','').split(',');
+		point_id = parseFloat($(this).val());
+		LongLat = String($('#p' + point_id).val()).replace(' ','');
+		Long = parseFloat(LongLat.split(',')[0])
+		Lat = parseFloat(LongLat.split(',')[1])
+		//See if point is checked and update map, pointsLongLat accordingly
+		if ($(this).is(':checked')) {
+		    //Show marker to map
+		    if (LongLat){
+			latlong = new google.maps.LatLng(Lat,Long);
+			window.markers[point_id-1].position = latlong;
+			window.markers[point_id-1].setVisible(true);
+		    }
+		    //Update hidden variable that keeps track of checkboxes
+		    $('#p' + String(point_id) + 'check').val('checked');
+		}
+		else {
+		    //Update hidden variable that keeps track of checkboxes
+		    $('#p' + String(point_id) + 'check').val('');
+		    //Hide marker from map
+		    window.markers[point_id-1].setVisible(false);
+		}
+	    });
+	    //2. Input field for marker
+	    jQuery('.point').on('change','input.pointLongLat[type=text]', function(){
+		//Change position of marker on map
+		//Generate new pointsLongLat string
+		var point_id,LongLat,Lat,Long,latlong;
 		$('.point').each(function() {
-		    point_id = parseFloat($(this).attr('id').split('point')[1]);
 		    if ($(this).css('display') == 'block' && $('#check' + String(point_id)).is(':checked')){
+			point_id = parseFloat($(this).attr('id').split('point')[1]);
 			LongLat = String($('#p' + String(point_id)).val()).replace(' ','');
 			Long = parseFloat(LongLat.split(',')[0]);
 			Lat = parseFloat(LongLat.split(',')[1]);
@@ -22,147 +81,75 @@ $(function(){
 			window.markers[point_id-1].setVisible(true);
 		    }
 		});
-	});
+	    });
+	    
+	    //3. Add another point button
+	    jQuery('.point').on('click','.add', function(){
+		var next_point_id = parseFloat($(this).attr('id').split('pl')[1]);
+		//Hide plus icon of this marker
+		$(this).css('display','none');
+		//Show next point
+		$('#point' + String(next_point_id)).css('display','block');
+		//Show next marker
+		window.markers[next_point_id - 1].setVisible(true);            
+		//Update check value
+		$('#p' + String(next_point_id) + 'check').val('checked');
+	    });
 
-	/*--------------------------------------------*/
-	/*         POINTS LISTENERS                    */
-	/*--------------------------------------------*/
-    /*Show markesr only of time series option is expanded*/
-     $('#accordionBUILDTIMESERIES').on('shown.bs.collapse', function (e) {
-        //Show markers
-       var point_id;
-        $('.point').each(function() {
-            point_id = parseFloat($(this).attr('id').split('point')[1]);
-            if ($(this).css('display') == 'block' && $('#check' + String(point_id)).is(':checked')){
-                //Update marker on map
-                window.markers[point_id-1].setVisible(true);
-            }
-        });
-    });
-    $('#accordionBUILDTIMESERIES').on('hidden.bs.collapse', function (e) {
-        //Hide all markers
-        for (var i=0;i<window.markers.length;i++){
-            window.markers[i].setVisible(false);
-        }
-    }); 
-    /*
-    Deal with three inputs
-    1. Checkbox for a marker has changed
-    See if point is checked and update map, pointsLongLat accordingly
-    */
-    $(".pointCheck").bind("keyup change", function(e) {
-        var LongLatStr,LongLatList,LongLat;
-        var Long,Lat,latlong;
-        LongLatStr = $('#pointsLongLat').val();
-        LongLatList = LongLatStr.replace(' ','').split(',');
-        point_id = parseFloat($(this).val());
-        LongLat = String($('#p' + point_id).val()).replace(' ','');
-        Long = parseFloat(LongLat.split(',')[0])
-        Lat = parseFloat(LongLat.split(',')[1])
-        //See if point is checked and update map, pointsLongLat accordingly
-        if ($(this).is(':checked')) {
-            //Show marker to map
-            if (LongLat){
-                latlong = new google.maps.LatLng(Lat,Long);
-                window.markers[point_id-1].position = latlong;
-                window.markers[point_id-1].setVisible(true);
-            }
-            //Update hidden variable that keeps track of checkboxes
-            $('#p' + String(point_id) + 'check').val('checked');
-        }
-        else {
-            //Update hidden variable that keeps track of checkboxes
-            $('#p' + String(point_id) + 'check').val('');
-            //Hide marker from map
-            window.markers[point_id-1].setVisible(false);
-        }
-    });
-    //2. Input field for marker
-    jQuery('.point').on('change','input.pointLongLat[type=text]', function(){
-        //Change position of marker on map
-        //Generate new pointsLongLat string
-        var point_id,LongLat,Lat,Long,latlong;
-        $('.point').each(function() {
-            if ($(this).css('display') == 'block' && $('#check' + String(point_id)).is(':checked')){
-                point_id = parseFloat($(this).attr('id').split('point')[1]);
-                LongLat = String($('#p' + String(point_id)).val()).replace(' ','');
-                Long = parseFloat(LongLat.split(',')[0]);
-                Lat = parseFloat(LongLat.split(',')[1]);
-                latlong = new google.maps.LatLng(Lat,Long);
-                //Update marker on map
-                window.markers[point_id-1].position = latlong;
-                window.markers[point_id-1].setVisible(true);
-            }
-        });
-    });
-    
-    //3. Add another point button
-    jQuery('.point').on('click','.add', function(){
-        var next_point_id = parseFloat($(this).attr('id').split('pl')[1]);
-        //Hide plus icon of this marker
-        $(this).css('display','none');
-        //Show next point
-        $('#point' + String(next_point_id)).css('display','block');
-        //Show next marker
-        window.markers[next_point_id - 1].setVisible(true);            
-        //Update check value
-        $('#p' + String(next_point_id) + 'check').val('checked');
-    });
-
-    //3. Take point button away
-    jQuery('.point').on('click','.minus', function(){
-        var point_id = parseFloat($(this).attr('id').split('mi')[1]);
-        //Find last marker and show the plus sign on that marker
-        idx = point_id -1;
-        if (String(point_id)== '1' ||  String(point_id) == 7){
-            while ($('#point' + idx).css('display') == 'none' ){
-                idx-=1;
-            }
-        }
-        $('#pl' + String(idx +1)).css('display','inline')
-        //Hide this point
-        $('#point' + String(point_id)).css('display','none');
-        //Hide this marker
-        window.markers[point_id - 1].setVisible(false);
-        $('#p' + String(point_id) + 'check').val('');
-    });
-    //onsubmit of form , update pointsLongLat
-    //This function is called in templates/includes/timeseriesoptions.html on form_map submit
-    jQuery('#form_map').submit(function( event ) {
-        if ( $('#domainType').val() == 'points') {
-            var LongLatStr = '';
-            $('.point').each(function() {
-                point_id = parseFloat($(this).attr('id').split('point')[1]);
-                if ($(this).is(':visible') && $('#check' + String(point_id)).is(':checked')) {
-                    //Update hidden check variables for display and checkbox
-                    $('#p' + String(point_id) + 'check').val('checked');
-                    $('#p' + String(point_id) + 'display').val('block');
-                    //Point visible and checkbox checked, add to pointsLongLat variable
-                    LongLat = String($('#p' + String(point_id)).val()).replace(' ','');
-                    Long = parseFloat(LongLat.split(',')[0]);
-                    Lat = parseFloat(LongLat.split(',')[1]);
-                    //Update LongLat string
-                    if (LongLatStr != '') {
-                        LongLatStr+=',' + LongLat;
-                    }
-                    else{
-                        LongLatStr+=LongLat;
-                    }
-                }
-                else {
-                    //Update hidden variables for display and checkbox
-                    if ($(this).not(':visible')){
-                        $('#p' + String(point_id) + 'display').val('none');
-                    }
-                    if ($('#check' + String(point_id)).not(':checked')){
-                        $('#p' + String(point_id) + 'check').val('checked');
-                    }
-                }
-            });
-            //Update pointsLongLat
-            $('#pointsLongLat').val(LongLatStr);
-        }
-    }); 
+	    //3. Take point button away
+	    jQuery('.point').on('click','.minus', function(){
+		var point_id = parseFloat($(this).attr('id').split('mi')[1]);
+		//Find last marker and show the plus sign on that marker
+		idx = point_id -1;
+		if (String(point_id)== '1' ||  String(point_id) == 7){
+		    while ($('#point' + idx).css('display') == 'none' ){
+			idx-=1;
+		    }
+		}
+		$('#pl' + String(idx +1)).css('display','inline')
+		//Hide this point
+		$('#point' + String(point_id)).css('display','none');
+		//Hide this marker
+		window.markers[point_id - 1].setVisible(false);
+		$('#p' + String(point_id) + 'check').val('');
+	    });
+	    //onsubmit of form , update pointsLongLat
+	    //This function is called in templates/includes/timeseriesoptions.html on form_map submit
+	    jQuery('#form_map').submit(function( event ) {
+		if ( $('#domainType').val() == 'points') {
+		    var LongLatStr = '';
+		    $('.point').each(function() {
+			point_id = parseFloat($(this).attr('id').split('point')[1]);
+			if ($(this).is(':visible') && $('#check' + String(point_id)).is(':checked')) {
+			    //Update hidden check variables for display and checkbox
+			    $('#p' + String(point_id) + 'check').val('checked');
+			    $('#p' + String(point_id) + 'display').val('block');
+			    //Point visible and checkbox checked, add to pointsLongLat variable
+			    LongLat = String($('#p' + String(point_id)).val()).replace(' ','');
+			    Long = parseFloat(LongLat.split(',')[0]);
+			    Lat = parseFloat(LongLat.split(',')[1]);
+			    //Update LongLat string
+			    if (LongLatStr != '') {
+				LongLatStr+=',' + LongLat;
+			    }
+			    else{
+				LongLatStr+=LongLat;
+			    }
+			}
+			else {
+			    //Update hidden variables for display and checkbox
+			    if ($(this).not(':visible')){
+				$('#p' + String(point_id) + 'display').val('none');
+			    }
+			    if ($('#check' + String(point_id)).not(':checked')){
+				$('#p' + String(point_id) + 'check').val('checked');
+			    }
+			}
+		    });
+		    //Update pointsLongLat
+		    $('#pointsLongLat').val(LongLatStr);
+		}
+	    }); 
 	/*--------------------------------------------*/
 	/*         LAYERS LISTENER                    */
 	/*--------------------------------------------*/
@@ -173,7 +160,7 @@ $(function(){
 		if($('input[id=stateoverlayer]:checked').val()=="stateoverlayer"){
 			 window.statemarkerOverLayer = new google.maps.KmlLayer(
 				'http://nimbus.cos.uidaho.edu/DROUGHT/KML/states_outlined.kmz', {
-			 map:map,
+			 map:window.map,
 			    preserveViewport: true,
 			    suppressInfoWindows: false
 			 });
@@ -187,7 +174,7 @@ $(function(){
 		if($('input[id=countyoverlayer]:checked').val()=="countyoverlayer"){
 			 window.countymarkerOverLayer = new google.maps.KmlLayer(
 				'http://nimbus.cos.uidaho.edu/DROUGHT/KML/counties_outlined.kmz', {
-                	    map:map,
+                	    map:window.map,
 			    preserveViewport: true,
 			    suppressInfoWindows: false
 			 });
@@ -201,7 +188,7 @@ $(function(){
 		if($('input[id=hucoverlayer]:checked').val()=="hucoverlayer"){
 			 window.hucsmarkerOverLayer = new google.maps.KmlLayer(
 				'http://nimbus.cos.uidaho.edu/DROUGHT/KML/hucs_outlined.kmz', {
-			map:map,
+			map:window.map,
 			    preserveViewport: true,
 			    suppressInfoWindows: false
 			 });
@@ -215,7 +202,7 @@ $(function(){
 		if($('input[id=climatedivoverlayer]:checked').val()=="climatedivoverlayer"){
 			window.climatedivmarkerOverLayer = new google.maps.KmlLayer(
                         'http://nimbus.cos.uidaho.edu/DROUGHT/KML/divs_outlined.kmz', {
-                        map:map,
+                        map:window.map,
                             preserveViewport: true,
                             suppressInfoWindows: false
                          });
@@ -229,7 +216,7 @@ $(function(){
 		if($('input[id=psaoverlayer]:checked').val()=="psaoverlayer"){
 			  window.psasmarkerOverLayer = new google.maps.KmlLayer(
                         'http://nimbus.cos.uidaho.edu/DROUGHT/KML/psa_outlined.kmz', {
-                        map:map,
+                        map:window.map,
                             preserveViewport: true,
                             suppressInfoWindows: false
                          });
@@ -242,11 +229,11 @@ $(function(){
 		/*-------------------*/
 		if($('input[id=kmloverlayer]:checked').val()=="kmloverlayer"){
 			kmlurl=document.getElementById('kmlurl').value;
-			window.kmlmarkerOverLayer = new google.maps.KmlLayer(kmlurl, {
-				map:map,
+			window.kmlmarkerOverLayer = new google.maps.KmlLaer(kmlurl, {
+			  map:window.map,
 			    preserveViewport: true,
 			    suppressInfoWindows: false
-			 });
+			});
 		  	window.kmlmarkerOverLayer.setMap(window.map);
 		}else{
 		  	window.kmlmarkerOverLayer.setMap(null);
@@ -254,13 +241,19 @@ $(function(){
 	});
 
  	jQuery('#kmlurl').keyup( function(){
-		winndow.kmlmarkerOverLayer = new google.maps.KmlLayer('{{ kmlurl }}', {
-                        map:map,
-                            preserveViewport: true,
-                            suppressInfoWindows: false
-                });
+	       if($('input[id=kmloverlayer]:checked').val()=="kmloverlayer"){
+			var kmlurl=document.getElementById('kmlurl').value;
+			window.kmlmarkerOverLayer = new google.maps.KmlLayer(kmlurl, {
+				map:window.map,
+				    preserveViewport: true,
+				    suppressInfoWindows: false
+			});
+                	window.kmlmarkerOverLayer.setMap(window.map);
+		}else{
+                	window.kmlmarkerOverLayer.setMap(null);
+		}
                 window.kmlmarkerOverLayer.setMap(window.map);
-});
+	});
 	/*--------------------------------------------*/
 	/*--                                         --*/
 	/*--------------------------------------------*/
@@ -366,6 +359,7 @@ $(function(){
 	   var units = jQuery('.units').val()
 
            if(variable=='NDVI' || variable=='EVI' ){
+                statistic='Median';
            	if(jQuery('.anomOrValue').val()=='anom'){
 			minColorbar = -.4;
 			maxColorbar = .4;
@@ -382,7 +376,8 @@ $(function(){
 			varUnits=''
 		}
            }else if(variable=='NDSI' || variable=='NDWI'){
-		 if(anomOrValue=='anom'){
+                statistic='Median';
+		if(anomOrValue=='anom'){
                         minColorbar = -.5;
                         maxColorbar = .5;
                         palette="A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
@@ -398,6 +393,7 @@ $(function(){
 			varUnits=''
                 }
 	   }else if(variable=='pr'){
+                 statistic='Total';
                  if(anomOrValue=='anom'){
 			minColorbar = 0;
 			maxColorbar = 200;
@@ -420,6 +416,7 @@ $(function(){
 			colorbarsize=8
                 }
             }else if(variable=='tmmx' || variable=='tmmn' || variable=='tmean'){
+                 statistic='Mean';
                  if(anomOrValue=='anom'){
                  	if(units=='metric'){
 				minColorbar =-5;
@@ -474,6 +471,7 @@ $(function(){
                         colorbarsize=8
                 }
 	    }else if(variable=='rmin' || variable=='rmax'){
+                 statistic='Mean';
                  if(variable=='anom'){
                         minColorbar =-25;
                         maxColorbar = 25;
@@ -490,6 +488,7 @@ $(function(){
 			varUnits='%'
                 }
 	    }else if(variable=='srad'){
+                 statistic='Mean';
                  if(anomOrValue=='anom'){
                         minColorbar =-25;
                         maxColorbar = 25;
@@ -506,6 +505,7 @@ $(function(){
 			varUnits='W/m^2'
                 }
 	    }else if(variable=='vs'){
+                 statistic='Mean';
                  if(anomOrValue=='anom'){
                  	if(units=='metric'){
 				minColorbar =-2.5;
@@ -534,6 +534,7 @@ $(function(){
 			colorbarsize=8
                 }
 	 }else if(variable=='sph'){
+                 statistic='Mean';
                  if(anomOrValue=='anom'){
                         minColorbar =-30;
                         maxColorbar = 30;
@@ -550,6 +551,7 @@ $(function(){
 			varUnits='kg/kg';
                 }
 	 }else if(variable=='erc'){
+                 statistic='Mean';
                  if(anomOrValue=='anom'){
                         minColorbar =-20;
                         maxColorbar = 20;
@@ -566,6 +568,7 @@ $(function(){
 			varUnits='';
                 }
          }else if(variable=='pet'){
+                 statistic='Total';
                  if(anomOrValue=='anom'){
 			minColorbar =80;
 			maxColorbar =120;
@@ -588,6 +591,7 @@ $(function(){
 			colorbarsize=8
                 }
          }else if(variable=='pdsi'){
+                 statistic='Mean';
                  if(anomOrValue=='anom'){
 			minColorbar =-6;
 			maxColorbar =6;
@@ -604,6 +608,7 @@ $(function(){
 			varUnits='';
                 }
 	 }else if(variable=='wb'){
+                 statistic='Total';
                  if(anomOrValue=='anom'){
                         minColorbar =-100;
                         maxColorbar = 100;
@@ -632,13 +637,13 @@ $(function(){
 	     document.getElementById('colorbarmap').value =colorbarmap;
 	     document.getElementById('colorbarsize').value =colorbarsize;
 	     document.getElementById('varUnits').value =varUnits;
+	     document.getElementById('statisticChoice').value =statistic;
 
              colorbarsize = parseInt(document.getElementById('colorbarsize').value);
              colorbarmap = document.getElementById('colorbarmap').value;
 
              minColorbar = document.getElementById('minColorbar').value
              maxColorbar = document.getElementById('maxColorbar').value
-
 
              myPalette=colorbrewer[colorbarmap][colorbarsize];
 

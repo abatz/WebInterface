@@ -17,12 +17,13 @@ def get_images(template_values):
     var = TV['variable'];aOV = TV['anomOrValue']
     dT = TV['domainType']
     dS = TV['dateStart']; dE = TV['dateEnd'];
+    statistic=TV['statistic'];
     units=TV['units'];
     palette=TV['palette'];
     #get map palette options
     colorbarmap,colorbarsize,minColorbar,maxColorbar,colorbarLabel,varUnits=get_colorbar(str(var),str(aOV),units)
 
-    #Override max/minColorbar if user entered custom value
+    #Override value if user entered custom value
     if 'minColorbar' in template_values.keys():
         minColorbar = template_values['minColorbar']
     if 'maxColorbar' in template_values.keys():
@@ -33,7 +34,7 @@ def get_images(template_values):
         colorbarsize = template_values['colorbarsize']
 
     #Get initial collection
-    collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(var);
+    collection,collectionName,collectionLongName,product,variableShortName,notes=get_collection(var);
     if aOV in ['anom','clim']:
         collectionSource=collection;
 
@@ -93,7 +94,7 @@ def get_images(template_values):
         'minColorbar': minColorbar,
         'maxColorbar': maxColorbar,
         'varUnits': varUnits,
-        'notes': notes 
+        'notes_map': notes 
     }
     if mapid and mapid['mapid'] and mapid['token']:
         extra_template_values['mapid'] = mapid['mapid']
@@ -110,6 +111,7 @@ def get_time_series(template_values):
         TV[key] = val
     var = TV['variable'];mc = TV['marker_colors'];
     dS = TV['dateStart'];dE = TV['dateEnd'];
+    statistic=TV['statistic'];
     units=TV['units'];
     pointsLongLat = str(TV['pointsLongLat']) #string of comma separates llon,lat pairs
     pointsLongLatList = pointsLongLat.replace(' ','').split(',');
@@ -117,7 +119,7 @@ def get_time_series(template_values):
     points = ee.Feature.MultiPoint(pointsLongLatTuples);
 
     #get the collection  (Note get_collecton needs full var name with prefix)
-    collection,collectionName,collectionLongName,product,variableShortName,notes,statistic=get_collection(var);
+    collection,collectionName,collectionLongName,product,variableShortName,notes=get_collection(var);
     var = var[1:]; #strip product of variable name
 
     #check if there is more than 2500 records requested here
@@ -172,15 +174,19 @@ def get_time_series(template_values):
 
     timeSeriesGraphData = json.dumps(timeSeriesGraphData)
     source = collectionLongName + ' from ' + dS + '-' + dE + '';
+    #Set title
+    title = statistic + ' ' + variableShortName;
 
     #Update template values
     extra_template_values = {
-        'source':source,
-        'product':product,
-        'productLongName':collectionLongName,
-        'variableShortName':variableShortName,
+        'source_time':source,
+        'title_time':title,
+        'product_time':product,
+        'productLongName_time':collectionLongName,
+        'variableShortName_time':variableShortName,
         'timeSeriesData':timeSeriesData,
-        'timeSeriesGraphData':timeSeriesGraphData
+        'timeSeriesGraphData':timeSeriesGraphData,
+        'notes_time': notes 
     }
     TV.update(extra_template_values)
     return TV
@@ -255,8 +261,8 @@ def get_collection(variable):
             collectionName = 'MCD43A4_NDVI';
             collectionLongName = 'MODIS 16-day NDVI'
         elif(product=='landsat'):
-            collectionName = 'LT4_L1T_8DAY_NDVI,LT5_L1T_8DAY_NDVI,LE7_L1T_8DAY_NDVI,LC8_L1T_8DAY_NDVI';
-            collectionLongName = 'Landsat4/5/7/8 8-day NDVI Composite'
+            collectionName = 'LT4_L1T_8DAY_NDVI,LT5_L1T_8DAY_NDVI,LE7_L1T_8DAY_NDVI';
+            collectionLongName = 'Landsat4/5/7 8-day NDVI Composite'
             collection4 = ee.ImageCollection('LT4_L1T_8DAY_NDVI');
             collection5 = ee.ImageCollection('LT5_L1T_8DAY_NDVI');
             collection7 = ee.ImageCollection('LE7_L1T_8DAY_NDVI');
@@ -269,7 +275,7 @@ def get_collection(variable):
             collectionName = 'MCD43A4_NDSI';
             collectionLongName = 'MODIS 16-day NDSI'
         elif(product=='landsat'):
-	    collectionName = 'LT4_L1T_8DAY_NDSI,LT5_L1T_8DAY_NDSI,LE7_L1T_8DAY_NDSI,LC8_L1T_8DAY_NDSI';
+	    collectionName = 'LT4_L1T_8DAY_NDSI,LT5_L1T_8DAY_NDSI,LE7_L1T_8DAY_NDSI';
             collectionLongName = 'Landsat4/5/7/8 8-day NDSI Composite'
             collection4 = ee.ImageCollection('LT4_L1T_8DAY_NDSI');
             collection5 = ee.ImageCollection('LT5_L1T_8DAY_NDSI');
@@ -283,7 +289,7 @@ def get_collection(variable):
             collectionName = 'MCD43A4_NDWI';
             collectionLongName = 'MODIS 16-day NDWI Composite'
         elif(product=='landsat'):
-	    collectionName = 'LT5_L1T_8DAY_NDWI,LT5_L1T_8DAY_NDWI,LE7_L1T_8DAY_NDWI,LC8_L1T_8DAY_NDWI';
+	    collectionName = 'LT5_L1T_8DAY_NDWI,LT5_L1T_8DAY_NDWI,LE7_L1T_8DAY_NDWI';
             collectionLongName = 'Landsat5/7/8 8-day NDWI Composite'
             collection4 = ee.ImageCollection('LT5_L1T_8DAY_NDWI');
             collection5 = ee.ImageCollection('LT5_L1T_8DAY_NDWI');
@@ -298,7 +304,6 @@ def get_collection(variable):
             collectionLongName = 'MODIS 16-day EVI Composite'
         elif(product=='landsat'):
 	    collectionName = 'LT4_L1T_8DAY_EVI,LT5_L1T_8DAY_EVI,LE7_L1T_8DAY_EVI';
-	    #collectionName = 'LT4_L1T_8DAY_EVI,LT5_L1T_8DAY_EVI,LE7_L1T_8DAY_EVI,LC8_L1T_8DAY_EVI';
             collectionLongName = 'Landsat4/5/7/8 8-day EVI Composite'
             collection4 = ee.ImageCollection('LT4_L1T_8DAY_EVI');
             collection5 = ee.ImageCollection('LT5_L1T_8DAY_EVI');
@@ -402,7 +407,7 @@ def get_collection(variable):
 	collection = ee.ImageCollection(collection4.merge(collection5).merge(collection7));
 	#collection = ee.ImageCollection(collection4.merge(collection5).merge(collection7).merge(collection8));
 
-    return (collection,collectionName,collectionLongName,product,variableShortName,notes,statistic);
+    return (collection,collectionName,collectionLongName,product,variableShortName,notes);
 
 #===========================================
 #    GET_ANOMALY
@@ -452,6 +457,10 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
          climatology = ee.Image(climatology.sum().divide(num_years));
     elif(statistic=='Median'):
          climatology = ee.Image(climatology.median());
+    elif(statistic=='Max'):
+         climatology = ee.Image(climatology.max());
+    elif(statistic=='Min'):
+         climatology = ee.Image(climatology.min());
     elif(statistic=='Mean' and variable=='erc'):
          climatology = ee.Image(climatology.mean());
     elif(statistic=='Mean'):
@@ -467,14 +476,12 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
             collection = ee.Image(collection.divide(climatology).multiply(100)); #anomaly
         elif(statistic=='Total' and variable=='pet'):
             collection = ee.Image(collection.divide(climatology).multiply(100)); #anomaly
-        elif(statistic=='Median'):
-            collection = ee.Image(collection.subtract(climatology)); #anomaly
         elif(statistic=='Mean' and variable=='sph'):
             collection = ee.Image(collection.subtract(climatology).divide(climatology).multiply(100));
-        elif(statistic=='Mean'):
-            collection = ee.Image(collection.subtract(climatology));
         elif(variable=='wb'):
             collection = ee.Image(collection.subtract(climatology).divide(climatology).multiply(100));
+        else: #mean,median,min,max
+            collection = ee.Image(collection.subtract(climatology));
     return(collection,climatologyNote);
 
 #===========================================

@@ -7,6 +7,25 @@
                     <option value="{{ x }}" {% if x == timeSeriesCalc  %} selected {% endif %}>{{ y }}</option>
                 {% endfor %}
         </select>
+ 	<br>
+  	<select id="variableT" name="variableT" class="variableT" width="95%">
+                <optgroup label="MODIS">
+                        {% for x,y in formVariableModis %}
+                            <option value="{{ x }}" {% if x == variable  %} selected {% endif %}>{{ y }}</option>
+                        {% endfor %}
+                </optgroup>
+                 <optgroup label="Landsat">
+                        {% for x,y in formVariableLandsat %}
+                            <option value="{{ x }}" {% if x == variable  %} selected {% endif %}>{{ y }}</option>
+                        {% endfor %}
+                </optgroup>
+                <optgroup label="gridMET">
+                        {% for x,y in formVariableGrid %}
+                                <option value="{{ x }}"{% if x == variable  %} selected {% endif %}>{{ y }}</option>
+                        {% endfor %}
+                </optgroup>
+        </select><br>
+
    </td>
 </tr>
 <tr>

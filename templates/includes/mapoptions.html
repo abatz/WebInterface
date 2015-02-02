@@ -1,6 +1,6 @@
 <ul class="nav nav-tabs" id="mapTab" >
                 <li class="active"><a href="#tabmaprequired" data-toggle="tab">Map Request</a></li>
-                <li ><a href="#tabmapoptions" data-toggle="tab">Map Options </a></li>
+                <li ><a href="#tab2mapoptions" data-toggle="tab">Map Options </a></li>
 </ul>
 <div class="tab-content">
                 <!----------------------------->
@@ -10,18 +10,51 @@
 		  <table id="table" class="table table-striped" width="100%" border="1">
 		     <tr>
 		   	<td>
+			<input type="hidden" id="minYear" name="minYear" value="{{ minYear }}" />
+			<input type="hidden" id="mapid" name="mapid" value="{{ mapid }}" />
+			<input type="hidden" id="token" name="token" value="{{ token }}" />
+
 			<!----------------------------->
-			<!--  CALCULATION         -->
-			<!----------------------------->
-			<b>Calculation:</b><br>
+		        <!--           VARIABLE      -->
+		        <!----------------------------->
+			<b>Variable:</b><br>
+			<select name="statistic" class="statisticChoice" id="statisticChoice">
+                                {% for x,y in formStatistic %}
+                                    <option value="{{ x }}" {% if x == statistic  %} selected {% endif %}>{{ y }}</option>
+                                {% endfor %}
+                          </select>
+			<br>
+			<select id="variable" name="variable" class="variable" width="95%">
+				<optgroup label="MODIS">
+					{% for x,y in formVariableModis %}
+					    <option value="{{ x }}" {% if x == variable  %} selected {% endif %}>{{ y }}</option>
+					{% endfor %}
+				</optgroup>
+				 <optgroup label="Landsat">
+					{% for x,y in formVariableLandsat %}
+					    <option value="{{ x }}" {% if x == variable  %} selected {% endif %}>{{ y }}</option>
+					{% endfor %}
+				</optgroup>
+				<optgroup label="gridMET">
+					{% for x,y in formVariableGrid %}
+						<option value="{{ x }}"{% if x == variable  %} selected {% endif %}>{{ y }}</option>
+					{% endfor %}
+				</optgroup>
+			</select><br>
 			<select id="anomOrValue" name="anomOrValue" class="anomOrValue" width="95%">
 				{% for x,y in formAnomOrValue %}
 				    <option value="{{ x }}" {% if x == anomOrValue  %} selected {% endif %}>{{ y }}</option>
 				{% endfor %}
 			</select>
-			<br>
-			</td>
+			</td> 
     		    </tr>
+		   {% if form_error.variable %}
+			<tr>
+				<td>
+					<div class="error">{{ form_error.variable }}</div>
+				</td>
+		 	</tr>
+	   	    {% endif %}
 		    <tr>
 			<td>
 		       <!----------------------------->
@@ -50,7 +83,7 @@
                 <!----------------------------->
                 <!--    MAP OPTIONS        -->
                 <!----------------------------->
-                <div class="tab-pane" id="tabmapoptions">
+                <div class="tab-pane" id="tab2mapoptions">
                                         {% include 'includes/mapcollapsibleoptions.html'%}
                 </div>
 		<!----------------------------->
@@ -60,7 +93,7 @@
 		    <tr>
 			<td>
 				<center>
-				<input type="submit" class="btn btn-large ptn-primary pull-right" value="GET MAP"
+				<input type="submit" class="btn btn-large btn-primary pull-right" value="GET MAP"
 					 form="form_map" onclick="document.getElementById('domainType').value='full';"/>
 				<br>
 				{% if mapid %}

@@ -3,10 +3,23 @@
         <!--        NAVIGATION       -->
         <!----------------------------->
         <ul class="nav nav-tabs" id="dataTab" >
-                <li><a href="#tabblank" data-toggle="tab"><img src="images/uparrow.png" height="10px"></a></li>
-                <li {% if not timeSeriesData %}class="active"{% endif %}><a href="#taboptions" data-toggle="tab"><img src="images/downarrow.png" height="10px"></a></li>
-                 {% if timeSeriesData %}<li class="active"><a href="#tabtimeseries" data-toggle="tab">Time Series Output 
-			<img src="images/downarrow.png" height="10px"></a></li>{% endif %}
+                <li>
+			<a href="#tabblank" data-toggle="tab"><img src="images/uparrow.png" height="10px"></a>
+		</li>
+                <li {% if not timeSeriesData %}class="active"{% endif %}>
+			<a href="#tabmapoptions" data-toggle="tab">
+			<span style='color:blue'>Map</span>
+	  	     	<img src="images/downarrow.png" height="10px"></a>
+		</li>
+		<li>
+			<a href="#tabtimeseriesoptions" data-toggle="tab"><span style='color:blue'>Time Series</span></a>
+		</li>
+		{% if timeSeriesData %}
+		<li class="active">
+			<a href="#tabtimeseries" data-toggle="tab">Time Series Output 
+			<img src="images/downarrow.png" height="10px"></a>
+		</li>
+		{% endif %}
         </ul>
 
         <div class="tab-content">
@@ -18,11 +31,29 @@
 		<!----------------------------->
 		<!--  MAP WINDOW 	     -->
 		<!----------------------------->
-		<div class="tab-pane {% if not timeSeriesData %}active{% endif %}" id="taboptions">
-			{% include 'includes/taboptions.html'%}
+		<div class="tab-pane {% if not timeSeriesData %}active{% endif %}" id="tabmapoptions">
+			<table id="table" class="table" width="100%">
+        			<tr style="outline: thin solid">
+            			   <td>
+                                        {% include 'includes/mapoptions.html'%}
+				   </td>
+        			 </tr>
+			</table>
 		</div>
                 <!----------------------------->
 		<!--    TIME SERIES WINDOW   -->
+                <!----------------------------->
+		<div class="tab-pane" id="tabtimeseriesoptions">
+			<table id="table" class="table" width="100%">
+				<tr style="outline: thin solid">
+				   <td>
+					{% include 'includes/timeseriesoptions.html'%}
+				   </td>
+				 </tr>
+			</table>
+		</div>
+                <!----------------------------->
+		<!--    TIME SERIES DATA WINDOW   -->
                 <!----------------------------->
 	 	<div class="tab-pane {% if timeSeriesData %}active{% endif %}" id="tabtimeseries">
                     {% if timeSeriesGraphData%}

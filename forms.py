@@ -63,9 +63,20 @@ formVariableModis=[
 formAnomOrValue=[
     ('value','Values'),
     ('clim','Climatology'),
-    ('anom','Anomaly'),
+    ('anom','Change From Climatology'),
+    ('anompercent','Percent Change From Climatology'),
 ]
 
+#============================
+#    formStatistic
+#============================
+formStatistic=[
+    ('Mean','Mean'),
+    ('Median','Median'),
+    ('Max','Maximum'),
+    ('Min','Minimum'),
+    ('Total','Total'),
+]
 #============================
 #    formLayers
 #============================
@@ -76,7 +87,7 @@ formLayers=[
     ('hucoverlayer','US Hydrologic Unit Code(HUC) Layer'),
     ('climatedivoverlayer','US Climate Divisions Layer'),
     ('psaoverlayer','US Predictive Service Areas Layer'),
-    ('kmloverlayer','Custom KML/KMZ Layer (Enter URL)'),
+    ('kmloverlayer','Custom KML/KMZ Layer'),
 ]
 
 #============================
@@ -84,7 +95,7 @@ formLayers=[
 #============================
 formTimeSeriesCalc=[
     #('season','Time Series of Seasonal '),
-    ('days','Time Series of Daily '),
+    ('days','Time Series of Daily'),
 ]
 
 

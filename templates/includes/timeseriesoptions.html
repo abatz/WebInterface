@@ -1,6 +1,6 @@
 <ul class="nav nav-tabs" id="timeseriesTab" >
                 <li class="active"><a href="#tabtimeseriesrequired" data-toggle="tab">TimeSeries Request</a></li>
-                <li ><a href="#tabtimeseriesoptions" data-toggle="tab">Plot Options </a></li>
+                <li ><a href="#tab2timeseriesoptions" data-toggle="tab">Plot Options </a></li>
 </ul>
 <div class="tab-content">
                 <!----------------------------->
@@ -12,7 +12,7 @@
    		<!----------------------------->
                 <!--   TIMESERIES OPTIONS    -->
                 <!----------------------------->
-                <div class="tab-pane" id="tabtimeseriesoptions">
+                <div class="tab-pane" id="tab2timeseriesoptions">
                         {% include 'includes/timeseriescollapsibleoptions.html'%}
 		</div>
    		<!----------------------------->
@@ -21,7 +21,7 @@
 		<table width="100%">
 		    <tr>
 			<td>
-				<input type="submit" class="btn btn-large ptn-primary pull-right" value="GET TIME SERIES"
+				<input type="submit" class="btn btn-large btn-primary pull-right" value="GET TIME SERIES"
 					 form="form_map" onclick="document.getElementById('domainType').value='points';"/>
 				{% if timeSeriesData %}
 					 <a href="#shareLink" data-toggle="modal">Share Link</a>

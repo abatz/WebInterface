@@ -1,48 +1,13 @@
 <table id="table" class="table table-striped" width="100%">
 
        <!---------------------------->
-       <!--      DATA               -->
-       <!----------------------------->
-        <tr>
-	    <td>
-	       <!----------------------------->
-	       <!--           VARIABLE      -->
-	       <!----------------------------->
-            <input type="hidden" id="minYear" name="minYear" value="{{ minYear }}" />
-            <input type="hidden" id="mapid" name="mapid" value="{{ mapid }}" />
-            <input type="hidden" id="token" name="token" value="{{ token }}" />
-			<b>Variable:</b><br>
-			<select id="variable" name="variable" class="variable" width="95%">
-				<optgroup label="MODIS">
-					{% for x,y in formVariableModis %}
-					    <option value="{{ x }}" {% if x == variable  %} selected {% endif %}>{{ y }}</option>
-					{% endfor %}
-				</optgroup>
-				 <optgroup label="Landsat">
-                                        {% for x,y in formVariableLandsat %}
-                                            <option value="{{ x }}" {% if x == variable  %} selected {% endif %}>{{ y }}</option>
-                                        {% endfor %}
-                                </optgroup>
-				<optgroup label="gridMET">
-					{% for x,y in formVariableGrid %}
-					        <option value="{{ x }}"{% if x == variable  %} selected {% endif %}>{{ y }}</option>
-					{% endfor %}
-				</optgroup>
-			</select>
-             </td>
-	</tr>
-	{% if form_error.variable %}
-	<tr>
-		<td>
-			<div class="error">{{ form_error.variable }}</div>
-		</td>
-	</tr>
-	{% endif %}
-       <!---------------------------->
        <!--      MAP                -->
        <!----------------------------->
 	<tr style="outline: thin solid">
 	    <td>
+            <input type="hidden" id="minYear" name="minYear" value="{{ minYear }}" />
+            <input type="hidden" id="mapid" name="mapid" value="{{ mapid }}" />
+            <input type="hidden" id="token" name="token" value="{{ token }}" />
 		<div class="accordion" id="accordionBUILDMAP">
 		  <div class="accordion-group">
 			<div class="accordion-heading">
@@ -57,7 +22,7 @@
 				</a>
 			</div>
 		   </div>
-		 <div id="collapseBuildMapOptions" class="accordion-body collapse {%if mapid%} in {% endif %}">
+		 <div id="collapseBuildMapOptions" class="accordion-body collapse {%if mapid and not timeSeriesData%} in {% endif %}">
 		       <div class="accordion-inner">
 			    <div class="panel-body">
 					{% include 'includes/mapoptions.html'%}

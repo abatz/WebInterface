@@ -36,18 +36,20 @@
 					</td>
 					<td width="40%">
 						<span style="font-size:18pt"><center>{{ title }}</center></span>
-						<span style="font-size:10pt"><center>Source: {{ source }}</center></span>
+						{% if source %}<span style="font-size:10pt"><center>Source: {{ source }}</center></span>{% endif %}
 						{% if anomOrValue=='anom' or anomOrValue=='clim' %}
 							<span style ="font-size:10pt"><center> {{ climatologyNotes }}</center></span>
 						{% endif %}
 					</td>
 					<td width="30%">
+						{% if mapid and not timeSeriesData %}
 						<div name="form_colorbar" id="target_colorbar" style="width:100%">
 							<center>
             					<div id="colorbar"><svg style="width:400px;height:30px;"></svg></div>
 							</center>
 						</div>
 						<center>{{ colorbarLabel }}</center>
+						{% endif %}
 					</td>
 				</tr>
 			</table>

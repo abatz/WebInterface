@@ -15,6 +15,7 @@ import httplib2
 import forms
 import collectionMethods
 import figureFormatting
+
 from google.appengine.api import urlfetch
 urlfetch.set_default_fetch_deadline(60000)
 httplib2.Http(timeout=30000)
@@ -34,24 +35,18 @@ class DroughtTool(webapp2.RequestHandler):
         #sets form  parameters
         self.ppost = 0
         self.form_error = {}
-        self.opacity = self.request.get('opacity',str(14*0.05))
+
+        #Variable Options
         self.variable = self.request.get('variable','Gpr')
-        self.minYear = self.request.get('minYear','1979')
-        self.domainType = self.request.get('domainType','full')
-        self.state = self.request.get('state','California')
+        self.statistic = self.request.get('statistic','Total')
         self.anomOrValue = self.request.get('anomOrValue','value')
-        self.timeSeriesCalc = self.request.get('timeSeriesCalc','days')
-        self.background = self.request.get('background','nowhitebackground')
-        self.layer = self.request.get('layer','none')
+        self.units = self.request.get('units','metric')
+        self.varUnits = self.request.get('varUnits','mm')
 
-        self.mapid = self.request.get('mapid','')
-        self.token = self.request.get('token','')
-        self.mapCenterLongLat = self.request.get('mapCenterLongLat','-112,42')
-
+        #Time Options
+        self.minYear = self.request.get('minYear','1979')
 	tempstart = datetime.date.today()-datetime.timedelta(days=30)
 	tempend = datetime.date.today()-datetime.timedelta(days=2)
-	#tempstart = datetime.date.today()-datetime.timedelta(days=60)
-	#tempend = datetime.date.today()-datetime.timedelta(days=30)
         self.dateStart = self.request.get('dateStart',tempstart.strftime('%Y-%m-%d'))
         self.dateEnd = self.request.get('dateEnd',tempend.strftime('%Y-%m-%d'))
         self.dayStart = self.request.get('dayStart','1')
@@ -61,24 +56,45 @@ class DroughtTool(webapp2.RequestHandler):
         self.yearStart = self.request.get('yearStart','1979');
         self.yearEnd = self.request.get('yearEnd','2015');
 
-        self.pointsLongLat = self.request.get('pointsLongLat',self.mapCenterLongLat)
-
+        #Map Options
+        self.mapid = self.request.get('mapid','')
+        self.token = self.request.get('token','')
+        self.mapCenterLongLat = self.request.get('mapCenterLongLat','-112,42')
         self.opacity = self.request.get('opacity',str(14*0.05))
-        self.units = self.request.get('units','metric')
-        self.varUnits = self.request.get('varUnits','mm')
+        self.domainType = self.request.get('domainType','full')
+        self.state = self.request.get('state','California')
+        self.background = self.request.get('background','nowhitebackground')
+        self.layer = self.request.get('layer','none')
         self.NELat = self.request.get('NELat',45)
         self.NELong= self.request.get('NELong',-95)
         self.SWLat= self.request.get('SWLat',40)
         self.SWLong= self.request.get('SWLong',-111)
         self.kmloption = self.request.get('kmloption', '')
         self.kmlurl = self.request.get('kmlurl', '')
-
+	if(self.domainType=='full'):
+            mz= '5';
+        elif(self.domainType=='states'):
+            mz= '6';
+	    self.mapCenterLongLat = str(forms.stateLong[self.state])+','+str(forms.stateLat[self.state]);
+	else:
+	    mz='4';
+        self.mapzoom = self.request.get('mapzoom',mz)
+   
+        #Colorbar Options
         self.minColorbar = self.request.get('minColorbar', None)
         self.maxColorbar = self.request.get('maxColorbar', None)
         self.palette = self.request.get('palette', None)
         self.colorbarmap = self.request.get('colorbarmap', 'GnBu')
         self.colorbarsize = self.request.get('colorbarsize', '8')
-        #Points/markers
+        if self.minColorbar is None and self.maxColorbar is None:
+            self.colorbarmap,self.colorbarsize,self.minColorbar,self.maxColorbar,self.colorbarLabel,self.varUnits,\
+                 =collectionMethods.get_colorbar(self.variable,self.anomOrValue,self.units)
+
+        #TimeSeries Options
+        self.pointsLongLat = self.request.get('pointsLongLat',self.mapCenterLongLat)
+        self.timeSeriesCalc = self.request.get('timeSeriesCalc','days')
+
+        #Points/marker Options
         #Long,Lat inputs
         self.p1 = self.request.get('p1',self.mapCenterLongLat);
         self.p2 = self.request.get('p2',self.mapCenterLongLat);
@@ -87,6 +103,7 @@ class DroughtTool(webapp2.RequestHandler):
         self.p5 = self.request.get('p5',self.mapCenterLongLat);
         self.p6 = self.request.get('p6',self.mapCenterLongLat);
         self.p7 = self.request.get('p7',self.mapCenterLongLat);
+
         #checkboxes and displays
         self.p1check =self.request.get('p1check','checked');self.p2check=self.request.get('p2check','checked')
         self.p3check =self.request.get('p3check','checked');self.p4check=self.request.get('p4check','checked')
@@ -98,19 +115,6 @@ class DroughtTool(webapp2.RequestHandler):
         self.p7display =self.request.get('p7display','none');
         self.marker_colors = ['blue', 'green', 'orange', 'purple',\
         'yellow', 'pink','red']
-
-	if(self.domainType=='full'):
-            mz= '5';
-        elif(self.domainType=='states'):
-            mz= '6';
-	    self.mapCenterLongLat = str(forms.stateLong[self.state])+','+str(forms.stateLat[self.state]);
-	else:
-	    mz='4';
-        self.mapzoom = self.request.get('mapzoom',mz)
-
-        if self.minColorbar is None and self.maxColorbar is None:
-            self.colorbarmap,self.colorbarsize,self.minColorbar,self.maxColorbar,self.colorbarLabel,self.varUnits,\
-                 =collectionMethods.get_colorbar(self.variable,self.anomOrValue,self.units)
 
     def set_share_link(self, initial_template_values):
         shareLink = 'drought-monitor2.appspot.com?'
@@ -130,9 +134,14 @@ class DroughtTool(webapp2.RequestHandler):
             'mapid':self.mapid,
             'token':self.token,
             'form_error': self.form_error,
-            'opacity': self.opacity,
+            #Variable Options
+            'variable': self.variable,
+            'statistic': self.statistic,
+            'anomOrValue': self.anomOrValue,
             'units': self.units,
             'varUnits': self.varUnits,
+            #Map Options
+            'opacity': self.opacity,
             'pointsLongLat':self.pointsLongLat,
             'mapCenterLongLat':self.mapCenterLongLat,
             'NELat': self.NELat,
@@ -141,41 +150,25 @@ class DroughtTool(webapp2.RequestHandler):
             'SWLong': self.SWLong,
             'ppost': self.ppost,
             'mapzoom': self.mapzoom,
-            'variable': self.variable,
-            'minYear':self.minYear,
             'state': self.state,
             'domainType': self.domainType,
-            'anomOrValue': self.anomOrValue,
             'background': self.background,
             'layer': self.layer,
-            'timeSeriesCalc': self.timeSeriesCalc,
-            'dateStart': self.dateStart,
-            'dateEnd': self.dateEnd,
-            'formMonth': forms.formMonth,
-            'formDay': forms.formDay,
-            'formYear': forms.formYear,
-            'formMapZoom': forms.formMapZoom,
-            'formPaletteDivMap': forms.formPaletteDivMap,
-            'formPaletteSeqMap': forms.formPaletteSeqMap,
-            'formPaletteSize': forms.formPaletteSize,
-            'formOpacity': forms.formOpacity,
-            'formUnits': forms.formUnits,
-            'formAnomOrValue': forms.formAnomOrValue,
-            'formBackground': forms.formBackground,
-            'formTimeSeriesCalc': forms.formTimeSeriesCalc,
-            'formVariableGrid': forms.formVariableGrid,
-            'formLocation': forms.formLocation,
-            'formVariableLandsat': forms.formVariableLandsat,
-            'formVariableModis': forms.formVariableModis,
-            'formStates': forms.formStates,
-            'formLayers': forms.formLayers,
             'kmlurl': self.kmlurl,
             'kmloption': self.kmloption,
+            #TimeSeries Options
+            'timeSeriesCalc': self.timeSeriesCalc,
+            #Time Options
+            'minYear':self.minYear,
+            'dateStart': self.dateStart,
+            'dateEnd': self.dateEnd,
+            #Colorbar Options
             'palette': self.palette,
             'minColorbar': self.minColorbar,
             'maxColorbar': self.maxColorbar,
             'colorbarmap': self.colorbarmap,
             'colorbarsize': self.colorbarsize,
+            #PointMarker Options
             'marker_colors':self.marker_colors,
             'p1':self.p1,
             'p2':self.p2,
@@ -197,7 +190,26 @@ class DroughtTool(webapp2.RequestHandler):
             'p4display':self.p4display,
             'p5display':self.p5display,
             'p6display':self.p6display,
-            'p7display':self.p7display
+            'p7display':self.p7display,
+            'formMonth': forms.formMonth,
+            'formDay': forms.formDay,
+            'formYear': forms.formYear,
+            'formMapZoom': forms.formMapZoom,
+            'formPaletteDivMap': forms.formPaletteDivMap,
+            'formPaletteSeqMap': forms.formPaletteSeqMap,
+            'formPaletteSize': forms.formPaletteSize,
+            'formOpacity': forms.formOpacity,
+            'formUnits': forms.formUnits,
+            'formAnomOrValue': forms.formAnomOrValue,
+            'formBackground': forms.formBackground,
+            'formTimeSeriesCalc': forms.formTimeSeriesCalc,
+            'formVariableGrid': forms.formVariableGrid,
+            'formStatistic': forms.formStatistic,
+            'formLocation': forms.formLocation,
+            'formVariableLandsat': forms.formVariableLandsat,
+            'formVariableModis': forms.formVariableModis,
+            'formStates': forms.formStates,
+            'formLayers': forms.formLayers
         }
         if self.colorbarmap:
             template_values['colorbarmap']= self.colorbarmap

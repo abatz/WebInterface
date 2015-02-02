@@ -1,0 +1,64 @@
+<table id="table" class="table table-striped" width="100%">
+
+       <!---------------------------->
+       <!--      MAP                -->
+       <!----------------------------->
+	<tr style="outline: thin solid">
+	    <td>
+            <input type="hidden" id="minYear" name="minYear" value="{{ minYear }}" />
+            <input type="hidden" id="mapid" name="mapid" value="{{ mapid }}" />
+            <input type="hidden" id="token" name="token" value="{{ token }}" />
+		<div class="accordion" id="accordionBUILDMAP">
+		  <div class="accordion-group">
+			<div class="accordion-heading">
+				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionBUILDMAP" href="#collapseBuildMapOptions">
+				<div class="panel panel-default">
+				    <div class="panel-heading">
+					<h4><p style="text-align:left"><span style='color:blue'> Build Map:</span>
+					<span class="caret"></span>
+					</p></h4>
+				    </div>
+				</div>
+				</a>
+			</div>
+		   </div>
+		 <div id="collapseBuildMapOptions" class="accordion-body collapse {%if mapid and not timeSeriesData%} in {% endif %}">
+		       <div class="accordion-inner">
+			    <div class="panel-body">
+					{% include 'includes/mapoptions.html'%}
+			    </div>
+			</div>
+		    </div>
+	    </div>
+         </td>
+	</tr>
+       <!---------------------------->
+       <!--      TIME SERIES      -->
+       <!----------------------------->
+        <tr style="outline: thin solid">
+            <td>
+                <div class="accordion" id="accordionBUILDTIMESERIES">
+                  <div class="accordion-group">
+                        <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionBUILDTIMESERIES" href="#collapseBuildTimeSeriesOptions">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4><p style="text-align:left"><span style='color:blue'> Build Time Series:</span>
+                                        <span class="caret"></span>
+                                        </p></h4>
+                                    </div>
+                                </div>
+                                </a>
+                        </div><!--end of accordion-heading-->
+                   </div><!-- end of accordion-group-->
+                    <div id="collapseBuildTimeSeriesOptions" class="accordion-body collapse {% if timeSeriesData %} in {% endif %}}">
+                       <div class="accordion-inner">
+                            <div class="panel-body">
+                                        {% include 'includes/timeseriesoptions.html'%}
+                            </div>
+                        </div><!-- end of accordion-inner-->
+                    </div><!-- end of accordion-body -->
+                </div><!-- end of accordion-->
+          </td>
+        </tr>
+</table>
