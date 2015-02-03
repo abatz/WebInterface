@@ -4,7 +4,6 @@ import datetime
 import numpy
 import json
 import figureFormatting
-
 #===========================================
 #   GET_IMAGES
 #===========================================
@@ -22,7 +21,7 @@ def get_images(template_values):
     units=TV['units'];
     palette=TV['palette'];
 
-    #get map palette options  
+    #get map palette options
     colorbarmap,colorbarsize,minColorbar,maxColorbar,colorbarLabel,varUnits=get_colorbar(str(var),str(aOV),units)
 
     #Override value if user entered custom value
@@ -108,7 +107,7 @@ def get_images(template_values):
         'minColorbar': minColorbar,
         'maxColorbar': maxColorbar,
         'varUnits': varUnits,
-        'notes_map': notes 
+        'notes_map': notes
     }
     if mapid and mapid['mapid'] and mapid['token']:
         extra_template_values['mapid'] = mapid['mapid']
@@ -138,13 +137,16 @@ def get_time_series(template_values):
     product=var[0:1];
 
     #check if there is more than 2500 records requested here
-    yearStart = int(dS[0:3]);
-    yearEnd = int(dE[0:3]);
+    yearStart = int(dS[0:4]);
+    yearEnd = int(dE[0:4]);
     yearRange = yearEnd - yearStart;
-    if(yearRange<=6): #2500/365 =6.8 years is max records can be returned with getInfo()
+    if(yearRange<=5): #2500/365 =6.8 years is max records can be returned with getInfo()
         steps = 1;
-    else: 
-        steps = ceil(yearRange/6);
+    else:
+        steps = yearRange / 5
+        if (yearRange % 5 != 0):
+            steps+=1
+        #steps = int(ceil(yearRange/5));
 
     dS_save=dS;dE_save=dE;
     timeSeriesData = [];timeSeriesGraphData =[];
@@ -154,41 +156,34 @@ def get_time_series(template_values):
             if(steps==1):
                 dE=dE_save;
             else:
-                dE = str(int(dS_save[0:3])+5*x)+'-12-31';
+                dE = str(yearStart + 5*x)+'-12-31';
         else:
-            dS=str(int(dS_save[0:3])+5*(x-1)+1)+'-01-01';
+            dS=str(yearStart + 5*(x-1) + 1)+'-01-01';
             if(x==steps):
                 dE=dE_save;
             else:
-                dE=str(int(dS_save[0:3])+5*x)+'-12-31';
+                dE=str(int(dS_save[0:4])+5*x)+'-12-31';
 
         #extracting data
         if(var=='wb'):
-            dataList= collection.filterDate(dS,dE).select('pr').getRegion(points,1).getInfo(); #pr
-            datapet = collection.filterDate(dS,dE).select('pet').getRegion(points,1).getInfo();
-            datapet.pop(0);
+            dataList= collection.filterDate(dS,dE).select('pr').getRegion(points,1).getInfo() #pr
+            dataList2 = collection.filterDate(dS,dE).select('pet').getRegion(points,1).getInfo()
         elif(var=='tmean'):
-            dataList = collection.filterDate(dS,dE).select('tmmx').getRegion(points,1).getInfo(); #tmax
-            datatmin = collection.filterDate(dS,dE).select('tmmn').getRegion(points,1).getInfo();
-            datatmin.pop(0);
+            dataList = collection.filterDate(dS,dE).select('tmmx').getRegion(points,1).getInfo() #tmax
+            dataList2 = collection.filterDate(dS,dE).select('tmmn').getRegion(points,1).getInfo()
         else:
-            dataList = collection.filterDate(dS,dE).select(var).getRegion(points,1).getInfo();
+            dataList = collection.filterDate(dS,dE).select(var).getRegion(points,1).getInfo()
+            dataList2 = None
 
         #remove first row of list ["id","longitude","latitude","time",variable]
         dataList.pop(0);
-
-        #==================
-        #format data for highcharts figure and for data in datatab
-        #==================
-        if(var=='wb'):
-            timeSeriesData,timeSeriesGraphData=figureFormatting.format_data_for_highcharts(\
-                mc,units,dataList,var,datapet,timeSeriesData,timeSeriesGraphData,product);
-        elif(var=='tmean'):
-            timeSeriesData,timeSeriesGraphData=figureFormatting.format_data_for_highcharts(\
-                mc,units,dataList,var,datatmin,timeSeriesData,timeSeriesGraphData,product);
+        if dataList2 is not None:
+            dataList2.pop(0)
+        #Update time series data
+        if not timeSeriesData and not timeSeriesGraphData:
+            timeSeriesData, timeSeriesGraphData = figureFormatting.set_initial_time_series_data(dataList,dataList2,TV)
         else:
-            timeSeriesData,timeSeriesGraphData=figureFormatting.format_data_for_highcharts(\
-                mc,units,dataList,var,[],timeSeriesData,timeSeriesGraphData,product);
+            timeSeriesData, timeSeriesGraphData = figureFormatting.join_time_series_data(dataList, dataList2,timeSeriesData,timeSeriesGraphData,TV)
 
     timeSeriesGraphData = json.dumps(timeSeriesGraphData)
     source = collectionLongName + ' from ' + dS + '-' + dE + '';
@@ -204,16 +199,16 @@ def get_time_series(template_values):
         'variableShortName_time':variableShortName,
         'timeSeriesData':timeSeriesData,
         'timeSeriesGraphData':timeSeriesGraphData,
-        'notes_time': notes 
+        'notes_time': notes
     }
     TV.update(extra_template_values)
     return TV
 
 
 #===========================================
-#   EXTRACT_DATA_FROM_TIMESERIES_ELEMENT 
+#   EXTRACT_DATA_FROM_TIMESERIES_ELEMENT
 #===========================================
-def extract_data_from_timeseries_element(idx,data,var,data2,product):
+def extract_data_from_timeseries_element(idx,data,var,data2):
     #=============
     #extract the time
     #=============
@@ -227,17 +222,12 @@ def extract_data_from_timeseries_element(idx,data,var,data2,product):
     if(date_string[0:7]=='MCD43A4'):
         date_string = date_string[12:16] + '-' + date_string[17:19] + '-' + date_string[20:22];
     else:
-        idx=date_string.rfind('_');
-        if(idx==-1):
+        i=date_string.rfind('_');
+        if(i==-1):
             date_string = date_string[0:4] + '-' + date_string[4:6] + '-' + date_string[6:8];
         else:
-            date_string = date_string[idx+1:idx+5] + '-' + date_string[idx+5:idx+7] + '-' + date_string[idx+7:idx+9];
+            date_string = date_string[i+1:i+5] + '-' + date_string[i+5:i+7] + '-' + date_string[i+7:i+9];
 
-    #do we need to do this? 
-    #try:
-    #    date_string = date_string[0:4] + '-' + date_string[4:6] + '-' + date_string[6:8];
-    #except:
-    #    pass
     #=============
     #extract the data
     #=============
@@ -446,7 +436,7 @@ def get_collection(variable):
 def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,statistic,anomOrValue,collectionSource,\
                  yearStartClim,yearEndClim):
     #here anomOrValue =['anom','anompercentof','anompercentchange','clim'] only
-    
+
     doyStart = ee.Number(ee.Algorithms.Date(dateStart).getRelative('day', 'year')).add(1);
     doyEnd = ee.Number(ee.Algorithms.Date(dateEnd).getRelative('day', 'year')).add(1);
     doy_filter = ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year');
@@ -528,7 +518,7 @@ def get_statistic(collection,statistic):
 def check_units(collection,variable,anomOrValue,units):
     #don't modify if anomOrValue=='anompercentof' or 'anompercentchange'
 
-    if(not(anomOrValue=='anompercentof' or anomOrValue=='anompercentchange')): 
+    if(not(anomOrValue=='anompercentof' or anomOrValue=='anompercentchange')):
         if(variable=='tmmx' or variable=='tmmn' or variable =='tmean'):
             if(anomOrValue=='value' or anomOrValue=='clim'):
                 collection=collection.subtract(273.15)  #convert K to C

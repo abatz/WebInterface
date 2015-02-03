@@ -27,10 +27,11 @@
 							#Location: {{ point.LongLat }} (E Longitude, N Latitude)<br>
 							#======================================================<br>
 							#Date(yyyy-mm-dd), Value{% if varUnits %} ({{ varUnits }}){% endif %}<br>
-							    {% for date_val in point.Data %}
-								{{ date_val.0 }}, {{ date_val.1 }}<br>
-							    {% endfor %}
-							#======================================================<br>
+                            {% for date_val in point.Data %}
+                                {{ date_val.0 }}, {{ date_val.1 }}<br>
+                            {% endfor %}
+ 	
+                            #======================================================<br>
 					      </td>
 					</tr>
 				</table>
