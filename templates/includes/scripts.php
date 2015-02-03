@@ -16,16 +16,6 @@
 	<script type="text/javascript" src="/media/myjs/colorbrewer.js"></script><!--DYNAMIC COLORBAR-->
 	<script type="text/javascript" src="/media/myjs/gmaps_styles.js"></script><!--GMAPS STYLES-->
 	{% include 'includes/js_datepicker.html'%}<!--DATE PICKER-->
-<!--
-	<script type="text/javascript">
-		function setCenter(){
-		newCenter = window.map.getCenter();
-		myCenterLat = newCenter.lat().toFixed(4);
-		myCenterLong = newCenter.lng().toFixed(4);
-		document.getElementById('mapCenterLongLat').value =String(myCenterLat)+','+String(myCenterLong);
-		}
-	</script>	
--->
  	<!------------------------------------>
         <!-	GOOGLE EARTH MAP SCRIPTS    -->
         <!------------------------------------>
@@ -68,7 +58,7 @@
 	      *********************************/
 	      function initialize() {
 
-       		geocoder = new google.maps.Geocoder();
+       		//geocoder = new google.maps.Geocoder();
                 var mapCenterLongLat = "{{ mapCenterLongLat}}";
                 var mapCenterLat = parseFloat(mapCenterLongLat.split(',')[1]).toFixed(4);
                 var mapCenterLong = parseFloat(mapCenterLongLat.split(',')[0]).toFixed(4);
@@ -172,12 +162,12 @@
 			myZoom = map.getZoom();
 		  }
 		});
-		/*google.maps.event.addListener(map,'center_changed',function(){
+		google.maps.event.addListener(map,'center_changed',function(){
 			newCenter = window.map.getCenter();
 			myCenterLat = newCenter.lat().toFixed(4);
 			myCenterLong = newCenter.lng().toFixed(4);
-			document.getElementById('mapCenterLongLat').value =String(myCenterLat)+','+String(myCenterLong);
-		});*/
+			document.getElementById('mapCenterLongLat').value =String(myCenterLong)+','+String(myCenterLat);
+		});
 
 		/*********************************
 		*     COLORBAR                   *
