@@ -286,7 +286,6 @@ $(function(){
         });
 
 	jQuery('#minColorbar,#maxColorbar').keyup( function(){
-		console.log('changed')
                 colorbarsize = parseInt(document.getElementById('colorbarsize').value);
                 colorbarmap = document.getElementById('colorbarmap').value;
 
@@ -304,7 +303,6 @@ $(function(){
                 colorbarObject1 = d3.select("#colorbar1").call(colorbar1)
         });
        jQuery('#colorbarmap, #colorbarsize').on('change', function(){
-		console.log('changed')
                 colorbarsize = parseInt(document.getElementById('colorbarsize').value);
                 colorbarmap = document.getElementById('colorbarmap').value;
 

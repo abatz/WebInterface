@@ -131,8 +131,8 @@ function Colorbar() {
             var new_colorbars = svg.enter()
                 .append("svg")
                 .classed("colorbar", true)
-                .attr("x",function(d) {return d[0]-margin.right})
-                .attr("y",function(d) {return d[1]-margin.top})
+                //.attr("x",function(d) {return d[0]-margin.right})
+               // .attr("y",function(d) {return d[1]-margin.top})
 
 	    offsetGroup = new_colorbars
                 .append("g")
