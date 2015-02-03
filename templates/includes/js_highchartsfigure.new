@@ -1,31 +1,45 @@
 <script type="text/javascript">
-    //Script to generate highcharts time series graph
-
-    //------------------------
-    // Script for ability to drag legend around
-    //------------------------
-    {% include 'includes/js_legend_drag.html'%} 
-
     //------------------------
     //     OPTIONS
     //------------------------
-    var timeSeriesData = {{ timeSeriesGraphData |safe}};
     var variable = "{{ variable }}";
-    var title = "{% if timeSeriesCalc=='days' %}Daily {%else%} {%endif%} {{ variableShortName_time }}"
-    var subtitle="{{ dateStart }} to  {{ dateEnd }}";
-    var legendtitle='<span style="font-size: 12px; color: #666; font-weight: normal"><b>Point Locations </span><br>(Long/Lat):</b>';
-    var credittext='Data Source: {{ productLongName_time }}';
+    var dateStart='{{ dateStart }}';
+    var dateEnd='{{ dateEnd }}';
+    var varUnits='{{ varUnits }}';
+    var varShortName_time='{{ varShortName_time }}';
+    var yLabel = "{{ variableShortName_time }}"+"varUnits;
+    var title = "Daily "+varShortName_time;
+    var subtitle="Data Source: {{ productLongName_time }}";
+    var legendTitle='<b>Point Locations (Long/Lat):</b>';
 
-    var axis_min = null;
-    var y_label = "{{ variableShortName_time }} {% if varUnits %}({{ varUnits }}){% endif %}";
-    if (variable == 'vs' || variable == 'pr'){
-    	axis_min = 0;
+    if(variable=='Gpr' || variable=='Gpet' || variable=='Gwb'){
+	var chartType='column';
+    }else{
+	var chartType='spline';
     }
 
-$(function () {
+    //var product = variable.substring(0,1);
+    //if(product=='M'){
+//	toolString='16-day period about ';
+ //   }else if(product=='L'){
+//	toolString='8-day period about '; 
+//    }else{
+//	toolString='';
+//    };
 
-   var timeSeriesData = {{ timeSeriesGraphData |safe}};
+    var axismin = null;
+    if (variable == 'Gvs' || variable == 'Gpr' || variable=='Gpet'){
+    	axismin = 0;
+    }
 
+    //------------------------
+    //    GLOBAL VARIABLE STORED
+    //------------------------
+    var timeSeriesData = {{ timeSeriesGraphData |safe}};
+
+    //------------------------
+    //define chart data
+    //------------------------
     var series_data = [],s,d;
     for (var k=0;k<timeSeriesData.length;k++){
 	    d = timeSeriesData[k].Data;
@@ -37,254 +51,9 @@ $(function () {
 	    series_data.push(s);
     }
 
-
-   var data2 = [];
-   for (var k=0;k<timeSeriesData.length;k++){
-            data2 = timeSeriesData[k].Data;
-    }
-	var data =data2 , 
-        detailChart;
-
-    $(document).ready(function () {
-
-        // create the detail chart
-        function createDetail(masterChart) {
-
-            // prepare the detail chart
-            var detailData = [],
-               // detailStart = Date.UTC(2008, 7, 1);
-	        detailStart = Date.parse({{ dateStart }});
-
-            $.each(masterChart.series[0].data, function () {
-                if (this.x >= detailStart) {
-                    detailData.push(this.y);
-                }
-            });
-
-            // create a detail chart referenced by a global variable
-            detailChart = $('#detail-container').highcharts({
-                chart: {
-		    type: 'spline',
-		    marginBottom: 120,
-                    reflow: false,
-                    marginLeft: 70,
-                    marginRight: 20,
-                    style: {
-                        position: 'absolute'
-                    }
-                },
-                credits: {
-                    enabled: false
-                },
-                title: {
-                    text: '',
-                },
-                subtitle: {
-                    text: title,
-                },
-                xAxis: {
-                    type: 'datetime'
-                },
-                yAxis: {
-                    title: {
-                        text: y_label,
-                    },
-                    maxZoom: 0.1
-                },
-                tooltip: {
-		formatter: function () {
-                        var point = this.points[0];
-                        return '<b>Long/Lat: ' + point.series.name + '</b><br/>' +
-                            Highcharts.dateFormat('%B %e %Y', this.x) + ':' +
-                             Highcharts.numberFormat(point.y, 2) ;
-                    },
-                    shared: true
-                },
-                legend: {
-                    layout: 'vertical',
-                    backgroundColor: 'white',
-                    align: 'right',
-                    verticalAlign: 'top',
-                    y: 0, // >0 moves down
-                    x: 0, // >0 moves right
-                    borderWidth: 1,
-                    borderRadius: 5,
-                    floating: true,
-                    draggable: true,
-                    zIndex: 20,
-                    title: {
-                            text: legendtitle,
-                            style: {
-                            },
-                    }
-                },
-                plotOptions: {
-                    series: {
-                        marker: {
-                            enabled: false,
-                            states: {
-                                hover: {
-                                    enabled: true,
-                                    radius: 3
-                                }
-                            }
-                        }
-                    }
-                },
-                series: series_data,
-
-                exporting: {
-                    enabled: false
-                }
-
-            }).highcharts(); // return chart
-        }
-
-        // create the master chart
-        function createMaster() {
-            $('#master-container').highcharts({
-                chart: {
-		    type: 'areaspline',
-                    reflow: false,
-                    borderWidth: 0,
-                    backgroundColor: null,
-                    marginLeft: 70,
-                    marginRight: 20,
-                    zoomType: 'x',
-                    events: {
-
-                        // listen to the selection event on the master chart to update the
-                        // extremes of the detail chart
-                        selection: function (event) {
-                            var extremesObject = event.xAxis[0],
-                                min = extremesObject.min,
-                                max = extremesObject.max,
-                                detailData = [],
-                                xAxis = this.xAxis[0];
-
-                            // reverse engineer the last part of the data
-                            $.each(this.series[0].data, function () {
-                                if (this.x > min && this.x < max) {
-                                    detailData.push([this.x, this.y]);
-                                }
-                            });
-
-                            // move the plot bands to reflect the new detail span
-                            xAxis.removePlotBand('mask-before');
-                            xAxis.addPlotBand({
-                                id: 'mask-before',
-                                from: Date.parse({{ dateStart }}),
-                                to: min,
-                                color: 'rgba(0, 0, 0, 0.2)'
-                            });
-
-                            xAxis.removePlotBand('mask-after');
-                            xAxis.addPlotBand({
-                                id: 'mask-after',
-                                from: max,
-                                to: Date.parse({{ dateEnd }}),
-                                color: 'rgba(0, 0, 0, 0.2)'
-                            });
-
-
-                            detailChart.series[0].setData(detailData);
-
-                            return false;
-                        }
-                    }
-                },
-                title: {
-                    text: null
-                },
-                xAxis: {
-                    type: 'datetime',
-                    showLastTickLabel: true,
-                    maxZoom: 1 * 24 * 3600*1000, // one day
-                    plotBands: [{
-                        id: 'mask-before',
-                        from: Date.parse({{ dateStart }}),
-                        to: Date.parse({{ dateEnd }}),
-                        color: 'rgba(0, 0, 0, 0.2)'
-                    }],
-                    title: {
-                        text: null
-                    }
-                },
-                yAxis: {
-                    gridLineWidth: 0,
-                    labels: {
-                        enabled: false
-                    },
-                    title: {
-                        text: null
-                    },
-                    min: 0.6,
-                    showFirstLabel: false
-                },
-                tooltip: {
-                    formatter: function () {
-                        return false;
-                    }
-                },
-                legend: {
-                    enabled: false
-                },
-                credits: {
-                    enabled: false
-                },
-                plotOptions: {
-                    series: {
-                        fillColor: {
-                            linearGradient: [0, 0, 0, 70],
-                            stops: [
-                                [0, Highcharts.getOptions().colors[0]],
-                                [1, 'rgba(255,255,255,0)']
-                            ]
-                        },
-                        lineWidth: 1,
-                        marker: {
-                            enabled: false
-                        },
-                        shadow: false,
-                        states: {
-                            hover: {
-                                lineWidth: 1
-                            }
-                        },
-                        enableMouseTracking: false
-                    }
-                },
-	 	series: [{
-                    type: 'areaspline',
-                    pointInterval: 24 * 3600 * 1000, //1 day
-                    pointStart: Date.parse({{ dateStart }}),
-                    data: data2,
-                }],
-
-                exporting: {
-                    enabled: false
-                }
-
-            }, function (masterChart) {
-                createDetail(masterChart);
-            })
-                .highcharts(); // return chart instance
-        }
-
-        // make the container smaller and add a second container for the master chart
-        var $container = $('#container')
-            .css('position', 'relative');
-
-        $('<div id="detail-container">')
-            .appendTo($container);
-
-        $('<div id="master-container">')
-            .css({ position: 'absolute', top: 300, height: 100, width: '100%' })
-            .appendTo($container);
-
-        // create master and in its callback, create the detail chart
-        createMaster();
-    });
-});
+    //------------------------
+    // make high charts figure
+    //------------------------
+      generateHighChartFigure(series_data,figureID,chartType,title,subtitle,dateStart,dateEnd,yLabel,legendTitle,axismin,variableShortName_time,varUnits);
 
 </script>

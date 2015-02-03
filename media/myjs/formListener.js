@@ -1,4 +1,12 @@
 $(function(){
+
+	jQuery('#chartType').on('change', function(){
+	     chartType=document.getElementById('chartType').value;
+  	     generateHighChartFigure(series_data,'#container',chartType,title,subtitle,dateStart,dateEnd,
+			yLabel,legendTitle,axis_min,variableShortName_time,varUnits);
+	});
+
+
 	/*--------------------------------------------*/
 	/*        TIMESERIES ACCORDION LISTENERS      */
 	/*--------------------------------------------*/
@@ -260,10 +268,20 @@ $(function(){
 	jQuery('#variableT').on('change', function(){
 	     variable=document.getElementById('variableT').value;
 	     document.getElementById('variable').value =variable;
+             //if(variable=='Gpet'||variable=='Gpr'||variable=='Gwb'){
+	     //	document.getElementById('chartType').value ='column';
+	     //}else{
+	    // 	document.getElementById('chartType').value ='spline';
+	    //}
 	});
 	jQuery('#variable').on('change', function(){
 	     variable=document.getElementById('variable').value;
 	     document.getElementById('variableT').value =variable;
+             //if(variable=='Gpet'||variable=='Gpr'||variable=='Gwb'){
+	    // 	document.getElementById('chartType').value ='column';
+	     //}else{
+	    // 	document.getElementById('chartType').value ='spline';
+	    //}
 	});
 
  	jQuery('#mapCenterLongLat').keyup( function(){

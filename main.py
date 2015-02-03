@@ -96,6 +96,7 @@ class DroughtTool(webapp2.RequestHandler):
         #TimeSeries Options
         self.pointsLongLat = self.request.get('pointsLongLat',self.mapCenterLongLat)
         self.timeSeriesCalc = self.request.get('timeSeriesCalc','days')
+        self.chartType = self.request.get('chartType', 'column')
 
         #Points/marker Options
         #Long,Lat inputs
@@ -175,6 +176,7 @@ class DroughtTool(webapp2.RequestHandler):
             'colorbarsize': self.colorbarsize,
             #TimeSeries Options
             'timeSeriesCalc': self.timeSeriesCalc,
+            'chartType': self.chartType,
             #PointMarker Options
             'marker_colors':self.marker_colors,
             'p1':self.p1,
@@ -199,6 +201,7 @@ class DroughtTool(webapp2.RequestHandler):
             'p6display':self.p6display,
             'p7display':self.p7display,
              #Forms
+            'formChartType': forms.formChartType,
             'formMonth': forms.formMonth,
             'formDay': forms.formDay,
             'formYear': forms.formYear,

@@ -26,7 +26,7 @@
 							#Time Period: {{ dateStart }} to  {{ dateEnd }}<br>
 							#Location: {{ point.LongLat }} (E Longitude, N Latitude)<br>
 							#======================================================<br>
-							#Date(yyyy-mm-dd), Value<br>
+							#Date(yyyy-mm-dd), Value{% if varUnits %} ({{ varUnits }}){% endif %}<br>
 							    {% for date_val in point.Data %}
 								{{ date_val.0 }}, {{ date_val.1 }}<br>
 							    {% endfor %}

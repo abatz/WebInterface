@@ -3,6 +3,16 @@
 	<table id="table" class="table table-striped table-bordered">
 	  <tr>
 	      <td>
+			 <b>ChartType:</b>
+                        <select name="chartType" class="chartType" id="chartType">
+                                {% for x,y in formChartType %}
+                                    <option value="{{ x }}" {% if x == chartType  %} selected {% endif %}>{{ y }}</option>
+                                {% endfor %}
+                          </select>	
+		</td>
+	</tr>
+	<tr>
+		<td>
 			<!------------------------------------->
 			<!--         MAKE HIGH CHARTS FIGURE      -->
 			<!------------------------------------->

@@ -79,6 +79,18 @@ formStatistic=[
     ('Total','Total'),
 ]
 #============================
+#    formChartType
+#============================
+formChartType=[
+    ('scatter','Scatter Plot'),
+    ('line','Line Plot'),
+    ('spline','Spline Plot'),
+    ('column','Bar Chart'),
+    #('areaspline','Transparent Area Plot '), #not transparent for some reason?
+    ('area','Stacked Area Plot '),
+]
+#============================
+#============================
 #    formLayers
 #============================
 formLayers=[
