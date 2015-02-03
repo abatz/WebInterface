@@ -101,13 +101,10 @@
 <!----------------------------->
 <!--    HIDDEN                -->
 <!----------------------------->
-<div class="colorbar" style="visibility:hidden">
-         <input id="palette" name="palette" value="{{ palette }}" />
-</div>
-<!--<div class="mapcenterzoom" style="visibility:hidden">-->
-<div class="mapcenterzoom">
-         <input id="mapCenterLongLat" name="mapCenterLongLat" value="{{ mapCenterLongLat }}" size=15/>
-         <select id="mapzoom" name="mapzoom" width="95%">
+<input type="hidden" class="colorbar" id="palette" name="palette" value="{{ palette }}" />
+<input type="hidden" class="mapcenterzoom" id="mapCenterLongLat" name="mapCenterLongLat" value="{{ mapCenterLongLat }}" size=15/>
+<div class="mapcenterzoom" style="visibility:hidden">
+         <select id="mapzoom" name="mapzoom" width="95%" >
                 {% for x,y in formMapZoom %}
                     <option value="{{ x }}" {% if x == mapzoom  %} selected {% endif %}>
                         {{ y }}</option>
