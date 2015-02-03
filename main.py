@@ -149,7 +149,7 @@ class DroughtTool(webapp2.RequestHandler):
         template_values['p6'] = self.request.get('p6',template_values['mapCenterLongLat'])
         template_values['p7'] = self.request.get('p7',template_values['mapCenterLongLat'])
         #Set the colorbar if needed
-        if template_values['minColorbar'] or None and template_values['maxColorbar'] is None:
+        if template_values['minColorbar'] is None and template_values['maxColorbar'] is None:
             v = template_values['variable']
             aov = template_values['anomOrValue']
             u = template_values['units']
