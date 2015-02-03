@@ -24,8 +24,9 @@
 							#Notes:{% if notes_time %}  {{ notes_time }}{% endif %}<br>
 							#Missing Value:{% if variable[0]=='G'%}-9999{% else %}None{% endif %}<br>
 							#Time Period: {{ dateStart }} to  {{ dateEnd }}<br>
-							#Location: {{ point.LongLat }}<br>
+							#Location: {{ point.LongLat }} (E Longitude, N Latitude)<br>
 							#======================================================<br>
+							#Date(yyyy-mm-dd), Value<br>
 							    {% for date_val in point.Data %}
 								{{ date_val.0 }}, {{ date_val.1 }}<br>
 							    {% endfor %}
@@ -38,3 +39,4 @@
 	    </div>
     {% endfor %}
 </div>
+<p style="text-align:center"> Scroll down to see more data</p>

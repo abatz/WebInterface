@@ -16,6 +16,15 @@
     }else{
 	var chartType='spline';
     }
+    var product = variable.substring(0,1);
+   
+    if(product=='M'){
+	toolString='16-day period about ';
+    }else if(product=='L'){
+	toolString='8-day period about '; 
+    }else{
+	toolString='';
+    };
     var title = "{% if timeSeriesCalc=='days' %}Daily {%else%} {%endif%} {{ variableShortName_time }}"
     var subtitle="Data Source: {{ productLongName_time }}";
     var legendtitle='<b>Point Locations (Long/Lat):</b>';
@@ -50,7 +59,6 @@
     $('#container').highcharts({
 	    chart: {
                 renderTo: 'container',
-                //type: 'spline',
                 type:  chartType,
 		zoomType: 'x',
 		// Edit chart spacing
@@ -90,7 +98,7 @@
 		    },
 		    labels: {
 			format: '{value:%Y-%m-%d}',
-			rotation: 80,
+			rotation: 90,
 			align: 'left',
 			style: {
 				fontSize: axisFontSize,
@@ -149,25 +157,47 @@
 	    // PLOT OPTIONS
 	    //------------------------
 		plotOptions: {
+		    spline: {
+			marker: {
+			    radius: 4,
+                    	    lineWidth: 1,
+			    enable: true,
+			    symbol: 'circle',
+			}
+		    },
 		    series: {
 			states: {
 			    hover: {
+				enabled: true,
 				brightness: 0.2
-			    }
-			}
+			    },
+			},
+			marker: {
+                            radius: 4,
+                            lineWidth: 1,
+                            enable: true,
+                            symbol: 'circle',
+                        }
 		    }
 		},
 	    //------------------------
 	    //TOOLTIP -What happens when hover over the item
 	    //------------------------
-/*
 	    tooltip: {
-		formatter: function() {
-       			 return  '<b>'+this.series.name +'</b><br /> ' +
-        	Highcharts.dateFormat('%m/%e/%y',new Date(this.x)) + ': <b>'+ this.y +'</b>'{% if varUnits %}+' {{varUnits}}'{% endif %};
-    	  	}
+    		headerFormat: '<b>{{ variableShortName_time }}</b><br/>',
+		//formatter: function() {
+       	//		 return  '<b>'+this.series.name +'</b><br /> ' +
+       // 	Highcharts.dateFormat('%m/%e/%y',new Date(this.x)) + ': <b>'+ this.y +'</b>'{% if varUnits %}+' {{varUnits}}'{% endif %};
+    	//  	}
+	//	formatter: function() {
+       //			 return  '<b>{{ variableShortName_time }}</b><br/>'+
+//				'Date:'+ Highcharts.dateFormat('%m/%e/%y',new Date(this.x))+'<br />'
+//				'Location: {series.name}: '+
+//				 this.y {% if varUnits %}+' {{varUnits}}'{% endif %}+'</b>';
+ //   	  	},
+		crosshairs: true,
+            	shared: true
 	    },
-*/
 	    //------------------------
 	    // CREDITS OR FOOTNOTE
 	    //------------------------
