@@ -25,8 +25,6 @@ def get_images(template_values):
     #get map palette options  
     colorbarmap,colorbarsize,minColorbar,maxColorbar,colorbarLabel,varUnits=get_colorbar(str(var),str(aOV),units)
 
-    #Britta - don't we definitely have all of these in the templates so that we should just extract these above
-    # i.e minColorbar=TV['minColorbar']; and then don't get them from get_colorbar and don't do the following? -kch
     #Override value if user entered custom value
     if 'minColorbar' in template_values.keys():
         minColorbar = template_values['minColorbar']
@@ -151,43 +149,46 @@ def get_time_series(template_values):
     dS_save=dS;dE_save=dE;
     timeSeriesData = [];timeSeriesGraphData =[];
     for x in range(1,steps+1):
-	 if(x==1):
-             dS=dS_save;
-	     if(steps==1):
-		dE=dE_save;
-	     else:
-		dE = str(int(dS_save[0:3])+5*x)+'-12-31';
-	 else:
-             dS=str(int(dS_save[0:3])+5*(x-1)+1)+'-01-01';
-	     if(x==steps):
-		dE=dE_save;
-	     else:
-             	dE=str(int(dS_save[0:3])+5*x)+'-12-31';
+        if(x==1):
+            dS=dS_save;
+            if(steps==1):
+                dE=dE_save;
+            else:
+                dE = str(int(dS_save[0:3])+5*x)+'-12-31';
+        else:
+            dS=str(int(dS_save[0:3])+5*(x-1)+1)+'-01-01';
+            if(x==steps):
+                dE=dE_save;
+            else:
+                dE=str(int(dS_save[0:3])+5*x)+'-12-31';
 
-    	  #extracting data
-	 if(var=='wb'):
-	     dataList= collection.filterDate(dS,dE).select('pr').getRegion(points,1).getInfo(); #pr
-	     datapet = collection.filterDate(dS,dE).select('pet').getRegion(points,1).getInfo();
-             datapet.pop(0);
-	 elif(var=='tmean'):
-	     dataList = collection.filterDate(dS,dE).select('tmmx').getRegion(points,1).getInfo(); #tmax
-	     datatmin = collection.filterDate(dS,dE).select('tmmn').getRegion(points,1).getInfo();
-	     datatmin.pop(0);
-	 else:
-	     dataList = collection.filterDate(dS,dE).select(var).getRegion(points,1).getInfo();
+        #extracting data
+        if(var=='wb'):
+            dataList= collection.filterDate(dS,dE).select('pr').getRegion(points,1).getInfo(); #pr
+            datapet = collection.filterDate(dS,dE).select('pet').getRegion(points,1).getInfo();
+            datapet.pop(0);
+        elif(var=='tmean'):
+            dataList = collection.filterDate(dS,dE).select('tmmx').getRegion(points,1).getInfo(); #tmax
+            datatmin = collection.filterDate(dS,dE).select('tmmn').getRegion(points,1).getInfo();
+            datatmin.pop(0);
+        else:
+            dataList = collection.filterDate(dS,dE).select(var).getRegion(points,1).getInfo();
 
-         #remove first row of list ["id","longitude","latitude","time",variable]
-         dataList.pop(0);
+        #remove first row of list ["id","longitude","latitude","time",variable]
+        dataList.pop(0);
 
-         #==================
-         #format data for highcharts figure and for data in datatab
-         #==================
-         if(var=='wb'):
-             timeSeriesData,timeSeriesGraphData=figureFormatting.format_data_for_highcharts(mc,units,dataList,var,datapet,timeSeriesData,timeSeriesGraphData,product);
-         elif(var=='tmean'):
-             timeSeriesData,timeSeriesGraphData=figureFormatting.format_data_for_highcharts(mc,units,dataList,var,datatmin,timeSeriesData,timeSeriesGraphData,product);
-         else:
-             timeSeriesData,timeSeriesGraphData=figureFormatting.format_data_for_highcharts(mc,units,dataList,var,[],timeSeriesData,timeSeriesGraphData,product);
+        #==================
+        #format data for highcharts figure and for data in datatab
+        #==================
+        if(var=='wb'):
+            timeSeriesData,timeSeriesGraphData=figureFormatting.format_data_for_highcharts(\
+                mc,units,dataList,var,datapet,timeSeriesData,timeSeriesGraphData,product);
+        elif(var=='tmean'):
+            timeSeriesData,timeSeriesGraphData=figureFormatting.format_data_for_highcharts(\
+                mc,units,dataList,var,datatmin,timeSeriesData,timeSeriesGraphData,product);
+        else:
+            timeSeriesData,timeSeriesGraphData=figureFormatting.format_data_for_highcharts(\
+                mc,units,dataList,var,[],timeSeriesData,timeSeriesGraphData,product);
 
     timeSeriesGraphData = json.dumps(timeSeriesGraphData)
     source = collectionLongName + ' from ' + dS + '-' + dE + '';
@@ -228,18 +229,11 @@ def extract_data_from_timeseries_element(idx,data,var,data2,product):
     else:
         idx=date_string.rfind('_');
         if(idx==-1):
-             date_string = date_string[0:4] + '-' + date_string[4:6] + '-' + date_string[6:8];
-	else:
-             date_string = date_string[idx+1:idx+5] + '-' + date_string[idx+5:idx+7] + '-' + date_string[idx+7:idx+9];
+            date_string = date_string[0:4] + '-' + date_string[4:6] + '-' + date_string[6:8];
+        else:
+            date_string = date_string[idx+1:idx+5] + '-' + date_string[idx+5:idx+7] + '-' + date_string[idx+7:idx+9];
 
-
-    #elif(date_string[0:4]=='1_2_'):
-    #    date_string = date_string[5:9] + '-' + date_string[9:11] + '-' + date_string[11:13];
-    #elif(date_string[0:3]=='2_'):
-    #    date_string = date_string[3:7] + '-' + date_string[7:9] + '-' + date_string[9:11];
-    #else:
-    #    date_string = date_string[0:4] + '-' + date_string[4:6] + '-' + date_string[6:8];
-
+    #do we need to do this? 
     #try:
     #    date_string = date_string[0:4] + '-' + date_string[4:6] + '-' + date_string[6:8];
     #except:
@@ -272,6 +266,7 @@ def extract_data_from_timeseries_element(idx,data,var,data2,product):
             val = round(data[4],4);
         except:
             val = data[4];
+
     return (time,date_string,val);
 
 

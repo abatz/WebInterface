@@ -8,18 +8,18 @@ import collectionMethods
 #  FORMAT_DATA_FOR_HIGHCHARTS 
 #===========================================
 def format_data_for_highcharts(mc,units,dataList,var,dataList2,timeSeriesData,timeSeriesGraphData,product):
- ######################################################
-    #### Format data for highcharts figure and data tabs
-    #### Each point gets it's own dictionary
-    #### timeSeriesData[idx] = {MarkerColor:marker_colors[idx],LongLat:ll_string, Data:[[Date1,val1],[Date2, val2]]}
-    ######################################################
+######################################################
+#### Format data for highcharts figure and data tabs
+#### Each point gets it's own dictionary
+#### timeSeriesData[idx] = {MarkerColor:marker_colors[idx],LongLat:ll_string, Data:[[Date1,val1],[Date2, val2]]}
+######################################################
     #Format data
     point_cnt = 0;
     for idx, data in enumerate(dataList):
         lon = round(data[1],4);
         lat = round(data[2],4);
         if idx == 0:
-            #To keep track of when data point changes
+        #To keep track of when data point changes
             lon_init = lon;
             lat_init = lat;
             data_dict = {};
@@ -48,7 +48,8 @@ def format_data_for_highcharts(mc,units,dataList,var,dataList2,timeSeriesData,ti
         #=============
         #extract the time,date_string,val
         #=============
-        time,date_string,val=collectionMethods.extract_data_from_timeseries_element(idx,data,var,dataList2,product);
+        time,date_string,val=collectionMethods.extract_data_from_timeseries_element(\
+            idx,data,var,dataList2,product);
         #=============
         # check units
         #=============
