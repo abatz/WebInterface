@@ -31,95 +31,6 @@ JINJA_ENVIRONMENT= jinja2.Environment(autoescape=True,
 ##       DROUGHT TOOL PAGE                 ##
 #############################################
 class DroughtTool(webapp2.RequestHandler):
-    def set_form_params(self):
-        #sets form  parameters
-        self.ppost = 0
-        self.form_error = {}
-
-        #Variable Options
-        self.variable = self.request.get('variable','Gpr')
-        self.statistic = self.request.get('statistic','Total')
-        self.anomOrValue = self.request.get('anomOrValue','value')
-        self.units = self.request.get('units','metric')
-        self.varUnits = self.request.get('varUnits','mm')
-
-        #Time Options
-        self.minYear = self.request.get('minYear','1979')
-	tempstart = datetime.date.today()-datetime.timedelta(days=60)
-	tempend = datetime.date.today()-datetime.timedelta(days=2)
-        self.dateStart = self.request.get('dateStart',tempstart.strftime('%Y-%m-%d'))
-        self.dateEnd = self.request.get('dateEnd',tempend.strftime('%Y-%m-%d'))
-        self.dayStart = self.request.get('dayStart','1')
-        self.dayEnd = self.request.get('dayEnd','31')
-        self.monthStart = self.request.get('monthStart',tempstart.strftime('%mm'));
-        self.monthEnd = self.request.get('monthEnd',tempend.strftime('%mm'));
-        self.yearStart = self.request.get('yearStart','1979');
-        self.yearEnd = self.request.get('yearEnd',tempend.strftime('%Y'));
-        self.yearStartClim = self.request.get('yearStartClim',self.minYear);
-        self.yearEndClim= self.request.get('yearEndClim','2010');
-        #self.yearEndClim= self.request.get('yearEndClim',tempend.strftime('%Y'));
-
-        #Map Options
-        self.mapid = self.request.get('mapid','')
-        self.token = self.request.get('token','')
-        self.mapCenterLongLat = self.request.get('mapCenterLongLat','-112,42')
-        self.opacity = self.request.get('opacity',str(14*0.05))
-        self.domainType = self.request.get('domainType','full')
-        self.state = self.request.get('state','California')
-        self.background = self.request.get('background','nowhitebackground')
-        self.layer = self.request.get('layer','none')
-        self.NELat = self.request.get('NELat',45)
-        self.NELong= self.request.get('NELong',-95)
-        self.SWLat= self.request.get('SWLat',40)
-        self.SWLong= self.request.get('SWLong',-111)
-        self.kmloption = self.request.get('kmloption', '')
-        self.kmlurl = self.request.get('kmlurl', '')
-	if(self.domainType=='full'):
-            mz= '5';
-        elif(self.domainType=='states'):
-            mz= '6';
-	    self.mapCenterLongLat = str(forms.stateLong[self.state])+','+str(forms.stateLat[self.state]);
-	else:
-	    mz='4';
-        self.mapzoom = self.request.get('mapzoom',mz)
-   
-        #Colorbar Options
-        self.minColorbar = self.request.get('minColorbar', None)
-        self.maxColorbar = self.request.get('maxColorbar', None)
-        self.palette = self.request.get('palette', None)
-        self.colorbarmap = self.request.get('colorbarmap', 'GnBu')
-        self.colorbarsize = self.request.get('colorbarsize', '8')
-        if self.minColorbar is None and self.maxColorbar is None:
-            self.colorbarmap,self.colorbarsize,self.minColorbar,self.maxColorbar,self.colorbarLabel,self.varUnits,\
-                 =collectionMethods.get_colorbar(self.variable,self.anomOrValue,self.units)
-
-        #TimeSeries Options
-        self.pointsLongLat = self.request.get('pointsLongLat',self.mapCenterLongLat)
-        self.timeSeriesCalc = self.request.get('timeSeriesCalc','days')
-        self.chartType = self.request.get('chartType', 'column')
-
-        #Points/marker Options
-        #Long,Lat inputs
-        self.p1 = self.request.get('p1',self.mapCenterLongLat);
-        self.p2 = self.request.get('p2',self.mapCenterLongLat);
-        self.p3 = self.request.get('p3',self.mapCenterLongLat);
-        self.p4 = self.request.get('p4',self.mapCenterLongLat);
-        self.p5 = self.request.get('p5',self.mapCenterLongLat);
-        self.p6 = self.request.get('p6',self.mapCenterLongLat);
-        self.p7 = self.request.get('p7',self.mapCenterLongLat);
-
-        #checkboxes and displays
-        self.p1check =self.request.get('p1check','checked');self.p2check=self.request.get('p2check','checked')
-        self.p3check =self.request.get('p3check','checked');self.p4check=self.request.get('p4check','checked')
-        self.p5check =self.request.get('p5check','checked');self.p6check=self.request.get('p6check','checked')
-        self.p7check =self.request.get('p7check','checked')
-        self.p1display =self.request.get('p1display','block');self.p2display=self.request.get('p2display','none')
-        self.p3display =self.request.get('p3display','none');self.p4display=self.request.get('p4display','none')
-        self.p5display =self.request.get('p5display','none');self.p6display=self.request.get('p6display','none')
-        self.p7display =self.request.get('p7display','none');
-        self.marker_colors = ['blue', 'green', 'orange', 'purple',\
-        'yellow', 'pink','red']
-
     def set_share_link(self, initial_template_values):
         shareLink = 'drought-monitor2.appspot.com?'
         for key, val in initial_template_values.iteritems():
@@ -134,73 +45,65 @@ class DroughtTool(webapp2.RequestHandler):
         return shareLink
 
     def set_initial_template_values(self):
+        tempstart = datetime.date.today()-datetime.timedelta(days=60)
+        tempend = datetime.date.today()-datetime.timedelta(days=2)
         template_values = {
-            'mapid':self.mapid,
-            'token':self.token,
-            'form_error': self.form_error,
+            'mapid':self.request.get('mapid',''),
+            'token':self.request.get('token',''),
+            'form_error': {},
             #Variable Options
-            'variable': self.variable,
-            'statistic': self.statistic,
-            'anomOrValue': self.anomOrValue,
-            'units': self.units,
-            'varUnits': self.varUnits,
+            'variable': self.request.get('variable','Gpr'),
+            'statistic': self.request.get('statistic','Total'),
+            'anomOrValue': self.request.get('anomOrValue','value'),
+            'units': self.request.get('units','metric'),
+            'varUnits': self.request.get('varUnits','mm'),
             #Time Options
-            'minYear':self.minYear,
-            'dateStart': self.dateStart,
-            'dateEnd': self.dateEnd,
-            'yearStart': self.yearStart,
-            'yearEnd': self.yearEnd,
-            'yearStartClim': self.yearStartClim,
-            'yearEndClim': self.yearEndClim,
+            'minYear':self.request.get('minYear','1979'),
+            'dateStart': self.request.get('dateStart',tempstart.strftime('%Y-%m-%d')),
+            'dateEnd': self.request.get('dateEnd',tempend.strftime('%Y-%m-%d')),
+            'yearStart': self.request.get('yearStart','1979'),
+            'yearEnd': self.request.get('yearEnd',tempend.strftime('%Y')),
+            'yearEndClim': self.request.get('yearEndClim','2010'),
             #Map Options
-            'opacity': self.opacity,
-            'pointsLongLat':self.pointsLongLat,
-            'mapCenterLongLat':self.mapCenterLongLat,
-            'NELat': self.NELat,
-            'NELong': self.NELong,
-            'SWLat': self.SWLat,
-            'SWLong': self.SWLong,
-            'ppost': self.ppost,
-            'mapzoom': self.mapzoom,
-            'state': self.state,
-            'domainType': self.domainType,
-            'background': self.background,
-            'layer': self.layer,
-            'kmlurl': self.kmlurl,
-            'kmloption': self.kmloption,
+            'opacity': self.request.get('opacity',str(14*0.05)),
+            'mapCenterLongLat':self.request.get('mapCenterLongLat','-112,42'),
+            'NELat': self.request.get('NELat',45),
+            'NELong': self.request.get('NELong',-95),
+            'SWLat': self.request.get('SWLat',40),
+            'SWLong': self.request.get('SWLong',-111),
+            'ppost': 0,
+            'state': self.request.get('state','California'),
+            'domainType': self.request.get('domainType','full'),
+            'background': self.request.get('background','nowhitebackground'),
+            'layer': self.request.get('layer','none'),
+            'kmlurl': self.request.get('kmlurl', ''),
+            'kmloption': self.request.get('kmloption', ''),
             #Colorbar Options
-            'palette': self.palette,
-            'minColorbar': self.minColorbar,
-            'maxColorbar': self.maxColorbar,
-            'colorbarmap': self.colorbarmap,
-            'colorbarsize': self.colorbarsize,
+            'palette': self.request.get('palette', None),
+            'minColorbar': self.request.get('minColorbar', None),
+            'maxColorbar': self.request.get('maxColorbar', None),
+            'colorbarmap': self.request.get('colorbarmap', 'GnBu'),
+            'colorbarsize': self.request.get('colorbarsize', '8'),
             #TimeSeries Options
-            'timeSeriesCalc': self.timeSeriesCalc,
-            'chartType': self.chartType,
+            'timeSeriesCalc': self.request.get('timeSeriesCalc','days'),
+            'chartType': self.request.get('chartType', 'column'),
             #PointMarker Options
-            'marker_colors':self.marker_colors,
-            'p1':self.p1,
-            'p2':self.p2,
-            'p3':self.p3,
-            'p4':self.p4,
-            'p5':self.p5,
-            'p6':self.p6,
-            'p7':self.p7,
-            'p1check':self.p1check,
-            'p2check':self.p2check,
-            'p3check':self.p3check,
-            'p4check':self.p4check,
-            'p5check':self.p5check,
-            'p6check':self.p6check,
-            'p7check':self.p7check,
-            'p1display':self.p1display,
-            'p2display':self.p2display,
-            'p3display':self.p3display,
-            'p4display':self.p4display,
-            'p5display':self.p5display,
-            'p6display':self.p6display,
-            'p7display':self.p7display,
-             #Forms
+            'marker_colors':['blue', 'green', 'orange', 'purple','yellow', 'pink','red'],
+            'p1check': self.request.get('p1check','checked'),
+            'p2check': self.request.get('p2check','checked'),
+            'p3check': self.request.get('p3check','checked'),
+            'p4check': self.request.get('p4check','checked'),
+            'p5check': self.request.get('p5check','checked'),
+            'p6check': self.request.get('p6check','checked'),
+            'p7check': self.request.get('p7check','checked'),
+            'p1display': self.request.get('p1display','block'),
+            'p2display': self.request.get('p2display','none'),
+            'p3display': self.request.get('p3display','none'),
+            'p4display': self.request.get('p4display','none'),
+            'p5display': self.request.get('p5display','none'),
+            'p6display': self.request.get('p6display','none'),
+            'p7display': self.request.get('p7display','none'),
+            #Forms
             'formChartType': forms.formChartType,
             'formMonth': forms.formMonth,
             'formDay': forms.formDay,
@@ -222,27 +125,45 @@ class DroughtTool(webapp2.RequestHandler):
             'formStates': forms.formStates,
             'formLayers': forms.formLayers
         }
-
-        #why is this section necessary? -kch
-        if self.colorbarmap:
-            template_values['colorbarmap']= self.colorbarmap
-        if self.colorbarsize:
-            template_values['colorbarsize']= self.colorbarsize
-        if self.palette:
-            template_values['palette']= self.palette
-        if self.minColorbar:
-            template_values['minColorbar']= self.minColorbar
-        if self.maxColorbar:
-            template_values['maxColorbar']= self.maxColorbar
+        #Conditional template values
+        #Climatology start year depends in minYear of variable
+        template_values['yearStartClim'] = self.request.get('yearStartClim',template_values['minYear'])
+        #Map zoom depends on domain type
+        if template_values['domainType'] == 'full':
+            mz= '5'
+        elif template_values['domainType'] == 'states':
+            mz= '6'
+            stLong = str(forms.stateLong[template_values['state']])
+            stLat = str(forms.stateLat[template_values['state']])
+            template_values['mapCenterLongLat'] = stLong + ',' + stLat
+        else:
+            mz='4'
+        template_values['mapzoom'] = self.request.get('mapzoom',mz)
+        #Markers are initialized to center of map
+        template_values['pointsLongLat'] = self.request.get('pointsLongLat',template_values['mapCenterLongLat'])
+        template_values['p1'] = self.request.get('p1',template_values['mapCenterLongLat'])
+        template_values['p2'] = self.request.get('p2',template_values['mapCenterLongLat'])
+        template_values['p3'] = self.request.get('p3',template_values['mapCenterLongLat'])
+        template_values['p4'] = self.request.get('p4',template_values['mapCenterLongLat'])
+        template_values['p5'] = self.request.get('p5',template_values['mapCenterLongLat'])
+        template_values['p6'] = self.request.get('p6',template_values['mapCenterLongLat'])
+        template_values['p7'] = self.request.get('p7',template_values['mapCenterLongLat'])
+        #Set the colorbar if needed
+        if template_values['minColorbar'] or None and template_values['maxColorbar'] is None:
+            v = template_values['variable']
+            aov = template_values['anomOrValue']
+            u = template_values['units']
+            #FIX ME
+            cm,cs,minC,maxC,cL,vU = collectionMethods.get_colorbar(v,aov,u)
+            #cm,cs,minC,maxC,cL = collectionMethods.get_colorbar(v,aov,u)
+            template_values['colorbarmap'] = cm
+            template_values['colorbarsize'] = cs
+            template_values['minColorbar'] = minC
+            template_values['maxColorbar'] = maxC
+            template_values['colorbarLabel'] = cL
+            template_values['varUnits'] = vU
+        #Sharelink depends on most template variables
         template_values['shareLink'] = self.set_share_link(template_values)
-        if self.minColorbar:
-            template_values['minColorbar'] = self.minColorbar
-        if self.maxColorbar:
-            template_values['maxColorbar'] = self.maxColorbar
-        if self.kmlurl:
-            template_values['kmlurl'] = self.kmlurl
-        if self.kmloption:
-            template_values['kmloption'] = self.kmloption
 
         #format template values to allow for different date formats etc...
         #See format_ functions in forms.py
@@ -290,7 +211,7 @@ class DroughtTool(webapp2.RequestHandler):
 	ee.data.setDeadline(60000);
 
         #initialize forms
-        self.set_form_params()
+        #self.set_form_params()
         template_values = self.set_initial_template_values()
 
         #Check user input for errors:
@@ -298,7 +219,7 @@ class DroughtTool(webapp2.RequestHandler):
         if not input_err:
             if self.request.arguments():
                 #Update template values with mapid or time series data
-                if self.domainType == 'full':
+                if template_values['domainType'] == 'full':
                     template_values = collectionMethods.get_images(template_values)
                 else:  #want ability in future to look at time series for states,etc
                     template_values = collectionMethods.get_time_series(template_values)
@@ -314,7 +235,7 @@ class DroughtTool(webapp2.RequestHandler):
         ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
 	ee.data.setDeadline(60000);
 
-        self.set_form_params()
+        #self.set_form_params()
         template_values = self.set_initial_template_values()
         #Check user input for errors:
         fieldID,input_err = self.check_user_input(template_values)
@@ -322,7 +243,7 @@ class DroughtTool(webapp2.RequestHandler):
             #Override ppost default
             template_values['ppost'] = 1
             #Update template values with mapid or time series data
-            if self.domainType == 'full':
+            if template_values['domainType'] == 'full':
                 template_values = collectionMethods.get_images(template_values)
             else: #want ability in future to do time series of states,etc
                 template_values = collectionMethods.get_time_series(template_values)
