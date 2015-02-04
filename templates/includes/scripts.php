@@ -157,16 +157,16 @@
 		*     ZOOM/CENTER CHANGED                   *
 		*********************************/
 		google.maps.event.addListener(map,'zoom_changed',function(){
-		  if(map.getZoom()!= myZoom) {
-			document.getElementById('mapzoom').value =map.getZoom();
-			myZoom = map.getZoom();
-		  }
-          //Update default points location to show at new center
-          var newCenter = window.map.getCenter();
+		  var newCenter = window.map.getCenter();
           myCenterLat = newCenter.lat().toFixed(4);
           myCenterLong = newCenter.lng().toFixed(4);
           var LongLat = String(myCenterLong)+','+String(myCenterLat);
           var latlong = new google.maps.LatLng(myCenterLat,myCenterLong);
+          if(map.getZoom()!= myZoom) {
+			document.getElementById('mapzoom').value =map.getZoom();
+			myZoom = map.getZoom();
+		  }
+          //Update default points location to show at new center
           document.getElementById('mapCenterLongLat').value = LongLat;
           $('.point').each(function() {
             point_id = parseFloat($(this).attr('id').split('point')[1]);
@@ -181,7 +181,29 @@
                     window.markers[point_id - 1].position = latlong;
                 }
             }
-          });  
+          });
+          //Update sharelink
+          //FIX ME : var sl = $('#shareLink').val() is always undefined (because it's in modal window??);
+          var sl = document.getElementById('shareLink').value;
+          //console.log(sl); 
+          if (sl){
+            var sl_new = sl.split('?')[0] + '?';
+            var sl_items = sl.split('?')[1].split('&');
+            for (i=0;i<sl_items.length;i++){
+                if (sl_items[i].split('=')[0] != 'mapzoom' && sl_items[i].split('=')[0] != 'mapCenterLongLat'){
+                    sl_new+=sl_items[i] + '&';
+                }
+                else{
+                    if (sl_items[i].split('=')[0] == 'mapzoom'){
+                        sl_new+='mapzoom=' + String(myZoom);
+                    }
+                    if (sl_items[i].split('=')[0] == 'mapCenterLongLat'){
+                        sl_new+='mapCenterLongLat=' + LongLat;
+                    }
+              }
+            }
+            document.getElementById('shareLink').value = sl_new; 
+          }
 		});
 		google.maps.event.addListener(map,'center_changed',function(){
 			var newCenter = window.map.getCenter();
@@ -204,7 +226,24 @@
                         window.markers[point_id - 1].position = latlong;
                     }
                 }
-            });    
+            });
+            //Update sharelink
+            ////FIX ME : var sl = $('#shareLink').val() is always undefined (because it's in modal window??);
+            var sl = document.getElementById('shareLink').value;
+            //console.log(sl);
+            if (sl){ 
+                var sl_new = sl.split('?')[0] + '?';
+                var sl_items = sl.split('?')[1].split('&');
+                for (i=0;i<sl_items.length;i++){
+                    if (sl_items[i].split('=')[0] != 'mapCenterLongLat'){
+                        sl_new+=sl_items[i] + '&';
+                    }
+                    else{
+                        sl_new+='mapCenterLongLat=' + LongLat;
+                    }
+                }
+                document.getElementById('shareLink').value = sl_new;
+            }    
 		});
 
 		/*********************************
