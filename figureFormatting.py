@@ -54,7 +54,10 @@ def set_initial_time_series_data(dataList,dataList2,template_values):
         #=============
         val = collectionMethods.check_units_in_timeseries(val,var,units)
         data_dict['Data'].append([date_string,val])
-        data_dict_graph['Data'].append([time,val])
+        if isinstance(val,basestring):
+            data_dict_graph['Data'].append([time,None])
+        else:
+            data_dict_graph['Data'].append([time,val])
     timeSeriesData.append(data_dict)
     timeSeriesGraphData.append(data_dict_graph)
     return timeSeriesData,timeSeriesGraphData
@@ -77,6 +80,9 @@ def join_time_series_data(dataList,dataList2,timeSeriesData,timeSeriesGraphData,
             if p_datadict['LongLat'] != LongLat:
                 continue
             timeSeriesData[p_idx]['Data'].append([date_string,val])
-            timeSeriesGraphData[p_idx]['Data'].append([time,val])
+            if isinstance(val,basestring):
+                timeSeriesGraphData[p_idx]['Data'].append([time,None])
+            else:
+                timeSeriesGraphData[p_idx]['Data'].append([time,val])
     return timeSeriesData,timeSeriesGraphData
 
