@@ -137,16 +137,18 @@ def get_time_series(template_values):
     product=var[0:1];
 
     #check if there is more than 2500 records requested here
+    #2500/365 =6.8 years is max records can be returned with getInfo()
+    #We split requests up into 6 year chunks
     yearStart = int(dS[0:4]);
     yearEnd = int(dE[0:4]);
+    num_years = yearEnd - yearStart + 1 #2000 - 20151231 = 16 years
     yearRange = yearEnd - yearStart;
-    if(yearRange<=5): #2500/365 =6.8 years is max records can be returned with getInfo()
+    if(num_years<=6):
         steps = 1;
     else:
-        steps = yearRange / 5
-        if (yearRange % 5 != 0):
+        steps = num_years / 6
+        if (num_years % 6 != 0):
             steps+=1
-        #steps = int(ceil(yearRange/5));
 
     dS_save=dS;dE_save=dE;
     timeSeriesData = [];timeSeriesGraphData =[];
@@ -156,7 +158,7 @@ def get_time_series(template_values):
             if(steps==1):
                 dE=dE_save;
             else:
-                dE = str(yearStart + 5*x)+'-12-31';
+                dE = str(yearStart + 5*x)+'-12-31'; #6 years
         else:
             dS=str(yearStart + 5*(x-1) + 1)+'-01-01';
             if(x==steps):
