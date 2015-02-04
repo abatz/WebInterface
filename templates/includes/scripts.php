@@ -161,12 +161,50 @@
 			document.getElementById('mapzoom').value =map.getZoom();
 			myZoom = map.getZoom();
 		  }
+          //Update default points location to show at new center
+          var newCenter = window.map.getCenter();
+          myCenterLat = newCenter.lat().toFixed(4);
+          myCenterLong = newCenter.lng().toFixed(4);
+          var LongLat = String(myCenterLong)+','+String(myCenterLat);
+          var latlong = new google.maps.LatLng(myCenterLat,myCenterLong);
+          document.getElementById('mapCenterLongLat').value = LongLat;
+          $('.point').each(function() {
+            point_id = parseFloat($(this).attr('id').split('point')[1]);
+            //First point is special
+            if (point_id == 1 && $('#p' + String(point_id)).val() == '-112,42'){
+                $('#p' + String(point_id)).val(LongLat);
+                window.markers[point_id - 1].position = latlong;
+            }
+            else{ 
+                if ($(this).css('display') != 'block'){
+                    $('#p' + String(point_id)).val(LongLat);
+                    window.markers[point_id - 1].position = latlong;
+                }
+            }
+          });  
 		});
 		google.maps.event.addListener(map,'center_changed',function(){
-			newCenter = window.map.getCenter();
+			var newCenter = window.map.getCenter();
 			myCenterLat = newCenter.lat().toFixed(4);
 			myCenterLong = newCenter.lng().toFixed(4);
-			document.getElementById('mapCenterLongLat').value =String(myCenterLong)+','+String(myCenterLat);
+            var LongLat = String(myCenterLong)+','+String(myCenterLat);
+            var latlong = new google.maps.LatLng(myCenterLat,myCenterLong);
+			document.getElementById('mapCenterLongLat').value = LongLat;
+            //Update default points location to show at new center
+            $('.point').each(function() {
+                point_id = parseFloat($(this).attr('id').split('point')[1]);
+                //First point is special
+                if (point_id == 1 && $('#p' + String(point_id)).val() == '-112,42'){
+                    $('#p' + String(point_id)).val(LongLat);
+                    window.markers[point_id - 1].position = latlong;
+                }
+                else{ 
+                    if ($(this).css('display') != 'block'){
+                        $('#p' + String(point_id)).val(LongLat);
+                        window.markers[point_id - 1].position = latlong;
+                    }
+                }
+            });    
 		});
 
 		/*********************************
