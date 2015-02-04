@@ -171,7 +171,7 @@
           $('.point').each(function() {
             point_id = parseFloat($(this).attr('id').split('point')[1]);
             //First point is special
-            if (point_id == 1 && $('#p' + String(point_id)).val() == '-112,42'){
+            if (point_id == 1 && $('#tabtimeseriesoptions').css('display') == 'none'){
                 $('#p' + String(point_id)).val(LongLat);
                 window.markers[point_id - 1].position = latlong;
             }
@@ -194,7 +194,7 @@
             $('.point').each(function() {
                 point_id = parseFloat($(this).attr('id').split('point')[1]);
                 //First point is special
-                if (point_id == 1 && $('#p' + String(point_id)).val() == '-112,42'){
+                if (point_id == 1 && $('#tabtimeseriesoptions').css('display') == 'none'){
                     $('#p' + String(point_id)).val(LongLat);
                     window.markers[point_id - 1].position = latlong;
                 }
