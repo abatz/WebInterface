@@ -182,8 +182,9 @@
                 }
             }
           });
+          /*
+          //FIX ME : var sl = $('#shareLink').val() is always undefined (because it's in modal window??)
           //Update sharelink
-          //FIX ME : var sl = $('#shareLink').val() is always undefined (because it's in modal window??);
           var sl = document.getElementById('shareLink').value;
           //console.log(sl); 
           if (sl){
@@ -204,6 +205,7 @@
             }
             document.getElementById('shareLink').value = sl_new; 
           }
+          */
 		});
 		google.maps.event.addListener(map,'center_changed',function(){
 			var newCenter = window.map.getCenter();
@@ -227,8 +229,9 @@
                     }
                 }
             });
+            /*
+            //FIX ME : var sl = $('#shareLink').val() is always undefined (because it's in modal window??)
             //Update sharelink
-            ////FIX ME : var sl = $('#shareLink').val() is always undefined (because it's in modal window??);
             var sl = document.getElementById('shareLink').value;
             //console.log(sl);
             if (sl){ 
@@ -243,7 +246,8 @@
                     }
                 }
                 document.getElementById('shareLink').value = sl_new;
-            }    
+            }  
+            */
 		});
 
 		/*********************************
