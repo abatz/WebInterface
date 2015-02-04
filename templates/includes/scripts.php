@@ -182,30 +182,11 @@
                 }
             }
           });
-          /*
-          //FIX ME : var sl = $('#shareLink').val() is always undefined (because it's in modal window??)
           //Update sharelink
-          var sl = document.getElementById('shareLink').value;
-          //console.log(sl); 
-          if (sl){
-            var sl_new = sl.split('?')[0] + '?';
-            var sl_items = sl.split('?')[1].split('&');
-            for (i=0;i<sl_items.length;i++){
-                if (sl_items[i].split('=')[0] != 'mapzoom' && sl_items[i].split('=')[0] != 'mapCenterLongLat'){
-                    sl_new+=sl_items[i] + '&';
-                }
-                else{
-                    if (sl_items[i].split('=')[0] == 'mapzoom'){
-                        sl_new+='mapzoom=' + String(myZoom);
-                    }
-                    if (sl_items[i].split('=')[0] == 'mapCenterLongLat'){
-                        sl_new+='mapCenterLongLat=' + LongLat;
-                    }
-              }
-            }
-            document.getElementById('shareLink').value = sl_new; 
-          }
-          */
+          var sL = document.getElementById('sL').value;
+          var sL_new = sL.replace(/mapzoom=\d+/m,'mapzoom=' + String(myZoom));
+          sL_new = sL_new.replace(/mapCenterLongLat=([\-\d.]+),([\d.]+)/m,'mapCenterLongLat=' + LongLat);
+          document.getElementById('shareLink').value = sL_new;
 		});
 		google.maps.event.addListener(map,'center_changed',function(){
 			var newCenter = window.map.getCenter();
@@ -229,26 +210,11 @@
                     }
                 }
             });
-            /*
-            //FIX ME : var sl = $('#shareLink').val() is always undefined (because it's in modal window??)
             //Update sharelink
-            var sl = document.getElementById('shareLink').value;
-            //console.log(sl);
-            if (sl){ 
-                var sl_new = sl.split('?')[0] + '?';
-                var sl_items = sl.split('?')[1].split('&');
-                for (i=0;i<sl_items.length;i++){
-                    if (sl_items[i].split('=')[0] != 'mapCenterLongLat'){
-                        sl_new+=sl_items[i] + '&';
-                    }
-                    else{
-                        sl_new+='mapCenterLongLat=' + LongLat;
-                    }
-                }
-                document.getElementById('shareLink').value = sl_new;
-            }  
-            */
-		});
+            var sL = document.getElementById('sL').value;
+            var sL_new = sL.replace(/mapCenterLongLat=([\-\d.]+),([\d.]+)/m,'mapCenterLongLat=' + LongLat);
+            document.getElementById('shareLink').value = sL_new;
+        });
 
 		/*********************************
 		*     COLORBAR                   *
