@@ -158,9 +158,8 @@ def get_time_series(template_values):
     json_dict = json.loads(response.read())
     dataList = json_dict['features'][0]['properties']['sample']
     dataList.pop(0)
-    dataList2 = None
     timeSeriesData = [];timeSeriesGraphData = []
-    timeSeriesData, timeSeriesGraphData = figureFormatting.set_time_series_data(dataList,dataList2,TV)
+    timeSeriesData, timeSeriesGraphData = figureFormatting.set_time_series_data(dataList,TV)
 
     source = collectionLongName + ' from ' + dS + '-' + dE + '';
     #Set title
@@ -173,7 +172,7 @@ def get_time_series(template_values):
         'productLongName_time':collectionLongName,
         'variableShortName_time':variableShortName,
         'timeSeriesData':timeSeriesData,
-        'timeSeriesGraphData':timeSeriesGraphData,
+        'timeSeriesGraphData':json.dumps(timeSeriesGraphData),
         'notes_time': notes
     }
     TV.update(extra_template_values)

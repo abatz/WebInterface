@@ -7,10 +7,9 @@ import collectionMethods
 #===========================================
 #  FORMAT_DATA_FOR_HIGHCHARTS
 #===========================================
-def set_time_series_data(dataList,dataList2,template_values):
+def set_time_series_data(dataList,template_values):
     '''
     dataList -- main collection
-    dataList2 -- extra collections for derived variables tmean, wb
     '''
     var = template_values['variable']
     units = template_values['units']
@@ -21,10 +20,8 @@ def set_time_series_data(dataList,dataList2,template_values):
     lats = list(zip(*dataList)[2])
     times = list(zip(*dataList)[3])
     data = list(zip(*dataList)[4])
-    #Id dataList2, we are dealing with wb or tmean
-    #and need to combine the data
-    #We also need to format the data slightly so that we don't have
-    #character strings in there
+
+    #Format data for highcharts
     ts_data = []
     graph_data =[]
     for idx,d in enumerate(data):
@@ -38,14 +35,19 @@ def set_time_series_data(dataList,dataList2,template_values):
             else:
                 date_string = date_string[i+1:i+5] + '-' + date_string[i+5:i+7] + '-' + date_string[i+7:i+9]
         try:
-            val = round(float(data[idx]),4)
+            val= round(float(data[idx]),4)
         except:
             val = None
-        ts_data.append([date_string,val])
+        if val is None:
+            ts_data.append([date_string,'None'])
+        else:
+            ts_data.append([date_string,val])
         try:
             graph_data.append([int(times[idx]),val])
         except:
-            #vars wb, tmean do not return times.Need to convert to integer time
+            #Vars wb, tmean do not return times.
+            #Need to convert date_string to integer time
+            #FIX ME: conversion not done correctly, posted to g-group
             time_tuple = (int(date_string[0:4]),int(date_string[5:7]),int(date_string[8:10]),13, 59, 27, 2, 317, 0)
             timestamp = int(time.mktime(time_tuple))
             graph_data.append([timestamp,val])
@@ -83,6 +85,8 @@ def set_time_series_data(dataList,dataList2,template_values):
         timeSeriesGraphData.append(data_dict_graph)
     return timeSeriesData, timeSeriesGraphData
 
+
+#Old code used when data requests where split up into 6year chunks.
 def set_initial_time_series_data(dataList,dataList2,template_values):
     '''
     dataList -- main collection
@@ -161,4 +165,3 @@ def join_time_series_data(dataList,dataList2,timeSeriesData,timeSeriesGraphData,
             else:
                 timeSeriesGraphData[p_idx]['Data'].append([time,val])
     return timeSeriesData,timeSeriesGraphData
-
