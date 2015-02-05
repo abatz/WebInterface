@@ -36,7 +36,7 @@ def get_images(template_values):
         colorbarsize = template_values['colorbarsize']
 
     #Get initial collection
-    collection,collectionName,collectionLongName,product,variableShortName,notes=get_collection(var);
+    collection,collectionName,collectionLongName,product,variableShortName,notes=get_collection(var,dS,dE);
     if aOV in ['anom','anompercentof','anompercentchange','clim']:
         collectionInitial=collection;
 
@@ -65,30 +65,17 @@ def get_images(template_values):
     #    subdomain = ee.Feature.Rectangle(float(TV['SWLong']),float(TV['SWLat']),float(TV['NELong']),float(TV['NELat']));
 
     #==============
-    #Format collection
-    if var == 'wb':
-        collection_pr = collection.filterDate(dS,dE).select('pr');
-        collection_pet = collection.filterDate(dS,dE).select('pet');
-        collection_pr = get_statistic(collection_pr,statistic);
-        collection_pet = get_statistic(collection_pet,statistic);
-        collection = collection_pr.subtract(collection_pet); #water balance
-    elif var =='tmean':
-        collection_tmax = collection.filterDate(dS,dE).select('tmmx');
-        collection_tmin = collection.filterDate(dS,dE).select('tmmn');
-        collection_tmax= get_statistic(collection_tmax,statistic);
-        collection_tmin = get_statistic(collection_tmin,statistic);
-        collection = collection_tmax.add(collection_tmin).multiply(0.5); #tmean
-    else:
-        collection = collection.filterDate(dS,dE).select(var)
-        collection = get_statistic(collection,statistic)
-
+    # Get Statistic
+    collection = get_statistic(collection,statistic)
     #==============
     #Anomaly
-	if aOV in ['anom','anompercentof','anompercentchange','clim']:
-	    collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV,\
-                   collectionInitial,yearStartClim,yearEndClim)
-	    TV['climatologyNotes'] = climatologyNotes
-	#Units
+    if aOV in ['anom','anompercentof','anompercentchange','clim']:
+        collection,climatologyNotes = get_anomaly(collection,product,var,collectionName,dS,dE,statistic,aOV,\
+             collectionInitial,yearStartClim,yearEndClim)
+        TV['climatologyNotes'] = climatologyNotes
+    #==============
+    #Units
+    #==============
     collection=check_units(collection,var,aOV,units);
 
     #==============
@@ -133,24 +120,13 @@ def get_time_series(template_values):
     points = ee.Feature.MultiPoint(pointsLongLatTuples);
 
     #get the collection  (Note get_collecton needs full var name with prefix)
-    collection,collectionName,collectionLongName,product,variableShortName,notes=get_collection(var);
+    collection,collectionName,collectionLongName,product,variableShortName,notes=get_collection(var,dS,dE);
     var = var[1:]; #strip product of variable name
     product=var[0:1];
-    if var == 'wb':
-        def gridmet_wb_func(img):
-            #return img.expression("b('pr')-b('pet')")
-            return img.select(['pr']).subtract(img.select(['pet']))
-        collection = collection.filterDate(dS,dE)
-        collection = collection.map(gridmet_wb_func)
-    elif var == 'tmean':
-        def gridmet_tmean_func(img):
-            #return img.expression("0.5 * (b('tmmn')+b('tmmx'))")
-            return img.select(['tmmn']).add(img.select(['tmmx'])).multiply(0.5)
-        collection = collection.filterDate(dS,dE)
-        collection = collection.map(gridmet_tmean_func)
 
-    else:
-        collection = collection.filterDate(dS,dE).select(var)
+    #check units
+    #check_units_in_timeseries(val,var,units):
+     
 
     features = ee.FeatureCollection(ee.Feature(None, {'sample': collection.getRegion(points,1)}))
     downloadUrl = features.getDownloadUrl('json')
@@ -237,7 +213,7 @@ def extract_data_from_timeseries_element(idx,data,var,data2):
 #===========================================
 #    GET_COLLECTION
 #===========================================
-def get_collection(variable):
+def get_collection(variable,dS,dE):
     #strip off product and variable names
     product = variable[:1]
     if(product=='G'):
@@ -397,10 +373,25 @@ def get_collection(variable):
         variableShortName='Palmer Drought Severity Index (PDSI)'
 
     if(product=='gridded' or product=='modis'):
-       	collection = ee.ImageCollection(collectionName);
+        collection =ee.ImageCollection(collectionName).filterDate(dS,dE);
+        if(variable=='wb'):
+            def gridmet_wb_func(img):
+                img_pr= img.select('pr');
+                img= img_pr.subtract(img.select('pet'));
+                return ee.Image(img.copyProperties(img_pr,['system:index','system:time_start','system_time_end']))
+            collection=collection.map(gridmet_wb_func);
+	elif(variable=='tmean'):     
+            def gridmet_tmean_func(img):
+                img_tmmx=img.select('tmmx');
+                img=img_tmmx.add(img.select('tmmn')).multiply(0.5);
+                return ee.Image(img.copyProperties(img_tmmx,['system:index','system:time_start','system_time_end']))
+            collection=collection.map(gridmet_tmean_func);
+        else: 
+            collection =collection.select(variable);
     elif(product=='landsat'):
 	collection = ee.ImageCollection(collection4.merge(collection5).merge(collection7));
 	#collection = ee.ImageCollection(collection4.merge(collection5).merge(collection7).merge(collection8));
+        collection = collection.filterDate(dS,dE).select(variable);
 
     return (collection,collectionName,collectionLongName,product,variableShortName,notes);
 
