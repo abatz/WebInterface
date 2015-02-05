@@ -42,14 +42,12 @@
 						{% endif %}
 					</td>
 					<td width="30%">
-						{% if mapid and not timeSeriesData %}
 						<div name="form_colorbar" id="target_colorbar" style="width:100%">
 							<center>
             					<div id="colorbar"><svg style="width:400px;height:30px;"></svg></div>
 							</center>
 						</div>
 						<center>{{ colorbarLabel }}</center>
-						{% endif %}
 					</td>
 				</tr>
 			</table>

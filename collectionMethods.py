@@ -66,6 +66,7 @@ def get_images(template_values):
 
     #==============
     # Get Statistic
+    collection= collection.filterDate(dS,dE);
     collection = get_statistic(collection,statistic)
     #==============
     #Anomaly
@@ -121,6 +122,7 @@ def get_time_series(template_values):
 
     #get the collection  (Note get_collecton needs full var name with prefix)
     collection,collectionName,collectionLongName,product,variableShortName,notes=get_collection(var,dS,dE);
+    collection = collection.filterDate(dS,dE);
     var = var[1:]; #strip product of variable name
     product=var[0:1];
 
@@ -373,7 +375,7 @@ def get_collection(variable,dS,dE):
         variableShortName='Palmer Drought Severity Index (PDSI)'
 
     if(product=='gridded' or product=='modis'):
-        collection =ee.ImageCollection(collectionName).filterDate(dS,dE);
+        collection =ee.ImageCollection(collectionName);
         if(variable=='wb'):
             def gridmet_wb_func(img):
                 img_pr= img.select('pr');
@@ -391,7 +393,7 @@ def get_collection(variable,dS,dE):
     elif(product=='landsat'):
 	collection = ee.ImageCollection(collection4.merge(collection5).merge(collection7));
 	#collection = ee.ImageCollection(collection4.merge(collection5).merge(collection7).merge(collection8));
-        collection = collection.filterDate(dS,dE).select(variable);
+        collection = collection.select(variable);
 
     return (collection,collectionName,collectionLongName,product,variableShortName,notes);
 
