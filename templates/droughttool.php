@@ -22,6 +22,9 @@
                                         {dialogSize: 'sm', progressType: 'warning'});
                                 window.timeoutID =setTimeout(function () {waitingDialog.hide();}, 30000);">
                                 {% include 'includes/tabwindow.html'%}
+                                {% if timeSeriesData %}
+                                    <script type="text/javascript">window.clearTimeout(timeoutID);</script>
+                                {% endif %}
                         </form>
 		</div>
 		
