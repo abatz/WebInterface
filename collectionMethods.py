@@ -4,6 +4,7 @@ import datetime
 import numpy
 import json
 import figureFormatting
+import urllib2
 #===========================================
 #   GET_IMAGES
 #===========================================
@@ -135,63 +136,35 @@ def get_time_series(template_values):
     collection,collectionName,collectionLongName,product,variableShortName,notes=get_collection(var);
     var = var[1:]; #strip product of variable name
     product=var[0:1];
+    if var == 'wb':
+        def gridmet_wb_func(img):
+            #return img.expression("b('pr')-b('pet')")
+            return img.select(['pr']).subtract(img.select(['pet']))
+        collection = collection.filterDate(dS,dE)
+        collection = collection.map(gridmet_wb_func)
+    elif var == 'tmean':
+        def gridmet_tmean_func(img):
+            #return img.expression("0.5 * (b('tmmn')+b('tmmx'))")
+            return img.select(['tmmn']).add(img.select(['tmmx'])).multiply(0.5)
+        collection = collection.filterDate(dS,dE)
+        collection = collection.map(gridmet_tmean_func)
 
-    #check if there is more than 2500 records requested here
-    #2500/365 =6.8 years is max records can be returned with getInfo()
-    #We split requests up into 6 year chunks
-    yearStart = int(dS[0:4]);
-    yearEnd = int(dE[0:4]);
-    num_years = yearEnd - yearStart + 1 #2000 - 20151231 = 16 years
-    yearRange = yearEnd - yearStart;
-    if(num_years<=6):
-        steps = 1;
     else:
-        steps = num_years / 6
-        if (num_years % 6 != 0):
-            steps+=1
+        collection = collection.filterDate(dS,dE).select(var)
 
-    dS_save=dS;dE_save=dE;
-    timeSeriesData = [];timeSeriesGraphData =[];
-    for x in range(1,steps+1):
-        if(x==1):
-            dS=dS_save;
-            if(steps==1):
-                dE=dE_save;
-            else:
-                dE = str(yearStart + 5*x)+'-12-31'; #6 years
-        else:
-            dS=str(yearStart + 5*(x-1) + 1)+'-01-01';
-            if(x==steps):
-                dE=dE_save;
-            else:
-                dE=str(int(dS_save[0:4])+5*x)+'-12-31';
+    features = ee.FeatureCollection(ee.Feature(None, {'sample': collection.getRegion(points,1)}))
+    downloadUrl = features.getDownloadUrl('json')
+    response = urllib2.urlopen(downloadUrl)
+    json_dict = json.loads(response.read())
+    dataList = json_dict['features'][0]['properties']['sample']
+    dataList.pop(0)
+    dataList2 = None
+    timeSeriesData = [];timeSeriesGraphData = []
+    timeSeriesData, timeSeriesGraphData = figureFormatting.set_time_series_data(dataList,dataList2,TV)
 
-        #extracting data
-        if(var=='wb'):
-            dataList= collection.filterDate(dS,dE).select('pr').getRegion(points,1).getInfo() #pr
-            dataList2 = collection.filterDate(dS,dE).select('pet').getRegion(points,1).getInfo()
-        elif(var=='tmean'):
-            dataList = collection.filterDate(dS,dE).select('tmmx').getRegion(points,1).getInfo() #tmax
-            dataList2 = collection.filterDate(dS,dE).select('tmmn').getRegion(points,1).getInfo()
-        else:
-            dataList = collection.filterDate(dS,dE).select(var).getRegion(points,1).getInfo()
-            dataList2 = None
-
-        #remove first row of list ["id","longitude","latitude","time",variable]
-        dataList.pop(0);
-        if dataList2 is not None:
-            dataList2.pop(0)
-        #Update time series data
-        if not timeSeriesData and not timeSeriesGraphData:
-            timeSeriesData, timeSeriesGraphData = figureFormatting.set_initial_time_series_data(dataList,dataList2,TV)
-        else:
-            timeSeriesData, timeSeriesGraphData = figureFormatting.join_time_series_data(dataList, dataList2,timeSeriesData,timeSeriesGraphData,TV)
-
-    timeSeriesGraphData = json.dumps(timeSeriesGraphData)
     source = collectionLongName + ' from ' + dS + '-' + dE + '';
     #Set title
     title = statistic + ' ' + variableShortName;
-
     #Update template values
     extra_template_values = {
         'source_time':source,
