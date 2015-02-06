@@ -81,11 +81,13 @@ def get_images(template_values):
 
     #==============
     #Get mapid
+    #==============
     mapid = {'mapid':[],'token':[]}
     mapid = map_collection(collection,TV['opacity'],palette,minColorbar,maxColorbar)
 
     #==============
     #Update template values
+    #==============
     extra_template_values = {
         'source': source,
         'product':product,
@@ -121,7 +123,7 @@ def get_time_series(template_values):
     points = ee.Feature.MultiPoint(pointsLongLatTuples);
 
     #get the collection  (Note get_collecton needs full var name with prefix)
-    collection,collectionName,collectionLongName,product,variableShortName,notes=get_collection(var,dS,dE);
+    collection,collectionName,collectionLongName,product,variableShortName,notes=get_collection(var);
     collection = collection.filterDate(dS,dE);
     var = var[1:]; #strip product of variable name
     product=var[0:1];
@@ -215,7 +217,7 @@ def extract_data_from_timeseries_element(idx,data,var,data2):
 #===========================================
 #    GET_COLLECTION
 #===========================================
-def get_collection(variable,dS,dE):
+def get_collection(variable):
     #strip off product and variable names
     product = variable[:1]
     if(product=='G'):
@@ -246,11 +248,11 @@ def get_collection(variable,dS,dE):
         elif(product=='landsat8'):
             collectionName = 'LE8_L1T_8DAY_NDVI';
             collectionLongName = 'Landsat 8, 8-day NDVI Composite'
-            collection8 = ee.ImageCollection('LC8_L1T_8DAY_NDVI');
+            collection = ee.ImageCollection('LC8_L1T_8DAY_NDVI');
         elif(product=='landsat5'):
             collectionName = 'LT5_L1T_8DAY_NDVI';
             collectionLongName = 'Landsat 5, 8-day NDVI Composite'
-            collection8 = ee.ImageCollection('LT5_L1T_8DAY_NDVI');
+            collection = ee.ImageCollection('LT5_L1T_8DAY_NDVI');
     elif(variable=='NDSI'):
         notes="NDSI calculated from Norm. Diff. of Green and mid-IR bands"
         statistic='Median'
@@ -267,11 +269,11 @@ def get_collection(variable,dS,dE):
         elif(product=='landsat8'):
             collectionName = 'LE8_L1T_8DAY_NDSI';
             collectionLongName = 'Landsat 8, 8-day NDSI Composite'
-            collection8 = ee.ImageCollection('LC8_L1T_8DAY_NDSI');
+            collection = ee.ImageCollection('LC8_L1T_8DAY_NDSI');
         elif(product=='landsat5'):
             collectionName = 'LT5_L1T_8DAY_NDSI';
             collectionLongName = 'Landsat 5, 8-day NDSI Composite'
-            collection8 = ee.ImageCollection('LT5_L1T_8DAY_NDSI');
+            collection = ee.ImageCollection('LT5_L1T_8DAY_NDSI');
     elif(variable=='NDWI'):
         notes="NDWI calculated from near-IR and a second IR bands"
         statistic='Median'
@@ -288,11 +290,11 @@ def get_collection(variable,dS,dE):
         elif(product=='landsat8'):
             collectionName = 'LE8_L1T_8DAY_NDWI';
             collectionLongName = 'Landsat 8, 8-day NDSI Composite'
-            collection8 = ee.ImageCollection('LC8_L1T_8DAY_NDWI');
+            collection = ee.ImageCollection('LC8_L1T_8DAY_NDWI');
         elif(product=='landsat5'):
             collectionName = 'LT5_L1T_8DAY_NDWI';
             collectionLongName = 'Landsat 5, 8-day NDSI Composite'
-            collection8 = ee.ImageCollection('LT5_L1T_8DAY_NDWI');
+            collection = ee.ImageCollection('LT5_L1T_8DAY_NDWI');
     elif(variable=='EVI'):
         notes="EVI calculated from Near-IR,Red and Blue bands"
         statistic='Median'
@@ -309,11 +311,11 @@ def get_collection(variable,dS,dE):
         elif(product=='landsat8'):
             collectionName = 'LE8_L1T_8DAY_EVI';
             collectionLongName = 'Landsat 8, 8-day EVI Composite'
-            collection8 = ee.ImageCollection('LC8_L1T_8DAY_EVI');
+            collection = ee.ImageCollection('LC8_L1T_8DAY_EVI');
         elif(product=='landsat5'):
             collectionName = 'LT5_L1T_8DAY_EVI';
             collectionLongName = 'Landsat 5, 8-day EVI Composite'
-            collection8 = ee.ImageCollection('LT5_L1T_8DAY_EVI');
+            collection = ee.ImageCollection('LT5_L1T_8DAY_EVI');
     elif(variable=='pr'):
         collectionName = 'IDAHO_EPSCOR/GRIDMET';
         collectionLongName = 'gridMET 4-km observational dataset(University of Idaho)';
@@ -412,22 +414,23 @@ def get_collection(variable,dS,dE):
             def gridmet_wb_func(img):
                 img_pr= img.select('pr');
                 img= img_pr.subtract(img.select('pet'));
-                return ee.Image(img.copyProperties(img_pr,['system:index','system:time_start','system_time_end']))
+                return ee.Image(img.copyProperties(img_pr,\
+                         ['system:index','system:time_start','system_time_end']))
             collection=collection.map(gridmet_wb_func);
 	elif(variable=='tmean'):     
             def gridmet_tmean_func(img):
                 img_tmmx=img.select('tmmx');
                 img=img_tmmx.add(img.select('tmmn')).multiply(0.5);
-                return ee.Image(img.copyProperties(img_tmmx,['system:index','system:time_start','system_time_end']))
+                return ee.Image(img.copyProperties(img_tmmx,\
+                       ['system:index','system:time_start','system_time_end']))
             collection=collection.map(gridmet_tmean_func);
         else: 
             collection =collection.select(variable);
     elif(product=='landsat'):
 	collection = ee.ImageCollection(collection4.merge(collection5).merge(collection7));
-	#collection = ee.ImageCollection(collection4.merge(collection5).merge(collection7).merge(collection8));
         collection = collection.select(variable);
     else:
-        collection = collection8.select(variable);
+        collection = collection.select(variable);
 
     return (collection,collectionName,collectionLongName,product,variableShortName,notes);
 
