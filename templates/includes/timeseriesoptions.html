@@ -1,27 +1,23 @@
-<ul class="nav nav-pills" id="timeseriesTab" >
-                <li class="active"><a href="#tabtimeseriesrequired" data-toggle="tab">TimeSeries Request</a></li>
-                <li ><a href="#tab2timeseriesoptions" data-toggle="tab">Plot Options </a></li>
-</ul>
-<div class="tab-content">
                 <!----------------------------->
                 <!--  TIMESERIES REQUEST         -->
                 <!----------------------------->
-                <div class="tab-pane active" id="tabtimeseriesrequired">
-			{% include 'includes/timeseriesrequired.html'%}
-		</div>
-   		<!----------------------------->
-                <!--   TIMESERIES OPTIONS    -->
-                <!----------------------------->
-                <div class="tab-pane" id="tab2timeseriesoptions">
-                        {% include 'includes/timeseriescollapsibleoptions.html'%}
-		</div>
+		  <table id="table" class="table table-striped" width="100%" border="1">
+		   <tr><td>
+                    <div class="panel-heading">                        
+                       <h4><p style="text-align:left"><span style='color:blue'>Time Series Request:</span>
+                        <span class="caret"></span>
+                        </p></h4>
+                    </div>
+		{% include 'includes/timeseriesrequired.html'%}
+		</td></tr>
+ 		</table>
    		<!----------------------------->
                 <!--  TIME SERIES BUTTON    -->
                 <!----------------------------->
 		<table width="100%">
 		    <tr>
 			<td>
-				<input type="submit" class="btn btn-large btn-primary pull-right" value="GET TIME SERIES"
+				<input type="submit" class="btn btn-large btn-primary pull-left" value="GET TIME SERIES"
 					 form="form_map" onclick="document.getElementById('domainType').value='points';"/>
 				{% if timeSeriesData %}
 					 <a href="#shareLink" data-toggle="modal">Share Link</a>
@@ -29,4 +25,32 @@
 			</td>
 		    </tr>
 		</table>
-</div>
+   		<!----------------------------->
+                <!--   TIMESERIES OPTIONS    -->
+                <!----------------------------->
+		<div class="accordion" id="accordionBUILDTIMESERIES">                  
+		   <div class="accordion-group">
+                        <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionBU
+ILDTIMESERIES" href="#collapseBuildTimeSeriesOptions">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4><p style="text-align:left"><span style='color:blue'>
+						Plot Options: </span>
+                                        <span class="caret"></span>                                        
+					</p></h4>
+                                    </div>
+                                </div>
+                                </a>
+                        </div><!--end of accordion-heading-->
+                   </div><!-- end of accordion-group-->
+                    <div id="collapseBuildTimeSeriesOptions" class="accordion-body collapse 
+			{% if timeSeriesData %} in {% endif %}}">
+                       <div class="accordion-inner">
+                            <div class="panel-body">
+                        	{% include 'includes/timeseriescollapsibleoptions.html'%}
+                            </div>
+                        </div><!-- end of accordion-inner-->
+                    </div><!-- end of accordion-body -->
+                </div><!-- end of accordion-->
+
