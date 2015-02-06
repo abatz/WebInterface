@@ -527,13 +527,14 @@ def check_units(collection,variable,anomOrValue,units):
                 collection=collection.multiply(1.8);    #convert C anom to F anom
 	    if(units=='english' and (anomOrValue=='value' or anomOrValue=='clim')):
 	        collection = collection.add(32);        #convert C values to F values
-            if(variable=='pr' or variable=='pet' or variable=='wb'):
-                if(units=='english'):
-                    collection=collection.divide(25.4); #convert mm to inches
+        if(variable=='pr' or variable=='pet' or variable=='wb'):
+            if(units=='english'):
+                collection=collection.divide(25.4); #convert mm to inches
         if(variable=='vs'):
             collection=collection.multiply(2.23694); #convert m/s to mi/h
     return(collection);
 
+#this is not currently being used.... need to fix this.. as time series units aren't being corrected
 def check_units_in_timeseries(val,var,units):
     if(var=='tmmx' or var=='tmmn' or var=='tmean'):
         val=val-273.15;  #convert K to C
