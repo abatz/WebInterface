@@ -540,11 +540,11 @@ def check_units_in_timeseries(val,var,units):
         val=val-273.15;  #convert K to C
         if(units=='english'):
             val=1.8*val+32;    #convert C to F
-        if(var=='pr' or var=='pet' or var=='wb'):
-            if(units=='english'):
-                val=val/25.4; #convert mm to inches
-        if(var=='vs' and units=='english'):
-            val=2.23694*val; #convert m/s to mi/h
+    if(var=='pr' or var=='pet' or var=='wb'):
+        if(units=='english'):
+            val=val/25.4; #convert mm to inches
+    if(var=='vs' and units=='english'):
+        val=2.23694*val; #convert m/s to mi/h
     return(val);
 
 #===========================================
