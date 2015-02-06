@@ -237,18 +237,21 @@ $(function(){
 		/*-------------------*/
 		if($('input[id=kmloverlayer]:checked').val()=="kmloverlayer"){
 			kmlurl=document.getElementById('kmlurl').value;
-			window.kmlmarkerOverLayer = new google.maps.KmlLaer(kmlurl, {
-			  map:window.map,
-			    preserveViewport: true,
-			    suppressInfoWindows: false
-			});
-		  	window.kmlmarkerOverLayer.setMap(window.map);
+			if(kmlurl!=''){
+				window.kmlmarkerOverLayer = new google.maps.KmlLayer(kmlurl, {
+				  map:window.map,
+				    preserveViewport: true,
+				    suppressInfoWindows: false
+				});
+				window.kmlmarkerOverLayer.setMap(window.map);
+			}
 		}else{
 		  	window.kmlmarkerOverLayer.setMap(null);
 		};
 	});
 
- 	jQuery('#kmlurl').keyup( function(){
+/* This does not work well for autocomplete
+ 	jQuery('#kmlurl').on('change paste keyup', function(){
 	       if($('input[id=kmloverlayer]:checked').val()=="kmloverlayer"){
 			var kmlurl=document.getElementById('kmlurl').value;
 			window.kmlmarkerOverLayer = new google.maps.KmlLayer(kmlurl, {
@@ -262,6 +265,7 @@ $(function(){
 		}
                 window.kmlmarkerOverLayer.setMap(window.map);
 	});
+*/
 	/*--------------------------------------------*/
 	/*--                                         --*/
 	/*--------------------------------------------*/
@@ -356,25 +360,56 @@ $(function(){
         //strip product character off of variable
         var variable = jQuery('.variable').val();
         var product = variable.substr(0,1);
-        var minYear = "1979",minDate,yearRange;
+        var minDate,maxDate,yearRange;
         if(product=='G'){
             minYear = "1979";
+            maxYear = "+0"; //present
+	    minDate="1979-01-01";
+	    maxDate="present";
         }
         else if (product=='L'){
             minYear = "1972";
+            maxYear = "+0"; //present
+	    minDate="1979-01-01";
+	    maxDate="present";
+        }
+        else if (product=='8'){
+            minYear = "2013";
+            maxYear = "+0"; //present
+	    minDate="2013-04-07";
+	    maxDate="present";
+        }
+        else if (product=='5'){
+            minYear = "1984";
+            maxYear = "2012";
+	    minDate="1984-01-01";
+	    maxDate="2012-05-08";
         }
         else if (product=='M'){
-            minYear = "1999";
+            minYear = "2002";
+            maxYear = "+0"; //present
+	    minDate="2000-02-24";
+	    maxDate="present";
         }
         $('#minYear').val(minYear);
-        minDate = minYear + '-01-01';
-        yearRange = minYear + ':+0';
+        $('#maxYear').val(maxYear);
         $('.dateStart').datepicker( "option", "minDate", minDate);
+        $('.dateStart').datepicker( "option", "maxDate", maxDate);
         $('.dateStart').datepicker( "option", "yearRange", yearRange);
+
+        if(maxDate!='present'){
+            $('.dateEnd').datepicker( "option", "maxDate", maxDate);
+            yearRange = minYear + ':'+maxYear;
+        }else{
+            yearRange = minYear + ':+0';
+	}
+
         $('.dateEnd').datepicker( "option", "minDate", minDate);
+        $('.dateEnd').datepicker( "option", "maxDate", maxDate);
         $('.dateEnd').datepicker( "option", "yearRange",yearRange);
 
 	document.getElementById('yearStartClim').value =minYear;
+	document.getElementById('yearEndClim').value =maxYear;
     });
 
     jQuery('.anomOrValue').on('change', function(){
@@ -385,7 +420,6 @@ $(function(){
                  jQuery('.climatologyYears').hide();
 	 }
     });
-
 
     jQuery('.variable, .variableT,.anomOrValue, .units').on('change', function(){
 	   

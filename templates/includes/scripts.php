@@ -57,6 +57,7 @@
 	      *    INITIALIZE CALL
 	      *********************************/
 	      function initialize() {
+
           /*
           //Progressbar fix(?) suggested by Max, 
           //NOT WORKING
@@ -119,11 +120,7 @@
                		window.map.overlayMapTypes.push(mapType);
 			window.infomarkers = new Array();
 			google.maps.event.addListenerOnce(mapType, 'tilesloaded', function() {
-			 //this part runs when the mapobject is created and rendered			
-				google.maps.event.addListenerOnce(map, 'idle', function() {
-				  //this part runs when the mapobject shown for the first time
 					window.clearTimeout(timeoutID);
-				});
 			});
 		{% endif %}
 /*

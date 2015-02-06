@@ -20,7 +20,7 @@
 			 <form action="/" id="form_map" method="post"
                                 onsubmit="waitingDialog.show('Processing Request',
                                         {dialogSize: 'sm', progressType: 'warning'});
-                                window.timeoutID =setTimeout(function () {waitingDialog.hide();}, 30000);">
+                                window.timeoutID =setTimeout(function () {waitingDialog.hide();}, 60000);">
                                 {% include 'includes/tabwindow.html'%}
                         </form>
 		</div>

@@ -32,7 +32,7 @@ JINJA_ENVIRONMENT= jinja2.Environment(autoescape=True,
 #############################################
 class DroughtTool(webapp2.RequestHandler):
     def set_share_link(self, initial_template_values):
-        shareLink = 'drought-monitor2.appspot.com?'
+        shareLink = 'drought-monitor3.appspot.com?'
         for key, val in initial_template_values.iteritems():
             if str(key[0:4]) == 'form':
                 continue
@@ -59,6 +59,9 @@ class DroughtTool(webapp2.RequestHandler):
             'varUnits': self.request.get('varUnits','mm'),
             #Time Options
             'minYear':self.request.get('minYear','1979'),
+            'minDate':self.request.get('minDate','1979-01-01'),
+            'maxDate':self.request.get('maxDate',tempend.strftime('%y-%m-%d')),
+            'maxYear':self.request.get('maxYear',tempend.strftime('%Y')),
             'dateStart': self.request.get('dateStart',tempstart.strftime('%Y-%m-%d')),
             'dateEnd': self.request.get('dateEnd',tempend.strftime('%Y-%m-%d')),
             'yearStart': self.request.get('yearStart','1979'),
