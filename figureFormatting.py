@@ -28,6 +28,8 @@ def set_time_series_data(dataList,template_values):
         date_string = dates[idx]
         if(date_string[0:7]=='MCD43A4'):
             date_string = date_string[12:16] + '-' + date_string[17:19] + '-' + date_string[20:22]
+        elif(date_string[0:3]=='LT5'): #LT50380312011091PAC01
+            date_string =date_string; #messed up
         else:
             i=date_string.rfind('_');
             if(i==-1):

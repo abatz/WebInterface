@@ -250,17 +250,17 @@ def get_collection(variable):
             collectionLongName = 'Landsat 8, 8-day NDVI Composite'
             collection = ee.ImageCollection('LC8_L1T_8DAY_NDVI');
         elif(product=='landsat5'):
-            collectionName = 'LT5_L1T_8DAY_NDVI';
+            #collectionName = 'LT5_L1T_8DAY_NDVI';
             #collectionLongName = 'Landsat 5, 8-day NDVI Composite'
             #collection = ee.ImageCollection('LT5_L1T_8DAY_NDVI');   
-
             collectionName='LT5_L1T_TOA';
             collection= ee.ImageCollection(collectionName);
 	    #Calculate NDVI and apply the basic ACCA cloud mask
             def landsat457_ndvi_func (img):
-                cloud_mask = ee.Algorithms.Landsat.simpleCloudScore(img).select(['cloud']).lt(ee.Image.constant(50));
-                img2 = img.mask(cloud_mask.mask(cloud_mask));
-                img2=img2.normalizedDifference(["B4","B3"]).clamp(-0.1,1).select([0],['NDVI']); 
+                cloud_mask = ee.Algorithms.Landsat.simpleCloudScore(img).\
+                        select(['cloud']).lt(ee.Image.constant(50));
+                img = img.mask(cloud_mask.mask(cloud_mask));
+                img2=img.normalizedDifference(["B4","B3"]).clamp(-0.1,1).select([0],['NDVI']); 
                 return ee.Image(img2.copyProperties(img,\
                    ['system:index','system:time_start','system_time_end']))
             collection = collection.map(landsat457_ndvi_func);
