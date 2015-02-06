@@ -166,21 +166,13 @@ def extract_data_from_timeseries_element(idx,data,var,data2):
     #=============
     #extract the time
     #=============
-    time = int(data[3]);
+    time_int = int(data[3]);
     #=============
     #extract the date
     #=============
-    #Note MODIS has date string like this: MCD43A4_0005_2011_12_03
-    #Landsat has date string like this: 1_2_20120422, 2_20111203
-    date_string = str(data[0]);
-    if(date_string[0:7]=='MCD43A4'):
-        date_string = date_string[12:16] + '-' + date_string[17:19] + '-' + date_string[20:22];
-    else:
-        i=date_string.rfind('_');
-        if(i==-1):
-            date_string = date_string[0:4] + '-' + date_string[4:6] + '-' + date_string[6:8];
-        else:
-            date_string = date_string[i+1:i+5] + '-' + date_string[i+5:i+7] + '-' + date_string[i+7:i+9];
+    date_obj = datetime.datetime.utcfromtimestamp(float(time_int) / 1000)
+    #Landsat has date string like this: 1_2_20120422, 2_20111203		   
+    date_string = date_obj.strftime('%Y-%m-%d')
 
     #=============
     #extract the data
