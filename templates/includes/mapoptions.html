@@ -114,18 +114,17 @@
 		<table width="100%">
 		    <tr>
 			<td>
-				<center>
-                <!--Needed to update shareLink on map zoom/center changed
-                The shareLink html element is not visible 
-                -->
-                <input type="hidden" name="sL" id="sL" value="{{ shareLink }}">
+				<!--Needed to update shareLink on map zoom/center changed
+				The shareLink html element is not visible 
+				-->
+				<input type="hidden" name="sL" id="sL" value="{{ shareLink }}">
 				<input type="submit" class="btn btn-large btn-primary pull-left" value="GET MAP"
 					 form="form_map" onclick="document.getElementById('domainType').value='full'"/>
-				<br>
+			</td>
+			<td>
 				{% if mapid %}
 					 <a href="#shareLink" data-toggle="modal">Share Link</a>
 			       {% endif %}
-				</center>
 			</td>
 		    </tr>
 		</table>

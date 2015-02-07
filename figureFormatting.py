@@ -1,94 +1,72 @@
-import ee
-import time
+from collections import defaultdict
+
 import datetime
-import numpy
+
 import json
+import time
+
+import ee
+import numpy
+
 import collectionMethods
 #===========================================
 #  FORMAT_DATA_FOR_HIGHCHARTS
 #===========================================
 def set_time_series_data(dataList,template_values):
     '''
-    dataList -- main collection
+    Args:
+        dataList: nested list of data from EarthEngine getRegion method
+        template_values: dictionary
+
+    Returns:
+        time series data for displaying as text
+        time series data for plotting
     '''
+
     var = template_values['variable']
     units = template_values['units']
     marker_colors = template_values['marker_colors']
-    timeSeriesData = [];timeSeriesGraphData = []
-    dates = list(zip(*dataList)[0])
-    lons = list(zip(*dataList)[1])
-    lats = list(zip(*dataList)[2])
-    times = list(zip(*dataList)[3])
-    data = list(zip(*dataList)[4])
 
-    #Format data for highcharts
-    ts_data = []
-    graph_data =[]
-    for idx,d in enumerate(data):
-        date_string = dates[idx]
-        if(date_string[0:7]=='MCD43A4'):
-            date_string = date_string[12:16] + '-' + date_string[17:19] + '-' + date_string[20:22]
-        elif(date_string[0:3]=='LT5'): #LT50380312011091PAC01
-            date_string =date_string; #messed up
-        else:
-            i=date_string.rfind('_');
-            if(i==-1):
-                date_string = date_string[0:4] + '-' + date_string[4:6] + '-' + date_string[6:8]
-            else:
-                date_string = date_string[i+1:i+5] + '-' + date_string[i+5:i+7] + '-' + date_string[i+7:i+9]
+    # Format data for highcharts
+    # Group data by point while reading
+    ts_dict = defaultdict(list)
+    graph_dict = defaultdict(list)
+    for row in dataList:
+        pnt = (float(row[1]), float(row[2]))
+        ##pnt = '{0:0.4f},{1:0.4f}'.format(*pnt)
+        time_int = int(row[3])
+        date_obj = datetime.datetime.utcfromtimestamp(float(time_int) / 1000)
+        date_str = date_obj.strftime('%Y-%m-%d')
         try:
-            val= round(float(data[idx]),4)
+            val = float(row[4])
+            ts_dict[pnt].append([date_str, '{0:0.4f}'.format(val)])
+            graph_dict[pnt].append([time_int, val])
         except:
-            val = None
-        if val is None:
-            ts_data.append([date_string,'None'])
-        else:
-            ts_data.append([date_string,val])
-        try:
-            graph_data.append([int(times[idx]),val])
-        except:
-            #Vars wb, tmean do not return times.
-            #Need to convert date_string to integer time
-            #FIX ME: conversion not done correctly, posted to g-group
-            time_tuple = (int(date_string[0:4]),int(date_string[5:7]),int(date_string[8:10]),13, 59, 27, 2, 317, 0)
-            timestamp = int(time.mktime(time_tuple))
-            graph_data.append([timestamp,val])
+            ts_dict[pnt].append([date_str, 'None'])
+            graph_dict[pnt].append([time_int, None])
 
     '''
     Note ee spits out data for points in one list,
     stringing the point data together
     '''
-    #Find unique lats, i.e unique points points
-    unique_lats = list(set(lats))
-    #Find the indices in the data where points change
-    point_indices = []
-    for lat in unique_lats:
-        point_indices.append(lats.index(lat))
-    point_indices = sorted(point_indices)
-    #Loop over points and compile data and graph data
     timeSeriesData = []
-    timeSeriesGraphData = []
-    for i,p_idx in enumerate(point_indices):
-        i_start = p_idx
-        if i == len(point_indices) -1:
-            i_end = len(data)
-        else:
-            i_end = point_indices[i+1]
+    timeSeriesGraphData = []  
+    for pnt, ts_data in sorted(ts_dict.items()):
         data_dict = {
-            'LongLat': str(round(lons[p_idx],4)) + ',' + str(round(lats[p_idx],4)),
-            'Data':ts_data[i_start:i_end]
-        }
-        data_dict_graph = {
-            'MarkerColor':marker_colors[i],
-            'LongLat': str(round(lons[p_idx],4)) + ',' + str(round(lats[p_idx],4)),
-            'Data':graph_data[i_start:i_end]
+            'LongLat': '{0:0.4f},{1:0.4f}'.format(*pnt),
+            'Data':ts_data
         }
         timeSeriesData.append(data_dict)
+    for i, (pnt, graph_data) in enumerate(sorted(graph_dict.items())):
+        data_dict_graph = {
+            'MarkerColor':marker_colors[i],
+             'LongLat': '{0:0.4f},{1:0.4f}'.format(*pnt),
+             'Data':graph_data
+        }
         timeSeriesGraphData.append(data_dict_graph)
     return timeSeriesData, timeSeriesGraphData
 
 
-#Old code used when data requests where split up into 6year chunks.
 def set_initial_time_series_data(dataList,dataList2,template_values):
     '''
     dataList -- main collection
@@ -144,17 +122,34 @@ def set_initial_time_series_data(dataList,dataList2,template_values):
     timeSeriesGraphData.append(data_dict_graph)
     return timeSeriesData,timeSeriesGraphData
 
-def join_time_series_data(dataList,dataList2,timeSeriesData,timeSeriesGraphData,template_values):
+#==================================================
+#   JOIN TIME SERIES DATA
+#==================================================
+
+def join_time_series_data(dataList,dataList2,timeSeriesData,
+                          timeSeriesGraphData,template_values):
+    """
+
+    Args:
+        dataList:
+        dataList2:
+        timeSeriesData:
+        timeSeriesGraphData:
+        template_values:
+
+    Returns:
+        time series data for displaying as text
+        time series data for plotting
+    """
+
     var = template_values['variable']
     units = template_values['units']
     for idx, data in enumerate(dataList):
-        lon = round(data[1],4);
-        lat = round(data[2],4);
-        LongLat = str(lon) + ',' + str(lat)
+        LongLat = '{0:0.4f},{1:0.4f}'.format(data[1], data[2])
         #=============
         #extract the time,date_string,val
         #=============
-        time,date_string,val=collectionMethods.extract_data_from_timeseries_element(\
+        time,date_string,val=collectionMethods.extract_data_from_timeseries_element(
             idx,data,var,dataList2)
         val = collectionMethods.check_units_in_timeseries(val,var,units);
         #Find point in timeSeriesData and append data
@@ -162,8 +157,8 @@ def join_time_series_data(dataList,dataList2,timeSeriesData,timeSeriesGraphData,
             if p_datadict['LongLat'] != LongLat:
                 continue
             timeSeriesData[p_idx]['Data'].append([date_string,val])
-            if isinstance(val,basestring):
+            if isinstance(val, basestring):
                 timeSeriesGraphData[p_idx]['Data'].append([time,None])
             else:
                 timeSeriesGraphData[p_idx]['Data'].append([time,val])
-    return timeSeriesData,timeSeriesGraphData
+    return timeSeriesData, timeSeriesGraphData
