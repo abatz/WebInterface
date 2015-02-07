@@ -42,8 +42,9 @@ def set_time_series_data(dataList,template_values):
             ts_dict[pnt].append([date_str, '{0:0.4f}'.format(val)])
             graph_dict[pnt].append([time_int, val])
         except:
-            ts_dict[pnt].append([date_str, 'None'])
-            graph_dict[pnt].append([time_int, None])
+            continue
+            ##ts_dict[pnt].append([date_str, 'None'])
+            ##graph_dict[pnt].append([time_int, None])
 
     '''
     Note ee spits out data for points in one list,
@@ -54,14 +55,14 @@ def set_time_series_data(dataList,template_values):
     for pnt, ts_data in sorted(ts_dict.items()):
         data_dict = {
             'LongLat': '{0:0.4f},{1:0.4f}'.format(*pnt),
-            'Data':ts_data
+            'Data':sorted(ts_data)
         }
         timeSeriesData.append(data_dict)
     for i, (pnt, graph_data) in enumerate(sorted(graph_dict.items())):
         data_dict_graph = {
             'MarkerColor':marker_colors[i],
              'LongLat': '{0:0.4f},{1:0.4f}'.format(*pnt),
-             'Data':graph_data
+             'Data':sorted(graph_data)
         }
         timeSeriesGraphData.append(data_dict_graph)
     return timeSeriesData, timeSeriesGraphData
