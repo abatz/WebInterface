@@ -66,7 +66,6 @@ class DroughtTool(webapp2.RequestHandler):
             'dateEnd': self.request.get('dateEnd',tempend.strftime('%Y-%m-%d')),
             'yearStart': self.request.get('yearStart','1979'),
             'yearEnd': self.request.get('yearEnd',tempend.strftime('%Y')),
-            'yearEndClim': self.request.get('yearEndClim','2010'),
             #Map Options
             'opacity': self.request.get('opacity',str(14*0.05)),
             'mapCenterLongLat':self.request.get('mapCenterLongLat','-112,42'),
@@ -131,7 +130,7 @@ class DroughtTool(webapp2.RequestHandler):
         #Conditional template values
         #Climatology start year depends in minYear of variable
         template_values['yearStartClim'] = self.request.get('yearStartClim',template_values['minYear'])
-        template_values['yearEndClim'] = self.request.get('yearEndClim',template_values['maxYear'])
+        template_values['yearEndClim'] = self.request.get('yearEndClim','2010')
         #Map zoom depends on domain type
         if template_values['domainType'] == 'full':
             mz= '5'

@@ -386,6 +386,8 @@ $(function(){
             maxYear = year; 
 	    minDate="2013-04-07";
 	    maxDate=todayDate;
+            $('#dateStart').val(minDate);
+            $('#dateEnd').val(maxDate);
         }
         else if (product=='5'){
             minYear = "1984";
@@ -416,7 +418,7 @@ $(function(){
         $('.dateEnd').datepicker( "option", "maxDate", maxDate);
 
 	document.getElementById('yearStartClim').value =minYear;
-	document.getElementById('yearEndClim').value =maxYear;
+	//document.getElementById('yearEndClim').value =maxYear; //let's not change the end date each time.. saved
     });
 
     jQuery('.anomOrValue').on('change', function(){

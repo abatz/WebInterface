@@ -15,19 +15,16 @@
 	<script type="text/javascript" src="/media/myjs/colorbar.js"></script><!--DYNAMIC COLORBAR-->
 	<script type="text/javascript" src="/media/myjs/colorbrewer.js"></script><!--DYNAMIC COLORBAR-->
 	<script type="text/javascript" src="/media/myjs/gmaps_styles.js"></script><!--GMAPS STYLES-->
-	<script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script><!--TRANSPARENCY SLIDER-->
 	{% include 'includes/js_datepicker.html'%}<!--DATE PICKER-->
+	<!--<script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script>
 	<script type="text/javascript">
   		var slider = new Slider("#ex8", {
 			tooltip: 'always'
 		});
-	</script>
+	</script>-->
  	<!------------------------------------>
         <!-	GOOGLE EARTH MAP SCRIPTS    -->
         <!------------------------------------>
-	<!- for layer control on map -->
-	<!--<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>-->
-
 	<script src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
 
 	<script type="text/javascript">

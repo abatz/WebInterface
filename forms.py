@@ -71,9 +71,9 @@ formVariableModis=[
 formAnomOrValue=[
     ('value','Values'),
     ('clim','Climatology'),
-    ('anom','Change From Climatology'),
-    ('anompercentof','Percent Change From Climatology'),
-    ('anompercentchange','Percent Of Climatology'),
+    ('anom','Difference From Climatology'),
+    ('anompercentchange','Percent Change From Climatology'),
+    #('anompercentof','Percent Of Climatology'),
 ]
 
 #============================
