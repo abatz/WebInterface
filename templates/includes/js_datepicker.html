@@ -1,4 +1,7 @@
 <script type="text/javascript"> 
+        //-------------------------
+        // DUPLICATE FOR TIME DATE (Listener sets change in either to the other)
+        //-------------------------
 	$(function(){
 	    $( "#dateStartTS" ).datepicker({
 	      changeMonth: true,
@@ -6,9 +9,9 @@
 	      numberOfMonths: 3,
 	      minDate: $('#minDate').val(),
 	      maxDate: $('#maxDate').val(),
+	      yearRange: $('#minYear').val() + ":+0",
 	      //minDate: $('#minYear').val() + "-01-01",
 	      //maxDate: "-2d",
-	      yearRange: $('#minYear').val() + ":+0",
 	      //yearRange: $('#minYear').val() + ":" + $('#maxYear').val(),
 	      dateFormat: "yy-mm-dd",
 	      onClose: function( selectedDate ) {
@@ -22,10 +25,7 @@
 	      numberOfMonths: 3,
 	      minDate: $('#minDate').val(),
 	      maxDate: $('#maxDate').val(),
-	      //minDate: $('#minYear').val() + "-01-01",
-	      //maxDate: "-2d",
 	      yearRange: $('#minYear').val() + ":+0", 
-              //yearRange: $('#minYear').val() + ":"+$('#maxYear').val(),
 	      dateFormat: "yy-mm-dd",
 	      onClose: function( selectedDate ) {
 		    $( ".dateStart" ).datepicker( "option", "maxDate", selectedDate );
@@ -33,6 +33,9 @@
 		    }
 	   }).datepicker('setDate', '{{ dateEnd }}');
         });
+        //-------------------------
+        // DUPLICATE FOR MAP DATE(Listener sets change in either to the other)
+        //-------------------------
  	$(function(){
         $( "#dateStart" ).datepicker({
           changeMonth: true,
@@ -40,12 +43,7 @@
           numberOfMonths: 3,
 	  minDate: $('#minDate').val(),
 	  maxDate: $('#maxDate').val(),
-	  //minDate: $('#minDate'),
-          //minDate: $('#minYear').val() + "-01-01",
-          //maxDate: "-2d",
-          //maxDate: "2014-12-31",
-          yearRange: $('#minYear').val() + ":"+$('#maxYear').val(),
-          //yearRange: $('#minYear').val() + ":+0",
+          yearRange: $('#minYear').val() + ":" + $('#maxYear').val(), //can do :+0 for current day
           dateFormat: "yy-mm-dd",
           onClose: function( selectedDate ) {
                 $( ".dateEnd" ).datepicker( "option", "minDate", selectedDate );
@@ -58,12 +56,7 @@
             numberOfMonths: 3,
 	    minDate: $('#minDate').val(),
 	    maxDate: $('#maxDate').val(),
-            //minDate: $('#minYear').val() + "-01-01",
-            //maxDate: "-2d",
-            //maxDate: "2014-12-31",
-            //yearRange: $('#minYear').val() + ":+0",
-            yearRange: $('#minYear').val() + ":"+$('#maxYear').val(),
-            //yearRange: $('#minYear').val() + ":"+'+0',
+            yearRange: $('#minYear').val() + ":" +$('#maxYear').val(),
             dateFormat: "yy-mm-dd",
             onClose: function( selectedDate ) {
                 $( ".dateStart" ).datepicker( "option", "maxDate", selectedDate );

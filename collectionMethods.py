@@ -448,9 +448,9 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
     doyEnd = ee.Number(ee.Algorithms.Date(dateEnd).getRelative('day', 'year')).add(1);
     doy_filter = ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year');
 
+    #get climatology
     climatologyNote='Climatology calculated from '+yearStartClim+'-'+yearEndClim;
     climatology = collection.filterDate(yearStartClim, yearEndClim).filter(doy_filter).select(variable);
-
     climatology=get_statistic(climatology,statistic);
     #This metric is really only good for year ranges <1 year
     if(statistic=='Total'):
@@ -461,16 +461,19 @@ def get_anomaly(collection,product,variable,collectionName,dateStart,dateEnd,sta
     collection = get_statistic(collection.filterDate(dateStart,dateEnd),statistic);
 
     #calculate 
-    if(anomOrValue=='anom'):
-        collection = ee.Image(collection.subtract(climatology));
-    elif(anomOrValue=='anompercentof'):
-            collection = ee.Image(collection.divide(climatology).multiply(100)); #anomaly
-    elif(anomOrValue=='anompercentchange'):
-            collection = ee.Image(collection.subtract(climatology).divide(climatology).multiply(100)); #anomaly
-    elif(anomOrValue=='clim'):
+    if(anomOrValue=='clim'):
         mask = collection.gt(-9999);
         climatology = climatology.mask(mask);
         collection=climatology;
+    elif(anomOrValue=='anom'):
+        collection = ee.Image(collection.subtract(climatology));
+    elif(anomOrValue=='anompercentof' or anomOrValue=='anompercentchange'):
+        if(variable=='tmax' or variable=='tmin' or variable=='tmean'): #collection is in Kelvin, clim in C, don't want to divide by zero
+             climatology = climatology+273.15;
+        if(anomOrValue=='anompercentof'):
+             collection = ee.Image(collection.divide(climatology).multiply(100)); #anomaly
+        elif(anomOrValue=='anompercentchange'):
+             collection = ee.Image(collection.subtract(climatology).divide(climatology).multiply(100)); #anomaly
 
     return(collection,climatologyNote);
 

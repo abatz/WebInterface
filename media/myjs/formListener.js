@@ -361,64 +361,71 @@ $(function(){
         var variable = jQuery('.variable').val();
         var product = variable.substr(0,1);
         var minDate,maxDate,yearRange;
+
+        thisDate = new Date();
+        thisDate.setDate(thisDate.getDate()-2); //2 day lag on data
+        year = thisDate.getFullYear();
+        mm = thisDate.getMonth()+1; //Jan is 0
+        dd = thisDate.getDate();
+        if(dd<10){
+           dd='0'+dd;
+        }
+        if(mm<10){
+           mm='0'+mm;
+        }
+        todayDate=year+'-'+mm+'-'+dd;
+       console.log(todayDate)
         if(product=='G'){
             minYear = "1979";
-            maxYear = "+0"; //present
+            maxYear = year; 
 	    minDate="1979-01-01";
-	    maxDate="present";
-        }
-        else if (product=='L'){
-            minYear = "1972";
-            maxYear = "+0"; //present
-	    minDate="1979-01-01";
-	    maxDate="present";
+	    maxDate=todayDate;
         }
         else if (product=='8'){
             minYear = "2013";
-            maxYear = "+0"; //present
+            maxYear = year; 
 	    minDate="2013-04-07";
-	    maxDate="present";
+	    maxDate=todayDate;
         }
         else if (product=='5'){
             minYear = "1984";
             maxYear = "2012";
 	    minDate="1984-01-01";
 	    maxDate="2012-05-08";
+            $('#dateStart').val(minDate);
+            $('#dateEnd').val(maxDate);
         }
         else if (product=='M'){
-            minYear = "2002";
-            maxYear = "+0"; //present
+            minYear = "2000";
+            maxYear = year; 
 	    minDate="2000-02-24";
-	    maxDate="present";
+	    maxDate=todayDate;
         }
+        yearRange = minYear + ':'+maxYear;
+
         $('#minYear').val(minYear);
         $('#maxYear').val(maxYear);
+
         $('.dateStart').datepicker( "option", "minDate", minDate);
         $('.dateStart').datepicker( "option", "maxDate", maxDate);
         $('.dateStart').datepicker( "option", "yearRange", yearRange);
 
-        if(maxDate!='present'){
-            $('.dateEnd').datepicker( "option", "maxDate", maxDate);
-            yearRange = minYear + ':'+maxYear;
-        }else{
-            yearRange = minYear + ':+0';
-	}
-
         $('.dateEnd').datepicker( "option", "minDate", minDate);
         $('.dateEnd').datepicker( "option", "maxDate", maxDate);
         $('.dateEnd').datepicker( "option", "yearRange",yearRange);
+        $('.dateEnd').datepicker( "option", "maxDate", maxDate);
 
 	document.getElementById('yearStartClim').value =minYear;
 	document.getElementById('yearEndClim').value =maxYear;
     });
 
     jQuery('.anomOrValue').on('change', function(){
-	   var anomOrValue = jQuery('.anomOrValue').val()
-	  if(anomOrValue=='clim' || anomOrValue=='anom' || anomOrValue=='anompercentof' ||anomOrValue=='anompercentchange'){
-                 jQuery('.climatologyYears').show();
-	  }else{
+	  var anomOrValue = jQuery('.anomOrValue').val()
+          if(anomOrValue=='value'){
                  jQuery('.climatologyYears').hide();
-	 }
+	  }else{
+                 jQuery('.climatologyYears').show();
+ 	  }
     });
 
     jQuery('.variable, .variableT,.anomOrValue, .units').on('change', function(){

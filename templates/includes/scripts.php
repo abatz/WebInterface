@@ -15,7 +15,13 @@
 	<script type="text/javascript" src="/media/myjs/colorbar.js"></script><!--DYNAMIC COLORBAR-->
 	<script type="text/javascript" src="/media/myjs/colorbrewer.js"></script><!--DYNAMIC COLORBAR-->
 	<script type="text/javascript" src="/media/myjs/gmaps_styles.js"></script><!--GMAPS STYLES-->
+	<script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script><!--TRANSPARENCY SLIDER-->
 	{% include 'includes/js_datepicker.html'%}<!--DATE PICKER-->
+	<script type="text/javascript">
+  		var slider = new Slider("#ex8", {
+			tooltip: 'always'
+		});
+	</script>
  	<!------------------------------------>
         <!-	GOOGLE EARTH MAP SCRIPTS    -->
         <!------------------------------------>
