@@ -41,14 +41,15 @@ def get_images(template_values):
     if 'colorbarsize' in template_values.keys():
         colorbarsize = template_values['colorbarsize']
 
+    # Remove starting character which indicates the product
+    product = var[:1]
+    var = var[1:]
+
     #==============
     #Collection
     #==============
     #Get initial collection
-    collection, coll_name, coll_desc, product, var_desc, notes = get_collection(var)
-
-    #remove starting character which indicates the product
-    var = var[1:]
+    collection, coll_name, coll_desc, var_desc, notes = get_collection(product, var)
 
     #==============
     #Title and Source
@@ -132,11 +133,13 @@ def get_time_series(template_values):
         for i in range(0, len(pointsLongLatList) - 1, 2)]
     points = ee.Feature.MultiPoint(pointsLongLatTuples)
 
-    #get the collection  (Note get_collecton needs full var name with prefix)
-    collection, coll_name, coll_desc, product, var_desc, notes = get_collection(var)
+    # Remove starting character which indicates the product
+    product = var[:1]
+    var = var[1:]
+
+    collection, coll_name, coll_desc, var_desc, notes = get_collection(
+        product, var)
     collection = collection.filterDate(dS,dE)
-    var = var[1:] #strip product of variable name
-    product = var[0:1]
 
     #check units
     #modify_units_in_timeseries(val,var,units):
@@ -171,6 +174,199 @@ def get_time_series(template_values):
     TV.update(extra_template_values)
     return TV
 
+
+#===========================================
+#    GET_COLLECTION
+#===========================================
+def get_collection(product, variable):
+    """Return an EarthEngine image collection for given product and variable
+
+    Args:
+        product: single character indicating the product (G, M, 8, or 5)
+        variable: string indicating the variable within the product
+            (i.e. NDVI, EVI, pet, tmmn)
+    Returns:
+        EarthEngine image collection
+
+    """
+    if product == 'G':        
+        return get_gridmet_collection(variable)
+    elif product == 'M':
+        return get_modis_16day_collection(variable)
+    elif product == '8':
+        return get_landsat8_daily_collection(variable)
+    elif product == '5':
+        return get_landsat5_daily_collection(variable)
+        ##return get_landsat457_daily_collection(variable)
+    ##elif product == 'L':
+    ##    return get_landsat_daily_collection(variable)
+
+def get_landsat457_daily_collection(variable):
+    """"""
+    ## This string could/should be built based on the date range or looking at
+    ##   or looking atthe images in the collection
+    coll_name = 'LT4_L1T_TOA,LT5_L1T_TOA,LE7_L1T_TOA'
+    coll_desc = 'Landsat 4/5/7 Daily {0} (cloud mask applied)'.format(variable)
+    ##coll_name = 'LT5_L1T_TOA'
+    ##coll_desc = 'Landsat 5, daily {0} (cloud mask applied)'.format(variable)
+
+    ## Select variable after calculating index
+    collection = ee.ImageCollection([])
+    collection = collection.merge(ee.ImageCollection('LT4_L1T_TOA'))
+    collection = collection.merge(ee.ImageCollection('LT5_L1T_TOA'))
+    collection = collection.merge(ee.ImageCollection('LE7_L1T_TOA'))
+    ## Can this be done on the merged collection?
+    collection = collection.map(landsat457_cloud_mask_func)
+    if variable == 'NDVI':
+        notes = "NDSI calculated from Norm. Diff. of Near-IR and Red bands"
+        collection = collection.map(landsat457_ndvi_func)
+    elif variable == 'NDSI':
+        notes = "NDSI calculated from Norm. Diff. of Green and mid-IR bands"
+        collection = collection.map(landsat457_ndsi_func)
+    elif variable == 'NDWI':
+        notes = "NDWI calculated from Norm. Diff. of near-IR and mid-IR bands"
+        collection = collection.map(landsat457_ndwi_func)
+    elif variable == 'EVI':
+        notes = "EVI calculated from Near-IR, Red and Blue bands"
+        collection = collection.map(landsat457_evi_func)
+    collection = collection.select(variable)
+    return collection, coll_name, coll_desc, variable, notes
+
+def get_landsat5_daily_collection(variable):
+    """"""
+    coll_name = 'LT5_L1T_TOA'
+    coll_desc = 'Landsat 5, daily {0} (cloud mask applied)'.format(variable)
+    ## Select variable after calculating index
+    collection = ee.ImageCollection(coll_name).map(landsat457_cloud_mask_func)
+    if variable == 'NDVI':
+        notes = "NDSI calculated from Norm. Diff. of Near-IR and Red bands"
+        collection = collection.map(landsat457_ndvi_func)
+    elif variable == 'NDSI':
+        notes = "NDSI calculated from Norm. Diff. of Green and mid-IR bands"
+        collection = collection.map(landsat457_ndsi_func)
+    elif variable == 'NDWI':
+        notes = "NDWI calculated from Norm. Diff. of near-IR and mid-IR bands"
+        collection = collection.map(landsat457_ndwi_func)
+    elif variable == 'EVI':
+        notes = "EVI calculated from Near-IR, Red and Blue bands"
+        collection = collection.map(landsat457_evi_func)
+    collection = collection.select(variable)
+    return collection, coll_name, coll_desc, variable, notes
+
+def get_landsat8_daily_collection(variable):
+    """"""
+    coll_name = 'LC8_L1T_TOA'
+    coll_desc = 'Landsat 8, daily {0} (cloud mask applied)'.format(variable)
+    ## Select variable after calculating index
+    collection = ee.ImageCollection(coll_name)
+    ## Need to code in Landsat 8 cloud masking
+    ##collection = ee.ImageCollection(coll_name).map(landsat8_cloud_mask_func)
+    if variable == 'NDVI':
+        notes = "NDSI calculated from Norm. Diff. of Near-IR and Red bands"
+        collection = collection.map(landsat8_ndvi_func)
+    elif variable == 'NDSI':
+        notes = "NDSI calculated from Norm. Diff. of Green and mid-IR bands"
+        collection = collection.map(landsat8_ndsi_func)
+    elif variable == 'NDWI':
+        notes = "NDWI calculated from Norm. Diff. of near-IR and mid-IR bands"
+        collection = collection.map(landsat8_ndwi_func)
+    elif variable == 'EVI':
+        notes = "EVI calculated from Near-IR, Red and Blue bands"
+        collection = collection.map(landsat8_evi_func)
+    collection = collection.select(variable)
+    return collection, coll_name, coll_desc, variable, notes
+
+## Landsat 8 Day collection functions
+##def get_landsat457_8day_collection(variable):
+##    """"""
+##    coll_name = 'LT4_L1T_8DAY_{0},LT5_L1T_8DAY_{0},LE7_L1T_8DAY_{0}'.format(variable)
+##    coll_desc = 'Landsat 4/5/7 8-day {0} Composite'.format(variable)
+##    collection4 = ee.ImageCollection('LT4_L1T_8DAY_{0}'.format(variable))
+##    collection5 = ee.ImageCollection('LT5_L1T_8DAY_{0}'.format(variable))
+##    collection7 = ee.ImageCollection('LE7_L1T_8DAY_{0}'.format(variable))
+##    collection = ee.ImageCollection(collection4.merge(collection5).merge(collection7))
+##    collection = collection.select(variable)
+##    if variable == 'NDVI':
+##        notes = "NDVI calculated from Norm. Diff. of Near-IR and Red bands"
+##    elif variable == 'NDSI':
+##        notes = "NDSI calculated from Norm. Diff. of Green and mid-IR bands"
+##    elif variable == 'NDWI':
+##        notes = "NDWI calculated from Norm. Diff. of near-IR and mid-IR bands"
+##    elif variable == 'EVI':
+##        notes = "EVI calculated from Near-IR, Red and Blue bands"
+##    return collection, coll_name, coll_desc, product, variable, notes
+##
+##def get_landsat8_8day_collection(variable):
+##    """"""
+##    coll_name = 'LT5_L1T_8DAY_{0}'.format(variable)
+##    coll_desc = 'Landsat 5, 8-day {0} Composite'.format(variable)
+##    collection = ee.ImageCollection('LT5_L1T_8DAY_{0}'.format(variable)).select(variable)
+##    if variable == 'NDVI':
+##        notes = "NDSI calculated from Norm. Diff. of Near-IR and Red bands"
+##    elif variable == 'NDSI':
+##        notes = "NDSI calculated from Norm. Diff. of Green and mid-IR bands"
+##    elif variable == 'NDWI':
+##        notes = "NDWI calculated from Norm. Diff. of near-IR and mid-IR bands"
+##    elif variable == 'EVI':
+##        notes = "EVI calculated from Near-IR,Red and Blue bands"
+##    return collection, coll_name, coll_desc, variable, notes
+    
+def get_modis_16day_collection(variable):
+    """ """
+    coll_name = 'MCD43A4_{0}'.format(variable)
+    coll_desc = 'MODIS 16-day {0}'.format(variable)
+    collection = ee.ImageCollection(coll_name).select(variable)
+    if variable == 'NDVI':
+        notes = "NDSI calculated from Norm. Diff. of Near-IR and Red bands"
+    elif variable == 'NDSI':
+        notes = "NDSI calculated from Norm. Diff. of Green and mid-IR bands"
+    elif variable == 'NDWI':
+        notes = "NDWI calculated from Norm. Diff. of near-IR and mid-IR bands"
+    elif variable == 'EVI':
+        notes = "EVI calculated from Near-IR,Red and Blue bands"
+    return collection, coll_name, coll_desc, variable, notes
+    
+def get_gridmet_collection(variable):
+    """ """
+    coll_name = 'IDAHO_EPSCOR/GRIDMET'
+    coll_desc = 'gridMET 4-km observational dataset(University of Idaho)'
+    # Don't select variable here since Tmean or WB need to be mapped/calculated first
+    collection = ee.ImageCollection(coll_name).select(variable)
+    notes = ""
+    if variable == 'pr':
+        var_desc = 'Precipitation'
+    elif variable == 'tmmx':
+        var_desc = 'Maximum Temperature'
+    elif variable == 'tmmn':
+        var_desc = 'Minimum Temperature'
+    elif variable == 'rmin':
+        var_desc = 'Minimum Relative Humidity'
+    elif variable == 'rmax':
+        var_desc = 'Maximum Relative Humidity'
+    elif variable == 'srad':
+        var_desc = 'Downwelling Shortwave Radiation'
+    elif variable == 'vs':
+        var_desc = 'Wind Speed Near Surface'
+    elif variable == 'sph':
+        var_desc = 'Specific Humidity'
+    elif variable == 'erc':
+        var_desc = 'Energy Release Component'
+    elif variable == 'pet':
+        notes = "ASCE Standardized Reference ET, estimated using the Penmann Monteith method. See Equation 1 in http://www.kimberly.uidaho.edu/water/asceewri/ascestzdetmain2005.pdf"
+        var_desc = 'Reference Evapotranspiration'
+    elif variable == 'pdsi':
+        ##notes = ""
+        var_desc = 'Palmer Drought Severity Index (PDSI)'
+    elif variable == 'tmean':
+        collection = collection.map(gridmet_tmean_func)
+        notes = "Calculated as Average of Min/Max Daily Temperature"
+        var_desc = 'Average Temperature'
+    elif variable == 'wb':
+        collection = collection.map(gridmet_wb_func)
+        notes = "Calculated as the difference between precipitation and reference evapotranspiration"
+        var_desc = 'Water Balance (PPT-PET)'
+    collection = collection.select(variable)
+    return collection, coll_name, coll_desc, var_desc, notes
 
 #===========================================
 #    Collection Functions
@@ -241,194 +437,6 @@ def gridmet_tmean_func(img):
     img = img_tmmx.add(img.select('tmmn')).multiply(0.5).select([0],['tmean'])
     return ee.Image(img.copyProperties(
         img_tmmx, ['system:index', 'system:time_start']))
-
-#===========================================
-#    GET_COLLECTION
-#===========================================
-def get_collection(variable):
-    """"""
-    #strip off product and variable names
-    logging.info('\nVARIABLE: '+variable+'\n')
-    product = variable[:1]
-    variable = variable[1:]
-    if product == 'G':        
-        return get_gridmet_collection(variable, product='gridded')
-    ##elif product == 'L':
-    ##    return get_landsat_daily_collection(variable, product='landsat')
-    elif product == '8':
-        return get_landsat8_daily_collection(variable, product='landsat8')
-    elif product == '5':
-        return get_landsat5_daily_collection(variable, product='landsat5')
-        ##return get_landsat457_daily_collection(variable, product='landsat5')
-    elif product == 'M':
-        return get_modis_16day_collection(variable, product='modis')
-
-def get_landsat457_daily_collection(variable, product='landsat'):
-    """"""
-    ## This string could/should be built based on the date range or looking at
-    ##   or looking atthe images in the collection
-    coll_name = 'LT4_L1T_TOA,LT5_L1T_TOA,LE7_L1T_TOA'
-    coll_desc = 'Landsat 4/5/7 Daily {0} (cloud mask applied)'.format(variable)
-    ##coll_name = 'LT5_L1T_TOA'
-    ##coll_desc = 'Landsat 5, daily {0} (cloud mask applied)'.format(variable)
-
-    ## Select variable after calculating index
-    collection = ee.ImageCollection([])
-    collection = collection.merge(ee.ImageCollection('LT4_L1T_TOA'))
-    collection = collection.merge(ee.ImageCollection('LT5_L1T_TOA'))
-    collection = collection.merge(ee.ImageCollection('LE7_L1T_TOA'))
-    ## Can this be done on the merged collection?
-    collection = collection.map(landsat457_cloud_mask_func)
-    if variable == 'NDVI':
-        notes = "NDSI calculated from Norm. Diff. of Near-IR and Red bands"
-        collection = collection.map(landsat457_ndvi_func)
-    elif variable == 'NDSI':
-        notes = "NDSI calculated from Norm. Diff. of Green and mid-IR bands"
-        collection = collection.map(landsat457_ndsi_func)
-    elif variable == 'NDWI':
-        notes = "NDWI calculated from Norm. Diff. of near-IR and mid-IR bands"
-        collection = collection.map(landsat457_ndwi_func)
-    elif variable == 'EVI':
-        notes = "EVI calculated from Near-IR, Red and Blue bands"
-        collection = collection.map(landsat457_evi_func)
-    collection = collection.select(variable)
-    return collection, coll_name, coll_desc, product, variable, notes
-
-def get_landsat5_daily_collection(variable, product='landsat'):
-    """"""
-    coll_name = 'LT5_L1T_TOA'
-    coll_desc = 'Landsat 5, daily {0} (cloud mask applied)'.format(variable)
-    ## Select variable after calculating index
-    collection = ee.ImageCollection(coll_name).map(landsat457_cloud_mask_func)
-    if variable == 'NDVI':
-        notes = "NDSI calculated from Norm. Diff. of Near-IR and Red bands"
-        collection = collection.map(landsat457_ndvi_func)
-    elif variable == 'NDSI':
-        notes = "NDSI calculated from Norm. Diff. of Green and mid-IR bands"
-        collection = collection.map(landsat457_ndsi_func)
-    elif variable == 'NDWI':
-        notes = "NDWI calculated from Norm. Diff. of near-IR and mid-IR bands"
-        collection = collection.map(landsat457_ndwi_func)
-    elif variable == 'EVI':
-        notes = "EVI calculated from Near-IR, Red and Blue bands"
-        collection = collection.map(landsat457_evi_func)
-    collection = collection.select(variable)
-    return collection, coll_name, coll_desc, product, variable, notes
-
-def get_landsat8_daily_collection(variable, product='landsat'):
-    """"""
-    coll_name = 'LC8_L1T_TOA'
-    coll_desc = 'Landsat 8, daily {0} (cloud mask applied)'.format(variable)
-    ## Select variable after calculating index
-    collection = ee.ImageCollection(coll_name)
-    ## Need to code in Landsat 8 cloud masking
-    ##collection = ee.ImageCollection(coll_name).map(landsat8_cloud_mask_func)
-    if variable == 'NDVI':
-        notes = "NDSI calculated from Norm. Diff. of Near-IR and Red bands"
-        collection = collection.map(landsat8_ndvi_func)
-    elif variable == 'NDSI':
-        notes = "NDSI calculated from Norm. Diff. of Green and mid-IR bands"
-        collection = collection.map(landsat8_ndsi_func)
-    elif variable == 'NDWI':
-        notes = "NDWI calculated from Norm. Diff. of near-IR and mid-IR bands"
-        collection = collection.map(landsat8_ndwi_func)
-    elif variable == 'EVI':
-        notes = "EVI calculated from Near-IR, Red and Blue bands"
-        collection = collection.map(landsat8_evi_func)
-    collection = collection.select(variable)
-    return collection, coll_name, coll_desc, product, variable, notes
-
-## Landsat 8 Day collection functions
-##def get_landsat457_8day_collection(variable, product='landsat'):
-##    """"""
-##    coll_name = 'LT4_L1T_8DAY_{0},LT5_L1T_8DAY_{0},LE7_L1T_8DAY_{0}'.format(variable)
-##    coll_desc = 'Landsat 4/5/7 8-day {0} Composite'.format(variable)
-##    collection4 = ee.ImageCollection('LT4_L1T_8DAY_{0}'.format(variable))
-##    collection5 = ee.ImageCollection('LT5_L1T_8DAY_{0}'.format(variable))
-##    collection7 = ee.ImageCollection('LE7_L1T_8DAY_{0}'.format(variable))
-##    collection = ee.ImageCollection(collection4.merge(collection5).merge(collection7))
-##    collection = collection.select(variable)
-##    if variable == 'NDVI':
-##        notes = "NDVI calculated from Norm. Diff. of Near-IR and Red bands"
-##    elif variable == 'NDSI':
-##        notes = "NDSI calculated from Norm. Diff. of Green and mid-IR bands"
-##    elif variable == 'NDWI':
-##        notes = "NDWI calculated from Norm. Diff. of near-IR and mid-IR bands"
-##    elif variable == 'EVI':
-##        notes = "EVI calculated from Near-IR, Red and Blue bands"
-##    return collection, coll_name, coll_desc, product, variable, notes
-##
-##def get_landsat8_8day_collection(variable, product='landsat'):
-##    """"""
-##    coll_name = 'LT5_L1T_8DAY_{0}'.format(variable)
-##    coll_desc = 'Landsat 5, 8-day {0} Composite'.format(variable)
-##    collection = ee.ImageCollection('LT5_L1T_8DAY_{0}'.format(variable)).select(variable)
-##    if variable == 'NDVI':
-##        notes = "NDSI calculated from Norm. Diff. of Near-IR and Red bands"
-##    elif variable == 'NDSI':
-##        notes = "NDSI calculated from Norm. Diff. of Green and mid-IR bands"
-##    elif variable == 'NDWI':
-##        notes = "NDWI calculated from Norm. Diff. of near-IR and mid-IR bands"
-##    elif variable == 'EVI':
-##        notes = "EVI calculated from Near-IR,Red and Blue bands"
-##    return collection, coll_name, coll_desc, product, variable, notes
-    
-def get_modis_16day_collection(variable, product='modis'):
-    """ """
-    coll_name = 'MCD43A4_{0}'.format(variable)
-    coll_desc = 'MODIS 16-day {0}'.format(variable)
-    collection = ee.ImageCollection(coll_name).select(variable)
-    if variable == 'NDVI':
-        notes = "NDSI calculated from Norm. Diff. of Near-IR and Red bands"
-    elif variable == 'NDSI':
-        notes = "NDSI calculated from Norm. Diff. of Green and mid-IR bands"
-    elif variable == 'NDWI':
-        notes = "NDWI calculated from Norm. Diff. of near-IR and mid-IR bands"
-    elif variable == 'EVI':
-        notes = "EVI calculated from Near-IR,Red and Blue bands"
-    return collection, coll_name, coll_desc, product, variable, notes
-    
-def get_gridmet_collection(variable, product='gridded'):
-    """ """
-    coll_name = 'IDAHO_EPSCOR/GRIDMET'
-    coll_desc = 'gridMET 4-km observational dataset(University of Idaho)'
-    # Don't select variable here since Tmean or WB need to be mapped/calculated first
-    collection = ee.ImageCollection(coll_name).select(variable)
-    notes = ""
-    if variable == 'pr':
-        var_desc = 'Precipitation'
-    elif variable == 'tmmx':
-        var_desc = 'Maximum Temperature'
-    elif variable == 'tmmn':
-        var_desc = 'Minimum Temperature'
-    elif variable == 'rmin':
-        var_desc = 'Minimum Relative Humidity'
-    elif variable == 'rmax':
-        var_desc = 'Maximum Relative Humidity'
-    elif variable == 'srad':
-        var_desc = 'Downwelling Shortwave Radiation'
-    elif variable == 'vs':
-        var_desc = 'Wind Speed Near Surface'
-    elif variable == 'sph':
-        var_desc = 'Specific Humidity'
-    elif variable == 'erc':
-        var_desc = 'Energy Release Component'
-    elif variable == 'pet':
-        notes = "ASCE Standardized Reference ET, estimated using the Penmann Monteith method. See Equation 1 in http://www.kimberly.uidaho.edu/water/asceewri/ascestzdetmain2005.pdf"
-        var_desc = 'Reference Evapotranspiration'
-    elif variable == 'pdsi':
-        ##notes = ""
-        var_desc = 'Palmer Drought Severity Index (PDSI)'
-    elif variable == 'tmean':
-        collection = collection.map(gridmet_tmean_func)
-        notes = "Calculated as Average of Min/Max Daily Temperature"
-        var_desc = 'Average Temperature'
-    elif variable == 'wb':
-        collection = collection.map(gridmet_wb_func)
-        notes = "Calculated as the difference between precipitation and reference evapotranspiration"
-        var_desc = 'Water Balance (PPT-PET)'
-    collection = collection.select(variable)
-    return collection, coll_name, coll_desc, product, var_desc, notes
 
 #===========================================
 #    GET_ANOMALY
