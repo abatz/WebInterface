@@ -1,16 +1,18 @@
 #############################################
 ##       MAIN HANDLER FILE FOR VIEWS       ##
 #############################################
+import datetime
+import json
+import logging
 import os
+
 import cgi
 import config
 import ee
-import jinja2
-import webapp2
-import datetime
-import numpy
-import json
 import httplib2
+import jinja2
+import numpy
+import webapp2
 
 import forms
 import collectionMethods
