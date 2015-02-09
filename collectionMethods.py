@@ -472,7 +472,6 @@ def get_gridmet_collection(variable):
         collection = collection.map(gridmet_wb_func)
         notes = "Calculated as the difference between precipitation and reference evapotranspiration"
         var_desc = 'Water Balance (PPT-PET)'
-    collection = ee.ImageCollection(coll_name).select(variable)
     ## How should this function fail gracefully if the inputs are bad?
     ## Should it return an exception?
     else:
