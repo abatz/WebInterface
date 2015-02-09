@@ -4,7 +4,6 @@ import logging
 import urllib2
 
 import ee
-##import numpy
 
 import figureFormatting
 #===========================================
@@ -191,7 +190,7 @@ def get_collection(product, variable):
             EarthEngine image collection object
             String of the collection name
             String of the collection description
-            String of the variable description
+            String of the variable description (may be the input variable)
             String of additional notes about the collection
     """
     if product == 'G':        
@@ -220,7 +219,7 @@ def get_landsat457_daily_collection(variable):
         EarthEngine image collection object
         String of the collection name
         String of the collection description
-        String of the variable description (may be the input variable string)
+        String of the input variable
         String of additional notes about the collection
     """
     ## This string could/should be built based on the date range or looking at
@@ -264,7 +263,7 @@ def get_landsat5_daily_collection(variable):
         EarthEngine image collection object
         String of the collection name
         String of the collection description
-        String of the variable description (may be the input variable string)
+        String of the input variable
         String of additional notes about the collection
     """
     coll_name = 'LT5_L1T_TOA'
@@ -300,7 +299,7 @@ def get_landsat8_daily_collection(variable):
         EarthEngine image collection object
         String of the collection name
         String of the collection description
-        String of the variable description (may be the input variable string)
+        String of the input variable
         String of additional notes about the collection
     """
     coll_name = 'LC8_L1T_TOA'
@@ -339,7 +338,7 @@ def get_landsat8_daily_collection(variable):
 ##        EarthEngine image collection
 ##        String of the collection name object
 ##        String of the collection description
-##        String of the variable description (may be the input variable string)
+##        String of the input variable
 ##        String of additional notes about the collection
 ##    """
 ##    coll_name = 'LT4_L1T_8DAY_{0},LT5_L1T_8DAY_{0},LE7_L1T_8DAY_{0}'.format(variable)
@@ -373,7 +372,7 @@ def get_landsat8_daily_collection(variable):
 ##        EarthEngine image collection object
 ##        String of the collection name
 ##        String of the collection description
-##        String of the variable description (may be the input variable string)
+##        String of the input variable
 ##        String of additional notes about the collection
 ##    """
 ##    coll_name = 'LT5_L1T_8DAY_{0}'.format(variable)
@@ -403,7 +402,7 @@ def get_modis_16day_collection(variable):
         EarthEngine image collection object
         String of the collection name
         String of the collection description
-        String of the variable description (may be the input variable string)
+        String of the input variable
         String of additional notes about the collection
     """
     coll_name = 'MCD43A4_{0}'.format(variable)
@@ -433,13 +432,14 @@ def get_gridmet_collection(variable):
         EarthEngine image collection object
         String of the collection name
         String of the collection description
-        String of the variable description (may be the input variable string)
+        String of the variable description
         String of additional notes about the collection
     """
     coll_name = 'IDAHO_EPSCOR/GRIDMET'
     coll_desc = 'gridMET 4-km observational dataset(University of Idaho)'
     # Don't select variable here since Tmean or WB need to be mapped/calculated first
     collection = ee.ImageCollection(coll_name)
+    notes = ""
     if variable == 'pr':
         var_desc = 'Precipitation'
     elif variable == 'tmmx':
@@ -475,7 +475,6 @@ def get_gridmet_collection(variable):
     ## How should this function fail gracefully if the inputs are bad?
     ## Should it return an exception?
     else:
-        notes = ""
         var_desc = ""
     collection = collection.select(variable)
     return collection, coll_name, coll_desc, var_desc, notes
@@ -483,6 +482,7 @@ def get_gridmet_collection(variable):
 #===========================================
 #    Collection Functions
 #===========================================
+property_list = ['system:index','system:time_start', 'system:time_end']
 def landsat457_cloud_mask_func(img):
     """Apply basic ACCA cloud mask to a daily Landsat 4, 5, or 7 image"""
     cloud_mask = ee.Algorithms.Landsat.simpleCloudScore(img).\
@@ -493,23 +493,24 @@ def landsat457_ndvi_func(img):
     """Calculate NDVI for a daily Landsat 4, 5, or 7 image"""
     ## Remove .clamp(-0.1, 1)
     return img.normalizedDifference(["B4","B3"]).select([0], ['NDVI'])\
-        .copyProperties(img, ['system:index','system:time_start'])
+        .copyProperties(img, property_list)
 
 def landsat457_ndsi_func(img):
     """Calculate NDSI for a daily Landsat 4, 5, or 7 image"""
+    ## Removed .clamp(-0.1, 1)
     return img.normalizedDifference(["B2", "B5"]).select([0], ['NDSI'])\
-        .copyProperties(img, ['system:index','system:time_start'])
+        .copyProperties(img, property_list)
 
 def landsat457_ndwi_func(img):
     """Calculate NDWI (Gao 1996 formulation) for a daily Landsat 4, 5, or 7 image"""
+    ## Removed .clamp(-0.1, 1)
     ndwi_img = img.normalizedDifference(["B4", "B5"]).select([0], ['NDWI'])\
-        .copyProperties(img, ['system:index','system:time_start'])
+        .copyProperties(img, property_list)
 
 def landsat457_evi_func(img):
     """Calculate EVI for a daily Landsat 4, 5, or 7 image"""
-    return img.expr('(2.5 * (b(4) - b(3))) / (b(4) + 6 * b(3) - 7.5 * b(1) + 1)')\
-        .select([0], ['EVI'])\
-        .copyProperties(img, ['system:index', 'system:time_start'])
+    return img.expression('(2.5 * (b(4) - b(3))) / (b(4) + 6 * b(3) - 7.5 * b(1) + 1)')\
+        .select([0], ['EVI']).copyProperties(img, property_list)
 
 ## DEADBEEF - Need to code in Landsat 8 cloud masking
 def landsat8_cloud_mask_func(img):
@@ -517,41 +518,45 @@ def landsat8_cloud_mask_func(img):
 
 def landsat8_ndvi_func(img):
     """Calculate NDVI for a daily Landsat 8 image"""
-    ## Remove .clamp(-0.1, 1)
+    ## Removed .clamp(-0.1, 1)
     return img.normalizedDifference(["B5","B4"]).select([0], ['NDVI'])\
-        .copyProperties(img, ['system:index','system:time_start'])
+        .copyProperties(img, property_list)
 
 def landsat8_ndsi_func(img):
     """Calculate NDSI for a daily Landsat 8 image"""
-    ## Remove .clamp(-0.1, 1)
+    ## Removed .clamp(-0.1, 1)
     return img.normalizedDifference(["B3","B6"]).select([0], ['NDVI'])\
-        .copyProperties(img, ['system:index','system:time_start'])
+        .copyProperties(img, property_list)
 
 def landsat8_ndwi_func(img):
     """Calculate NDWI for a daily Landsat 8 image"""
-    ## Remove .clamp(-0.1, 1)
+    ## Removed .clamp(-0.1, 1)
     return img.normalizedDifference(["B6","B5"]).select([0], ['NDVI'])\
-        .copyProperties(img, ['system:index','system:time_start'])
+        .copyProperties(img, property_list)
 
 def landsat8_evi_func(img):
     """Calculate EVI for a daily Landsat 8 image"""
     ##This formulation should be double checked
-    return img.expr('(2.5 * (b(5) - b(4))) / (b(5) + 6 * b(4) - 7.5 * b(2) + 1)')\
-        .select([0], ['EVI'])\
-        .copyProperties(img, ['system:index', 'system:time_start'])
+    return img.expression('(2.5 * (b(5) - b(4))) / (b(5) + 6 * b(4) - 7.5 * b(2) + 1)')\
+        .select([0], ['EVI']).copyProperties(img, property_list)
 
 def gridmet_wb_func(img):
     """Calculate water balance from precip and PET for GRIDMET collection"""
-    pr_img = img.select('pr')
-    img = pr_img.subtract(img.select('pet')).select([0],['wb'])
-    return img.copyProperties(img, ['system:index', 'system:time_start'])
+    return img.expression("b('pr') - b('pet')")\
+        .select([0], ['wb']).copyProperties(img, property_list)
+    ##pr_img = img.select('pr')
+    ##pet_img = img.select('pet')
+    ##return pr_img.subtract(pet_img).select([0], ['wb'])\
+    ##    .copyProperties(img, property_list)
 
 def gridmet_tmean_func(img):
     """Calculate Tmean image from Tmin and Tmax for GRIDMET collection"""
-    tmax_img = img.select('tmmx')
-    tmin_img = img.select('tmmx')
-    tmean_img = tmax_img.add(tmin_img).multiply(0.5).select([0],['tmean'])
-    return tmean_img.copyProperties(img, ['system:index', 'system:time_start'])
+    return img.expression("0.5 * (b('tmmx') + b('tmmx'))")\
+        .select([0],['tmean']).copyProperties(img, property_list)
+    ##tmax_img = img.select('tmmx')
+    ##tmin_img = img.select('tmmx')
+    ##return tmax_img.add(tmin_img).multiply(0.5).select([0],['tmean'])\
+    ##    .copyProperties(img, property_list)
 
 #===========================================
 #    GET_ANOMALY
