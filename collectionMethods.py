@@ -437,6 +437,7 @@ def get_gridmet_collection(variable):
     """
     coll_name = 'IDAHO_EPSCOR/GRIDMET'
     coll_desc = 'gridMET 4-km observational dataset(University of Idaho)'
+    collection = ee.ImageCollection(coll_name)
     # Don't select variable here since Tmean or WB need to be mapped/calculated first
     notes = ""
     if variable == 'pr':
