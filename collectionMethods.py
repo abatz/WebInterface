@@ -505,7 +505,7 @@ def landsat457_ndsi_func(img):
 def landsat457_ndwi_func(img):
     """Calculate NDWI (Gao 1996 formulation) for a daily Landsat 4, 5, or 7 image"""
     ## Removed .clamp(-0.1, 1)
-    ndwi_img = img.normalizedDifference(["B4", "B5"]).select([0], ['NDWI'])\
+    return img.normalizedDifference(["B4", "B5"]).select([0], ['NDWI'])\
         .copyProperties(img, property_list)
 
 def landsat457_evi_func(img):
@@ -642,7 +642,7 @@ def modify_units(collection, variable, anomOrValue, units):
                 if units == 'english': #convert C to F
                      collection = collection.multiply(1.8).add(32)   
         elif variable in ['pr', 'pet', 'wb'] and units == 'english':
-                collection=collection.divide(25.4) #convert mm to inches
+                collection = collection.divide(25.4) #convert mm to inches
         elif variable == 'vs' and units == 'english':
             collection = collection.multiply(2.23694) #convert m/s to mi/h
     return collection
@@ -667,7 +667,7 @@ def filter_domain2(collection, domainType, subdomain):
     """"""
     if domainType == 'points':
         fc = ee.FeatureCollection('ft:1fRY18cjsHzDgGiJiS2nnpUU3v9JPDc2HNaR7Xk8')
-        #collection= collection.clip(fc.geometry())
+        #collection = collection.clip(fc.geometry())
     elif domainType == 'states':
         fc = ee.FeatureCollection('ft:1fRY18cjsHzDgGiJiS2nnpUU3v9JPDc2HNaR7Xk8').filter(ee.Filter.eq('Name', subdomain))
         collection = collection.clip(fc.geometry())
