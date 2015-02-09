@@ -386,16 +386,16 @@ $(function(){
             maxYear = year; 
 	    minDate="2013-04-07";
 	    maxDate=todayDate;
-            $('#dateStart').val(minDate);
-            $('#dateEnd').val(maxDate);
+            //$('#dateStart').val(minDate);
+            //$('#dateEnd').val(maxDate);
         }
         else if (product=='5'){
             minYear = "1984";
             maxYear = "2012";
 	    minDate="1984-01-01";
 	    maxDate="2012-05-08";
-            $('#dateStart').val(minDate);
-            $('#dateEnd').val(maxDate);
+            //$('#dateStart').val(minDate);
+            //$('#dateEnd').val(maxDate);
         }
         else if (product=='M'){
             minYear = "2000";
