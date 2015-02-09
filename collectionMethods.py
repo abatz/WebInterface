@@ -331,7 +331,6 @@ def get_gridmet_collection(variable):
     coll_name = 'IDAHO_EPSCOR/GRIDMET'
     coll_desc = 'gridMET 4-km observational dataset(University of Idaho)'
     # Don't select variable here since Tmean or WB need to be mapped/calculated first
-    collection = ee.ImageCollection(coll_name).select(variable)
     notes = ""
     if variable == 'pr':
         var_desc = 'Precipitation'
@@ -355,6 +354,7 @@ def get_gridmet_collection(variable):
         notes = "ASCE Standardized Reference ET, estimated using the Penmann Monteith method. See Equation 1 in http://www.kimberly.uidaho.edu/water/asceewri/ascestzdetmain2005.pdf"
         var_desc = 'Reference Evapotranspiration'
     elif variable == 'pdsi':
+        coll_name = 'IDAHO_EPSCOR/PDSI'
         ##notes = ""
         var_desc = 'Palmer Drought Severity Index (PDSI)'
     elif variable == 'tmean':
@@ -365,6 +365,7 @@ def get_gridmet_collection(variable):
         collection = collection.map(gridmet_wb_func)
         notes = "Calculated as the difference between precipitation and reference evapotranspiration"
         var_desc = 'Water Balance (PPT-PET)'
+    collection = ee.ImageCollection(coll_name).select(variable)
     collection = collection.select(variable)
     return collection, coll_name, coll_desc, var_desc, notes
 
