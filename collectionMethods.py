@@ -4,7 +4,7 @@ import logging
 import urllib2
 
 import ee
-import numpy
+##import numpy
 
 import figureFormatting
 #===========================================
@@ -45,7 +45,7 @@ def get_images(template_values):
     #Collection
     #==============
     #Get initial collection
-    collection, collection_name, collection_desc, product, variable_desc, notes = get_collection(var)
+    collection, coll_name, coll_desc, product, var_desc, notes = get_collection(var)
 
     #remove starting character which indicates the product
     var = var[1:]
@@ -54,7 +54,7 @@ def get_images(template_values):
     #Title and Source
     #==============
     #Set title
-    title = statistic + ' ' + variable_desc
+    title = statistic + ' ' + var_desc
     if aOV == 'clim':
         title = title + ' Climatology '
     elif aOV == 'anom':
@@ -65,7 +65,7 @@ def get_images(template_values):
         title = title + ' Percent Of Climatology '
 
     #Set source, domain, subdomain
-    source = collection_desc + ' from ' + dS + '-' + dE + ''
+    source = coll_desc + ' from ' + dS + '-' + dE + ''
 
     #==============
     #Anomaly
@@ -75,7 +75,7 @@ def get_images(template_values):
         collection = get_statistic(collection, statistic)
     elif aOV in ['anom','anompercentof','anompercentchange','clim']:
         collection, climatologyNotes = get_anomaly(
-            collection, product, var, collection_name, dS, dE, statistic,
+            collection, product, var, coll_name, dS, dE, statistic,
             aOV, yearStartClim, yearEndClim)
         TV['climatologyNotes'] = climatologyNotes
     #==============
@@ -87,7 +87,8 @@ def get_images(template_values):
     #Get mapid
     #==============
     mapid = {'mapid':[],'token':[]}
-    mapid = map_collection(collection, TV['opacity'], palette, minColorbar, maxColorbar)
+    mapid = map_collection(
+        collection, TV['opacity'], palette, minColorbar, maxColorbar)
 
     #==============
     #Update template values
@@ -95,8 +96,8 @@ def get_images(template_values):
     extra_template_values = {
         'source': source,
         'product':product,
-        'productLongName': collection_desc,
-        'variableShortName': variable_desc,
+        'productLongName': coll_desc,
+        'variableShortName': var_desc,
         'title': title,
         'colorbarLabel': colorbarLabel,
         'minColorbar': minColorbar,
@@ -132,7 +133,7 @@ def get_time_series(template_values):
     points = ee.Feature.MultiPoint(pointsLongLatTuples)
 
     #get the collection  (Note get_collecton needs full var name with prefix)
-    collection, collection_name, collection_desc, product, variable_desc, notes = get_collection(var)
+    collection, coll_name, coll_desc, product, var_desc, notes = get_collection(var)
     collection = collection.filterDate(dS,dE)
     var = var[1:] #strip product of variable name
     product = var[0:1]
@@ -148,22 +149,22 @@ def get_time_series(template_values):
     json_dict = json.loads(response.read())
     dataList = json_dict['features'][0]['properties']['sample']
     dataList.pop(0)
-    timeSeriesData = []
+    timeSeriesTextData = []
     timeSeriesGraphData = []
-    timeSeriesData, timeSeriesGraphData = figureFormatting.set_time_series_data(
+    timeSeriesTextData, timeSeriesGraphData = figureFormatting.set_time_series_data(
         dataList,TV)
 
-    source = collection_desc + ' from ' + dS + '-' + dE + ''
+    source = coll_desc + ' from ' + dS + '-' + dE + ''
     #Set title
-    title = statistic + ' ' + variable_desc
+    title = statistic + ' ' + var_desc
     #Update template values
     extra_template_values = {
         'source_time':source,
         'title_time':title,
         'product_time':product,
-        'productLongName_time':collection_desc,
-        'variableShortName_time':variable_desc,
-        'timeSeriesData':timeSeriesData,
+        'productLongName_time':coll_desc,
+        'variableShortName_time':var_desc,
+        'timeSeriesData':timeSeriesTextData,
         'timeSeriesGraphData':json.dumps(timeSeriesGraphData),
         'notes_time': notes
     }
@@ -179,29 +180,61 @@ def landsat457_cloud_mask_func(img):
     cloud_mask = ee.Algorithms.Landsat.simpleCloudScore(img).\
         select(['cloud']).lt(ee.Image.constant(50))
     return img.mask(cloud_mask.mask(cloud_mask))
+
 def landsat457_ndvi_func(img):
     """Calculate NDVI for a daily Landsat 4, 5, or 7 image"""
     ## Remove .clamp(-0.1, 1)
-    return img.normalizedDifference(["B4","B3"]).select([0], ['NDVI']).copyProperties(
-        img, ['system:index','system:time_start'])
+    return img.normalizedDifference(["B4","B3"]).select([0], ['NDVI'])\
+        .copyProperties(img, ['system:index','system:time_start'])
+
 def landsat457_ndsi_func(img):
     """Calculate NDSI for a daily Landsat 4, 5, or 7 image"""
-    return img.normalizedDifference(["B2","B5"]).select([0], ['NDSI']).copyProperties(
-        img, ['system:index','system:time_start'])
+    return img.normalizedDifference(["B2", "B5"]).select([0], ['NDSI'])\
+        .copyProperties(img, ['system:index','system:time_start'])
+
 def landsat457_ndwi_func(img):
     """Calculate NDWI (Gao 1996 formulation) for a daily Landsat 4, 5, or 7 image"""
-    ndwi_img = img.normalizedDifference(["B5","B2"]).select([0], ['NDWI']).copyProperties(
-        img, ['system:index','system:time_start'])
+    ndwi_img = img.normalizedDifference(["B4", "B5"]).select([0], ['NDWI'])\
+        .copyProperties(img, ['system:index','system:time_start'])
+
 def landsat457_evi_func(img):
     """Calculate EVI for a daily Landsat 4, 5, or 7 image"""
     return img.expr('(2.5 * (b(4) - b(3))) / (b(4) + 6 * b(3) - 7.5 * b(1) + 1)')\
-        .select([0], ['EVI']).copyProperties(img, ['system:index','system:time_start'])
+        .select([0], ['EVI'])\
+        .copyProperties(img, ['system:index', 'system:time_start'])
+
+def landsat8_ndvi_func(img):
+    """Calculate NDVI for a daily Landsat 8 image"""
+    ## Remove .clamp(-0.1, 1)
+    return img.normalizedDifference(["B5","B4"]).select([0], ['NDVI'])\
+        .copyProperties(img, ['system:index','system:time_start'])
+
+def landsat8_ndsi_func(img):
+    """Calculate NDSI for a daily Landsat 8 image"""
+    ## Remove .clamp(-0.1, 1)
+    return img.normalizedDifference(["B3","B6"]).select([0], ['NDVI'])\
+        .copyProperties(img, ['system:index','system:time_start'])
+
+def landsat8_ndwi_func(img):
+    """Calculate NDWI for a daily Landsat 8 image"""
+    ## Remove .clamp(-0.1, 1)
+    return img.normalizedDifference(["B6","B5"]).select([0], ['NDVI'])\
+        .copyProperties(img, ['system:index','system:time_start'])
+
+def landsat8_evi_func(img):
+    """Calculate EVI for a daily Landsat 8 image"""
+    ##This formulation should be double checked
+    return img.expr('(2.5 * (b(5) - b(4))) / (b(5) + 6 * b(4) - 7.5 * b(2) + 1)')\
+        .select([0], ['EVI'])\
+        .copyProperties(img, ['system:index', 'system:time_start'])
+
 def gridmet_wb_func(img):
     """Calculate water balance from precip and PET for GRIDMET collection"""
     pr_img = img.select('pr')
     img = pr_img.subtract(img.select('pet')).select([0],['wb'])
     return ee.Image(img.copyProperties(
         img_pr, ['system:index', 'system:time_start']))
+
 def gridmet_tmean_func(img):
     """Calculate Tmean image from Tmin and Tmax for GRIDMET collection"""
     img_tmmx = img.select('tmmx')
@@ -228,16 +261,16 @@ def get_collection(variable):
         return get_landsat5_daily_collection(variable, product='landsat5')
         ##return get_landsat457_daily_collection(variable, product='landsat5')
     elif product == 'M':
-        return get_modis_collection(variable, product='modis')
+        return get_modis_16day_collection(variable, product='modis')
 
 def get_landsat457_daily_collection(variable, product='landsat'):
     """"""
     ## This string could/should be built based on the date range or looking at
     ##   or looking atthe images in the collection
-    collection_name = 'LT4_L1T_TOA,LT5_L1T_TOA,LE7_L1T_TOA'
-    collection_desc = 'Landsat 4/5/7 Daily {0} (cloud mask applied)'.format(variable)
-    ##collection_name = 'LT5_L1T_TOA'
-    ##collection_desc = 'Landsat 5, daily {0} (cloud mask applied)'.format(variable)
+    coll_name = 'LT4_L1T_TOA,LT5_L1T_TOA,LE7_L1T_TOA'
+    coll_desc = 'Landsat 4/5/7 Daily {0} (cloud mask applied)'.format(variable)
+    ##coll_name = 'LT5_L1T_TOA'
+    ##coll_desc = 'Landsat 5, daily {0} (cloud mask applied)'.format(variable)
 
     ## Select variable after calculating index
     collection = ee.ImageCollection([])
@@ -259,14 +292,14 @@ def get_landsat457_daily_collection(variable, product='landsat'):
         notes = "EVI calculated from Near-IR, Red and Blue bands"
         collection = collection.map(landsat457_evi_func)
     collection = collection.select(variable)
-    return collection, collection_name, collection_desc, product, variable, notes
+    return collection, coll_name, coll_desc, product, variable, notes
 
 def get_landsat5_daily_collection(variable, product='landsat'):
     """"""
-    collection_name = 'LT5_L1T_TOA'
-    collection_desc = 'Landsat 5, daily {0} (cloud mask applied)'.format(variable)
+    coll_name = 'LT5_L1T_TOA'
+    coll_desc = 'Landsat 5, daily {0} (cloud mask applied)'.format(variable)
     ## Select variable after calculating index
-    collection = ee.ImageCollection(collection_name).map(landsat457_cloud_mask_func)
+    collection = ee.ImageCollection(coll_name).map(landsat457_cloud_mask_func)
     if variable == 'NDVI':
         notes = "NDSI calculated from Norm. Diff. of Near-IR and Red bands"
         collection = collection.map(landsat457_ndvi_func)
@@ -280,16 +313,16 @@ def get_landsat5_daily_collection(variable, product='landsat'):
         notes = "EVI calculated from Near-IR, Red and Blue bands"
         collection = collection.map(landsat457_evi_func)
     collection = collection.select(variable)
-    return collection, collection_name, collection_desc, product, variable, notes
+    return collection, coll_name, coll_desc, product, variable, notes
 
 def get_landsat8_daily_collection(variable, product='landsat'):
     """"""
-    collection_name = 'LC8_L1T_TOA'
-    collection_desc = 'Landsat 8, daily {0} (cloud mask applied)'.format(variable)
+    coll_name = 'LC8_L1T_TOA'
+    coll_desc = 'Landsat 8, daily {0} (cloud mask applied)'.format(variable)
     ## Select variable after calculating index
-    collection = ee.ImageCollection(collection_name)
+    collection = ee.ImageCollection(coll_name)
     ## Need to code in Landsat 8 cloud masking
-    ##collection = ee.ImageCollection(collection_name).map(landsat8_cloud_mask_func)
+    ##collection = ee.ImageCollection(coll_name).map(landsat8_cloud_mask_func)
     if variable == 'NDVI':
         notes = "NDSI calculated from Norm. Diff. of Near-IR and Red bands"
         collection = collection.map(landsat8_ndvi_func)
@@ -303,13 +336,13 @@ def get_landsat8_daily_collection(variable, product='landsat'):
         notes = "EVI calculated from Near-IR, Red and Blue bands"
         collection = collection.map(landsat8_evi_func)
     collection = collection.select(variable)
-    return collection, collection_name, collection_desc, product, variable, notes
+    return collection, coll_name, coll_desc, product, variable, notes
 
-
+## Landsat 8 Day collection functions
 ##def get_landsat457_8day_collection(variable, product='landsat'):
 ##    """"""
-##    collection_name = 'LT4_L1T_8DAY_{0},LT5_L1T_8DAY_{0},LE7_L1T_8DAY_{0}'.format(variable)
-##    collection_desc = 'Landsat 4/5/7 8-day {0} Composite'.format(variable)
+##    coll_name = 'LT4_L1T_8DAY_{0},LT5_L1T_8DAY_{0},LE7_L1T_8DAY_{0}'.format(variable)
+##    coll_desc = 'Landsat 4/5/7 8-day {0} Composite'.format(variable)
 ##    collection4 = ee.ImageCollection('LT4_L1T_8DAY_{0}'.format(variable))
 ##    collection5 = ee.ImageCollection('LT5_L1T_8DAY_{0}'.format(variable))
 ##    collection7 = ee.ImageCollection('LE7_L1T_8DAY_{0}'.format(variable))
@@ -323,12 +356,12 @@ def get_landsat8_daily_collection(variable, product='landsat'):
 ##        notes = "NDWI calculated from Norm. Diff. of near-IR and mid-IR bands"
 ##    elif variable == 'EVI':
 ##        notes = "EVI calculated from Near-IR, Red and Blue bands"
-##    return collection, collection_name, collection_desc, product, variable, notes
-
+##    return collection, coll_name, coll_desc, product, variable, notes
+##
 ##def get_landsat8_8day_collection(variable, product='landsat'):
 ##    """"""
-##    collection_name = 'LT5_L1T_8DAY_{0}'.format(variable)
-##    collection_desc = 'Landsat 5, 8-day {0} Composite'.format(variable)
+##    coll_name = 'LT5_L1T_8DAY_{0}'.format(variable)
+##    coll_desc = 'Landsat 5, 8-day {0} Composite'.format(variable)
 ##    collection = ee.ImageCollection('LT5_L1T_8DAY_{0}'.format(variable)).select(variable)
 ##    if variable == 'NDVI':
 ##        notes = "NDSI calculated from Norm. Diff. of Near-IR and Red bands"
@@ -338,13 +371,13 @@ def get_landsat8_daily_collection(variable, product='landsat'):
 ##        notes = "NDWI calculated from Norm. Diff. of near-IR and mid-IR bands"
 ##    elif variable == 'EVI':
 ##        notes = "EVI calculated from Near-IR,Red and Blue bands"
-##    return collection, collection_name, collection_desc, product, variable, notes
+##    return collection, coll_name, coll_desc, product, variable, notes
     
 def get_modis_16day_collection(variable, product='modis'):
     """ """
-    collection_name = 'MCD43A4_{0}'.format(variable)
-    collection_desc = 'MODIS 16-day {0}'.format(variable)
-    collection = ee.ImageCollection(collection_name).select(variable)
+    coll_name = 'MCD43A4_{0}'.format(variable)
+    coll_desc = 'MODIS 16-day {0}'.format(variable)
+    collection = ee.ImageCollection(coll_name).select(variable)
     if variable == 'NDVI':
         notes = "NDSI calculated from Norm. Diff. of Near-IR and Red bands"
     elif variable == 'NDSI':
@@ -353,54 +386,54 @@ def get_modis_16day_collection(variable, product='modis'):
         notes = "NDWI calculated from Norm. Diff. of near-IR and mid-IR bands"
     elif variable == 'EVI':
         notes = "EVI calculated from Near-IR,Red and Blue bands"
-    return collection, collection_name, collection_desc, product, variable, notes
+    return collection, coll_name, coll_desc, product, variable, notes
     
 def get_gridmet_collection(variable, product='gridded'):
     """ """
-    collection_name = 'IDAHO_EPSCOR/GRIDMET'
-    collection_desc = 'gridMET 4-km observational dataset(University of Idaho)'
+    coll_name = 'IDAHO_EPSCOR/GRIDMET'
+    coll_desc = 'gridMET 4-km observational dataset(University of Idaho)'
     # Don't select variable here since Tmean or WB need to be mapped/calculated first
-    collection = ee.ImageCollection(collection_name).select(variable)
+    collection = ee.ImageCollection(coll_name).select(variable)
     notes = ""
     if variable == 'pr':
-        variable_desc = 'Precipitation'
+        var_desc = 'Precipitation'
     elif variable == 'tmmx':
-        variable_desc = 'Maximum Temperature'
+        var_desc = 'Maximum Temperature'
     elif variable == 'tmmn':
-        variable_desc = 'Minimum Temperature'
+        var_desc = 'Minimum Temperature'
     elif variable == 'rmin':
-        variable_desc = 'Minimum Relative Humidity'
+        var_desc = 'Minimum Relative Humidity'
     elif variable == 'rmax':
-        variable_desc = 'Maximum Relative Humidity'
+        var_desc = 'Maximum Relative Humidity'
     elif variable == 'srad':
-        variable_desc = 'Downwelling Shortwave Radiation'
+        var_desc = 'Downwelling Shortwave Radiation'
     elif variable == 'vs':
-        variable_desc = 'Wind Speed Near Surface'
+        var_desc = 'Wind Speed Near Surface'
     elif variable == 'sph':
-        variable_desc = 'Specific Humidity'
+        var_desc = 'Specific Humidity'
     elif variable == 'erc':
-        variable_desc = 'Energy Release Component'
+        var_desc = 'Energy Release Component'
     elif variable == 'pet':
         notes = "ASCE Standardized Reference ET, estimated using the Penmann Monteith method. See Equation 1 in http://www.kimberly.uidaho.edu/water/asceewri/ascestzdetmain2005.pdf"
-        variable_desc = 'Reference Evapotranspiration'
+        var_desc = 'Reference Evapotranspiration'
     elif variable == 'pdsi':
         ##notes = ""
-        variable_desc = 'Palmer Drought Severity Index (PDSI)'
+        var_desc = 'Palmer Drought Severity Index (PDSI)'
     elif variable == 'tmean':
         collection = collection.map(gridmet_tmean_func)
         notes = "Calculated as Average of Min/Max Daily Temperature"
-        variable_desc = 'Average Temperature'
+        var_desc = 'Average Temperature'
     elif variable == 'wb':
         collection = collection.map(gridmet_wb_func)
         notes = "Calculated as the difference between precipitation and reference evapotranspiration"
-        variable_desc = 'Water Balance (PPT-PET)'
+        var_desc = 'Water Balance (PPT-PET)'
     collection = collection.select(variable)
-    return collection, collection_name, collection_desc, product, variable_desc, notes
+    return collection, coll_name, coll_desc, product, var_desc, notes
 
 #===========================================
 #    GET_ANOMALY
 #===========================================
-def get_anomaly(collection, product, variable, collection_name, dateStart,
+def get_anomaly(collection, product, variable, coll_name, dateStart,
                 dateEnd, statistic, anomOrValue, yearStartClim, yearEndClim):
     """"""
     #here anomOrValue =['anom','anompercentof','anompercentchange','clim'] only
@@ -469,7 +502,7 @@ def get_statistic(collection, statistic):
 #===========================================
 def modify_units(collection, variable, anomOrValue, units):
     """"""
-    #don't modify if anomOrValue=='anompercentof' or 'anompercentchange'
+    #don't modify if anomOrValue == 'anompercentof' or 'anompercentchange'
 
     if anomOrValue in ['value', 'clim', 'anom']:
         if variable in ['tmmx', 'tmmn', 'tmean']:
@@ -534,7 +567,7 @@ def get_colorbar(variable, anomOrValue, units):
             palette = "A50026,D73027,F46D43,FDAE61,FEE08B,FFFFBF,D9EF8B,A6D96A,66BD63,1A9850,006837"
             minColorbar = -.4
             maxColorbar = .4
-            colorbarLabel=variable+' Difference from climatology'
+            colorbarLabel = variable + ' Difference from climatology'
             colorbarmap = 'RdYlGn'
             colorbarsize = '8'
             varUnits = ''
@@ -542,16 +575,16 @@ def get_colorbar(variable, anomOrValue, units):
             palette = "FFFFE5,F7FCB9,D9F0A3,ADDD8E,93D284,78C679,41AB5D,238443,006837,004529"
             minColorbar = -.1
             maxColorbar = .9
-            colorbarLabel=variable
+            colorbarLabel = variable
             colorbarmap = 'YlGn'
             colorbarsize = '9'
             varUnits = ''
-    elif variable == 'NDSI' or variable=='NDWI':
-        if anomOrValue=='anom':
+    elif variable == 'NDSI' or variable == 'NDWI':
+        if anomOrValue == 'anom':
             palette = "A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
             minColorbar = -.5
             maxColorbar = .5
-            colorbarLabel=variable+' Difference from climatology'
+            colorbarLabel = variable + ' Difference from climatology'
             colorbarmap = 'RdYlBu'
             colorbarsize = '88888888'
             varUnits = ''
@@ -559,7 +592,7 @@ def get_colorbar(variable, anomOrValue, units):
             palette = "08306B,08519C,2171B5,4292C6,6BAED6,9ECAE1,C6DBEF,DEEBF7,F7FBFF"
             minColorbar = -.2
             maxColorbar = .7
-            colorbarLabel=variable
+            colorbarLabel = variable
             colorbarmap = 'invBlues'
             colorbarsize = '8'
             varUnits = ''
@@ -576,73 +609,59 @@ def get_colorbar(variable, anomOrValue, units):
             minColorbar = 0
             palette = "FFFFD9,EDF8B1,C7E9B4,7FCDBB,41B6C4,1D91C0,225EA8,0C2C84"
 	    if units == 'metric':
-           	 colorbarLabel = 'Precipitation Amount( '+'mm'+' )'
+           	 colorbarLabel = 'Precipitation Amount (mm)'
                  maxColorbar = 400
                  varUnits = 'mm'
 	    elif units == 'english':
-           	 colorbarLabel = 'Precipitation Amount( '+'in'+' )'
+           	 colorbarLabel = 'Precipitation Amount (in)'
                  maxColorbar = 16
                  varUnits = 'in'
             colorbarmap = 'YlGnBu'
             colorbarsize = '8'
-    elif variable == 'tmmx' or variable=='tmmn' or variable=='tmean':
+    elif variable in ['tmmx', 'tmmn', 'tmean']:
+        palette = "313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
+        colorbarmap = 'BuRd'
+        colorbarsize = '8'
+        if units == 'metric':
+            varUnits = 'deg C'
+	    colorbarLabel = 'Temperature (deg C)'
+        elif units == 'english':
+            varUnits = 'deg F'
+	    colorbarLabel = 'Temperature (deg F)' 
         if anomOrValue == 'anom':
             palette = "313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
 	    if units == 'metric':
 		 colorbarLabel = 'Temperature Difference from climatology (deg C)'
                  minColorbar = -5
                  maxColorbar = 5
-                 varUnits = 'deg C'
 	    elif units == 'english':
 		 colorbarLabel = 'Temperature Difference from climatology (deg F)'
                  minColorbar = -10
                  maxColorbar = 10
-                 varUnits = 'deg F'
             colorbarmap = 'BuYlRd'
             colorbarsize = '8'
         elif variable == 'tmmx':
-            palette = "313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
 	    if units == 'metric':
-		 colorbarLabel = 'Temperature (deg C)'
                  minColorbar = -20
                  maxColorbar = 30
-                 varUnits = 'deg C'
 	    elif units == 'english':
-		 colorbarLabel = 'Temperature (deg F)'
                  minColorbar = 0
                  maxColorbar = 100
-                 varUnits = 'deg F'
-            colorbarmap = 'BuRd'
-            colorbarsize = '8'
         elif variable == 'tmmn':
-            palette = "313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
 	    if units == 'metric':
-		 colorbarLabel = 'Temperature (deg C)'
 	         minColorbar = -20
 	         maxColorbar = 20
-                 varUnits = 'deg C'
 	    elif units == 'english':
-		 colorbarLabel = 'Temperature (deg F)'
 	         minColorbar = 0
 	         maxColorbar = 80
-                 varUnits = 'deg F'
-            colorbarmap = 'BuRd'
-            colorbarsize = '8'
         elif variable == 'tmean':
-            palette = "313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
             if units == 'metric':
-                 colorbarLabel = 'Temperature (deg C)'
                  minColorbar = -20
                  maxColorbar = 20
-                 varUnits = 'deg C'
             elif units == 'english':
-                 colorbarLabel = 'Temperature (deg F)'
                  minColorbar = 0
                  maxColorbar = 80
-                 varUnits = 'deg F'
-            colorbarmap = 'BuRd'
-            colorbarsize = '8'
-    elif variable == 'rmin' or variable=='rmax':
+    elif variable == 'rmin' or variable == 'rmax':
         if anomOrValue == 'anom':
             palette = "313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
             minColorbar = -25
@@ -684,9 +703,9 @@ def get_colorbar(variable, anomOrValue, units):
             minColorbar = 100
             maxColorbar = 350
 	    if units == 'metric':
-		colorbarLabel = 'Radiation(' +'W /m2'+' )'
+		colorbarLabel = 'Radiation (W/m2)'
 	    elif units == 'english':
-            	colorbarLabel = 'Radiation(' +'W /m2'+' )'
+            	colorbarLabel = 'Radiation (W/m2)'
             colorbarmap = 'BuRd'
             colorbarsize = '8'
             varUnits = 'W/m^2'
@@ -709,11 +728,11 @@ def get_colorbar(variable, anomOrValue, units):
             palette = "FFFFD9,EDF8B1,C7E9B4,7FCDBB,5DC2C1,41B6C4,1D91C0,225EA8,253494,081D58"
             minColorbar = 0
 	    if units == 'metric':
-		colorbarLabel = 'Wind Speed(' +'m/s'+' )'
+		colorbarLabel = 'Wind Speed (m/s)'
                 maxColorbar = 5
                 varUnits = 'm/s'
 	    elif units == 'english':
-		colorbarLabel = 'Wind Speed(' +'mi/hr'+' )'
+		colorbarLabel = 'Wind Speed (mi/hr)'
                 maxColorbar = 10
                 varUnits = 'mi/hr'
             colorbarmap = 'YlGnBu'
@@ -762,16 +781,14 @@ def get_colorbar(variable, anomOrValue, units):
             colorbarsize = '8'
             varUnits = '%'
         else:
-            minColorbar = 300
-            maxColorbar = 800
             palette = "313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FFF6A7,FEE090,FDAE61,F46D43,D73027,A50026"
 	    if units == 'metric':
-		colorbarLabel = 'PET(' +'mm'+' )'
+		colorbarLabel = 'PET (mm)'
                 minColorbar = 300
                 maxColorbar = 800
                 varUnits = 'mm'
 	    elif units == 'english':
-		colorbarLabel = 'PET(' +'in'+' )'
+		colorbarLabel = 'PET (in)'
                 minColorbar = 10
                 maxColorbar = 30
                 varUnits = 'in'
@@ -789,12 +806,12 @@ def get_colorbar(variable, anomOrValue, units):
         else:
             palette = "A50026,D73027,F46D43,FDAE61,FEE090,FFFFBF,E0F3F8,ABD9E9,74ADD1,4575B4,313695"
 	    if units == 'metric':
-		colorbarLabel = 'Water Balance(' +'mm'+' )'
+		colorbarLabel = 'Water Balance (mm)'
                 minColorbar = -220
                 maxColorbar = 220
                 varUnits = 'mm'
 	    elif units == 'english':
-		colorbarLabel = 'Water Balance(' +'in'+' )'
+		colorbarLabel = 'Water Balance (in)'
                 minColorbar = -10
                 maxColorbar = 10
                 varUnits = 'in'
