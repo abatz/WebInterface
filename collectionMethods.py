@@ -586,6 +586,8 @@ def get_anomaly(collection, product, variable, coll_name, dateStart,
          climatology = climatology.divide(num_years)
 
     #get statistic of collection
+    #TODO:note this is not correct for getting climatology of min/max/median.. but works for 
+    #mean/total
     collection = get_statistic(collection.filterDate(dateStart, dateEnd), statistic)
 
     #calculate 
@@ -601,15 +603,6 @@ def get_anomaly(collection, product, variable, coll_name, dateStart,
         collection = ee.Image(collection.subtract(climatology).divide(climatology).multiply(100)) #anomaly
 
     return collection, climatologyNote
-
-#===========================================
-#   FIRST_FILTER_DOMAIN(for filterBounds)
-# I've decided this is sort of a useless function... only good for landsat bands I think
-#===========================================
-#def filter_domain1(collection,domainType, subdomain):
-#	if(domainType=='points':
-#		collection =collection.filterBounds(subdomain)
-#	return (collection)
 
 #===========================================
 #   GET_STATISTIC
@@ -661,24 +654,6 @@ def modify_units_in_timeseries(val, var, units):
     elif var == 'vs' and units == 'english':
         val = 2.23694 * val         #convert m/s to mi/h
     return val
-
-#===========================================
-#   SECOND_FILTER_DOMAIN (for clipping/masking)
-#===========================================
-def filter_domain2(collection, domainType, subdomain):
-    """"""
-    if domainType == 'points':
-        fc = ee.FeatureCollection('ft:1fRY18cjsHzDgGiJiS2nnpUU3v9JPDc2HNaR7Xk8')
-        #collection = collection.clip(fc.geometry())
-    elif domainType == 'states':
-        fc = ee.FeatureCollection('ft:1fRY18cjsHzDgGiJiS2nnpUU3v9JPDc2HNaR7Xk8').filter(ee.Filter.eq('Name', subdomain))
-        collection = collection.clip(fc.geometry())
-    elif domainType == 'conus':
-        fc = ee.FeatureCollection('ft:1fRY18cjsHzDgGiJiS2nnpUU3v9JPDc2HNaR7Xk8')
-        collection = collection.clip(fc.geometry())
-    elif domainType == 'rectangle':
-        collection = collection.clip(subdomain)
-    return collection
 
 #===========================================
 #   GET_COLORBAR
