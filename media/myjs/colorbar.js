@@ -1,7 +1,8 @@
 function Colorbar() {
     var scale, // the input scale this represents;
         //margin = {top: 5, right: 35, bottom: 25, left: 0}
-        margin = {top: 20 , right: 35, bottom: 10, left: 0} 
+        //margin = {top: 20 , right: 35, bottom: 10, left: 0} 
+        margin = {top: 20 , right: 35, bottom: 10, left: 10} 
     orient = "vertical",
     origin = {
         x: 0,
