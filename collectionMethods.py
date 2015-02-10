@@ -545,21 +545,21 @@ def landsat8_evi_func(img):
 
 def gridmet_wb_func(img):
     """Calculate water balance from precip and PET for GRIDMET collection"""
-    return img.expression("b('pr') - b('pet')")\
-        .select([0], ['wb']).copyProperties(img, property_list)
-    ##pr_img = img.select('pr')
-    ##pet_img = img.select('pet')
-    ##return pr_img.subtract(pet_img).select([0], ['wb'])\
-    ##    .copyProperties(img, property_list)
+    ##return img.expression("b('pr') - b('pet')")\
+    ##    .select([0], ['wb']).copyProperties(img, property_list)
+    pr_img = img.select('pr')
+    pet_img = img.select('pet')
+    return pr_img.subtract(pet_img).select([0], ['wb'])\
+        .copyProperties(img, property_list)
 
 def gridmet_tmean_func(img):
     """Calculate Tmean image from Tmin and Tmax for GRIDMET collection"""
-    return img.expression("0.5 * (b('tmmx') + b('tmmx'))")\
-        .select([0],['tmean']).copyProperties(img, property_list)
-    ##tmax_img = img.select('tmmx')
-    ##tmin_img = img.select('tmmx')
-    ##return tmax_img.add(tmin_img).multiply(0.5).select([0],['tmean'])\
-    ##    .copyProperties(img, property_list)
+    ##return img.expression("0.5 * (b('tmmx') + b('tmmx'))")\
+    ##    .select([0],['tmean']).copyProperties(img, property_list)
+    tmax_img = img.select('tmmx')
+    tmin_img = img.select('tmmx')
+    return tmax_img.add(tmin_img).multiply(0.5).select([0],['tmean'])\
+        .copyProperties(img, property_list)
 
 #===========================================
 #    GET_ANOMALY
