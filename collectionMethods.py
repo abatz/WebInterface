@@ -587,7 +587,7 @@ def get_anomaly(collection, product, variable, coll_name, dateStart,
 
     #get statistic of collection
     #TODO:note this is not correct for getting climatology of min/max/median.. but works for 
-    #mean/total
+    #mean/total. need to avg min over all years to do this right. 
     collection = get_statistic(collection.filterDate(dateStart, dateEnd), statistic)
 
     #calculate 
