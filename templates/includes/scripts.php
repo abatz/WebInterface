@@ -6,17 +6,25 @@
 	<script type="text/javascript" src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 
  	<!------------------------------------>
+        <!--	LISTENERS           -->
+        <!------------------------------------>
+	<script type="text/javascript" src="media/myjs/formListener.js"></script> <!-- FORM LISTENER -->
+	<script type="text/javascript" src="media/myjs/formListener_points.js"></script> <!-- LISTENER ON POINTS -->
+	<script type="text/javascript" src="media/myjs/formListener_colorbar.js"></script> <!-- LISTENER ON COLORBAR -->
+	<script type="text/javascript" src="media/myjs/formListener_layers.js"></script> <!-- LISTENER ON LAYERS -->
+
+ 	<!------------------------------------>
         <!--		MY SCRIPTS           -->
         <!------------------------------------>
 	<script type="text/javascript" src="media/myjs/get_colorbar.js"></script> <!-- COLORBAR --> 
-	<script type="text/javascript" src="media/myjs/formListener.js"></script> <!-- FORM LISTENER -->
 	<script type="text/javascript" src="media/myjs/progressWindow.js"></script> <!-- PROGRESS BAR -->
 	<script type="text/javascript" src="media/myjs/zoomStates.js"></script> <!-- ZOOM TO STATE -->
 	<script type="text/javascript" src="/media/myjs/colorbar.js"></script><!--DYNAMIC COLORBAR-->
 	<script type="text/javascript" src="/media/myjs/colorbrewer.js"></script><!--DYNAMIC COLORBAR-->
 	<script type="text/javascript" src="/media/myjs/gmaps_styles.js"></script><!--GMAPS STYLES-->
 	{% include 'includes/js_datepicker.html'%}<!--DATE PICKER-->
-	<!--<script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script>
+
+	<!--DOES NOT WORK <script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script>
 	<script type="text/javascript">
   		var slider = new Slider("#ex8", {
 			tooltip: 'always'
@@ -126,7 +134,8 @@
 					window.clearTimeout(timeoutID);
 			});
 		{% endif %}
-/*
+
+/*        //This is for the potential mouseover event on the google map layer executing a POST call to get value
 		// Set mouseover event for each feature.
                  google.maps.event.addListener(map,'click', function(event) {
 			var lat = event.latLng.lat().toFixed(4);
@@ -149,7 +158,6 @@
 
                     return pointValue;
                 }
-
 
 			var value=getPointData(lat,long);
 
@@ -271,18 +279,10 @@
                 colorbarObject = d3.select("#colorbar").call(colorbar)
 	
 		/*********************************
-		*      POINTS                    *
+		*      LAYERS                    *
 		*********************************/
-		{% include 'includes/js_points.html'%}
-
-		/*********************************
-		*      RECTANGLE                    *
-		*********************************/
-		{% include 'includes/js_rectangle.html'%}
-
-		/*********************************
-		*      STATES                    *
-		*********************************/
+		{% include 'includes/js_points.html'%}    //points
+		{% include 'includes/js_rectangle.html'%} //rectangle
 		window.statemarkerLayer = new google.maps.KmlLayer('http://www.wrcc.dri.edu/monitor/WWDT/KML/states.kmz', {
                 map:map,
                     preserveViewport: true,
@@ -293,11 +293,7 @@
                 	findAddress();
           	}); //end listener
 		window.statemarkerLayer.setMap(null);
-
-		/*********************************
-		*      OVERLAYS                   *
-		*********************************/
-		{% include 'includes/js_overlays.html'%}
+		{% include 'includes/js_overlays.html'%} //kml
 		/*********************************/
 	      }
 	      //google.maps.event.addDomListener(window, 'load', initialize);
