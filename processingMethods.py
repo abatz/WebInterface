@@ -29,6 +29,10 @@ def get_images(template_values):
     units = TV['units']
     palette = TV['palette']
 
+    #change date to UTC and add 1 for end date exclusiveness
+    dSUTC = ee.Date(dS,'GMT');
+    dEUTC = ee.Date(dE,'GMT').advance(1,'day');
+
     #get map palette options
     colorbarmap, colorbarsize, minColorbar, maxColorbar, colorbarLabel, varUnits = colorbarChoices.get_colorbar(str(var),str(aOV),units)
 
@@ -73,11 +77,11 @@ def get_images(template_values):
     #Anomaly
     #==============
     if aOV in ['value']:
-        collection = collection.filterDate(dS,dE)
+        collection = collection.filterDate(dSUTC,dEUTC)
         collection = get_statistic(collection, statistic)
     elif aOV in ['anom','anompercentof','anompercentchange','clim']:
         collection, climatologyNotes = get_anomaly(
-            collection, product, var, coll_name, dS, dE, statistic,
+            collection, product, var, coll_name, dSUTC, dEUTC, statistic,
             aOV, yearStartClim, yearEndClim)
         TV['climatologyNotes'] = climatologyNotes
     #==============
@@ -138,9 +142,13 @@ def get_time_series(template_values):
     product = var[:1]
     var = var[1:]
 
+    #Modify dates to give UTC and to add one to end date for exclusive python nature of this
+    dSUTC = ee.Date(dS,'GMT');
+    dEUTC = ee.Date(dE,'GMT').advance(1,'day');
+
     collection, coll_name, coll_desc, var_desc, notes = collectionMethods.get_collection(
         product, var)
-    collection = collection.filterDate(dS,dE);
+    collection = collection.filterDate(dSUTC,dEUTC);
     collection = collection.getRegion(points,1);
 
     #check units
