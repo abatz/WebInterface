@@ -127,11 +127,11 @@ $(function(){
 			colorbarsize=8
                 }else if ( variable=='tmmx'){
                  	if(units=='metric'){
-				minColorbar = -20;
-				maxColorbar = 30;
+				minColorbar = -5;
+				maxColorbar = 35;
 				varUnits='deg C'
                  	}else if(units=='english'){
-				minColorbar =0;
+				minColorbar =20;
 				maxColorbar = 100;
 				varUnits='deg F'
 			}
@@ -141,7 +141,7 @@ $(function(){
                 }else if ( variable=='tmmn'){
                  	if(units=='metric'){
 				minColorbar = -20;
-				maxColorbar = 20; //deg C
+				maxColorbar = 25; //deg C
 				varUnits='deg C'
                  	}else if(units=='english'){
 				minColorbar = 0;

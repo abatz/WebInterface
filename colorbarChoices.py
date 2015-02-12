@@ -100,15 +100,15 @@ def get_colorbar(variable, anomOrValue, units):
             colorbarsize = '8'
         elif variable == 'tmmx':
 	    if units == 'metric':
-                 minColorbar = -20
-                 maxColorbar = 30
+                 minColorbar = -5
+                 maxColorbar = 35
 	    elif units == 'english':
-                 minColorbar = 0
+                 minColorbar = 20
                  maxColorbar = 100
         elif variable == 'tmmn':
 	    if units == 'metric':
 	         minColorbar = -20
-	         maxColorbar = 20
+	         maxColorbar =25 
 	    elif units == 'english':
 	         minColorbar = 0
 	         maxColorbar = 80
