@@ -140,13 +140,15 @@ def get_time_series(template_values):
 
     collection, coll_name, coll_desc, var_desc, notes = collectionMethods.get_collection(
         product, var)
-    collection = collection.filterDate(dS,dE)
+    collection = collection.filterDate(dS,dE);
+    collection = collection.getRegion(points,1);
 
     #check units
     #modify_units_in_timeseries(val,var,units):
+    #collection =modify_units(collection, var, 'value', units);
 
     features = ee.FeatureCollection(
-        ee.Feature(None, {'sample': collection.getRegion(points,1)}))
+        ee.Feature(None, {'sample': collection}))
     downloadUrl = features.getDownloadUrl('json')
     response = urllib2.urlopen(downloadUrl)
     json_dict = json.loads(response.read())
