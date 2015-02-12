@@ -7,7 +7,6 @@ import ee
 
 import collectionMethods
 import figureFormatting
-import colorbarChoices
 #===========================================
 #   GET_IMAGES
 #===========================================
@@ -28,23 +27,12 @@ def get_images(template_values):
     statistic = TV['statistic']
     units = TV['units']
     palette = TV['palette']
+    minColorbar = template_values['minColorbar']
+    maxColorbar = template_values['maxColorbar']
 
     #change date to UTC and add 1 for end date exclusiveness
     dSUTC = ee.Date(dS,'GMT');
     dEUTC = ee.Date(dE,'GMT').advance(1,'day');
-
-    #get map palette options
-    colorbarmap, colorbarsize, minColorbar, maxColorbar, colorbarLabel, varUnits = colorbarChoices.get_colorbar(str(var),str(aOV),units)
-
-    #Override value if user entered custom value
-    if 'minColorbar' in template_values.keys():
-        minColorbar = template_values['minColorbar']
-    if 'maxColorbar' in template_values.keys():
-        maxColorbar = template_values['maxColorbar']
-    if 'colorbarmap' in template_values.keys():
-        colorbarmap = template_values['colorbarmap']
-    if 'colorbarsize' in template_values.keys():
-        colorbarsize = template_values['colorbarsize']
 
     # Remove starting character which indicates the product
     product = var[:1]
@@ -105,10 +93,6 @@ def get_images(template_values):
         'productLongName': coll_desc,
         'variableShortName': var_desc,
         'title': title,
-        'colorbarLabel': colorbarLabel,
-        'minColorbar': minColorbar,
-        'maxColorbar': maxColorbar,
-        'varUnits': varUnits,
         'notes_map': notes
     }
     if mapid and mapid['mapid'] and mapid['token']:

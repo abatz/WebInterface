@@ -86,10 +86,11 @@ class DroughtTool(webapp2.RequestHandler):
             'kmloption': self.request.get('kmloption', ''),
             #Colorbar Options
             'palette': self.request.get('palette', None),
-            'minColorbar': self.request.get('minColorbar', None),
-            'maxColorbar': self.request.get('maxColorbar', None),
+            'minColorbar': self.request.get('minColorbar', 0),
+            'maxColorbar': self.request.get('maxColorbar', 400),
             'colorbarmap': self.request.get('colorbarmap', 'GnBu'),
             'colorbarsize': self.request.get('colorbarsize', '8'),
+            'colorbarLabel': self.request.get('colorbarLabel', 'Total Precipitation (mm)'),
             #TimeSeries Options
             'timeSeriesCalc': self.request.get('timeSeriesCalc','days'),
             'chartType': self.request.get('chartType', 'column'),
@@ -155,20 +156,22 @@ class DroughtTool(webapp2.RequestHandler):
         template_values['p5'] = self.request.get('p5',template_values['mapCenterLongLat'])
         template_values['p6'] = self.request.get('p6',template_values['mapCenterLongLat'])
         template_values['p7'] = self.request.get('p7',template_values['mapCenterLongLat'])
-        #Set the colorbar if needed
-        if template_values['minColorbar'] is None and template_values['maxColorbar'] is None:
-            v = template_values['variable']
-            aov = template_values['anomOrValue']
-            u = template_values['units']
-            #FIX ME
-            cm,cs,minC,maxC,cL,vU = colorbarChoices.get_colorbar(v,aov,u)
-            #cm,cs,minC,maxC,cL = colorbarChoices.get_colorbar(v,aov,u)
-            template_values['colorbarmap'] = cm
-            template_values['colorbarsize'] = cs
-            template_values['minColorbar'] = minC
-            template_values['maxColorbar'] = maxC
-            template_values['colorbarLabel'] = cL
-            template_values['varUnits'] = vU
+
+        #Set the colorbar if needed..... I just modified minColorbar/maxColorbar above
+        #Do we still need all this? I would love to do away with get_colorbar completely
+        #if template_values['minColorbar'] is None and template_values['maxColorbar'] is None:
+        #    v = template_values['variable']
+        #    aov = template_values['anomOrValue']
+        #    u = template_values['units']
+        #    #FIX ME
+        #    cm,cs,minC,maxC,cL,vU = colorbarChoices.get_colorbar(v,aov,u)
+        #    #cm,cs,minC,maxC,cL = colorbarChoices.get_colorbar(v,aov,u)
+        #    template_values['colorbarmap'] = cm
+        #    template_values['colorbarsize'] = cs
+        #    template_values['minColorbar'] = minC
+        #    template_values['maxColorbar'] = maxC
+        #    template_values['colorbarLabel'] = cL
+        #    template_values['varUnits'] = vU
         #Sharelink depends on most template variables
         template_values['shareLink'] = self.set_share_link(template_values)
 
