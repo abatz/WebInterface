@@ -72,7 +72,7 @@ formAnomOrValue=[
     ('value','Values'),
     ('clim','Climatology'),
     ('anom','Difference From Climatology'),
-    ('anompercentchange','Percent Change From Climatology'),
+    ('anompercentchange','Percent Difference From Climatology'),
     ('anompercentof','Percent Of Climatology'),
 ]
 
@@ -82,8 +82,8 @@ formAnomOrValue=[
 formStatistic=[
     ('Mean','Mean'),
     ('Median','Median'),
-    ('Max','Maximum'),
-    ('Min','Minimum'),
+    #('Max','Maximum'),
+    #('Min','Minimum'),
     ('Total','Total'),
 ]
 #============================

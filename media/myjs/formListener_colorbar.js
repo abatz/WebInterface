@@ -56,7 +56,8 @@ $(function(){
 	   var dateStart = new Date(document.getElementById('dateStart').value);
 	   var dateEnd = new Date(document.getElementById('dateEnd').value);
 	   numMonths = Math.ceil(Math.abs(dateEnd.getTime() - dateStart.getTime())/(1000*3600*24*30));
-          
+
+	console.log(anomOrValue)
 	   varUnits =''; 
 	   if(variable=='NDVI' || variable=='EVI' ){
 		variableShortName=variable;
@@ -67,7 +68,7 @@ $(function(){
 			colorbarmap='RdYlGn'
 			colorbarsize=8
 			varUnits=''
-		}else{
+		}else if(anomOrValue=='value' || anomOrValue=='clim'){
 			minColorbar = -.1;
 			maxColorbar = .9;
 			colorbarmap='YlGn'
@@ -342,8 +343,8 @@ $(function(){
 				maxColorbar = 100*numMonths;
 				minColorbar =-100*numMonths;
 			}else if(units=='english'){
-				maxColorbar = 4*numMonths;
-				minColorbar =-4*numMonths;
+				maxColorbar = -4*numMonths;
+				minColorbar =4*numMonths;
 			}
                         maxColorbar = 100*numMonths;
 			colorbarmap='BrBG' 

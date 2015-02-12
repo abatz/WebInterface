@@ -52,9 +52,9 @@ def get_images(template_values):
     if aOV == 'clim':
         title = title + ' Climatology '
     elif aOV == 'anom':
-        title = title + ' Change from Climatology '
+        title = title + ' Difference from Climatology '
     elif aOV == 'anompercentchange':
-        title = title + ' Percent Change from Climatology '
+        title = title + ' Percent Difference from Climatology '
     elif aOV == 'anompercentof':
         title = title + ' Percent Of Climatology '
 
@@ -185,7 +185,7 @@ def get_anomaly(collection, product, variable, coll_name, dateStart,
     #get climatology
     climatologyNote = 'Climatology calculated from {0}-{1}'.format(
         yearStartClim, yearEndClim)
-    climatology = collection.filterDate(yearStartClim, yearEndClim).filter(doy_filter)
+    climatology = collection.filterDate(yearStartClim, str(int(yearEndClim)+1)).filter(doy_filter)
     climatology = get_statistic(climatology,statistic)
     #This metric is really only good for year ranges <1 year
     if statistic == 'Total':
