@@ -15,8 +15,10 @@ import numpy
 import webapp2
 
 import forms
+import processingMethods
 import collectionMethods
 import figureFormatting
+import colorbarChoices
 
 from google.appengine.api import urlfetch
 urlfetch.set_default_fetch_deadline(60000)
@@ -159,8 +161,8 @@ class DroughtTool(webapp2.RequestHandler):
             aov = template_values['anomOrValue']
             u = template_values['units']
             #FIX ME
-            cm,cs,minC,maxC,cL,vU = collectionMethods.get_colorbar(v,aov,u)
-            #cm,cs,minC,maxC,cL = collectionMethods.get_colorbar(v,aov,u)
+            cm,cs,minC,maxC,cL,vU = colorbarChoices.get_colorbar(v,aov,u)
+            #cm,cs,minC,maxC,cL = colorbarChoices.get_colorbar(v,aov,u)
             template_values['colorbarmap'] = cm
             template_values['colorbarsize'] = cs
             template_values['minColorbar'] = minC
@@ -225,9 +227,9 @@ class DroughtTool(webapp2.RequestHandler):
             if self.request.arguments():
                 #Update template values with mapid or time series data
                 if template_values['domainType'] == 'full':
-                    template_values = collectionMethods.get_images(template_values)
+                    template_values = processingMethods.get_images(template_values)
                 else:  #want ability in future to look at time series for states,etc
-                    template_values = collectionMethods.get_time_series(template_values)
+                    template_values = processingMethods.get_time_series(template_values)
         else:
             template_values['form_error'] = {fieldID:input_err}
 
@@ -249,9 +251,9 @@ class DroughtTool(webapp2.RequestHandler):
             template_values['ppost'] = 1
             #Update template values with mapid or time series data
             if template_values['domainType'] == 'full':
-                template_values = collectionMethods.get_images(template_values)
+                template_values = processingMethods.get_images(template_values)
             else: #want ability in future to do time series of states,etc
-                template_values = collectionMethods.get_time_series(template_values)
+                template_values = processingMethods.get_time_series(template_values)
         else:
             #write error message to html
             template_values['form_error'] = {fieldID:input_err}

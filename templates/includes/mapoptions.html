@@ -21,12 +21,6 @@
 		        <!--           VARIABLE      -->
 		        <!----------------------------->
 			<b>Variable:</b><br>
-			<select name="statistic" class="statisticChoice" id="statisticChoice">
-                                {% for x,y in formStatistic %}
-                                    <option value="{{ x }}" {% if x == statistic  %} selected {% endif %}>{{ y }}</option>
-                                {% endfor %}
-                          </select>
-			<br>
 			<select id="variable" name="variable" class="variable" width="95%">
 				<optgroup label="MODIS">
 					{% for x,y in formVariableModis %}
@@ -44,6 +38,14 @@
 					{% endfor %}
 				</optgroup>
 			</select><br>
+			<b>Statistic:</b><br>
+ 			<select name="statistic" class="statisticChoice" id="statisticChoice">
+                                {% for x,y in formStatistic %}
+                                    <option value="{{ x }}" {% if x == statistic  %} selected {% endif %}>{{ y }}</option>
+                                {% endfor %}
+                          </select>
+                        <br>
+			<b>Calculation:</b><br>
 			<select id="anomOrValue" name="anomOrValue" class="anomOrValue" width="95%">
 				{% for x,y in formAnomOrValue %}
 				    <option value="{{ x }}" {% if x == anomOrValue  %} selected {% endif %}>{{ y }}</option>
