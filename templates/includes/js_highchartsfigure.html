@@ -8,7 +8,7 @@
     var varUnits='{{ varUnits }}';
     var variableShortName_time='{{ variableShortName_time }}';
     var yLabel = variableShortName_time+' '+varUnits;
-    var title = "Daily "+variableShortName_time;
+    var title_timeseries = "Daily "+variableShortName_time;
     var subtitle="Data Source: {{ productLongName_time }}";
     var legendTitle='<b>Point Locations (Long/Lat):</b>';
 
@@ -17,15 +17,6 @@
     }else{
 	var chartType='spline';
     }
-
-    //var product = variable.substring(0,1);
-    //if(product=='M'){
-//	toolString='16-day period about ';
- //   }else if(product=='L'){
-//	toolString='8-day period about '; 
-//    }else{
-//	toolString='';
-//    };
 
     var axis_min = null;
     if (variable == 'Gvs' || variable == 'Gpr' || variable=='Gpet'){
@@ -51,42 +42,11 @@
 	    series_data.push(s);
     }
 
-
-   //Growing Degree Days Calculation.. sample
-//for(var i=0;i<data.data.length;i++){
-//		if(data.data[i][1] === "M"){gdd[i] = null;} //if the data is missing it will not show the data value.  
-//		else{gdd[i] = parseInt(data.data[i][1],10);}
-//		if(i==0){sum[i] = gdd[i];}
-//		else{sum[i] = sum[i-1] + gdd[i];}
-//	}
-
-
-  // if(variable=='Gpr' || variable =='Gpet' || variable =='Gwb'){
-   //Accumulated PET,PPT,WB Calculation  -this should actually be set up as a function to be called by listeners
-/*
-	    var series_data = [],s,d;
-	    for (var k=0;k<timeSeriesData.length;k++){ //k=#stations
-		  d = timeSeriesData[k].Data;
-		  var sumvalues=[];
-		  sumvalues[0]=0.0;
-		  for(var i=0;i<d.length;i++){  //dates
-		  	//dates = d[i][0]
-		    	sumvalues[i]=sumvalues[i-1]+parseFloat(d[i][1]);
-		   };
-		   alert(sumvalues)
-		    s = {
-			name:timeSeriesData[k].LongLat,
-			color:timeSeriesData[k].MarkerColor,
-			data:sumvalues,
-		    }
-		    series_data.push(s);
-	    }
-*/
   // };
 
    //------------------------
     // make high charts figure
     //------------------------
-      generateHighChartFigure(series_data,'#container',chartType,title,subtitle,dateStart,dateEnd,yLabel,legendTitle,axis_min,variableShortName_time,varUnits);
+      generateHighChartFigure(series_data,'#container',chartType,title_timeseries,subtitle,dateStart,dateEnd,yLabel,legendTitle,axis_min,variableShortName_time,varUnits);
 
 </script>

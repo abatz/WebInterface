@@ -2,8 +2,8 @@ $(function(){
 
 	jQuery('#chartType').on('change', function(){
 	     chartType=document.getElementById('chartType').value;
-  	     generateHighChartFigure(series_data,'#container',chartType,title,subtitle,dateStart,dateEnd,
-			yLabel,legendTitle,axis_min,variableShortName_time,varUnits);
+  	     generateHighChartFigure(series_data,'#container',chartType,title_timeseries,subtitle,dateStart,dateEnd,
+			yLabel,legendTitle,axis_min,window.variableShortName_time,varUnits);
 	});
 
 
