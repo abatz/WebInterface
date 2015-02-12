@@ -55,7 +55,7 @@ def get_colorbar(variable, anomOrValue, units):
             colorbarsize = '8'
             varUnits = ''
     elif variable == 'pr':
-        if anomOrValue == 'anom':
+        if anomOrValue == 'anompercentof':
             minColorbar = 0
             maxColorbar = 200 #%
             palette = "67001F,B2182B,D6604D,F4A582,FDDBC7,F7F7F7,D1E5F0,92C5DE,4393C3,2166AC,053061"
@@ -122,26 +122,29 @@ def get_colorbar(variable, anomOrValue, units):
     elif variable == 'rmin' or variable == 'rmax':
         if anomOrValue == 'anom':
             palette = "313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
-            minColorbar = -25
-            maxColorbar = 25
+            #incorrect:palette = "313695,4575B4,74ADD1,ABD9E9,E0F3F8,FFFFBF,FEE090,FDAE61,F46D43,D73027,A50026"
+            minColorbar = -15
+            maxColorbar = 15
             colorbarLabel = 'Difference from climatology'
-            colorbarmap = 'BuYlRd'
-            colorbarsize = '8'
+            colorbarmap = 'BrBG'
+            colorbarsize = '9'
             varUnits = 'deg %'
         elif variable == 'rmin':
             palette = "313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
+            #incorrect palette = "313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
             minColorbar = 0
             maxColorbar = 100
             colorbarLabel = 'Percent'
-            colorbarmap = 'BuRd'
+            colorbarmap = 'BrBG'
             colorbarsize = '8'
             varUnits = 'deg %'
         elif variable == 'rmax':
             palette = "313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
+            #incorrect:palette = "313695,4575B4,74ADD1,ABD9E9,E0F3F8,FEE090,FDAE61,F46D43,D73027,A50026"
             minColorbar = 0
             maxColorbar = 100
             colorbarLabel = '%'
-            colorbarmap = 'BuRd'
+            colorbarmap = 'BrBG'
             colorbarsize = '8'
             varUnits = 'deg %'
     elif variable == 'srad':

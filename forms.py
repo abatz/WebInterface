@@ -73,7 +73,7 @@ formAnomOrValue=[
     ('clim','Climatology'),
     ('anom','Difference From Climatology'),
     ('anompercentchange','Percent Change From Climatology'),
-    #('anompercentof','Percent Of Climatology'),
+    ('anompercentof','Percent Of Climatology'),
 ]
 
 #============================

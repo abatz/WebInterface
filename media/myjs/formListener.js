@@ -99,7 +99,6 @@ $(function(){
            mm='0'+mm;
         }
         todayDate=year+'-'+mm+'-'+dd;
-       console.log(todayDate)
         if(product=='G'){
             minYear = "1979";
             maxYear = year; 
