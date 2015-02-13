@@ -35,7 +35,7 @@ JINJA_ENVIRONMENT= jinja2.Environment(autoescape=True,
 #############################################
 class DroughtTool(webapp2.RequestHandler):
     def set_share_link(self, initial_template_values):
-        shareLink = 'drought-monitor3.appspot.com?'
+        shareLink = 'http://drought-monitor3.appspot.com?'
         for key, val in initial_template_values.iteritems():
             if str(key[0:4]) == 'form':
                 continue
@@ -79,7 +79,6 @@ class DroughtTool(webapp2.RequestHandler):
             'ppost': 0,
             'state': self.request.get('state','California'),
             'domainType': self.request.get('domainType','full'),
-            'background': self.request.get('background','nowhitebackground'),
             'layer': self.request.get('layer','none'),
             'kmlurl': self.request.get('kmlurl', ''),
             'kmloption': self.request.get('kmloption', ''),

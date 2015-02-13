@@ -94,8 +94,8 @@ $(function(){
 		variableShortName='Precipitation';
                  statistic='Total';
                  if(anomOrValue=='anompercentof'){
-			minColorbar = 0;
-			maxColorbar = 200;
+			minColorbar = 75;
+			maxColorbar = 125;
 			colorbarmap='BrBG' 
 			colorbarsize=9
 			varUnits='%'
@@ -278,6 +278,18 @@ $(function(){
 			colorbarmap='BuYlRd' 
 			colorbarsize=8
 			varUnits='';
+                 }else if(anomOrValue=='anompercentchange'){
+                        minColorbar =-100;
+                        maxColorbar = 100;
+			colorbarmap='BuYlRd' 
+			colorbarsize=8
+			varUnits='%';
+                 }else if(anomOrValue=='anompercentof'){
+                        minColorbar =75;
+                        maxColorbar = 125;
+			colorbarmap='BuYlRd' 
+			colorbarsize=8
+			varUnits='';
                 }else if(anomOrValue=='value' || anomOrValue=='clim'){
                         minColorbar = 10;
                         maxColorbar = 120; //
@@ -345,8 +357,8 @@ $(function(){
 		variableShortName='Water Balance';
                  statistic='Total';
                  if(anomOrValue=='anompercentof'){
-                        minColorbar =0;
-                        maxColorbar = 200;
+                        minColorbar =75;
+                        maxColorbar =125;
 			colorbarmap='BrBG' 
 			colorbarsize=9
 			varUnits='%';
