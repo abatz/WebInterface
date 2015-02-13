@@ -263,21 +263,23 @@ def modify_units(collection, variable, anomOrValue, units):
 
     ## These probably should be there own little functions
     ## How else could this be structured
+    ## This approach removes the time_start but not the system index?
+    property_list = ['system:index','system:time_start', 'system:time_end']
     def anom_k_to_f(image):
         """Convert K anom to F anom"""
-        return image.multiply(1.8)
+        return image.multiply(1.8).copyProperties(image, property_list)
     def k_to_c(image):
         """Convert K to C"""
-        return image.subtract(273.15)
+        return image.subtract(273.15).copyProperties(image, property_list)
     def c_to_f(image):
         """Convert C to F"""
-        return image.multiply(1.8).add(32) 
+        return image.multiply(1.8).add(32) .copyProperties(image, property_list)
     def mm_to_in(image):
         """Convert mm to inches"""
-        return image.divide(25.4)
+        return image.divide(25.4).copyProperties(image, property_list)
     def ms_to_mph(image):
         """Convert m/s to mi/h"""
-        return image.multiply(2.23694)
+        return image.multiply(2.23694).copyProperties(image, property_list)
 
     #don't modify if anomOrValue == 'anompercentof' or 'anompercentchange'
     if anomOrValue in ['value', 'clim', 'anom']:
