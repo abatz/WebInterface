@@ -172,7 +172,6 @@ def get_time_series(template_values):
     json_dict = json.loads(response.read())
     dataList = json_dict['features'][0]['properties']['sample']
     dataList.pop(0)
-    logging.info(dataList)
     timeSeriesTextData = []
     timeSeriesGraphData = []
     timeSeriesTextData, timeSeriesGraphData = figureFormatting.set_time_series_data(
@@ -261,9 +260,9 @@ def get_statistic(collection, statistic):
 def modify_units(collection, variable, anomOrValue, units):
     """Convert an EE image collection units"""
 
-    ## These probably should be there own little functions
-    ## How else could this be structured
-    ## This approach removes the time_start but not the system index?
+    ## These probably should not be there own little functions
+    ## How else could this be structured?
+    ## Applying math methods was removing the time_start
     property_list = ['system:index','system:time_start', 'system:time_end']
     def anom_k_to_f(image):
         """Convert K anom to F anom"""
