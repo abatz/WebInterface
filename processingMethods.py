@@ -72,6 +72,7 @@ def get_images(template_values):
             collection, product, var, coll_name, dSUTC, dEUTC, statistic,
             aOV, yearStartClim, yearEndClim)
         TV['climatologyNotes'] = climatologyNotes
+        
     #==============
     #Units
     #==============
@@ -110,6 +111,7 @@ def get_time_series(template_values):
     for key, val in template_values.iteritems():
         TV[key] = val
     var = TV['variable']
+    aOV = TV['anomOrValue']
     mc = TV['marker_colors']
     dS = TV['dateStart']
     dE = TV['dateEnd']
@@ -127,25 +129,50 @@ def get_time_series(template_values):
     var = var[1:]
 
     #Modify dates to give UTC and to add one to end date for exclusive python nature of this
-    dSUTC = ee.Date(dS,'GMT');
-    dEUTC = ee.Date(dE,'GMT').advance(1,'day');
-
+    dSUTC = ee.Date(dS,'GMT')
+    dEUTC = ee.Date(dE,'GMT').advance(1,'day')
+    
+    #==============
+    #Collection
+    #==============
+    #Get initial collection
     collection, coll_name, coll_desc, var_desc, notes = collectionMethods.get_collection(
         product, var)
+
+    ## This is in the commented block below
     collection = collection.filterDate(dSUTC,dEUTC);
-    collection = collection.getRegion(points,1);
 
-    #check units
-    #modify_units_in_timeseries(val,var,units):
-    #collection =modify_units(collection, var, 'value', units);
+    ## This block of code was in the get_images function
+    ## Should part of it be here also?
+    ###==============
+    ###Anomaly
+    ###==============
+    ##if aOV in ['value']:
+    ##    collection = collection.filterDate(dSUTC,dEUTC)
+    ##    collection = get_statistic(collection, statistic)
+    ##elif aOV in ['anom','anompercentof','anompercentchange','clim']:
+    ##    collection, climatologyNotes = get_anomaly(
+    ##        collection, product, var, coll_name, dSUTC, dEUTC, statistic,
+    ##        aOV, yearStartClim, yearEndClim)
+    ##    TV['climatologyNotes'] = climatologyNotes
 
+    #==============
+    #Units
+    #==============
+    collection = modify_units(collection, var, aOV, units)
+
+    ## Extract the time series from the collection at the point
+    ee_list = collection.getRegion(points,1)
+
+    ## To use getDownloadUrl, data must be placced into a feature collection 
     features = ee.FeatureCollection(
-        ee.Feature(None, {'sample': collection}))
+        ee.Feature(None, {'sample': ee_list}))
     downloadUrl = features.getDownloadUrl('json')
     response = urllib2.urlopen(downloadUrl)
     json_dict = json.loads(response.read())
     dataList = json_dict['features'][0]['properties']['sample']
     dataList.pop(0)
+    logging.info(dataList)
     timeSeriesTextData = []
     timeSeriesGraphData = []
     timeSeriesTextData, timeSeriesGraphData = figureFormatting.set_time_series_data(
@@ -232,35 +259,53 @@ def get_statistic(collection, statistic):
 #   MODIFY_UNITS
 #===========================================
 def modify_units(collection, variable, anomOrValue, units):
-    """"""
-    #don't modify if anomOrValue == 'anompercentof' or 'anompercentchange'
+    """Convert an EE image collection units"""
 
+    ## These probably should be there own little functions
+    ## How else could this be structured
+    def anom_k_to_f(image):
+        """Convert K anom to F anom"""
+        return image.multiply(1.8)
+    def k_to_c(image):
+        """Convert K to C"""
+        return image.subtract(273.15)
+    def c_to_f(image):
+        """Convert C to F"""
+        return image.multiply(1.8).add(32) 
+    def mm_to_in(image):
+        """Convert mm to inches"""
+        return image.divide(25.4)
+    def ms_to_mph(image):
+        """Convert m/s to mi/h"""
+        return image.multiply(2.23694)
+
+    #don't modify if anomOrValue == 'anompercentof' or 'anompercentchange'
     if anomOrValue in ['value', 'clim', 'anom']:
         if variable in ['tmmx', 'tmmn', 'tmean']:
-            if anomOrValue == 'anom' and units == 'english': 
-                collection = collection.multiply(1.8)    #convert C anom to F anom
+            if anomOrValue == 'anom' and units == 'english':
+                collection = collection.map(anom_k_to_f)    #convert anom. from K to F anom
             elif anomOrValue == 'value' or anomOrValue == 'clim':
-                collection = collection.subtract(273.15)  #convert K to C
-                if units == 'english': #convert C to F
-                     collection = collection.multiply(1.8).add(32)   
+                collection = collection.map(k_to_c)         #convert K to C
+                if units == 'english':                  
+                     collection = collection.map(c_to_f)    #convert C to F
         elif variable in ['pr', 'pet', 'wb'] and units == 'english':
-                collection = collection.divide(25.4) #convert mm to inches
+                collection = collection.map(mm_to_in)       #convert mm to inches
         elif variable == 'vs' and units == 'english':
-            collection = collection.multiply(2.23694) #convert m/s to mi/h
+            collection = collection.map(ms_to_mph)          #convert m/s to mi/h
     return collection
 
 #this is not currently being used.... need to fix this.. as time series units aren't being corrected
-def modify_units_in_timeseries(val, var, units):
-    """"""
-    if var in ['tmmx', 'tmmn', 'tmean']:
-        val = val - 273.15          #convert K to C
-        if units == 'english':
-            val = 1.8 * val + 32    #convert C to F
-    elif var in ['pr', 'pet', 'wb'] and units == 'english':
-        val = val / 25.4            #convert mm to inches
-    elif var == 'vs' and units == 'english':
-        val = 2.23694 * val         #convert m/s to mi/h
-    return val
+##def modify_units_in_timeseries(val, var, units):
+##    """"""
+##    if var in ['tmmx', 'tmmn', 'tmean']:
+##        val = val - 273.15          #convert K to C
+##        if units == 'english':
+##            val = 1.8 * val + 32    #convert C to F
+##    elif var in ['pr', 'pet', 'wb'] and units == 'english':
+##        val = val / 25.4            #convert mm to inches
+##    elif var == 'vs' and units == 'english':
+##        val = 2.23694 * val         #convert m/s to mi/h
+##    return val
 
 #===========================================
 #   MAP_COLLECTION
