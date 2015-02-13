@@ -182,19 +182,24 @@ def get_anomaly(collection, product, variable, coll_name, dateStart,
     doyEnd = ee.Number(ee.Algorithms.Date(dateEnd).getRelative('day', 'year')).add(1)
     doy_filter = ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year')
 
+    #check if year Range <1 to ease calculations
+    
+
     #get climatology
     climatologyNote = 'Climatology calculated from {0}-{1}'.format(
         yearStartClim, yearEndClim)
     climatology = collection.filterDate(yearStartClim, str(int(yearEndClim)+1)).filter(doy_filter)
-    climatology = get_statistic(climatology,statistic)
+    if(statistic=='Mean' or statistic =='Total' or statistic=='Median'):
+        climatology = get_statistic(climatology,statistic)
+    else: #need a solution for min/max
+        climatology = get_statistic(climatology,statistic)
+
     #This metric is really only good for year ranges <1 year
     if statistic == 'Total':
          num_years = int(yearEndClim) - int(yearStartClim) + 1
          climatology = climatology.divide(num_years)
 
     #get statistic of collection
-    #TODO:note this is not correct for getting climatology of min/max/median.. but works for 
-    #mean/total. need to avg min over all years to do this right. 
     collection = get_statistic(collection.filterDate(dateStart, dateEnd), statistic)
 
     #calculate 

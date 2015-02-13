@@ -94,7 +94,7 @@
 			       <!--        CLIMATOLOGY YEARS     -->
 			       <!----------------------------->
 				<b>Climatology Year Range:</b><br> 
-				 <select id="yearStartClim" name="yearStartClim" class="yearStartClim">
+				<select id="yearStartClim" name="yearStartClim" class="yearStartClim">
 				{% for x,y in formYear %}
 				     {% if x>=1972 and x<=yearEnd %}
 				    <option value="{{ x }}" {% if x == yearStartClim  %} selected {% endif %}>{{ y }}</option>

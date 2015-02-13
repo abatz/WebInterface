@@ -33,8 +33,6 @@ def get_collection(product, variable):
     elif product == '5':
         return get_landsat5_daily_collection(variable)
         ##return get_landsat457_daily_collection(variable)
-    ##elif product == 'L':
-    ##    return get_landsat_daily_collection(variable)
     ## How should this function fail gracefully if the inputs are bad?
     ## Should it return an exception?
     ##else:

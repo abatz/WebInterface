@@ -57,7 +57,6 @@ $(function(){
 	   var dateEnd = new Date(document.getElementById('dateEnd').value);
 	   numMonths = Math.ceil(Math.abs(dateEnd.getTime() - dateStart.getTime())/(1000*3600*24*30));
 
-	console.log(anomOrValue)
 	   varUnits =''; 
 	   if(variable=='NDVI' || variable=='EVI' ){
 		variableShortName=variable;
@@ -97,6 +96,12 @@ $(function(){
                  if(anomOrValue=='anompercentof'){
 			minColorbar = 0;
 			maxColorbar = 200;
+			colorbarmap='BrBG' 
+			colorbarsize=9
+			varUnits='%'
+                 }else if(anomOrValue=='anompercentchange'){
+			minColorbar =-100;
+			maxColorbar = 100;
 			colorbarmap='BrBG' 
 			colorbarsize=9
 			varUnits='%'
@@ -289,17 +294,24 @@ $(function(){
 			colorbarmap='GBBr'
 			colorbarsize=9
 			varUnits='%';
+                 }else if(anomOrValue=='anompercentchange'){
+			minColorbar =-100;
+			maxColorbar =100;
+			colorbarmap='GBBr'
+			colorbarsize=9
+			varUnits='%';
 		}else if (anomOrValue=='anom'){
                  	if(units='metric'){
 				minColorbar =-100*numMonths;
 				maxColorbar =100*numMonths;
+				varUnits='mm';
 			}else if (units=='english'){
 				minColorbar =-4*numMonths;
 				maxColorbar =4*numMonths;
+				varUnits='in';
 			}
 			colorbarmap='BrBG'
 			colorbarsize=9
-			varUnits='%';
                 }else if(anomOrValue=='value' || anomOrValue=='clim'){
                  	if(units='metric'){
 				minColorbar = 300;
@@ -336,6 +348,12 @@ $(function(){
                         minColorbar =0;
                         maxColorbar = 200;
 			colorbarmap='BrBG' 
+			colorbarsize=9
+			varUnits='%';
+                 }else if(anomOrValue=='anompercentchange'){
+			minColorbar =-100;
+			maxColorbar =100;
+			colorbarmap='BrBG'
 			colorbarsize=9
 			varUnits='%';
 		}else if(anomOrValue=='anom'){
