@@ -6,7 +6,7 @@ import ee
 #===========================================
 #  FORMAT_DATA_FOR_HIGHCHARTS
 #===========================================
-def set_time_series_data(dataList, template_values,timeSeriesTextData = [],timeSeriesGraphData = []):
+def set_time_series_data(dataList, template_values,timeSeriesTextData,timeSeriesGraphData):
     '''
     Args:
         dataList: nested list of data from EarthEngine getRegion method
@@ -47,7 +47,8 @@ def set_time_series_data(dataList, template_values,timeSeriesTextData = [],timeS
     Note ee spits out data for points in one list,
     stringing the point data together
     '''
-    #Check if timeSeriesTextData,timeSeriesGraphData not empty
+    #If timeSeriesTextData,timeSeriesGraphData not empty lists
+    #We want to append dataList
     ts_text_append = False
     if timeSeriesTextData:ts_text_append = True
     ts_graph_append = False
@@ -64,7 +65,7 @@ def set_time_series_data(dataList, template_values,timeSeriesTextData = [],timeS
             for p in timeSeriesTextData:
                 if p['LongLat'] != '{0:0.4f},{1:0.4f}'.format(*pnt):
                     continue
-                p['Data'].append(sorted(ts_data))
+                p['Data']+=sorted(ts_data)
 
     for i, (pnt, graph_data) in enumerate(sorted(graph_dict.items())):
         if not ts_graph_append:
@@ -79,5 +80,5 @@ def set_time_series_data(dataList, template_values,timeSeriesTextData = [],timeS
             for p in timeSeriesGraphData:
                 if p['LongLat'] != '{0:0.4f},{1:0.4f}'.format(*pnt):
                     continue
-                p['Data'].append(sorted(graph_data))
+                p['Data']+=sorted(graph_data)
     return timeSeriesTextData, timeSeriesGraphData
