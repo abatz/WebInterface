@@ -6,7 +6,7 @@ import ee
 #===========================================
 #  FORMAT_DATA_FOR_HIGHCHARTS
 #===========================================
-def set_time_series_data(dataList, template_values,timeSeriesTextData,timeSeriesGraphData):
+def set_time_series_data(dataList, template_values):
     '''
     Args:
         dataList: nested list of data from EarthEngine getRegion method
@@ -48,38 +48,19 @@ def set_time_series_data(dataList, template_values,timeSeriesTextData,timeSeries
     Note ee spits out data for points in one list,
     stringing the point data together
     '''
-    #If timeSeriesTextData,timeSeriesGraphData not empty lists
-    #We want to append dataList
-    ts_text_append = False
-    if timeSeriesTextData:ts_text_append = True
-    ts_graph_append = False
-    if timeSeriesTextData:ts_graph_append = True
+    timeSeriesTextData = [];timeSeriesGraphData = []
     for pnt, ts_data in sorted(ts_dict.items()):
-        if not ts_text_append:
-            data_dict = {
-                'LongLat': '{0:0.4f},{1:0.4f}'.format(*pnt),
-                'Data':sorted(ts_data)
-            }
-            timeSeriesTextData.append(data_dict)
-        else:
-            #Find point in timeSeriesTextData and append data
-            for p in timeSeriesTextData:
-                if p['LongLat'] != '{0:0.4f},{1:0.4f}'.format(*pnt):
-                    continue
-                p['Data']+=sorted(ts_data)
+        data_dict = {
+            'LongLat': '{0:0.4f},{1:0.4f}'.format(*pnt),
+            'Data':sorted(ts_data)
+        }
+        timeSeriesTextData.append(data_dict)
 
     for i, (pnt, graph_data) in enumerate(sorted(graph_dict.items())):
-        if not ts_graph_append:
-            data_dict_graph = {
-                'MarkerColor':marker_colors[i],
-                'LongLat': '{0:0.4f},{1:0.4f}'.format(*pnt),
-                'Data':sorted(graph_data)
-            }
-            timeSeriesGraphData.append(data_dict_graph)
-        else:
-            #Find point in timeSeriesTextData and append data
-            for p in timeSeriesGraphData:
-                if p['LongLat'] != '{0:0.4f},{1:0.4f}'.format(*pnt):
-                    continue
-                p['Data']+=sorted(graph_data)
+        data_dict_graph = {
+            'MarkerColor':marker_colors[i],
+            'LongLat': '{0:0.4f},{1:0.4f}'.format(*pnt),
+            'Data':sorted(graph_data)
+        }
+        timeSeriesGraphData.append(data_dict_graph)
     return timeSeriesTextData, timeSeriesGraphData
