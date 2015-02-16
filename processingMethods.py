@@ -146,6 +146,7 @@ def get_time_series(template_values):
         if (yearRange % 5 != 0):
             num_reqs+=1
     #Request loop
+    dataList = []
     for x in range(1, num_reqs + 1):
         #Set start and end dates for request
         #Modify dates to give UTC and to add one to end date for exclusive python nature of this
@@ -162,15 +163,11 @@ def get_time_series(template_values):
             else:
                 dEUTC_step = ee.Date(str(yearStart + 5*x) + '-12-31','GMT')
         #Obtain data chunk
-        dataList = collection.filterDate(dSUTC_step,dEUTC_step).select(var).getRegion(points,1).getInfo()
+        data = collection.filterDate(dSUTC_step,dEUTC_step).select(var).getRegion(points,1).getInfo()
         #remove first row of list ["id","longitude","latitude","time",variable]
-        dataList.pop(0)
-        if not timeSeriesTextData and not timeSeriesGraphData:
-            #Set initial data
-            timeSeriesTextData,timeSeriesGraphData = figureFormatting.set_time_series_data(dataList,TV,[],[])
-        else:
-            #Append to data
-            timeSeriesTextData,timeSeriesGraphData = figureFormatting.set_time_series_data(dataList,TV,timeSeriesTextData,timeSeriesGraphData)
+        data.pop(0)
+        dataList+=data
+    timeSeriesTextData,timeSeriesGraphData = figureFormatting.set_time_series_data(dataList,TV)
 
     '''
     #Code to get time series data viw getDownloadUrl -->
