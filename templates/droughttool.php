@@ -17,10 +17,13 @@
 		<!-- TAB WINDOW             -->
 		<!---------------------------->
 		<div id="menu">
-			 <form action="/" id="form_map" method="post"
+			 <form action="/" id="form_map" method="post">
+				onsubmit="">
+		<!--
                                 onsubmit="waitingDialog.show('Processing Request',
                                         {dialogSize: 'sm', progressType: 'warning'});
                                 window.timeoutID =setTimeout(function () {waitingDialog.hide();}, 60000);">
+			-->
                                 {% include 'includes/tabwindow.html'%}
                         </form>
 		</div>

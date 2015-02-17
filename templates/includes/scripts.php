@@ -69,25 +69,6 @@
 	      *********************************/
 	      function initialize() {
 
-          /*
-          //Progressbar fix(?) suggested by Max, 
-          //NOT WORKING
-          {% if mapid %}
-            // Show progress bar.
-            waitingDialog.show('Processing Request', {dialogSize: 'sm', progressType: 'warning'});
-            // Show the map layer.
-            window.map.overlayMapTypes.push(mapType);
-            // Once the tiles load, hide the progress bar.
-            google.maps.event.addListenerOnce(mapType, 'tilesloaded', function() {
-                waitingDialog.hide();
-            });
-            // In case it takes more than 30 seconds for the tiles
-            // to load, hide the dialog after 30 seconds anyway.
-            setTimeout(function () {
-                waitingDialog.hide();
-            }, 30000);
-          {% endif %}
-          */
        		//geocoder = new google.maps.Geocoder();
                 var mapCenterLongLat = "{{ mapCenterLongLat}}";
                 var mapCenterLat = parseFloat(mapCenterLongLat.split(',')[1]).toFixed(4);
@@ -127,13 +108,29 @@
 		*********************************/
 		{% include 'includes/light-political.html'%}
 		map.setOptions({styles: lightPoliticalStyles});
-		{% if mapid %}
+		/*{% if mapid %}
                		window.map.overlayMapTypes.push(mapType);
 			window.infomarkers = new Array();
 			google.maps.event.addListenerOnce(mapType, 'tilesloaded', function() {
 					window.clearTimeout(timeoutID);
 			});
 		{% endif %}
+		*/
+		 {% if mapid %}
+		    // Show progress bar.
+		    waitingDialog.show('Processing Request', {dialogSize: 'sm', progressType: 'warning'});
+		    // Show the map layer.
+		    window.map.overlayMapTypes.push(mapType);
+		    // Once the tiles load, hide the progress bar.
+		    google.maps.event.addListenerOnce(mapType, 'tilesloaded', function() {
+			waitingDialog.hide();
+		    });
+		    // In case it takes more than 30 seconds for the tiles
+		    // to load, hide the dialog after 30 seconds anyway.
+		    setTimeout(function () {
+			waitingDialog.hide();
+		    }, 30000);
+		  {% endif %}
 
 /*        //This is for the potential mouseover event on the google map layer executing a POST call to get value
 		// Set mouseover event for each feature.
