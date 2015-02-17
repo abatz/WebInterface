@@ -17,7 +17,7 @@
 		<!-- TAB WINDOW             -->
 		<!---------------------------->
 		<div id="menu">
-			 <form action="/" id="form_map" method="post">
+			 <form action="/" id="form_map" method="post"
 				onsubmit="">
 		<!--
                                 onsubmit="waitingDialog.show('Processing Request',
