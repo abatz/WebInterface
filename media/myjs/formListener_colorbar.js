@@ -109,13 +109,14 @@ $(function(){
                  	if(units='metric'){
 				minColorbar =-100*numMonths;
 				maxColorbar =100*numMonths;
+				varUnits='mm'
 			}else if (units=='english'){
 				minColorbar =-4*numMonths;
 				maxColorbar =4*numMonths;
+				varUnits='in'
 			}
 			colorbarmap='BrBG' 
 			colorbarsize=9
-			varUnits='%'
                 }else if(anomOrValue=='value' || anomOrValue=='clim'){
                  	if(units=='metric'){
 				minColorbar = 0;
