@@ -126,10 +126,52 @@ def get_time_series(template_values):
     product = var[:1]
     var = var[1:]
 
+    #Get the collection
+    collection, coll_name, coll_desc, var_desc, notes = collectionMethods.get_collection(
+        product, var)
     #Modify dates to give UTC and to add one to end date for exclusive python nature of this
-    dSUTC = ee.Date(dS,'GMT');
-    dEUTC = ee.Date(dE,'GMT').advance(1,'day');
+    #dSUTC = ee.Date(dS,'GMT')
+    #dEUTC = ee.Date(dE,'GMT').advance(1,'day')
 
+    #Note: EE has a 2500 img limit per request
+    #We need to split up larger data request into 5 year chunks
+    timeSeriesTextData = [];timeSeriesGraphData =[]
+    #Find number of requests
+    yearStart = int(dS[0:4])
+    yearEnd = int(dE[0:4])
+    yearRange = yearEnd - yearStart
+    num_reqs = 1
+    if yearRange > 5: #2500/365 =6.8 years is max records can be returned with getInfo()
+        num_reqs = yearRange / 5
+        if (yearRange % 5 != 0):
+            num_reqs+=1
+    #Request loop
+    dataList = []
+    for x in range(1, num_reqs + 1):
+        #Set start and end dates for request
+        #Modify dates to give UTC and to add one to end date for exclusive python nature of this
+        if x == 1:
+            dSUTC_step = ee.Date(dS,'GMT')
+            if num_reqs == 1:
+                dEUTC_step = ee.Date(dE,'GMT')
+            else:
+                dEUTC_step = ee.Date(str(yearStart + 5*x) + '-12-31','GMT')
+        else:
+            dSUTC_step = ee.Date(str(yearStart + 5*(x-1) + 1) + '-01-01','GMT')
+            if x == num_reqs:
+                dEUTC_step = ee.Date(dE,'GMT').advance(1,'day')
+            else:
+                dEUTC_step = ee.Date(str(yearStart + 5*x) + '-12-31','GMT')
+        #Obtain data chunk
+        data = collection.filterDate(dSUTC_step,dEUTC_step).select(var).getRegion(points,1).getInfo()
+        #remove first row of list ["id","longitude","latitude","time",variable]
+        data.pop(0)
+        dataList+=data
+    timeSeriesTextData,timeSeriesGraphData = figureFormatting.set_time_series_data(dataList,TV)
+
+    '''
+    #Code to get time series data viw getDownloadUrl -->
+    #not working for requests > 6 years
     collection, coll_name, coll_desc, var_desc, notes = collectionMethods.get_collection(
         product, var)
     collection = collection.filterDate(dSUTC,dEUTC);
@@ -150,7 +192,7 @@ def get_time_series(template_values):
     timeSeriesGraphData = []
     timeSeriesTextData, timeSeriesGraphData = figureFormatting.set_time_series_data(
         dataList,TV)
-
+    '''
     source = coll_desc + ' from ' + dS + '-' + dE + ''
     #Set title
     title = statistic + ' ' + var_desc
@@ -183,7 +225,7 @@ def get_anomaly(collection, product, variable, coll_name, dateStart,
     doy_filter = ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year')
 
     #check if year Range <1 to ease calculations
-    
+
 
     #get climatology
     climatologyNote = 'Climatology calculated from {0}-{1}'.format(
@@ -202,7 +244,7 @@ def get_anomaly(collection, product, variable, coll_name, dateStart,
     #get statistic of collection
     collection = get_statistic(collection.filterDate(dateStart, dateEnd), statistic)
 
-    #calculate 
+    #calculate
     if anomOrValue == 'clim':
         mask = collection.gt(-9999)
         climatology = climatology.mask(mask)
@@ -242,12 +284,12 @@ def modify_units(collection, variable, anomOrValue, units):
 
     if anomOrValue in ['value', 'clim', 'anom']:
         if variable in ['tmmx', 'tmmn', 'tmean']:
-            if anomOrValue == 'anom' and units == 'english': 
+            if anomOrValue == 'anom' and units == 'english':
                 collection = collection.multiply(1.8)    #convert C anom to F anom
             elif anomOrValue == 'value' or anomOrValue == 'clim':
                 collection = collection.subtract(273.15)  #convert K to C
                 if units == 'english': #convert C to F
-                     collection = collection.multiply(1.8).add(32)   
+                     collection = collection.multiply(1.8).add(32)
         elif variable in ['pr', 'pet', 'wb'] and units == 'english':
                 collection = collection.divide(25.4) #convert mm to inches
         elif variable == 'vs' and units == 'english':
