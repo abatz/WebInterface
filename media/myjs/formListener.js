@@ -131,9 +131,9 @@ $(function(){
         }
         else if (product=='5'){
             minYear = "1984";
-            maxYear = "2012";
+            maxYear = "2011";
 	    minDate="1984-01-01";
-	    maxDate="2012-05-08";
+	    maxDate="2011-11-01";
             //$('#dateStart').val(minDate);
             //$('#dateEnd').val(maxDate);
 	  document.getElementById('yearEndClim').value =maxYear; //let's not change the end date each time.. saved
