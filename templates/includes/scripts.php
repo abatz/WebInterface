@@ -65,7 +65,9 @@
 	      *********************************/
 	      function initialize() {
 
-		//Set the right climatology years
+		/*********************************
+		*    CLIMO YEARS		*
+		*********************************/
         	$('.landsat5').css('display','none');
         	$('.landsat8').css('display','none');
         	$('.modis').css('display','none');
@@ -80,6 +82,9 @@
             		$('.modis').css('display','inline');
 		{% endif %}
 
+		/*********************************
+		*    MAP INITIALIZE  		*
+		*********************************/
        		//geocoder = new google.maps.Geocoder();
                 var mapCenterLongLat = "{{ mapCenterLongLat}}";
                 var mapCenterLat = parseFloat(mapCenterLongLat.split(',')[1]).toFixed(4);
