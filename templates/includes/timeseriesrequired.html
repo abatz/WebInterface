@@ -83,7 +83,7 @@
 		<div class="points" id="points">
             <input type="hidden" id="pointsLongLat" name="pointsLongLat" value="">
 			<b>Point Location(s):</b><br>
-            <div id="point1" class="point" style="display{{p1dislay}}">
+            <div id="point1" class="point" style="display:{{p1dislay}}">
                    <!--hidden input to keep track of which markers are displayed-->
                    <input type="hidden" id="p1display" name="p1display" value="{{p1display}}"/>
                    <input type="hidden" id="p1check" name="p1check" value="{{p1check}}"/>
@@ -91,7 +91,9 @@
                    <img src="http://www.google.com/mapfiles/ms/micons/{{marker_colors.0}}.png" id="img1">
                    <input type="text" id="p1" class="pointLongLat" name="p1" value="{{p1}}"/>
                    {%if p2display == "none"%}
-                   <img class="add" id="pl2" src="media/img/PlusButton.png" height="15px"> 
+                   <img class="add" id="pl2" src="media/img/PlusButton.png" height="15px">
+                   {%else%}
+                   <img class="add" id="pl2" src="media/img/PlusButton.png" height="15px" style="display:none">
                    {%endif%}
             </div>
             <div id="point2" class="point" style="display:{{p2display}}">
@@ -104,6 +106,8 @@
                    <img class="minus" id="mi2" src="media/img/MinusButton.jpg" height="15px">
                    {%if p3display == "none"%}
                    <img class="add" id="pl3" src="media/img/PlusButton.png" height="15px">
+                   {%else%}
+                   <img class="add" id="pl3" src="media/img/PlusButton.png" height="15px" style="display:none">
                    {%endif%}
             </div>
             <div id="point3" class="point" style="display:{{p3display}}">
@@ -116,6 +120,8 @@
                    <img class="minus" id="mi3" src="media/img/MinusButton.jpg" height="15px">
                    {%if p4display == "none"%}
                    <img class="add" id="pl4" src="media/img/PlusButton.png" height="15px">
+                   {%else%}
+                   <img class="add" id="pl4" src="media/img/PlusButton.png" height="15px" style="display:none">
                    {%endif%}
  
             </div> 
@@ -129,6 +135,8 @@
                    <img class="minus" id="mi4" src="media/img/MinusButton.jpg" height="15px">
                    {%if p5display == "none"%}
                    <img class="add" id="pl5" src="media/img/PlusButton.png" height="15px">
+                   {%else%}
+                   <img class="add" id="pl5" src="media/img/PlusButton.png" height="15px" style="display:none">
                    {%endif%}
  
             </div> 
@@ -142,6 +150,8 @@
                    <img class="minus" id="mi5" src="media/img/MinusButton.jpg" height="15px">
                    {%if p6display == "none"%}
                    <img class="add" id="pl6" src="media/img/PlusButton.png" height="15px">
+                   {%else%}
+                   <img class="add" id="pl6" src="media/img/PlusButton.png" height="15px" style="display:none">
                    {%endif%}
  
             </div> 

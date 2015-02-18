@@ -17,22 +17,22 @@
 		    marker_img = document.getElementById('img' + String(point_id)).src;
             	//Set marker visibility depending on visibility and checkbox
 		    if ($('#domainType').val()=='points'){
-			//Show first marker
-			if (String(point_id) == '1'){
-			    marker_visible = true;
-			}
-			else {
-			    if ($('#point' + String(point_id)).css('display') == 'block' && 
-			    $('#p' + String(point_id) + 'check').val('checked')){
-				marker_visible = true;
+			    //Show first marker
+			    if (String(point_id) == '1'){
+			        marker_visible = true;
 			    }
-			    else{
-				marker_visible = false;
+			    else {
+			        if ($('#point' + String(point_id)).css('display') == 'block' && 
+			        $('#p' + String(point_id) + 'check').val('checked')){
+				        marker_visible = true;
+			        }
+			        else{
+				        marker_visible = false;
+			        }
 			    }
-			}
 		    }
 		    else {
-			marker_visible = false;
+			    marker_visible = false;
 		    }
 		    var marker = new google.maps.Marker({
 			map: map,
