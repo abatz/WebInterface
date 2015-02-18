@@ -45,22 +45,21 @@ $(function(){
 	     document.getElementById('variable').value =variable;
              if(variable=='Gpet'||variable=='Gpr'||variable=='Gwb'){
 	     	//document.getElementById('chartType').value ='column';
-                jQuery('.prpetwb').css("display",'none');
+                jQuery('.prpetwb').css("display",'inline');
 	     }else{
 	     	//document.getElementById('chartType').value ='spline';
                 jQuery('.prpetwb').css("display",'none');
 	    }
+	     	document.getElementById('mapid').value ='';
+	     	document.getElementById('token').value ='';
 	});
 	jQuery('#variable').on('change', function(){
 	     variable=document.getElementById('variable').value;
 	     document.getElementById('variableT').value =variable;
-		console.log(variable)
              if(variable=='Gpet'||variable=='Gpr'||variable=='Gwb'){
-		console.log('shoudl change')
 	     	//document.getElementById('chartType').value ='column';
-                jQuery('.prpetwb').css("display",'none');
+                jQuery('.prpetwb').css("display",'inline');
 	     }else{
-		console.log('shoudl not change')
 	     	//document.getElementById('chartType').value ='spline';
                 jQuery('.prpetwb').css('display','none');
 	    }
@@ -92,6 +91,8 @@ $(function(){
         //strip product character off of variable
         var variable = jQuery('.variable').val();
         var product = variable.substr(0,1);
+	document.getElementById('product').value =product; 
+	
         var minDate,maxDate,yearRange;
 
         thisDate = new Date();
@@ -106,11 +107,17 @@ $(function(){
            mm='0'+mm;
         }
         todayDate=year+'-'+mm+'-'+dd;
+	$('.landsat5').css('display','none');
+	$('.landsat8').css('display','none');
+	$('.modis').css('display','none');
+	$('.gridmet').css('display','none');
         if(product=='G'){
             minYear = "1979";
             maxYear = year; 
 	    minDate="1979-01-01";
 	    maxDate=todayDate;
+	    document.getElementById('yearEndClim').value =maxYear; //let's not change the end date each time.. saved
+	    $('.gridmet').css('display','inline');
         }
         else if (product=='8'){
             minYear = "2013";
@@ -119,20 +126,26 @@ $(function(){
 	    maxDate=todayDate;
             //$('#dateStart').val(minDate);
             //$('#dateEnd').val(maxDate);
+	  document.getElementById('yearEndClim').value =maxYear; //let's not change the end date each time.. saved
+	    $('.landsat8').css('display','inline');
         }
         else if (product=='5'){
             minYear = "1984";
-            maxYear = "2012";
+            maxYear = "2011";
 	    minDate="1984-01-01";
-	    maxDate="2012-05-08";
+	    maxDate="2011-11-01";
             //$('#dateStart').val(minDate);
             //$('#dateEnd').val(maxDate);
+	  document.getElementById('yearEndClim').value =maxYear; //let's not change the end date each time.. saved
+	    $('.landsat5').css('display','inline');
         }
         else if (product=='M'){
             minYear = "2000";
             maxYear = year; 
 	    minDate="2000-02-24";
 	    maxDate=todayDate;
+	    document.getElementById('yearEndClim').value =maxYear; //let's not change the end date each time.. saved
+	    $('.modis').css('display','inline');
         }
         yearRange = minYear + ':'+maxYear;
 
@@ -150,6 +163,7 @@ $(function(){
 
 	document.getElementById('yearStartClim').value =minYear;
 	//document.getElementById('yearEndClim').value =maxYear; //let's not change the end date each time.. saved
+        
     });
 
     jQuery('.anomOrValue').on('change', function(){

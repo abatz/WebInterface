@@ -21,8 +21,8 @@
 	<script type="text/javascript" src="/media/myjs/gmaps_styles.js"></script><!--GMAPS STYLES-->
 	{% include 'includes/js_datepicker.html'%}<!--DATE PICKER-->
 
-	<!--DOES NOT WORK <script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script>
-	<script type="text/javascript">
+	<!--<script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script>-->
+	<!--<script type="text/javascript">
   		var slider = new Slider("#ex8", {
 			tooltip: 'always'
 		});
@@ -64,7 +64,26 @@
 	      *    INITIALIZE CALL
 	      *********************************/
 	      function initialize() {
+		/*********************************
+		*    CLIMO YEARS		*
+		*********************************/
+        	$('.landsat5').css('display','none');
+        	$('.landsat8').css('display','none');
+        	$('.modis').css('display','none');
+        	$('.gridmet').css('display','none');
+        	{% if product=='G'%}
+            		$('.gridmet').css('display','inline');
+		{% elif product=='5' %}
+            		$('.landsat5').css('display','inline');
+		{% elif product=='8' %}
+            		$('.landsat8').css('display','inline');
+		{% elif product=='M' %}
+            		$('.modis').css('display','inline');
+		{% endif %}
 
+		/*********************************
+		*    MAP INITIALIZE  		*
+		*********************************/
        		//geocoder = new google.maps.Geocoder();
                 var mapCenterLongLat = "{{ mapCenterLongLat}}";
                 var mapCenterLat = parseFloat(mapCenterLongLat.split(',')[1]).toFixed(4);
@@ -119,8 +138,8 @@
 			waitingDialog.hide();
 		    }, 30000);
 		  {% endif %}
-
-/*        //This is for the potential mouseover event on the google map layer executing a POST call to get value
+/*
+        //This is for the potential mouseover event on the google map layer executing a POST call to get value
 		// Set mouseover event for each feature.
                  google.maps.event.addListener(map,'click', function(event) {
 			var lat = event.latLng.lat().toFixed(4);

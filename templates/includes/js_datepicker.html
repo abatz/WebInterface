@@ -17,6 +17,8 @@
 	      onClose: function( selectedDate ) {
 		    $( ".dateEnd" ).datepicker( "option", "minDate", selectedDate );
 		    document.getElementById('dateStart').value =document.getElementById('dateStartTS').value;
+		    document.getElementById('mapid').value ='';
+		    document.getElementById('token').value ='';
 	      }
 	    }).datepicker('setDate', "{{ dateStart }}");
 	    $( "#dateEndTS" ).datepicker({
@@ -29,8 +31,10 @@
 	      dateFormat: "yy-mm-dd",
 	      onClose: function( selectedDate ) {
 		    $( ".dateStart" ).datepicker( "option", "maxDate", selectedDate );
-			document.getElementById('dateEnd').value =document.getElementById('dateEndTS').value;
-		    }
+		    document.getElementById('dateEnd').value =document.getElementById('dateEndTS').value;
+		    document.getElementById('mapid').value ='';
+		   document.getElementById('token').value ='';
+	      }
 	   }).datepicker('setDate', '{{ dateEnd }}');
         });
         //-------------------------

@@ -22,3 +22,15 @@
 
 <!--<script src="http://d3js.org/d3.v3.min.js"></script>-->
 <script src="/media/js/d3.v3.min.js"></script>
+
+<!-- <script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script>
+DOESNT WORK FOR SLIDER $(document).ready() {
+                var slider = new Slider('#ex1', {
+                        formatter: function(value) {
+                return 'Current value: ' + value;
+                }
+                });
+
+});
+-->
+
