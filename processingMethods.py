@@ -135,38 +135,26 @@ def get_time_series(template_values):
 
     #Note: EE has a 2500 img limit per request
     #We need to split up larger data request into 5 year chunks
-    timeSeriesTextData = [];timeSeriesGraphData =[]
-    #Find number of requests
-    yearStart = int(dS[0:4])
-    yearEnd = int(dE[0:4])
-    yearRange = yearEnd - yearStart
-    num_reqs = 1
-    if yearRange > 5: #2500/365 =6.8 years is max records can be returned with getInfo()
-        num_reqs = yearRange / 5
-        if (yearRange % 5 != 0):
-            num_reqs+=1
-    #Request loop
+    #Max's suggestion: work with time and get data in chunks,
+    #FIX ME: Avoid getInfo(), currently the .cat is not working as expected
+    #This might be because data is a list of lists?
+    dS_int = ee.Date(dS,'GMT').millis().getInfo()
+    dE_int = ee.Date(dE,'GMT').millis().getInfo()
+    step = 5 * 365 * 24 * 60 * 60 * 1000
+    start = dS_int
     dataList = []
-    for x in range(1, num_reqs + 1):
-        #Set start and end dates for request
-        #Modify dates to give UTC and to add one to end date for exclusive python nature of this
-        if x == 1:
-            dSUTC_step = ee.Date(dS,'GMT')
-            if num_reqs == 1:
-                dEUTC_step = ee.Date(dE,'GMT')
-            else:
-                dEUTC_step = ee.Date(str(yearStart + 5*x) + '-12-31','GMT')
+    #dataList = ee.List([])
+    while start < dE_int:
+        if start + step < dE_int:
+            end = start + step
         else:
-            dSUTC_step = ee.Date(str(yearStart + 5*(x-1) + 1) + '-01-01','GMT')
-            if x == num_reqs:
-                dEUTC_step = ee.Date(dE,'GMT').advance(1,'day')
-            else:
-                dEUTC_step = ee.Date(str(yearStart + 5*x) + '-12-31','GMT')
-        #Obtain data chunk
-        data = collection.filterDate(dSUTC_step,dEUTC_step).select(var).getRegion(points,1).getInfo()
-        #remove first row of list ["id","longitude","latitude","time",variable]
-        data.pop(0)
+            end = dE_int + 24 * 60 * 60 * 1000
+        #data = collection.filterDate(start, end).select(var).getRegion(points,1).slice(1)
+        #dataList.cat(data)
+        data = collection.filterDate(start, end).select(var).getRegion(points,1).slice(1).getInfo()
         dataList+=data
+        start+=step
+    #dataList = dataList.getInfo()
     timeSeriesTextData,timeSeriesGraphData = figureFormatting.set_time_series_data(dataList,TV)
 
     '''
