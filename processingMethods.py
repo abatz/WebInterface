@@ -133,25 +133,19 @@ def get_time_series(template_values):
     #Note: EE has a 2500 img limit per request
     #We need to split up larger data request into 5 year chunks
     #Max's suggestion: work with time and get data in chunks,
-    #FIX ME: Avoid getInfo(), currently the .cat is not working as expected
-    #This might be because data is a list of lists?
     dS_int = ee.Date(dS,'GMT').millis().getInfo()
     dE_int = ee.Date(dE,'GMT').millis().getInfo()
     step = 5 * 365 * 24 * 60 * 60 * 1000
     start = dS_int
     dataList = []
-    #dataList = ee.List([])
     while start < dE_int:
         if start + step < dE_int:
             end = start + step
         else:
             end = dE_int + 24 * 60 * 60 * 1000
-        #data = collection.filterDate(start, end).select(var).getRegion(points,1).slice(1)
-        #dataList.cat(data)
         data = collection.filterDate(start, end).select(var).getRegion(points,1).slice(1).getInfo()
         dataList+=data
         start+=step
-    #dataList = dataList.getInfo()
     timeSeriesTextData,timeSeriesGraphData = figureFormatting.set_time_series_data(dataList,TV)
 
     '''
