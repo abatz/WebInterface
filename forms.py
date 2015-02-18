@@ -82,8 +82,8 @@ formAnomOrValue=[
 formStatistic=[
     ('Mean','Mean'),
     ('Median','Median'),
-    #('Max','Maximum'),
-    #('Min','Minimum'),
+    ('Max','Maximum'),
+    ('Min','Minimum'),
     ('Total','Total'),
 ]
 #============================
