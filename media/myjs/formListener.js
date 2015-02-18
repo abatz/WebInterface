@@ -43,20 +43,27 @@ $(function(){
 	jQuery('#variableT').on('change', function(){
 	     variable=document.getElementById('variableT').value;
 	     document.getElementById('variable').value =variable;
-             //if(variable=='Gpet'||variable=='Gpr'||variable=='Gwb'){
-	     //	document.getElementById('chartType').value ='column';
-	     //}else{
-	    // 	document.getElementById('chartType').value ='spline';
-	    //}
+             if(variable=='Gpet'||variable=='Gpr'||variable=='Gwb'){
+	     	//document.getElementById('chartType').value ='column';
+                jQuery('.prpetwb').css("display",'none');
+	     }else{
+	     	//document.getElementById('chartType').value ='spline';
+                jQuery('.prpetwb').css("display",'none');
+	    }
 	});
 	jQuery('#variable').on('change', function(){
 	     variable=document.getElementById('variable').value;
 	     document.getElementById('variableT').value =variable;
-             //if(variable=='Gpet'||variable=='Gpr'||variable=='Gwb'){
-	    // 	document.getElementById('chartType').value ='column';
-	     //}else{
-	    // 	document.getElementById('chartType').value ='spline';
-	    //}
+		console.log(variable)
+             if(variable=='Gpet'||variable=='Gpr'||variable=='Gwb'){
+		console.log('shoudl change')
+	     	//document.getElementById('chartType').value ='column';
+                jQuery('.prpetwb').css("display",'none');
+	     }else{
+		console.log('shoudl not change')
+	     	//document.getElementById('chartType').value ='spline';
+                jQuery('.prpetwb').css('display','none');
+	    }
 	});
 
  	jQuery('#mapCenterLongLat').keyup( function(){
