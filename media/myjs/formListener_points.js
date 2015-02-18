@@ -86,10 +86,26 @@ $(function(){
 		    $('#p' + String(point_id) + 'check').val('');
 	    });
 	    
-        //onsubmit of form , update pointsLongLat
-	    //This function is called in templates/includes/timeseriesoptions.html on form_map submit
+        //onsubmit of form, update pointsLongLat
+        //And show progressbar if domaintType == points
+	    //This function is called in 
+        //templates/includes/timeseriesoptions.html on form_map submit
 	    jQuery('#form_map').submit(function( event ) {
 		if ( $('#domainType').val() == 'points') {
+            //Show Progress Bar
+            //If large request, show special progress bar
+            var dS = new Date($('#dateStart').val()).getTime();
+            var dE = new Date($('#dateEnd').val()).getTime();
+            var message;
+            if (dE - dS >= 5 * 365 * 24 * 60 * 60 * 1000){
+                message = 'You asked for a large amount of data. ' + 
+                'Please be patient while we process your request.'
+            }
+            else{
+                message = 'Processing Request';
+            }
+            waitingDialog.show(message,{dialogSize: 'sm', progressType: 'warning'});
+            window.timeoutID =setTimeout(function () {waitingDialog.hide();}, 180000);
 		    var LongLatStr = '';
 		    $('.point').each(function() {
 			    point_id = parseInt($(this).attr('id').split('point')[1]);
