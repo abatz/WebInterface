@@ -129,9 +129,6 @@ def get_time_series(template_values):
     #Get the collection
     collection, coll_name, coll_desc, var_desc, notes = collectionMethods.get_collection(
         product, var)
-    #Modify dates to give UTC and to add one to end date for exclusive python nature of this
-    #dSUTC = ee.Date(dS,'GMT')
-    #dEUTC = ee.Date(dE,'GMT').advance(1,'day')
 
     #Note: EE has a 2500 img limit per request
     #We need to split up larger data request into 5 year chunks
@@ -226,11 +223,14 @@ def get_anomaly(collection, product, variable, coll_name, dateStart,
 
     #check if year Range <1 to ease calculations
 
-
     #get climatology
     climatologyNote = 'Climatology calculated from {0}-{1}'.format(
         yearStartClim, yearEndClim)
-    climatology = collection.filterDate(yearStartClim, str(int(yearEndClim)+1)).filter(doy_filter)
+    yearStartClimUTC = ee.Date(yearStartClim+'-01-01','GMT');
+    yearEndClimUTC = ee.Date(yearEndClim+'-12-31','GMT').advance(1,'day');
+
+    #climatology = collection.filterDate(yearStartClim, str(int(yearEndClim)+1)).filter(doy_filter)
+    climatology = collection.filterDate(yearStartClimUTC, yearEndClimUTC).filter(doy_filter)
     if(statistic=='Mean' or statistic =='Total' or statistic=='Median'):
         climatology = get_statistic(climatology,statistic)
     else: #need a solution for min/max

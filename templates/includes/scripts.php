@@ -21,8 +21,8 @@
 	<script type="text/javascript" src="/media/myjs/gmaps_styles.js"></script><!--GMAPS STYLES-->
 	{% include 'includes/js_datepicker.html'%}<!--DATE PICKER-->
 
-	<!--DOES NOT WORK <script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script>
-	<script type="text/javascript">
+	<!--<script type="text/javascript" src="/media/myjs/bootstrap-slider.js"></script>-->
+	<!--<script type="text/javascript">
   		var slider = new Slider("#ex8", {
 			tooltip: 'always'
 		});
@@ -64,7 +64,6 @@
 	      *    INITIALIZE CALL
 	      *********************************/
 	      function initialize() {
-
 		/*********************************
 		*    CLIMO YEARS		*
 		*********************************/
