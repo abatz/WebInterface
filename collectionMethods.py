@@ -375,13 +375,13 @@ def landsat8_ndvi_func(img):
 def landsat8_ndsi_func(img):
     """Calculate NDSI for a daily Landsat 8 image"""
     ## Removed .clamp(-0.1, 1)
-    return img.normalizedDifference(["B3","B6"]).select([0], ['NDVI'])\
+    return img.normalizedDifference(["B3","B6"]).select([0], ['NDSI'])\
         .copyProperties(img, property_list)
 
 def landsat8_ndwi_func(img):
     """Calculate NDWI for a daily Landsat 8 image"""
     ## Removed .clamp(-0.1, 1)
-    return img.normalizedDifference(["B6","B5"]).select([0], ['NDVI'])\
+    return img.normalizedDifference(["B6","B5"]).select([0], ['NDWI'])\
         .copyProperties(img, property_list)
 
 def landsat8_evi_func(img):
