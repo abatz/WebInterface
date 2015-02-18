@@ -45,7 +45,7 @@ $(function(){
 	     document.getElementById('variable').value =variable;
              if(variable=='Gpet'||variable=='Gpr'||variable=='Gwb'){
 	     	//document.getElementById('chartType').value ='column';
-                jQuery('.prpetwb').css("display",'none');
+                jQuery('.prpetwb').css("display",'inline');
 	     }else{
 	     	//document.getElementById('chartType').value ='spline';
                 jQuery('.prpetwb').css("display",'none');
@@ -56,7 +56,7 @@ $(function(){
 	     document.getElementById('variableT').value =variable;
              if(variable=='Gpet'||variable=='Gpr'||variable=='Gwb'){
 	     	//document.getElementById('chartType').value ='column';
-                jQuery('.prpetwb').css("display",'none');
+                jQuery('.prpetwb').css("display",'inline');
 	     }else{
 	     	//document.getElementById('chartType').value ='spline';
                 jQuery('.prpetwb').css('display','none');
