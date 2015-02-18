@@ -8,11 +8,6 @@ import numpy as np
 #    formVariableGrid
 #============================
 formVariableGrid=[
-    #('spi','SPI (Stand. Prec. Ind.)'),
-    #('spei','SPEI (Stand. Prec-Evap. Ind.)'),
-    #('eto','ETo (Potential EvapTrans.)'),
-    #('eddi','EDDI (Evap Dem. Drought Ind.)'),
-    #('th','TH (Wind Direction)'),
     ('Gerc','ERC (Energy Release Component)'),
     ('Gpdsi','PDSI (Palm. Drought Sev. Ind.)'),
     ('Gpet','PET (Reference Evapotranspiration)'),
@@ -32,15 +27,6 @@ formVariableGrid=[
 #    formVariableLandsat
 #============================
 formVariableLandsat=[
-    #('Leto','ETo (Potential Evapotranspiration)'),
-    #('Leddi','EDDI (Evap. Demand Drought Index)'),
-    #('Lbi','BI (Burning Index)'),
-    #('LNBRT','NBRT (Norm. Burn Rat. Thm. Ind)'),
-    #('LBAI','BAI (Burning Area Index)'),
-    #('LEVI','Landsat 4/5/7 EVI (Enhanced Vegetation Index)'),
-    #('LNDSI','Landsat 4/5/7 NDSI (Snow Index)'),
-    #('LNDVI','Landsat 4/5/7 NDVI (Vegetation Index)'),
-    #('LNDWI','Landsat 4/5/7 NDWI (Water Index)'),
     ('5EVI','Landsat 5 EVI (Enhanced Vegetation Index)'),
     ('5NDSI','Landsat 5 NDSI (Snow Index)'),
     ('5NDVI','Landsat 5 NDVI (Vegetation Index)'),
@@ -54,11 +40,6 @@ formVariableLandsat=[
 #    formVariableModis
 #============================
 formVariableModis=[
-    #('Meto','ETo (Potential Evapotranspiration)'),
-    #('Meddi','EDDI (Evap. Demand Drought Index)'),
-    #('Mbi','BI (Burning Index)'),
-    #('MNBRT','NBRT (Norm. Burn Rat. Thm. Ind)'),
-    #('MBAI','BAI (Burning Area Index)'),
     ('MEVI','MODIS EVI (Enhanced Vegetation Index)'),
     ('MNDSI','MODIS NDSI (Snow Index)'),
     ('MNDVI','MODIS NDVI (Vegetation Index)'),
@@ -155,7 +136,10 @@ formDay=[(str(x),str(x)) for x in range(1,32,1)]
 #============================
 #    formYear
 #============================
-formYear=[(str(x),str(x)) for x in range(1972,2025,1)]
+formGridMetYear=[(str(x),str(x)) for x in range(1979,2025,1)]
+formLandsat5Year=[(str(x),str(x)) for x in range(1984,2013,1)]
+formLandsat8Year=[(str(x),str(x)) for x in range(2013,2025,1)]
+formModisYear=[(str(x),str(x)) for x in range(2000,2025,1)]
 
 #============================
 #    formLocation

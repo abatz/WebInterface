@@ -18,7 +18,7 @@
 		<!---------------------------->
 		<div id="menu">
 			 <form action="/" id="form_map" method="post"
-				onsubmit="">;
+				onsubmit="">
                                 {% include 'includes/tabwindow.html'%}
                         </form>
 		</div>

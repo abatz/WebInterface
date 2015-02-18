@@ -65,6 +65,21 @@
 	      *********************************/
 	      function initialize() {
 
+		//Set the right climatology years
+        	$('.landsat5').css('display','none');
+        	$('.landsat8').css('display','none');
+        	$('.modis').css('display','none');
+        	$('.gridmet').css('display','none');
+        	{% if product=='G'%}
+            		$('.gridmet').css('display','inline');
+		{% elif product=='5' %}
+            		$('.landsat5').css('display','inline');
+		{% elif product=='8' %}
+            		$('.landsat8').css('display','inline');
+		{% elif product=='M' %}
+            		$('.modis').css('display','inline');
+		{% endif %}
+
        		//geocoder = new google.maps.Geocoder();
                 var mapCenterLongLat = "{{ mapCenterLongLat}}";
                 var mapCenterLat = parseFloat(mapCenterLongLat.split(',')[1]).toFixed(4);

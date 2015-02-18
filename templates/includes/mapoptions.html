@@ -16,6 +16,7 @@
 			<input type="hidden" id="maxDate" name="minYear" value="{{ maxDate }}" />
 			<input type="hidden" id="mapid" name="mapid" value="{{ mapid }}" />
 			<input type="hidden" id="token" name="token" value="{{ token }}" />
+			<input type="hidden" id="product" name="product" value="{{ product }}" />
 
 			<!----------------------------->
 		        <!--           VARIABLE      -->
@@ -109,18 +110,91 @@
 			       <!----------------------------->
 				<b>Climatology Year Range:</b><br> 
 				<select id="yearStartClim" name="yearStartClim" class="yearStartClim">
-				{% for x,y in formYear %}
-				     {% if x>=1972 and x<=yearEnd %}
-				    <option value="{{ x }}" {% if x == yearStartClim  %} selected {% endif %}>{{ y }}</option>
-				     {% endif %}
-				{% endfor %}
-				</select>-
+
+					{% for x,y in formModisYear %}
+						{% if x<=yearEnd %}
+				       		<option value="{{ x }}" 
+				   		{% if x == yearStartClim  %} 
+							selected 
+						{% endif %}
+						class='modis'
+						>{{ y }}</option>
+						{% endif %}
+					{% endfor %}
+
+					{% for x,y in formGridMetYear %}
+					    {% if x<=yearEnd %}
+				       	    <option value="{{ x }}" 
+				   		{% if x == yearStartClim  %} 
+							selected 
+						{% endif %}
+						class='gridmet'
+					     >{{ y }}</option>
+					     {% endif %}
+					{% endfor %}
+					{% for x,y in formLandsat5Year %}
+					{% if x<=yearEnd %}
+				       <option value="{{ x }}" 
+				   		{% if x == yearStartClim  %} 
+							selected 
+						{% endif %}
+						class='landsat5'
+					>{{ y }}</option>
+					{% endif %}
+					{% endfor %}
+					{% for x,y in formLandsat8Year %}
+					{% if x<=yearEnd %}
+				       <option value="{{ x }}" 
+				   		{% if x == yearStartClim  %} 
+							selected 
+						{% endif %}
+						class='landsat8'
+					>{{ y }}</option>
+					{% endif %}
+					{% endfor %}
+				</select>
+				-
 				 <select id="yearEndClim" name="yearEndClim" class="yearEndClim">
-				{% for x,y in formYear %}
-				     {% if x>=1972 and x<=yearEnd %}
-				    <option value="{{ x }}" {% if x == yearEndClim %} selected {% endif %}>{{ y }}</option>
-				     {% endif %}
-				{% endfor %}
+      			         {% for x,y in formModisYear %}
+                                        {% if x<=yearEnd %}
+                                       <option value="{{ x }}"
+                                                {% if x == yearEndClim  %}
+                                                        selected
+                                                {% endif %}
+                                                class='modis'
+                                        >{{ y }}</option>
+                                        {% endif %}
+                                {% endfor %}
+                                {% for x,y in formGridMetYear %}
+                                        {% if x<=yearEnd %}
+                                       <option value="{{ x }}"
+                                                {% if x == yearEndClim  %}
+                                                        selected
+                                                {% endif %}
+                                                class='gridmet'
+                                        >{{ y }}</option>
+                                        {% endif %}
+                                {% endfor %}
+                                {% for x,y in formLandsat5Year %}
+                                        {% if x<=yearEnd %}
+                                       <option value="{{ x }}"
+                                                {% if x == yearEndClim  %}
+                                                        selected
+                                                {% endif %}
+                                                class='landsat5'
+                                        >{{ y }}</option>
+                                        {% endif %}
+                                {% endfor %}
+                                {% for x,y in formLandsat8Year %}
+                                        {% if x<=yearEnd %}
+                                       <option value="{{ x }}"
+                                                {% if x == yearEndClim  %}
+                                                        selected
+                                                {% endif %}
+                                                class='landsat8'
+                                        >{{ y }}</option>
+                                        {% endif %}
+                                {% endfor %}
 				</select>
 			</div>
 			</td>
