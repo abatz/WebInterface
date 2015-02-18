@@ -1,6 +1,3 @@
-	<!-- JQUERY/JQUERY UI/AJAX -->
-	<!--<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
-
 	<!-- for date picker calendar -->
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
 	<script type="text/javascript" src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
@@ -8,10 +5,10 @@
  	<!------------------------------------>
         <!--	LISTENERS           -->
         <!------------------------------------>
-	<script type="text/javascript" src="media/myjs/formListener.js"></script> <!-- FORM LISTENER -->
-	<script type="text/javascript" src="media/myjs/formListener_points.js"></script> <!-- LISTENER ON POINTS -->
-	<script type="text/javascript" src="media/myjs/formListener_colorbar.js"></script> <!-- LISTENER ON COLORBAR -->
-	<script type="text/javascript" src="media/myjs/formListener_layers.js"></script> <!-- LISTENER ON LAYERS -->
+	<script type="text/javascript" src="media/myjs/formListener.js"></script> 
+	<script type="text/javascript" src="media/myjs/formListener_points.js"></script> 
+	<script type="text/javascript" src="media/myjs/formListener_colorbar.js"></script> 
+	<script type="text/javascript" src="media/myjs/formListener_layers.js"></script> 
 
  	<!------------------------------------>
         <!--		MY SCRIPTS           -->
@@ -63,7 +60,6 @@
 	      var infomarkers;  
 	      var timeoutID;
 
-
 	      /*********************************
 	      *    INITIALIZE CALL
 	      *********************************/
@@ -108,14 +104,6 @@
 		*********************************/
 		{% include 'includes/light-political.html'%}
 		map.setOptions({styles: lightPoliticalStyles});
-		/*{% if mapid %}
-               		window.map.overlayMapTypes.push(mapType);
-			window.infomarkers = new Array();
-			google.maps.event.addListenerOnce(mapType, 'tilesloaded', function() {
-					window.clearTimeout(timeoutID);
-			});
-		{% endif %}
-		*/
 		 {% if mapid %}
 		    // Show progress bar.
 		    waitingDialog.show('Processing Request', {dialogSize: 'sm', progressType: 'warning'});
