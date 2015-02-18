@@ -124,8 +124,23 @@
 		{% include 'includes/light-political.html'%}
 		map.setOptions({styles: lightPoliticalStyles});
 		 {% if mapid %}
+            var dS = new Date($('#dateStart').val()).getTime();
+            var dE = new Date($('#dateEnd').val()).getTime();
+            var p_message = 'Processing Request';
+            if ($('#anomOrValue') == "value"){
+                if (dE - dS >= 5 * 365 * 24 * 60 * 60 * 1000){
+                    p_message = 'You asked for a large amount of data. ' +
+                    'Please be patient while we process your request.';
+                }
+            }
+            else {
+                if (dE - dS >= 1 * 365 * 24 * 60 * 60 * 1000){
+                    p_message = 'You asked for a large amount of data. ' +
+                    'Please be patient while we process your request.';
+                }
+            }
 		    // Show progress bar.
-		    waitingDialog.show('Processing Request', {dialogSize: 'sm', progressType: 'warning'});
+		    waitingDialog.show(p_message, {dialogSize: 'sm', progressType: 'warning'});
 		    // Show the map layer.
 		    window.map.overlayMapTypes.push(mapType);
 		    // Once the tiles load, hide the progress bar.
