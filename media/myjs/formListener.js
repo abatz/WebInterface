@@ -50,6 +50,8 @@ $(function(){
 	     	//document.getElementById('chartType').value ='spline';
                 jQuery('.prpetwb').css("display",'none');
 	    }
+	     	document.getElementById('mapid').value ='';
+	     	document.getElementById('token').value ='';
 	});
 	jQuery('#variable').on('change', function(){
 	     variable=document.getElementById('variable').value;
@@ -162,8 +164,6 @@ $(function(){
 	document.getElementById('yearStartClim').value =minYear;
 	//document.getElementById('yearEndClim').value =maxYear; //let's not change the end date each time.. saved
         
-
-
     });
 
     jQuery('.anomOrValue').on('change', function(){

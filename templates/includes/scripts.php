@@ -139,8 +139,8 @@
 			waitingDialog.hide();
 		    }, 30000);
 		  {% endif %}
-
-/*        //This is for the potential mouseover event on the google map layer executing a POST call to get value
+/*
+        //This is for the potential mouseover event on the google map layer executing a POST call to get value
 		// Set mouseover event for each feature.
                  google.maps.event.addListener(map,'click', function(event) {
 			var lat = event.latLng.lat().toFixed(4);
