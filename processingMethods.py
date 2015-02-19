@@ -7,6 +7,8 @@ import ee
 
 import collectionMethods
 import figureFormatting
+
+from google.appengine.api.labs import taskqueue
 #===========================================
 #   GET_IMAGES
 #===========================================
@@ -142,6 +144,18 @@ def get_time_series(template_values):
             end = start + step
         else:
             end = dE_int + 24 * 60 * 60 * 1000
+        '''
+        #First attempt at task queue, gives error
+        #data = collection.filterDate(start, end).getRegion(points,1).slice(1).getInfo()
+        AttributeError: 'unicode' object has no attribute 'filterDate')
+        # Add the task to the default queue.
+        q_params = {
+            'collection':collection,
+            'start':start,
+            'end':end
+        }
+        data = taskqueue.add(url='/worker', params=q_params)
+        '''
         data = collection.filterDate(start, end).getRegion(points,1).slice(1).getInfo()
         dataList+=data
         start+=step
