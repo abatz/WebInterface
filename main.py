@@ -250,11 +250,24 @@ class DroughtTool(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('droughttool.php')
         self.response.out.write(template.render(template_values))
 
+'''
+Frist attempt at task queue for time sereis
+'''
+class TimeSeriesWorker(webapp2.RequestHandler):
+    def post(self):
+        collection = self.request.get('collection')
+        start = self.request.get('start')
+        end = self.request.get('end')
+        points = self.request.get('points')
+        data = collection.filterDate(start, end).getRegion(points,1).slice(1).getInfo()
+        self.response.out.write(data)#used for get by task queue
+
 #############################################
 ##       URL MAPPING                        ##
 #############################################
 app = webapp2.WSGIApplication(
     [
     ('/', DroughtTool),
+    ('/worker', TimeSeriesWorker),
 ],
 debug=True)
