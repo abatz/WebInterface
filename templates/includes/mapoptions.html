@@ -54,13 +54,13 @@
                           </select>
                         <br>
 			<b>Calculation:</b><br>
-			<select id="anomOrValue" name="anomOrValue" class="anomOrValue" width="95%">
-				{% for x,y in formAnomOrValue %}
+			<select id="calculation" name="calculation" class="calculation" width="95%">
+				{% for x,y in formCalculation %}
 				    <option value="{{ x }}" 
 						{% if x == 'anompercentchange' or x=='anompercentof' %} 
 							class='prpetwb'
 						{% endif %} 
-						{% if x == anomOrValue  %} 
+						{% if x == calculation  %} 
 							selected 
 						{% endif %}
 				     >{{ y }}</option>

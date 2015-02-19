@@ -58,7 +58,7 @@ class DroughtTool(webapp2.RequestHandler):
             'variable': self.request.get('variable','Gpr'),
             'product': self.request.get('product','G'),
             'statistic': self.request.get('statistic','Total'),
-            'anomOrValue': self.request.get('anomOrValue','value'),
+            'calculation': self.request.get('calculation','value'),
             'units': self.request.get('units','metric'),
             'varUnits': self.request.get('varUnits','mm'),
             #Time Options
@@ -123,7 +123,7 @@ class DroughtTool(webapp2.RequestHandler):
             'formPaletteSize': forms.formPaletteSize,
             'formOpacity': forms.formOpacity,
             'formUnits': forms.formUnits,
-            'formAnomOrValue': forms.formAnomOrValue,
+            'formCalculation': forms.formCalculation,
             'formBackground': forms.formBackground,
             'formTimeSeriesCalc': forms.formTimeSeriesCalc,
             'formVariableGrid': forms.formVariableGrid,

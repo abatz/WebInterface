@@ -21,7 +21,7 @@ def get_images(template_values):
     for key, val in template_values.iteritems():
         TV[key] = val
     var = TV['variable']
-    calculation = TV['anomOrValue']
+    calculation = TV['calculation']
     dT = TV['domainType']
     dS = TV['dateStart']
     dE = TV['dateEnd']
@@ -139,8 +139,8 @@ def get_time_series(template_values):
     #Note: EE has a 2500 img limit per request
     #We need to split up larger data request into 5 year chunks
     #Max's suggestion: work with time and get data in chunks,
-    dS_int = ee.Date(dS,'GMT').millis().getInfo()
-    dE_int = ee.Date(dE,'GMT').millis().getInfo()
+    dS_int = ee.Date(dS, 'GMT').millis().getInfo()
+    dE_int = ee.Date(dE, 'GMT').millis().getInfo()
     ##dS_int = 1000 * calendar.timegm(dt.datetime.strptime(dS, '%Y-%m-%d').timetuple())
     ##dE_int = 1000 * calendar.timegm(dt.datetime.strptime(dE, '%Y-%m-%d').timetuple())
     step = 5 * 365 * 24 * 60 * 60 * 1000
@@ -249,7 +249,8 @@ def get_anomaly(collection, product, variable, dateStart, dateEnd,
     yearEndClimUTC = ee.Date(yearEndClim+'-12-31', 'GMT').advance(1,'day')
 
     #climatology = collection.filterDate(yearStartClim, str(int(yearEndClim)+1)).filter(doy_filter)
-    climatology = collection.filterDate(yearStartClimUTC, yearEndClimUTC).filter(doy_filter)
+    climatology = collection.filterDate(
+        yearStartClimUTC, yearEndClimUTC).filter(doy_filter)
     if statistic in ['Mean', 'Total', 'Median']:
         climatology = get_statistic(climatology,statistic)
     else: #need a solution for min/max

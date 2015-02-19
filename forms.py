@@ -48,9 +48,9 @@ formVariableModis=[
 ]
 
 #============================
-#    formAnomOrValue
+#    formCalculation
 #============================
-formAnomOrValue=[
+formCalculation=[
     ('value','Values'),
     ('clim','Climatology'),
     ('anom','Difference From Climatology'),
@@ -612,11 +612,11 @@ def check_variable(variable):
         pass
     return err
 
-def check_anomOrValue(anomOrValue):
+def check_calculation(calculation):
     err = None
-    options = [o[0] for o in formAnomOrValue]
-    if anomOrValue not in options:
-        return 'Calculation should be one of: %s. You entered: %s' %(','.join(options), str(anomOrValue))
+    options = [o[0] for o in formCalculation]
+    if calculation not in options:
+        return 'Calculation should be one of: %s. You entered: %s' %(','.join(options), str(calculation))
     return err
 
 def check_domainType(domainType):
