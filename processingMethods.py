@@ -1,14 +1,15 @@
+import calendar
 import datetime
 import json
 import logging
 import urllib2
 
 import ee
+from google.appengine.api.labs import taskqueue
 
 import collectionMethods
 import figureFormatting
 
-from google.appengine.api.labs import taskqueue
 #===========================================
 #   GET_IMAGES
 #===========================================
@@ -140,8 +141,8 @@ def get_time_series(template_values):
     #Max's suggestion: work with time and get data in chunks,
     dS_int = ee.Date(dS,'GMT').millis().getInfo()
     dE_int = ee.Date(dE,'GMT').millis().getInfo()
-    ##dS_int = ee.Date(dS,'GMT').millis().getInfo()
-    ##dE_int = ee.Date(dE,'GMT').millis().getInfo()
+    ##dS_int = 1000 * calendar.timegm(dt.datetime.strptime(dS, '%Y-%m-%d').timetuple())
+    ##dE_int = 1000 * calendar.timegm(dt.datetime.strptime(dE, '%Y-%m-%d').timetuple())
     step = 5 * 365 * 24 * 60 * 60 * 1000
     start = dS_int
     dataList = []

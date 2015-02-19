@@ -1,7 +1,4 @@
-import datetime
-import json
 import logging
-import urllib2
 
 import ee
 
@@ -58,7 +55,7 @@ def get_landsat457_daily_collection(variable):
     ##   or looking atthe images in the collection
     coll_name = 'LT4_L1T_TOA,LT5_L1T_TOA,LE7_L1T_TOA'
     coll_desc = 'Landsat 4/5/7 Daily {0} (cloud mask applied)'.format(variable)
-    var_desc=variable;
+    var_desc = variable
 
     ## Select variable after calculating index
     collection = ee.ImageCollection([])
@@ -104,7 +101,7 @@ def get_landsat5_daily_collection(variable):
     """
     coll_name = 'LT5_L1T_TOA'
     coll_desc = 'Landsat 5, daily {0} (cloud mask applied)'.format(variable)
-    var_desc=variable;
+    var_desc = variable
     ## Select variable after calculating index
     collection = ee.ImageCollection(coll_name).map(landsat457_cloud_mask_func)
     if variable == 'NDVI':
@@ -144,7 +141,7 @@ def get_landsat8_daily_collection(variable):
     """
     coll_name = 'LC8_L1T_TOA'
     coll_desc = 'Landsat 8, daily {0} (cloud mask applied)'.format(variable)
-    var_desc=variable;
+    var_desc = variable
 
     ## Select variable after calculating index
     collection = ee.ImageCollection(coll_name)
@@ -245,7 +242,7 @@ def get_modis_collection(variable):
 
     Args:
         variable: string indicating the variable/band to return
-            (LST_Day_1km,NDVI, NDSI, NDWI, or EVI)
+            (LST_Day_1km, NDVI, NDSI, NDWI, or EVI)
     Returns:
         EarthEngine image collection object
         String of the collection name
@@ -255,7 +252,7 @@ def get_modis_collection(variable):
     """
     coll_name = 'MCD43A4_{0}'.format(variable)
     coll_desc = 'MODIS 16-day {0}'.format(variable)
-    var_desc=variable;
+    var_desc = variable
 
     if variable == 'NDVI':
         notes = "NDSI calculated from Norm. Diff. of Near-IR and Red bands"
@@ -267,9 +264,9 @@ def get_modis_collection(variable):
         notes = "EVI calculated from Near-IR,Red and Blue bands"
     elif variable == 'LST_Day_1km':
         notes = "Level 2 LST projected in a Sinusoidal Grid by mapping to 1-km grid"
-        coll_name = 'MOD11A2';
+        coll_name = 'MOD11A2'
         coll_desc = 'MODIS 8-day {0}'.format(variable)
-        var_desc='Land Surface Temperature during Day'
+        var_desc = 'Land Surface Temperature during Day'
     ## How should this function fail gracefully if the inputs are bad?
     ## Should it return an exception?
     else:

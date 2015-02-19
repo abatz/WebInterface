@@ -1,13 +1,16 @@
 from collections import defaultdict
 import datetime
 import logging
-import processingMethods
+
 import ee
+
+import processingMethods
+
 #===========================================
 #  FORMAT_DATA_FOR_HIGHCHARTS
 #===========================================
 def set_time_series_data(dataList, template_values):
-    '''
+    """
     Args:
         dataList: nested list of data from EarthEngine getRegion method
         template_values: dictionary
@@ -18,7 +21,7 @@ def set_time_series_data(dataList, template_values):
     Returns:
         time series data for displaying as text
         time series data for plotting
-    '''
+    """
 
     var = template_values['variable'][1:]
     units = template_values['units']
