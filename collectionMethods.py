@@ -367,7 +367,7 @@ def landsat457_ndwi_func(img):
 
 def landsat457_evi_func(img):
     """Calculate EVI for a daily Landsat 4, 5, or 7 image"""
-    return img.expression('(2.5 * (b(4) - b(3))) / (b(4) + 6 * b(3) - 7.5 * b(1) + 1)')\
+    return img.expression('(2.5 * (b("B4") - b("B3"))) / (b("B4") + 6 * b("B3") - 7.5 * b("B1") + 1)')\
         .select([0], ['EVI']).copyProperties(img, property_list)
 
 ## DEADBEEF - Need to code in Landsat 8 cloud masking
@@ -395,7 +395,7 @@ def landsat8_ndwi_func(img):
 def landsat8_evi_func(img):
     """Calculate EVI for a daily Landsat 8 image"""
     ##This formulation should be double checked
-    return img.expression('(2.5 * (b(5) - b(4))) / (b(5) + 6 * b(4) - 7.5 * b(2) + 1)')\
+    return img.expression('(2.5 * (b("B5") - b("B4"))) / (b("B5") + 6 * b("B4") - 7.5 * b("B2") + 1)')\
         .select([0], ['EVI']).copyProperties(img, property_list)
 
 def gridmet_wb_func(img):
