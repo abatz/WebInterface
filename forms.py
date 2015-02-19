@@ -41,6 +41,7 @@ formVariableLandsat=[
 #============================
 formVariableModis=[
     ('MEVI','MODIS EVI (Enhanced Vegetation Index)'),
+    ('MLST_Day_1km','MODIS LST (Land Surface Temperature in Day)'),
     ('MNDSI','MODIS NDSI (Snow Index)'),
     ('MNDVI','MODIS NDVI (Vegetation Index)'),
     ('MNDWI','MODIS NDWI (Water Index)'),

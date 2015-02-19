@@ -90,6 +90,34 @@ $(function(){
 			colorbarsize=8
 			varUnits=''
                 }
+           }else if(variable=='LST_Day_1km'){
+		variableShortName='Land Surface Temperature';
+                statistic='Median';
+		if(anomOrValue=='anom'){
+                 	if(units=='metric'){
+				minColorbar =-5;
+				maxColorbar = 5;
+				varUnits='deg C'
+                 	}else if(units=='english'){
+				minColorbar =-10;
+				maxColorbar = 10;
+				varUnits='deg F'
+			}
+			colorbarmap='BuYlRd' 
+			colorbarsize=8
+                }else if(anomOrValue=='value' || anomOrValue=='clim'){
+                        if(units=='metric'){
+                                minColorbar = -20;
+                                maxColorbar = 20; //deg C
+				varUnits='deg C'
+                        }else if(units=='english'){
+                                minColorbar = 0;
+                                maxColorbar = 80; //deg F
+				varUnits='deg F'
+                        }
+                        colorbarmap='BuRd' 
+                        colorbarsize=8
+                }
 	   }else if(variable=='pr'){
 		variableShortName='Precipitation';
                  statistic='Total';

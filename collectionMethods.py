@@ -27,7 +27,7 @@ def get_collection(product, variable):
     if product == 'G':        
         return get_gridmet_collection(variable)
     elif product == 'M':
-        return get_modis_16day_collection(variable)
+        return get_modis_collection(variable)
     elif product == '8':
         return get_landsat8_daily_collection(variable)
     elif product == '5':
@@ -58,6 +58,7 @@ def get_landsat457_daily_collection(variable):
     ##   or looking atthe images in the collection
     coll_name = 'LT4_L1T_TOA,LT5_L1T_TOA,LE7_L1T_TOA'
     coll_desc = 'Landsat 4/5/7 Daily {0} (cloud mask applied)'.format(variable)
+    var_desc=variable;
 
     ## Select variable after calculating index
     collection = ee.ImageCollection([])
@@ -83,7 +84,7 @@ def get_landsat457_daily_collection(variable):
     else:
         notes = ''
     collection = collection.select(variable)
-    return collection, coll_name, coll_desc, variable, notes
+    return collection, coll_name, coll_desc, var_desc, notes
 
 #===========================================
 #    LANDSAT5 Daily
@@ -103,6 +104,7 @@ def get_landsat5_daily_collection(variable):
     """
     coll_name = 'LT5_L1T_TOA'
     coll_desc = 'Landsat 5, daily {0} (cloud mask applied)'.format(variable)
+    var_desc=variable;
     ## Select variable after calculating index
     collection = ee.ImageCollection(coll_name).map(landsat457_cloud_mask_func)
     if variable == 'NDVI':
@@ -122,7 +124,7 @@ def get_landsat5_daily_collection(variable):
     else:
         notes = ''
     collection = collection.select(variable)
-    return collection, coll_name, coll_desc, variable, notes
+    return collection, coll_name, coll_desc, var_desc, notes
 
 #===========================================
 #    LANDSAT8 Daily
@@ -142,6 +144,8 @@ def get_landsat8_daily_collection(variable):
     """
     coll_name = 'LC8_L1T_TOA'
     coll_desc = 'Landsat 8, daily {0} (cloud mask applied)'.format(variable)
+    var_desc=variable;
+
     ## Select variable after calculating index
     collection = ee.ImageCollection(coll_name)
     ## Need to code in Landsat 8 cloud masking
@@ -163,7 +167,7 @@ def get_landsat8_daily_collection(variable):
     else:
         notes = ''
     collection = collection.select(variable)
-    return collection, coll_name, coll_desc, variable, notes
+    return collection, coll_name, coll_desc, var_desc, notes
 
 #===========================================
 #    LANDSAT8 8-day
@@ -234,14 +238,14 @@ def get_landsat8_daily_collection(variable):
 ##    return collection, coll_name, coll_desc, variable, notes
     
 #===========================================
-#    MODIS 16-day
+#    MODIS 
 #===========================================
-def get_modis_16day_collection(variable):
-    """Return the 16 day composite image collection for MODIS
+def get_modis_collection(variable):
+    """Return the 8 or 16 day composite image collection for MODIS
 
     Args:
         variable: string indicating the variable/band to return
-            (NDVI, NDSI, NDWI, or EVI)
+            (LST_Day_1km,NDVI, NDSI, NDWI, or EVI)
     Returns:
         EarthEngine image collection object
         String of the collection name
@@ -251,7 +255,8 @@ def get_modis_16day_collection(variable):
     """
     coll_name = 'MCD43A4_{0}'.format(variable)
     coll_desc = 'MODIS 16-day {0}'.format(variable)
-    collection = ee.ImageCollection(coll_name).select(variable)
+    var_desc=variable;
+
     if variable == 'NDVI':
         notes = "NDSI calculated from Norm. Diff. of Near-IR and Red bands"
     elif variable == 'NDSI':
@@ -260,11 +265,17 @@ def get_modis_16day_collection(variable):
         notes = "NDWI calculated from Norm. Diff. of near-IR and mid-IR bands"
     elif variable == 'EVI':
         notes = "EVI calculated from Near-IR,Red and Blue bands"
+    elif variable == 'LST_Day_1km':
+        notes = "Level 2 LST projected in a Sinusoidal Grid by mapping to 1-km grid"
+        coll_name = 'MOD11A2';
+        coll_desc = 'MODIS 8-day {0}'.format(variable)
+        var_desc='Land Surface Temperature during Day'
     ## How should this function fail gracefully if the inputs are bad?
     ## Should it return an exception?
     else:
         notes = ''
-    return collection, coll_name, coll_desc, variable, notes
+    collection = ee.ImageCollection(coll_name).select(variable)
+    return collection, coll_name, coll_desc, var_desc, notes
     
 #===========================================
 #    GRIDMET
