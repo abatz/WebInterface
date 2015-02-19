@@ -20,7 +20,7 @@ def get_images(template_values):
     for key, val in template_values.iteritems():
         TV[key] = val
     var = TV['variable']
-    aOV = TV['anomOrValue']
+    calculation = TV['anomOrValue']
     dT = TV['domainType']
     dS = TV['dateStart']
     dE = TV['dateEnd']
@@ -32,32 +32,33 @@ def get_images(template_values):
     minColorbar = template_values['minColorbar']
     maxColorbar = template_values['maxColorbar']
 
-    #change date to UTC and add 1 for end date exclusiveness
-    dSUTC = ee.Date(dS,'GMT');
-    dEUTC = ee.Date(dE,'GMT').advance(1,'day');
+    # Build EarthEngine date objects from date strings and explicitly set GMT
+    # Note, by default EarthEngine date objects are already GMT
+    dSUTC = ee.Date(dS, 'GMT')
+    dEUTC = ee.Date(dE, 'GMT')
 
     # Remove starting character which indicates the product
     product = var[:1]
     var = var[1:]
 
     #==============
-    #Collection
+    #Initial Collection
     #==============
-    #Get initial collection
-    collection, coll_name, coll_desc, var_desc, notes = collectionMethods.get_collection(product, var)
+    collection, coll_name, coll_desc, var_desc, notes = collectionMethods.get_collection(
+        product, var)
 
     #==============
     #Title and Source
     #==============
     #Set title
     title = statistic + ' ' + var_desc
-    if aOV == 'clim':
+    if calculation == 'clim':
         title = title + ' Climatology '
-    elif aOV == 'anom':
+    elif calculation == 'anom':
         title = title + ' Difference from Climatology '
-    elif aOV == 'anompercentchange':
+    elif calculation == 'anompercentchange':
         title = title + ' Percent Difference from Climatology '
-    elif aOV == 'anompercentof':
+    elif calculation == 'anompercentof':
         title = title + ' Percent Of Climatology '
 
     #Set source, domain, subdomain
@@ -66,23 +67,26 @@ def get_images(template_values):
     #==============
     #Anomaly
     #==============
-    if aOV in ['value']:
-        collection = collection.filterDate(dSUTC,dEUTC)
+    if calculation in ['value']:
+        # FilterDate is exclusive on the high end, include an extra day on dEUTC
+        collection = collection.filterDate(dSUTC, dEUTC.advance(1,'day'))
         collection = get_statistic(collection, statistic)
-    elif aOV in ['anom','anompercentof','anompercentchange','clim']:
+    elif calculation in ['anom', 'anompercentof', 'anompercentchange', 'clim']:
+        # CalendarRange is inclusive on the high end, don't include an extra day on dEUTC
         collection, climatologyNotes = get_anomaly(
-            collection, product, var, coll_name, dSUTC, dEUTC, statistic,
-            aOV, yearStartClim, yearEndClim)
+            collection, product, var, dSUTC, dEUTC, statistic,
+            calculation, yearStartClim, yearEndClim)
         TV['climatologyNotes'] = climatologyNotes
+        
     #==============
     #Units
     #==============
-    collection = modify_units(collection, var, aOV, units)
+    collection = modify_units(collection, var, calculation, units)
 
     #==============
     #Get mapid
     #==============
-    mapid = {'mapid':[],'token':[]}
+    mapid = {'mapid':[], 'token':[]}
     mapid = map_collection(
         collection, TV['opacity'], palette, minColorbar, maxColorbar)
 
@@ -136,6 +140,8 @@ def get_time_series(template_values):
     #Max's suggestion: work with time and get data in chunks,
     dS_int = ee.Date(dS,'GMT').millis().getInfo()
     dE_int = ee.Date(dE,'GMT').millis().getInfo()
+    ##dS_int = ee.Date(dS,'GMT').millis().getInfo()
+    ##dE_int = ee.Date(dE,'GMT').millis().getInfo()
     step = 5 * 365 * 24 * 60 * 60 * 1000
     start = dS_int
     dataList = []
@@ -205,15 +211,30 @@ def get_time_series(template_values):
 #===========================================
 #    GET_ANOMALY
 #===========================================
-def get_anomaly(collection, product, variable, coll_name, dateStart,
-                dateEnd, statistic, anomOrValue, yearStartClim, yearEndClim):
-    """"""
-    #here anomOrValue =['anom','anompercentof','anompercentchange','clim'] only
+def get_anomaly(collection, product, variable, dateStart, dateEnd,
+                statistic, calculation, yearStartClim, yearEndClim):
+    """Return the anomaly image collection
+
+    Args:
+        collection: EarthEngine collection to process
+        product: string of the product ()
+        variable: string of the variable ()
+        dateStart: EarthEngine date object
+        dateEnd: EarthEngine date object
+        statistic: string of the statistic (Mean, Median, Total, etc.)
+        calculation: string of the calculation type (anon, value, etc.)
+        yearStartClim: string of the climatology start year
+        yearEndClim: string of the climatology end year
+    Returns:
+        EarthEngine image collection object
+        String of additional notes about the collection
+    """
+    #here calculation = ['anom','anompercentof','anompercentchange','clim'] only
     #here the collection has already chosen variable
 
     #get the day ranges
-    doyStart = ee.Number(ee.Algorithms.Date(dateStart).getRelative('day', 'year')).add(1)
-    doyEnd = ee.Number(ee.Algorithms.Date(dateEnd).getRelative('day', 'year')).add(1)
+    doyStart = ee.Number(dateStart.getRelative('day', 'year')).add(1)
+    doyEnd = ee.Number(dateEnd.getRelative('day', 'year')).add(1)
     doy_filter = ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year')
 
     #check if year Range <1 to ease calculations
@@ -221,12 +242,14 @@ def get_anomaly(collection, product, variable, coll_name, dateStart,
     #get climatology
     climatologyNote = 'Climatology calculated from {0}-{1}'.format(
         yearStartClim, yearEndClim)
-    yearStartClimUTC = ee.Date(yearStartClim+'-01-01','GMT');
-    yearEndClimUTC = ee.Date(yearEndClim+'-12-31','GMT').advance(1,'day');
+
+    #FilterDate needs an extra day on the high end
+    yearStartClimUTC = ee.Date(yearStartClim+'-01-01', 'GMT')
+    yearEndClimUTC = ee.Date(yearEndClim+'-12-31', 'GMT').advance(1,'day')
 
     #climatology = collection.filterDate(yearStartClim, str(int(yearEndClim)+1)).filter(doy_filter)
     climatology = collection.filterDate(yearStartClimUTC, yearEndClimUTC).filter(doy_filter)
-    if(statistic=='Mean' or statistic =='Total' or statistic=='Median'):
+    if statistic in ['Mean', 'Total', 'Median']:
         climatology = get_statistic(climatology,statistic)
     else: #need a solution for min/max
         climatology = get_statistic(climatology,statistic)
@@ -237,18 +260,19 @@ def get_anomaly(collection, product, variable, coll_name, dateStart,
          climatology = climatology.divide(num_years)
 
     #get statistic of collection
-    collection = get_statistic(collection.filterDate(dateStart, dateEnd), statistic)
+    collection = get_statistic(
+        collection.filterDate(dateStart, dateEnd.advance(1,'day')), statistic)
 
     #calculate
-    if anomOrValue == 'clim':
+    if calculation == 'clim':
         mask = collection.gt(-9999)
         climatology = climatology.mask(mask)
         collection = climatology
-    elif anomOrValue == 'anom':
+    elif calculation == 'anom':
         collection = ee.Image(collection.subtract(climatology))
-    elif anomOrValue == 'anompercentof':
+    elif calculation == 'anompercentof':
         collection = ee.Image(collection.divide(climatology).multiply(100)) #anomaly
-    elif anomOrValue == 'anompercentchange':
+    elif calculation == 'anompercentchange':
         collection = ee.Image(collection.subtract(climatology).divide(climatology).multiply(100)) #anomaly
 
     return collection, climatologyNote
@@ -273,17 +297,17 @@ def get_statistic(collection, statistic):
 #===========================================
 #   MODIFY_UNITS
 #===========================================
-def modify_units(collection, variable, anomOrValue, units):
+def modify_units(collection, variable, calculation, units):
     """"""
-    #don't modify if anomOrValue == 'anompercentof' or 'anompercentchange'
+    #don't modify if calculation == 'anompercentof' or 'anompercentchange'
 
-    if anomOrValue in ['value', 'clim', 'anom']:
+    if calculation in ['value', 'clim', 'anom']:
         if variable in ['LST_Day_1km']:
             collection = collection.multiply(0.02);  #convert from unsigned 16-bit integer
         if variable in ['tmmx', 'tmmn', 'tmean','LST_Day_1km']:
-            if anomOrValue == 'anom' and units == 'english':
+            if calculation == 'anom' and units == 'english':
                 collection = collection.multiply(1.8)    #convert C anom to F anom
-            elif anomOrValue == 'value' or anomOrValue == 'clim':
+            elif calculation == 'value' or calculation == 'clim':
                 collection = collection.subtract(273.15)  #convert K to C
                 if units == 'english': #convert C to F
                      collection = collection.multiply(1.8).add(32)
