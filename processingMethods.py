@@ -283,8 +283,8 @@ def modify_units(collection, variable, anomOrValue, units):
     #don't modify if anomOrValue == 'anompercentof' or 'anompercentchange'
 
     if anomOrValue in ['value', 'clim', 'anom']:
-        if variable in ['LST_day_1km']:
-            collection = collection.float();  #convert from unsigned 16-bit integer
+        if variable in ['LST_Day_1km']:
+            collection = collection.multiply(0.02);  #convert from unsigned 16-bit integer
         if variable in ['tmmx', 'tmmn', 'tmean','LST_Day_1km']:
             if anomOrValue == 'anom' and units == 'english':
                 collection = collection.multiply(1.8)    #convert C anom to F anom
@@ -301,8 +301,8 @@ def modify_units(collection, variable, anomOrValue, units):
 #this is not currently being used.... need to fix this.. as time series units aren't being corrected
 def modify_units_in_timeseries(val, var, units):
     """"""
-    if var in ['LST_day_1km']:
-        val = float(val);  #convert from unsigned 16-bit integer
+    if var in ['LST_Day_1km']:
+        val = val*0.02;  #convert from unsigned 16-bit integer
     if var in ['tmmx', 'tmmn', 'tmean','LST_Day_1km']:
         val = val - 273.15          #convert K to C
         if units == 'english':
