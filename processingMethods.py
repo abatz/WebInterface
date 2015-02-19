@@ -129,7 +129,6 @@ def get_time_series(template_values):
     #Get the collection
     collection, coll_name, coll_desc, var_desc, notes = collectionMethods.get_collection(
         product, var)
-
     #Note: EE has a 2500 img limit per request
     #We need to split up larger data request into 5 year chunks
     #Max's suggestion: work with time and get data in chunks,
@@ -143,7 +142,7 @@ def get_time_series(template_values):
             end = start + step
         else:
             end = dE_int + 24 * 60 * 60 * 1000
-        data = collection.filterDate(start, end).select(var).getRegion(points,1).slice(1).getInfo()
+        data = collection.filterDate(start, end).getRegion(points,1).slice(1).getInfo()
         dataList+=data
         start+=step
     timeSeriesTextData,timeSeriesGraphData = figureFormatting.set_time_series_data(dataList,TV)
