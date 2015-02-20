@@ -127,7 +127,7 @@
             var dS = new Date($('#dateStart').val()).getTime();
             var dE = new Date($('#dateEnd').val()).getTime();
             var p_message = 'Processing Request';
-            if ($('#anomOrValue') == "value"){
+            if ($('#calculation') == "value"){
                 if (dE - dS >= 5 * 365 * 24 * 60 * 60 * 1000){
                     p_message = 'You asked for a large amount of data. ' +
                     'Please be patient while we process your request.';

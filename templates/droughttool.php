@@ -35,7 +35,7 @@
 					<td width="40%">
 						<span style="font-size:18pt"><center>{{ title }}</center></span>
 						{% if source %}<span style="font-size:10pt"><center>Source: {{ source }}</center></span>{% endif %}
-						{% if anomOrValue=='anom' or anomOrValue=='clim' %}
+						{% if calculation=='anom' or calculation=='clim' %}
 							<span style ="font-size:10pt"><center> {{ climatologyNotes }}</center></span>
 						{% endif %}
 					</td>

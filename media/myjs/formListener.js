@@ -166,9 +166,9 @@ $(function(){
         
     });
 
-    jQuery('.anomOrValue').on('change', function(){
-	  var anomOrValue = jQuery('.anomOrValue').val()
-          if(anomOrValue=='value'){
+    jQuery('.calculation').on('change', function(){
+	  var calculation = jQuery('.calculation').val()
+          if(calculation=='value'){
                  jQuery('.climatologyYears').hide();
 	  }else{
                  jQuery('.climatologyYears').show();

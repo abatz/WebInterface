@@ -45,11 +45,11 @@ $(function(){
 	/*--------------------------------------------*/
 	/*       COLORBAR OPTIONS      		      */
 	/*--------------------------------------------*/
-        jQuery('.variable, .variableT,.anomOrValue, .units,.dateStart,.dateEnd').on('change', function(){
+        jQuery('.variable, .variableT,.calculation, .units,.dateStart,.dateEnd').on('change', function(){
 	   //strip product character off of variable
 	   var variable = jQuery('.variable').val()
 	   variable = variable.substr(1)
-	   var anomOrValue = jQuery('.anomOrValue').val()
+	   var calculation = jQuery('.calculation').val()
 	   var units = jQuery('.units').val()
 
 	   //Approx number of months in selection
@@ -61,13 +61,13 @@ $(function(){
 	   if(variable=='NDVI' || variable=='EVI' ){
 		variableShortName=variable;
                 statistic='Median';
-           	if(jQuery('.anomOrValue').val()=='anom'){
+           	if(jQuery('.calculation').val()=='anom'){
 			minColorbar = -.4;
 			maxColorbar = .4;
 			colorbarmap='RdYlGn'
 			colorbarsize=8
 			varUnits=''
-		}else if(anomOrValue=='value' || anomOrValue=='clim'){
+		}else if(calculation=='value' || calculation=='clim'){
 			minColorbar = -.1;
 			maxColorbar = .9;
 			colorbarmap='YlGn'
@@ -77,13 +77,13 @@ $(function(){
            }else if(variable=='NDSI' || variable=='NDWI'){
 		variableShortName=variable;
                 statistic='Median';
-		if(anomOrValue=='anom'){
+		if(calculation=='anom'){
                         minColorbar = -.5;
                         maxColorbar = .5;
 			colorbarmap='RdYlBu' 
 			colorbarsize=8
 			varUnits=''
-                }else if(anomOrValue=='value' || anomOrValue=='clim'){
+                }else if(calculation=='value' || calculation=='clim'){
                         minColorbar = -.2;
                         maxColorbar = .7;
 			colorbarmap='invBlues' 
@@ -93,7 +93,7 @@ $(function(){
            }else if(variable=='LST_Day_1km'){
 		variableShortName='Land Surface Temperature';
                 statistic='Median';
-		if(anomOrValue=='anom'){
+		if(calculation=='anom'){
                  	if(units=='metric'){
 				minColorbar =-5;
 				maxColorbar = 5;
@@ -105,7 +105,7 @@ $(function(){
 			}
 			colorbarmap='BuYlRd' 
 			colorbarsize=8
-                }else if(anomOrValue=='value' || anomOrValue=='clim'){
+                }else if(calculation=='value' || calculation=='clim'){
                         if(units=='metric'){
                                 minColorbar = -20;
                                 maxColorbar = 20; //deg C
@@ -121,19 +121,19 @@ $(function(){
 	   }else if(variable=='pr'){
 		variableShortName='Precipitation';
                  statistic='Total';
-                 if(anomOrValue=='anompercentof'){
+                 if(calculation=='anompercentof'){
 			minColorbar = 75;
 			maxColorbar = 125;
 			colorbarmap='BrBG' 
 			colorbarsize=9
 			varUnits='%'
-                 }else if(anomOrValue=='anompercentchange'){
+                 }else if(calculation=='anompercentchange'){
 			minColorbar =-100;
 			maxColorbar = 100;
 			colorbarmap='BrBG' 
 			colorbarsize=9
 			varUnits='%'
-		}else if(anomOrValue=='anom') {
+		}else if(calculation=='anom') {
                  	if(units='metric'){
 				minColorbar =-100*numMonths;
 				maxColorbar =100*numMonths;
@@ -145,7 +145,7 @@ $(function(){
 			}
 			colorbarmap='BrBG' 
 			colorbarsize=9
-                }else if(anomOrValue=='value' || anomOrValue=='clim'){
+                }else if(calculation=='value' || calculation=='clim'){
                  	if(units=='metric'){
 				minColorbar = 0;
 				maxColorbar = 200*numMonths; //mm
@@ -167,7 +167,7 @@ $(function(){
 			variableShortName='Mean Temperature';
 		}
                  statistic='Mean';
-                 if(anomOrValue=='anom'){
+                 if(calculation=='anom'){
                  	if(units=='metric'){
 				minColorbar =-5;
 				maxColorbar = 5;
@@ -179,7 +179,7 @@ $(function(){
 			}
 			colorbarmap='BuYlRd' 
 			colorbarsize=8
-		}else if(anomOrValue=='value' || anomOrValue=='clim'){
+		}else if(calculation=='value' || calculation=='clim'){
                	if ( variable=='tmmx'){
                  	if(units=='metric'){
 				minColorbar = -5;
@@ -225,13 +225,13 @@ $(function(){
 			variableShortName='Max Rel. Humidity';
 		}
                  statistic='Mean';
-                 if(anomOrValue=='anom'){
+                 if(calculation=='anom'){
                         minColorbar =-15;
                         maxColorbar = 15;
 			colorbarmap='BrBG' 
 			colorbarsize=9
 			varUnits='%'
-                }else if(anomOrValue=='value' || anomOrValue=='clim'){
+                }else if(calculation=='value' || calculation=='clim'){
                         minColorbar =0 ;
                         maxColorbar = 100; ///%
 			colorbarmap='BrBG' 
@@ -241,13 +241,13 @@ $(function(){
 	    }else if(variable=='srad'){
 		variableShortName='Radiation';
                  statistic='Mean';
-                 if(anomOrValue=='anom'){
+                 if(calculation=='anom'){
                         minColorbar =-20;
                         maxColorbar = 20;
 			colorbarmap='BuYlRd' 
 			colorbarsize=8
 			varUnits='W/m2'
-                }else if(anomOrValue=='value' || anomOrValue=='clim'){
+                }else if(calculation=='value' || calculation=='clim'){
                         minColorbar =50 ;
                         maxColorbar = 400; ///W/m2
 			colorbarmap='YlOrRd' 
@@ -257,7 +257,7 @@ $(function(){
 	    }else if(variable=='vs'){
 		variableShortName='Wind Speed';
                  statistic='Mean';
-                 if(anomOrValue=='anom'){
+                 if(calculation=='anom'){
                  	if(units=='metric'){
 				minColorbar =-2.5;
 				maxColorbar = 2.5;
@@ -269,7 +269,7 @@ $(function(){
 			}
 			colorbarmap='BuYlRd' 
 			colorbarsize=8
-                }else if(anomOrValue=='value' || anomOrValue=='clim'){ 
+                }else if(calculation=='value' || calculation=='clim'){ 
                  	if(units=='metric'){
 				minColorbar = 0;
 				maxColorbar = 8; //m/s
@@ -285,13 +285,13 @@ $(function(){
 	 }else if(variable=='sph'){
 		variableShortName='Specific Humidity';
                  statistic='Mean';
-                 if(anomOrValue=='anom'){
+                 if(calculation=='anom'){
                         minColorbar =-30;
                         maxColorbar = 30;
 			colorbarmap='BuYlRd' 
 			colorbarsize=8
 			varUnits='kg/kg';
-                }else if(anomOrValue=='value' || anomOrValue=='clim'){
+                }else if(calculation=='value' || calculation=='clim'){
                         minColorbar = 0;
                         maxColorbar = 0.02; //kg/kg
 			colorbarmap='BuRd' 
@@ -301,25 +301,25 @@ $(function(){
 	 }else if(variable=='erc'){
 		variableShortName='Energy Release Component';
                  statistic='Mean';
-                 if(anomOrValue=='anom'){
+                 if(calculation=='anom'){
                         minColorbar =-20;
                         maxColorbar = 20;
 			colorbarmap='BuYlRd' 
 			colorbarsize=8
 			varUnits='';
-                 }else if(anomOrValue=='anompercentchange'){
+                 }else if(calculation=='anompercentchange'){
                         minColorbar =-100;
                         maxColorbar = 100;
 			colorbarmap='BuYlRd' 
 			colorbarsize=8
 			varUnits='%';
-                 }else if(anomOrValue=='anompercentof'){
+                 }else if(calculation=='anompercentof'){
                         minColorbar =75;
                         maxColorbar = 125;
 			colorbarmap='BuYlRd' 
 			colorbarsize=8
 			varUnits='';
-                }else if(anomOrValue=='value' || anomOrValue=='clim'){
+                }else if(calculation=='value' || calculation=='clim'){
                         minColorbar = 10;
                         maxColorbar = 120; //
 			colorbarmap='YlOrRd' 
@@ -329,19 +329,19 @@ $(function(){
          }else if(variable=='pet'){
 		variableShortName='Reference Evapotranspiration';
                  statistic='Total';
-                 if(anomOrValue=='anompercentof'){
+                 if(calculation=='anompercentof'){
 			minColorbar =75;
 			maxColorbar =125;
 			colorbarmap='GBBr'
 			colorbarsize=9
 			varUnits='%';
-                 }else if(anomOrValue=='anompercentchange'){
+                 }else if(calculation=='anompercentchange'){
 			minColorbar =-100;
 			maxColorbar =100;
 			colorbarmap='GBBr'
 			colorbarsize=9
 			varUnits='%';
-		}else if (anomOrValue=='anom'){
+		}else if (calculation=='anom'){
                  	if(units='metric'){
 				minColorbar =-100*numMonths;
 				maxColorbar =100*numMonths;
@@ -353,7 +353,7 @@ $(function(){
 			}
 			colorbarmap='BrBG'
 			colorbarsize=9
-                }else if(anomOrValue=='value' || anomOrValue=='clim'){
+                }else if(calculation=='value' || calculation=='clim'){
                  	if(units='metric'){
 				minColorbar = 300;
 				maxColorbar = 800; //mm
@@ -369,13 +369,13 @@ $(function(){
          }else if(variable=='pdsi'){
 		variableShortName='PSDI';
                  statistic='Mean';
-                 if(anomOrValue=='anom'){
+                 if(calculation=='anom'){
 			minColorbar =-6;
 			maxColorbar =6;
                         colorbarmap='RdYlBu' 
                         colorbarsize=8
 			varUnits='';
-                }else if (anomOrValue=='value' || anomOrValue=='clim'){
+                }else if (calculation=='value' || calculation=='clim'){
                         minColorbar = -6;
                         maxColorbar = 6; 
                         colorbarmap='RdYlBu' 
@@ -385,19 +385,19 @@ $(function(){
 	 }else if(variable=='wb'){
 		variableShortName='Water Balance';
                  statistic='Total';
-                 if(anomOrValue=='anompercentof'){
+                 if(calculation=='anompercentof'){
                         minColorbar =75;
                         maxColorbar =125;
 			colorbarmap='BrBG' 
 			colorbarsize=9
 			varUnits='%';
-                 }else if(anomOrValue=='anompercentchange'){
+                 }else if(calculation=='anompercentchange'){
 			minColorbar =-100;
 			maxColorbar =100;
 			colorbarmap='BrBG'
 			colorbarsize=9
 			varUnits='%';
-		}else if(anomOrValue=='anom'){
+		}else if(calculation=='anom'){
 			if(units=='metric'){
 				maxColorbar = 100*numMonths;
 				minColorbar =-100*numMonths;
@@ -409,7 +409,7 @@ $(function(){
 			colorbarmap='BrBG' 
 			colorbarsize=9
 			varUnits='%';
-                }else if(anomOrValue=='value' || anomOrValue=='clim'){
+                }else if(calculation=='value' || calculation=='clim'){
                  	if(units=='metric'){
 				minColorbar = -200;
 				maxColorbar = 200; //mm
@@ -425,11 +425,11 @@ $(function(){
 	     }
 
              colorbarLabel=variableShortName;
-             if(anomOrValue=='anom'){
+             if(calculation=='anom'){
 	   	colorbarLabel=colorbarLabel + ' Difference from Climatology'
-  	     }else if(anomOrValue=='anompercentof'){
+  	     }else if(calculation=='anompercentof'){
 	   	colorbarLabel=colorbarLabel + ' Percent of Climatology'
-  	     }else if(anomOrValue=='anompercentchange'){
+  	     }else if(calculation=='anompercentchange'){
 	   	colorbarLabel=colorbarLabel + ' Percent Difference from Climatology'
 	     }
              if(varUnits!=''){
