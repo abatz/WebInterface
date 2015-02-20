@@ -572,6 +572,11 @@ def format_SWLong(SWLong):
 #   return err = None if no error encountered
 #   else return error message
 #===========================
+#def check_climatologyyears(yearStartClim,yearEndClim):
+#    err = None
+#    if int(yearStartClim)>int(yearEndClim):
+#        return 'Start year needs to be less than End year.'
+
 def check_state(state):
     err = None
     options = [s[0] for s in formStates]

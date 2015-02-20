@@ -1,5 +1,4 @@
-import calendar
-import datetime
+import datetime as dt
 import json
 import logging
 import urllib2
@@ -15,7 +14,7 @@ import figureFormatting
 #===========================================
 def get_images(template_values):
     """"""
-    from forms import stateLat, stateLong
+    #from forms import stateLat, stateLong
 
     TV = {}
     for key, val in template_values.iteritems():
@@ -75,7 +74,7 @@ def get_images(template_values):
     elif calculation in ['anom', 'anompercentof', 'anompercentchange', 'clim']:
         # CalendarRange is inclusive on the high end, don't include an extra day on dEUTC
         collection, climatologyNotes = get_anomaly(
-            collection, product, var, dSUTC, dEUTC, statistic,
+            collection, product, var, dS, dE, statistic,
             calculation, yearStartClim, yearEndClim)
         TV['climatologyNotes'] = climatologyNotes
         
@@ -193,7 +192,6 @@ def get_time_series(template_values):
         dataList,TV)
     '''
     source = coll_desc + ' from ' + dS + '-' + dE + ''
-    #Set title
     title = statistic + ' ' + var_desc
     #Update template values
     extra_template_values = {
@@ -209,6 +207,7 @@ def get_time_series(template_values):
     TV.update(extra_template_values)
     return TV
 
+
 #===========================================
 #    GET_ANOMALY
 #===========================================
@@ -220,8 +219,8 @@ def get_anomaly(collection, product, variable, dateStart, dateEnd,
         collection: EarthEngine collection to process
         product: string of the product ()
         variable: string of the variable ()
-        dateStart: EarthEngine date object
-        dateEnd: EarthEngine date object
+        dateStart: string of the start date isoformat (YYYY-MM-DD)
+        dateEnd: string of the end date isoformat (YYYY-MM-DD)
         statistic: string of the statistic (Mean, Median, Total, etc.)
         calculation: string of the calculation type (anon, value, etc.)
         yearStartClim: string of the climatology start year
@@ -233,27 +232,53 @@ def get_anomaly(collection, product, variable, dateStart, dateEnd,
     #here calculation = ['anom','anompercentof','anompercentchange','clim'] only
     #here the collection has already chosen variable
 
-    #get the day ranges
-    doyStart = ee.Number(dateStart.getRelative('day', 'year')).add(1)
-    doyEnd = ee.Number(dateEnd.getRelative('day', 'year')).add(1)
-    doy_filter = ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year')
+    #Build python datetime objects from the date string
+    dateStart_dt = dt.datetime.strptime(dateStart, '%Y-%m-%d')
+    dateEnd_dt = dt.datetime.strptime(dateEnd, '%Y-%m-%d')
 
-    #check if year Range <1 to ease calculations
+    #Check timedelta between start and end is greater than 365 (366 instead?)
+    #Could also separate date to components and add a year
+    #Can EE dates be compared?  That might be an easier approach also
+    #if dateEnd_dt > (dateStart_dt + dt.timedelta(days=365)):
+    #    sub_year_flag = True
+    #else:
+    #    sub_year_flag = False
+
+    #Get the start and end DOY for filtering using calendarRange
+    doyStart = dateStart_dt.timetuple().tm_yday
+    doyEnd = dateEnd_dt.timetuple().tm_yday
+    doy_filter = ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year')
 
     #get climatology
     climatologyNote = 'Climatology calculated from {0}-{1}'.format(
         yearStartClim, yearEndClim)
-
     #FilterDate needs an extra day on the high end
-    yearStartClimUTC = ee.Date(yearStartClim+'-01-01', 'GMT')
-    yearEndClimUTC = ee.Date(yearEndClim+'-12-31', 'GMT').advance(1,'day')
+    #Set yearEnd to Jan 1st of next year
+    yearStartClimUTC = dt.datetime(int(yearStartClim), 1, 1)
+    yearEndClimUTC = dt.datetime(int(yearEndClim)+1, 1, 1)
 
-    #climatology = collection.filterDate(yearStartClim, str(int(yearEndClim)+1)).filter(doy_filter)
-    climatology = collection.filterDate(
-        yearStartClimUTC, yearEndClimUTC).filter(doy_filter)
-    if statistic in ['Mean', 'Total', 'Median']:
-        climatology = get_statistic(climatology,statistic)
-    else: #need a solution for min/max
+    climatology = collection.filterDate(yearStartClimUTC, yearEndClimUTC).filter(doy_filter)
+    if statistic == 'Min':
+        #List sequence is inclusive (i.e. don't advance yearEnd)
+        yearListClim = ee.List.sequence(int(yearStartClim),int(yearEndClim))
+        def min_climatology_func(year):
+            """For each year, return an image of the minimum value over the DOY range"""
+            return ee.Image(collection\
+                .filter(ee.Filter.calendarRange(year, year, 'year'))\
+                .filter(ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year')).min())
+        climatology = ee.ImageCollection.fromImages(yearListClim.map(min_climatology_func))
+        climatology = get_statistic(climatology, 'Mean')
+    elif statistic == 'Max':
+        #List sequence is inclusive (i.e. don't advance yearEnd)
+        yearListClim = ee.List.sequence(int(yearStartClim),int(yearEndClim))
+        def max_climatology_func(year):
+            """For each year, return an image of the maximum value over the DOY range"""
+            return ee.Image(collection\
+                .filter(ee.Filter.calendarRange(year, year, 'year'))\
+                .filter(ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year')).max())
+        climatology = ee.ImageCollection.fromImages(yearListClim.map(max_climatology_func))
+        climatology = get_statistic(climatology, 'Mean')
+    else: #'Mean','Total','Median'
         climatology = get_statistic(climatology,statistic)
 
     #This metric is really only good for year ranges <1 year
@@ -262,13 +287,14 @@ def get_anomaly(collection, product, variable, dateStart, dateEnd,
          climatology = climatology.divide(num_years)
 
     #get statistic of collection
+    #filterDate is exclusive on end date
     collection = get_statistic(
-        collection.filterDate(dateStart, dateEnd.advance(1,'day')), statistic)
+        collection.filterDate(dateStart_dt, dateEnd_dt + dt.timedelta(days=1)), statistic)
 
     #calculate
     if calculation == 'clim':
-        mask = collection.gt(-9999)
-        climatology = climatology.mask(mask)
+        #mask = collection.gt(-9999)
+        #climatology = climatology.mask(mask)
         collection = climatology
     elif calculation == 'anom':
         collection = ee.Image(collection.subtract(climatology))
@@ -302,7 +328,6 @@ def get_statistic(collection, statistic):
 def modify_units(collection, variable, calculation, units):
     """"""
     #don't modify if calculation == 'anompercentof' or 'anompercentchange'
-
     if calculation in ['value', 'clim', 'anom']:
         if variable in ['LST_Day_1km']:
             collection = collection.multiply(0.02);  #convert from unsigned 16-bit integer
@@ -319,7 +344,6 @@ def modify_units(collection, variable, calculation, units):
             collection = collection.multiply(2.23694) #convert m/s to mi/h
     return collection
 
-#this is not currently being used.... need to fix this.. as time series units aren't being corrected
 def modify_units_in_timeseries(val, var, units):
     """"""
     if var in ['LST_Day_1km']:

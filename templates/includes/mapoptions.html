@@ -197,8 +197,16 @@
                                 {% endfor %}
 				</select>
 			</div>
+                        {% if form_error.climatology %}
+                        <tr>
+                                <td>
+                                        <div class="error">{{ form_error.climatology }}</div>
+                                </td>
+                        </tr>
+                        {% endif %}
 			</td>
 		   </tr>
+		   
 		   </table>
 		<!----------------------------->
 		<!--    MAP BUTTON               -->

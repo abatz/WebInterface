@@ -179,6 +179,10 @@ class DroughtTool(webapp2.RequestHandler):
         return formatted_template_values
 
     def check_user_input(self, template_values):
+        #try:
+        #     forms.check_climatologyyears(template_values['yearStartClim'],template_values['yearEndClim'])
+        #except: 
+        #     continue
         #Checks for errors in user input
         #See check_ functions in forms.py
         #At first error encountered, spits out error message and exits
