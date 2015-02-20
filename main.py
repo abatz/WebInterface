@@ -185,6 +185,13 @@ class DroughtTool(webapp2.RequestHandler):
         #See check_ functions in forms.py
         #At first error encountered, spits out error message and exits
         err = None; fieldID = None
+
+        #special check for climatology years
+	err = forms.check_climatologyyears(template_values['yearStartClim'],template_values['yearEndClim'])
+	if err:
+		fieldID = 'yearStartClim'
+		return fieldID,err
+
         for key, val in template_values.iteritems():
             #do not check form items
             if key[0:4] == 'form':

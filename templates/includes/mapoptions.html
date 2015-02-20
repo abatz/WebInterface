@@ -196,14 +196,10 @@
                                         {% endif %}
                                 {% endfor %}
 				</select>
+                        	{% if form_error.yearStartClim %}
+                                        <div class="error">{{ form_error.yearStartClim }}</div>
+                        	{% endif %}
 			</div>
-                        {% if form_error.climatology %}
-                        <tr>
-                                <td>
-                                        <div class="error">{{ form_error.climatology }}</div>
-                                </td>
-                        </tr>
-                        {% endif %}
 			</td>
 		   </tr>
 		   

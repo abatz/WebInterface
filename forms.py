@@ -576,6 +576,7 @@ def check_climatologyyears(yearStartClim,yearEndClim):
     err = None
     if int(yearStartClim)>int(yearEndClim):
         return 'Start year needs to be less than End year.'
+    return err
 
 def check_state(state):
     err = None
