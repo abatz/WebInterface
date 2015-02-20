@@ -180,14 +180,14 @@ class DroughtTool(webapp2.RequestHandler):
         return formatted_template_values
 
     def check_user_input(self, template_values):
-        #forms.check_climatologyyears(template_values['yearStartClim'],template_values['yearEndClim'])
         #Checks for errors in user input
         #See check_ functions in forms.py
         #At first error encountered, spits out error message and exits
         err = None; fieldID = None
 
         #special check for climatology years
-	err = forms.check_climatologyyears(template_values['yearStartClim'],template_values['yearEndClim'])
+	err = forms.check_climatologyyears(template_values['yearStartClim'],template_values['yearEndClim'],
+              template_values['domainType'])
 	if err:
 		fieldID = 'yearStartClim'
 		return fieldID,err
@@ -195,7 +195,7 @@ class DroughtTool(webapp2.RequestHandler):
         #special check for date range >365 when climatology is needed  
         #(someday when we fix this.. we can delete this)
 	err = forms.check_dateMoreThanYear(template_values['dateStart'],template_values['dateEnd'],
-              template_values['calculation'])
+              template_values['calculation'],template_values['domainType'])
 	if err:
 		fieldID = 'dateCheckMoreThanYear'
 		return fieldID,err
