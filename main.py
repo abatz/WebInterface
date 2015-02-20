@@ -149,6 +149,7 @@ class DroughtTool(webapp2.RequestHandler):
         else:
             mz='4'
         template_values['mapzoom'] = self.request.get('mapzoom',mz)
+
         #Markers are initialized to center of map
         template_values['pointsLongLat'] = self.request.get('pointsLongLat',template_values['mapCenterLongLat'])
         template_values['p1'] = self.request.get('p1',template_values['mapCenterLongLat'])
@@ -179,10 +180,7 @@ class DroughtTool(webapp2.RequestHandler):
         return formatted_template_values
 
     def check_user_input(self, template_values):
-        #try:
-        #     forms.check_climatologyyears(template_values['yearStartClim'],template_values['yearEndClim'])
-        #except: 
-        #     continue
+        #forms.check_climatologyyears(template_values['yearStartClim'],template_values['yearEndClim'])
         #Checks for errors in user input
         #See check_ functions in forms.py
         #At first error encountered, spits out error message and exits
