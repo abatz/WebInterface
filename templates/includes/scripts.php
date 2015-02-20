@@ -132,19 +132,20 @@
 			var p_message = 'Processing Request';
 			var largeData = dE - dS >= 1 * 365 * 24 * 60 * 60 * 1000;
 			var largeClimCalc = dEClim - dSClim >= 10;
+			var domainType = $('#domainType').val();
 			if (calc == 'value'){
 			   if (largeData){ 
 			       p_message = 'This computation requires a large amount of daily data. ' +
 			       'Please be patient while we process your request.';
 			   }
 			}
-			else {
+			elif (domainType!='points'){
 			   if (largeData && largeClimCalc ){
-			       p_message = 'This computation requires a large amount of daily data'+
+			       p_message = 'Your request requires a large amount of daily data'+
 				' and a large climatology calculation. ' +
 			       'Please be patient while we process your request.';
 			   }else if(largeData){
-			       p_message = 'This computation requires a large amount of daily data. ' +
+			       p_message = 'Your request requires a large amount of daily data. ' +
 			       'Please be patient while we process your request.';
 			   }else if (largeClimCalc){
 			       p_message = 'Your request requires a large climatology calculation. ' +
