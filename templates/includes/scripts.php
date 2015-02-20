@@ -123,36 +123,48 @@
 		*********************************/
 		{% include 'includes/light-political.html'%}
 		map.setOptions({styles: lightPoliticalStyles});
-		 {% if mapid %}
-            var dS = new Date($('#dateStart').val()).getTime();
-            var dE = new Date($('#dateEnd').val()).getTime();
-            var p_message = 'Processing Request';
-            if ($('#calculation') == "value"){
-                if (dE - dS >= 5 * 365 * 24 * 60 * 60 * 1000){
-                    p_message = 'You asked for a large amount of data. ' +
-                    'Please be patient while we process your request.';
-                }
-            }
-            else {
-                if (dE - dS >= 1 * 365 * 24 * 60 * 60 * 1000){
-                    p_message = 'You asked for a large amount of data. ' +
-                    'Please be patient while we process your request.';
-                }
-            }
-		    // Show progress bar.
-		    waitingDialog.show(p_message, {dialogSize: 'sm', progressType: 'warning'});
-		    // Show the map layer.
-		    window.map.overlayMapTypes.push(mapType);
-		    // Once the tiles load, hide the progress bar.
-		    google.maps.event.addListenerOnce(mapType, 'tilesloaded', function() {
-			waitingDialog.hide();
-		    });
-		    // In case it takes more than 30 seconds for the tiles
-		    // to load, hide the dialog after 30 seconds anyway.
-		    setTimeout(function () {
-			waitingDialog.hide();
-		    }, 30000);
-		  {% endif %}
+		{% if mapid %}
+			var dS = new Date($('#dateStart').val()).getTime();
+			var dE = new Date($('#dateEnd').val()).getTime();
+			var dSClim = $('#yearStartClim').val();
+			var dEClim = $('#yearEndClim').val();
+			var calc = $('#calculation').val();
+			var p_message = 'Processing Request';
+			var largeData = dE - dS >= 1 * 365 * 24 * 60 * 60 * 1000;
+			var largeClimCalc = dEClim - dSClim >= 10;
+			if (calc == 'value'){
+			   if (largeData){ 
+			       p_message = 'This computation requires a large amount of daily data. ' +
+			       'Please be patient while we process your request.';
+			   }
+			}
+			else {
+			   if (largeData && largeClimCalc ){
+			       p_message = 'This computation requires a large amount of daily data'+
+				' and a large climatology calculation. ' +
+			       'Please be patient while we process your request.';
+			   }else if(largeData){
+			       p_message = 'This computation requires a large amount of daily data. ' +
+			       'Please be patient while we process your request.';
+			   }else if (largeClimCalc){
+			       p_message = 'Your request requires a large climatology calculation. ' +
+			       'Please be patient while we process your request.';
+			   }
+			}
+			// Show progress bar.
+			waitingDialog.show(p_message, {dialogSize: 'sm', progressType: 'warning'});
+			// Show the map layer.
+			window.map.overlayMapTypes.push(mapType);
+			// Once the tiles load, hide the progress bar.
+			google.maps.event.addListenerOnce(mapType, 'tilesloaded', function() {
+			   waitingDialog.hide();
+			});
+			// In case it takes more than 30 seconds for the tiles
+			// to load, hide the dialog after 30 seconds anyway.
+			setTimeout(function () {
+			   waitingDialog.hide();
+			}, 30000);
+		{% endif %}
 /*
         //This is for the potential mouseover event on the google map layer executing a POST call to get value
 		// Set mouseover event for each feature.

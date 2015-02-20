@@ -239,10 +239,10 @@ def get_anomaly(collection, product, variable, dateStart, dateEnd,
     #Check timedelta between start and end is greater than 365 (366 instead?)
     #Could also separate date to components and add a year
     #Can EE dates be compared?  That might be an easier approach also
-    #if dateEnd_dt > (dateStart_dt + dt.timedelta(days=365)):
-    #    sub_year_flag = True
-    #else:
-    #    sub_year_flag = False
+    if dateEnd_dt > (dateStart_dt + dt.timedelta(days=365)):
+        sub_year_flag = True
+    else:
+        sub_year_flag = False
 
     #Get the start and end DOY for filtering using calendarRange
     doyStart = dateStart_dt.timetuple().tm_yday
@@ -252,8 +252,7 @@ def get_anomaly(collection, product, variable, dateStart, dateEnd,
     #get climatology
     climatologyNote = 'Climatology calculated from {0}-{1}'.format(
         yearStartClim, yearEndClim)
-    #FilterDate needs an extra day on the high end
-    #Set yearEnd to Jan 1st of next year
+    #FilterDate needs an extra day on the high end,Set yearEnd to Jan 1st of next year
     yearStartClimUTC = dt.datetime(int(yearStartClim), 1, 1)
     yearEndClimUTC = dt.datetime(int(yearEndClim)+1, 1, 1)
 
@@ -282,7 +281,7 @@ def get_anomaly(collection, product, variable, dateStart, dateEnd,
         climatology = get_statistic(climatology,statistic)
 
     #This metric is really only good for year ranges <1 year
-    if statistic == 'Total':
+    if statistic == 'Total' and sub_year_flag==True:
          num_years = int(yearEndClim) - int(yearStartClim) + 1
          climatology = climatology.divide(num_years)
 
