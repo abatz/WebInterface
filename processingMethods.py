@@ -236,6 +236,20 @@ def get_anomaly(collection, product, variable, dateStart, dateEnd,
     dateStart_dt = dt.datetime.strptime(dateStart, '%Y-%m-%d')
     dateEnd_dt = dt.datetime.strptime(dateEnd, '%Y-%m-%d')
 
+    #Get the start and end DOY for filtering using calendarRange
+    doyStart = dateStart_dt.timetuple().tm_yday
+    doyEnd = dateEnd_dt.timetuple().tm_yday
+    doy_filter = ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year')
+
+    climatologyNote = 'Climatology calculated from {0}-{1}'.format(
+        yearStartClim, yearEndClim)
+    #FilterDate needs an extra day on the high end,Set yearEnd to Jan 1st of next year
+    yearStartClimUTC = dt.datetime(int(yearStartClim), 1, 1)
+    yearEndClimUTC = dt.datetime(int(yearEndClim)+1, 1, 1)
+
+    #get climatology
+    climatology = collection.filterDate(yearStartClimUTC, yearEndClimUTC).filter(doy_filter)
+
     #Check timedelta between start and end is greater than 365 (366 instead?)
     #Could also separate date to components and add a year
     #Can EE dates be compared?  That might be an easier approach also
@@ -244,20 +258,7 @@ def get_anomaly(collection, product, variable, dateStart, dateEnd,
     else:
         sub_year_flag = False
 
-    #Get the start and end DOY for filtering using calendarRange
-    doyStart = dateStart_dt.timetuple().tm_yday
-    doyEnd = dateEnd_dt.timetuple().tm_yday
-    doy_filter = ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year')
-
-    #get climatology
-    climatologyNote = 'Climatology calculated from {0}-{1}'.format(
-        yearStartClim, yearEndClim)
-    #FilterDate needs an extra day on the high end,Set yearEnd to Jan 1st of next year
-    yearStartClimUTC = dt.datetime(int(yearStartClim), 1, 1)
-    yearEndClimUTC = dt.datetime(int(yearEndClim)+1, 1, 1)
-
-    climatology = collection.filterDate(yearStartClimUTC, yearEndClimUTC).filter(doy_filter)
-    if sub_year_flag == True:
+    if sub_year_flag == False:
         if statistic == 'Min':
             #List sequence is inclusive (i.e. don't advance yearEnd)
             yearListClim = ee.List.sequence(int(yearStartClim),int(yearEndClim))
