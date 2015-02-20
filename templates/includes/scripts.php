@@ -138,8 +138,7 @@
 			       p_message = 'This computation requires a large amount of daily data. ' +
 			       'Please be patient while we process your request.';
 			   }
-			}
-			elif (domainType!='points'){
+			}else if(domainType != 'points'){
 			   if (largeData && largeClimCalc ){
 			       p_message = 'Your request requires a large amount of daily data'+
 				' and a large climatology calculation. ' +
