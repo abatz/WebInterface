@@ -257,33 +257,34 @@ def get_anomaly(collection, product, variable, dateStart, dateEnd,
     yearEndClimUTC = dt.datetime(int(yearEndClim)+1, 1, 1)
 
     climatology = collection.filterDate(yearStartClimUTC, yearEndClimUTC).filter(doy_filter)
-    if statistic == 'Min':
-        #List sequence is inclusive (i.e. don't advance yearEnd)
-        yearListClim = ee.List.sequence(int(yearStartClim),int(yearEndClim))
-        def min_climatology_func(year):
-            """For each year, return an image of the minimum value over the DOY range"""
-            return ee.Image(collection\
-                .filter(ee.Filter.calendarRange(year, year, 'year'))\
-                .filter(ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year')).min())
-        climatology = ee.ImageCollection.fromImages(yearListClim.map(min_climatology_func))
-        climatology = get_statistic(climatology, 'Mean')
-    elif statistic == 'Max':
-        #List sequence is inclusive (i.e. don't advance yearEnd)
-        yearListClim = ee.List.sequence(int(yearStartClim),int(yearEndClim))
-        def max_climatology_func(year):
-            """For each year, return an image of the maximum value over the DOY range"""
-            return ee.Image(collection\
-                .filter(ee.Filter.calendarRange(year, year, 'year'))\
-                .filter(ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year')).max())
-        climatology = ee.ImageCollection.fromImages(yearListClim.map(max_climatology_func))
-        climatology = get_statistic(climatology, 'Mean')
-    else: #'Mean','Total','Median'
-        climatology = get_statistic(climatology,statistic)
-
-    #This metric is really only good for year ranges <1 year
-    if statistic == 'Total' and sub_year_flag==True:
-         num_years = int(yearEndClim) - int(yearStartClim) + 1
-         climatology = climatology.divide(num_years)
+    if sub_year_flag == True:
+        if statistic == 'Min':
+            #List sequence is inclusive (i.e. don't advance yearEnd)
+            yearListClim = ee.List.sequence(int(yearStartClim),int(yearEndClim))
+            def min_climatology_func(year):
+                """For each year, return an image of the minimum value over the DOY range"""
+                return ee.Image(collection\
+                    .filter(ee.Filter.calendarRange(year, year, 'year'))\
+                    .filter(ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year')).min())
+            climatology = ee.ImageCollection.fromImages(yearListClim.map(min_climatology_func))
+            climatology = get_statistic(climatology, 'Mean')
+        elif statistic == 'Max':
+            #List sequence is inclusive (i.e. don't advance yearEnd)
+            yearListClim = ee.List.sequence(int(yearStartClim),int(yearEndClim))
+            def max_climatology_func(year):
+                """For each year, return an image of the maximum value over the DOY range"""
+                return ee.Image(collection\
+                    .filter(ee.Filter.calendarRange(year, year, 'year'))\
+                    .filter(ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year')).max())
+            climatology = ee.ImageCollection.fromImages(yearListClim.map(max_climatology_func))
+            climatology = get_statistic(climatology, 'Mean')
+        elif statistic == 'Total':
+            climatology = get_statistic(climatology,statistic)
+            num_years = int(yearEndClim) - int(yearStartClim) + 1
+            climatology = climatology.divide(num_years)
+        else: #'Mean','Total','Median'
+            climatology = get_statistic(climatology,statistic)
+    #else: #we do not have a solution when the day range > 365 for climatology calculation
 
     #get statistic of collection
     #filterDate is exclusive on end date

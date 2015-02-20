@@ -192,6 +192,14 @@ class DroughtTool(webapp2.RequestHandler):
 		fieldID = 'yearStartClim'
 		return fieldID,err
 
+        #special check for date range >365 when climatology is needed  
+        #(someday when we fix this.. we can delete this)
+	err = forms.check_dateMoreThanYear(template_values['dateStart'],template_values['dateEnd'],
+              template_values['calculation'])
+	if err:
+		fieldID = 'dateCheckMoreThanYear'
+		return fieldID,err
+
         for key, val in template_values.iteritems():
             #do not check form items
             if key[0:4] == 'form':

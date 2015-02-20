@@ -95,6 +95,10 @@
 					<br>
 					<div class="error">{{ form_error.dateEnd }}</div>
 				   {% endif %}
+				{% if form_error.dateCheckMoreThanYear %}
+                                        <br>
+                                        <div class="error">{{ form_error.dateCheckMoreThanYear }}</div>
+                                   {% endif %}
 			   </div>
 			</td>
 		   </tr>

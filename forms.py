@@ -572,6 +572,15 @@ def format_SWLong(SWLong):
 #   return err = None if no error encountered
 #   else return error message
 #===========================
+def check_dateMoreThanYear(dateStart,dateEnd,calculation):
+    err = None
+    dS = dt.datetime.strptime(dateStart,'%Y-%m-%d');
+    dE = dt.datetime.strptime(dateEnd,'%Y-%m-%d');
+    if calculation !='value':
+        if  (dE-dS).total_seconds()>=365 * 24 * 3600:
+            return 'Calculations requiring climatologies over day ranges > 365 days are not currently available.'
+    return err
+
 def check_climatologyyears(yearStartClim,yearEndClim):
     err = None
     if int(yearStartClim)>int(yearEndClim):
