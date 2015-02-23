@@ -216,47 +216,40 @@ def get_anomaly(collection, product, variable, dateStart, dateEnd,
     """Return the anomaly image collection
 
     Args:
-        collection: EarthEngine collection to process
+        collection: EarthEngine collection to process (has already selected variable)
         product: string of the product ()
         variable: string of the variable ()
         dateStart: string of the start date isoformat (YYYY-MM-DD)
         dateEnd: string of the end date isoformat (YYYY-MM-DD)
         statistic: string of the statistic (Mean, Median, Total, etc.)
-        calculation: string of the calculation type (anon, value, etc.)
+        calculation: string of the calculation type (anom, value, anompercentof,anompercentchange,clim)
         yearStartClim: string of the climatology start year
         yearEndClim: string of the climatology end year
     Returns:
         EarthEngine image collection object
         String of additional notes about the collection
     """
-    #here calculation = ['anom','anompercentof','anompercentchange','clim'] only
-    #here the collection has already chosen variable
 
     #Build python datetime objects from the date string
     dateStart_dt = dt.datetime.strptime(dateStart, '%Y-%m-%d')
     dateEnd_dt = dt.datetime.strptime(dateEnd, '%Y-%m-%d')
 
-    #Get the start and end DOY for filtering using calendarRange
-    doyStart = dateStart_dt.timetuple().tm_yday
-    doyEnd = dateEnd_dt.timetuple().tm_yday
-    doy_filter = ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year')
+    #Check timedelta between start and end is greater than 1 year
+    def yearsahead(years, start_date):
+        try:
+           return start_date.replace(year=start_date.year + years)
+        except:   # Must be 2/29!
+           assert from_date.month == 2 and from_date.day == 29 # can be removed
+           return from_date.replace(month=2, day=28, year=start_date.year+years)
 
-    climatologyNote = 'Climatology calculated from {0}-{1}'.format(
-        yearStartClim, yearEndClim)
-    #FilterDate needs an extra day on the high end,Set yearEnd to Jan 1st of next year
-    yearStartClimUTC = dt.datetime(int(yearStartClim), 1, 1)
-    yearEndClimUTC = dt.datetime(int(yearEndClim)+1, 1, 1)
-
-    #get climatology
-    climatology = collection.filterDate(yearStartClimUTC, yearEndClimUTC).filter(doy_filter)
-
-    #Check timedelta between start and end is greater than 365 (366 instead?)
-    #Could also separate date to components and add a year
-    #Can EE dates be compared?  That might be an easier approach also
-    if dateEnd_dt > (dateStart_dt + dt.timedelta(days=365)):
+    if dateEnd_dt > yearsahead(1,dateStart_dt):
         sub_year_flag = True
+        doyStart = 1
+        doyEnd = 366
     else:
         sub_year_flag = False
+        doyStart = dateStart_dt.timetuple().tm_yday
+        doyEnd = dateEnd_dt.timetuple().tm_yday
 
     if sub_year_flag == False:
         if statistic == 'Min':
@@ -279,13 +272,16 @@ def get_anomaly(collection, product, variable, dateStart, dateEnd,
                     .filter(ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year')).max())
             climatology = ee.ImageCollection.fromImages(yearListClim.map(max_climatology_func))
             climatology = get_statistic(climatology, 'Mean')
-        elif statistic == 'Total':
-            climatology = get_statistic(climatology,statistic)
-            num_years = int(yearEndClim) - int(yearStartClim) + 1
-            climatology = climatology.divide(num_years)
         else: #'Mean','Total','Median'
+            doy_filter = ee.Filter.calendarRange(doyStart, doyEnd, 'day_of_year')
+            #FilterDate needs an extra day on the high end,Set yearEnd to Jan 1st of next year
+            yearStartClimUTC = dt.datetime(int(yearStartClim), 1, 1)
+            yearEndClimUTC = dt.datetime(int(yearEndClim)+1, 1, 1)
+            climatology = collection.filterDate(yearStartClimUTC, yearEndClimUTC).filter(doy_filter)
             climatology = get_statistic(climatology,statistic)
-    #else: #we do not have a solution when the day range > 365 for climatology calculation
+            if(statistic == 'Total'):
+                num_years = int(yearEndClim) - int(yearStartClim) + 1
+                climatology = climatology.divide(num_years)
 
     #get statistic of collection
     #filterDate is exclusive on end date
@@ -303,6 +299,9 @@ def get_anomaly(collection, product, variable, dateStart, dateEnd,
         collection = ee.Image(collection.divide(climatology).multiply(100)) #anomaly
     elif calculation == 'anompercentchange':
         collection = ee.Image(collection.subtract(climatology).divide(climatology).multiply(100)) #anomaly
+
+    climatologyNote = 'Climatology calculated from {0}-{1}'.format(
+        yearStartClim, yearEndClim)
 
     return collection, climatologyNote
 
