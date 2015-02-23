@@ -185,6 +185,13 @@ class DroughtTool(webapp2.RequestHandler):
         #At first error encountered, spits out error message and exits
         err = None; fieldID = None
 
+        #special check for Feb 1, 2014 in date range (until this gets fixed!)
+	err = forms.check_Feb12014(template_values['dateStart'],template_values['dateEnd'],
+                                   template_values['product'])
+	if err:
+		fieldID = 'checkFeb12014'
+		return fieldID,err
+
         #special check for climatology years
 	err = forms.check_climatologyyears(template_values['yearStartClim'],template_values['yearEndClim'],
               template_values['domainType'])
