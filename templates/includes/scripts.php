@@ -65,7 +65,7 @@
 	      *********************************/
 	      function initialize() {
               // Load the modal
-	      {% if not mapid and not timeSeriesData%}
+	      {% if not mapid and not timeSeriesData and form_error=={}%}
               $("#droughthome").click();
 	       {% endif %}
 		/*********************************
