@@ -64,13 +64,10 @@
 	      *    INITIALIZE CALL
 	      *********************************/
 	      function initialize() {
-
-
               // Load the modal
 	      {% if not mapid and not timeSeriesData%}
               $("#droughthome").click();
 	       {% endif %}
-
 		/*********************************
 		*    CLIMO YEARS		*
 		*********************************/
@@ -338,10 +335,5 @@
 
 	      //window.onload = initialize;
 	      jQuery(document).ready(initialize);
-
-              //$( document ).ready(function() {
-                //alert( "ready!" );
-               // $("#droughthome").click(); 
-              //});
 
 	</script>
