@@ -105,7 +105,6 @@ $(function(){
 		}else{
                 	window.kmlmarkerOverLayer.setMap(null);
 		}
-//                window.kmlmarkerOverLayer.setMap(window.map);
 	});
 
 
