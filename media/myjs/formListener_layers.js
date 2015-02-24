@@ -92,7 +92,7 @@ $(function(){
 		};
 	});
 
-/* This does not work well for autocomplete
+// This does not work well for autocomplete
  	jQuery('#kmlurl').on('change paste keyup', function(){
 	       if($('input[id=kmloverlayer]:checked').val()=="kmloverlayer"){
 			var kmlurl=document.getElementById('kmlurl').value;
@@ -105,8 +105,8 @@ $(function(){
 		}else{
                 	window.kmlmarkerOverLayer.setMap(null);
 		}
-                window.kmlmarkerOverLayer.setMap(window.map);
+//                window.kmlmarkerOverLayer.setMap(window.map);
 	});
-*/
+
 
 });
