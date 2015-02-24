@@ -64,6 +64,10 @@
 	      *    INITIALIZE CALL
 	      *********************************/
 	      function initialize() {
+	      
+	        // Load the Drought Home Modal 
+	        $("#droughthome").click();
+	      
 		/*********************************
 		*    CLIMO YEARS		*
 		*********************************/
