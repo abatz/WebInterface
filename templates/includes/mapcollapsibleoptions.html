@@ -47,6 +47,11 @@
 						    <option value="{{ x }}" {% if x == colorbarmap  %} selected {% endif %}>{{ y }}</option>
 						{% endfor %}
 					</optgroup>
+					<optgroup label="Custom Maps">
+						{% for x,y in formPaletteCustomMap %}
+						    <option value="{{ x }}" {% if x == colorbarmap  %} selected {% endif %}>{{ y }}</option>
+						{% endfor %}
+					</optgroup>
 				</select>
 			</li>
 			<li>

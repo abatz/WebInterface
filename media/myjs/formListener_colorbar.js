@@ -1,5 +1,15 @@
 $(function(){
 
+
+
+	 jQuery('#colorbarmap, #colorbarsize').on('change', function(){
+                colorbarmap = document.getElementById('colorbarmap').value;
+		if(colorbarmap == 'USDM' || colorbarmap == 'invUSDM'){
+                	jQuery('#colorbarsize').val('6');
+		}
+	});
+
+
 	jQuery('#minColorbar,#maxColorbar').keyup( function(){
                 colorbarsize = parseInt(document.getElementById('colorbarsize').value);
                 colorbarmap = document.getElementById('colorbarmap').value;

@@ -207,6 +207,10 @@ formPaletteDivMap=[
     ('RdGy','Red-Grey'),
     ('Spectral','Spectral'),
 ]
+formPaletteCustomMap=[
+    ('USDM','US Drought Monitor White-Yellow-Tan-Orange-Red'),
+    ('invUSDM','US Drought Monitor Red-Orange-Tan-Yellow-White'),
+]
 
 #============================
 #    formPaletteSize
