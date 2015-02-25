@@ -2,7 +2,7 @@
 	<tr>
 	    <td>
 	       <!----------------------------->
-	       <!--      OPACITY            -->
+	       <!--      RECTANGLE	   --->
 	       <!----------------------------->
 		 <br>Select a Rectangular Region for Data Download:
                         <table>
@@ -41,7 +41,24 @@
 	<tr>
 	    <td>
 	       <!----------------------------->
-	       <!--      COLORBAR            -->
 	       <!----------------------------->
+
+		 <!----------------------------->
+                <!--   DOWNLOAD BUTTON               -->
+                <!----------------------------->
+                <table width="100%">
+                    <tr>
+                        <td>
+                                <input type="submit" class="btn btn-large btn-primary pull-left" value="DOWNLOAD REGION"
+                                         form="form_map" onclick="document.getElementById('domainType').value='rectangle'"/>
+                        </td>
+                        <td>
+                                {% if mapid %}
+                                         <a href="#shareLink" data-toggle="modal">Share Link</a>
+                               {% endif %}
+                        </td>
+                    </tr>
+                </table>
+
 	</tr>
 </table>
