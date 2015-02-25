@@ -20,8 +20,8 @@ import collectionMethods
 import figureFormatting
 
 from google.appengine.api import urlfetch
-urlfetch.set_default_fetch_deadline(60000)
-httplib2.Http(timeout=30000)
+urlfetch.set_default_fetch_deadline(180000)
+httplib2.Http(timeout=180000)
 
 #############################################
 ##       SET DIRECTORY FOR PAGES          ##
