@@ -198,7 +198,7 @@ def get_time_series(template_values):
     }
 
     #Filter the collection down to the points
-    collection = collection.filterBounds(points)
+    #collection = collection.filterBounds(points)
 
     #Note: EE has a 2500 img limit per request
     #We need to split up larger data request into 5 year chunks
@@ -254,7 +254,7 @@ def get_time_series(template_values):
         TV.update(extra_template_values)
         return TV
     timeSeriesTextData,timeSeriesGraphData = figureFormatting.set_time_series_data(dataList,TV)
-    logger.info(timeSeriesGraphData)
+    #logger.info(timeSeriesGraphData)
     logger.info('TIME SERIES DATA FORMATTED')
 
     #Update template values
