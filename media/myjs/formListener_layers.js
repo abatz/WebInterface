@@ -4,6 +4,15 @@ $(function(){
 	/*         LAYERS LISTENER                    */
 	/*--------------------------------------------*/
 	jQuery('.layer').on('change','input[type=radio]', function(){
+		if($('input[id=stateoverlayer]:checked').val()=="None"){
+		  	window.statemarkerOverLayer.setMap(null);
+		  	window.countymarkerOverLayer.setMap(null);
+                 	window.hucsmarkerOverLayer.setMap(null);
+                  	window.climatedivmarkerOverLayer.setMap(null);
+                  	window.psasmarkerOverLayer.setMap(null);
+                	window.kmlmarkerOverLayer.setMap(null);
+
+		};
 		/*-------------------*/
 		/*         STATES    */
 		/*-------------------*/
@@ -93,7 +102,7 @@ $(function(){
 	});
 
 // This does not work well for autocomplete
- 	jQuery('#kmlurl').on('change paste keyup', function(){
+ 	jQuery('#kmlurl').on('change paste keyup autocompletefocus', function(){
 	       if($('input[id=kmloverlayer]:checked').val()=="kmloverlayer"){
 			var kmlurl=document.getElementById('kmlurl').value;
 			window.kmlmarkerOverLayer = new google.maps.KmlLayer(kmlurl, {
