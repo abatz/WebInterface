@@ -9,6 +9,7 @@ from google.appengine.api.labs import taskqueue
 import collectionMethods
 import figureFormatting
 
+import logging, threading
 #===========================================
 #   GET_IMAGES
 #===========================================
@@ -77,7 +78,7 @@ def get_images(template_values):
             collection, product, var, dS, dE, statistic,
             calculation, yearStartClim, yearEndClim)
         TV['climatologyNotes'] = climatologyNotes
-        
+
     #==============
     #Units
     #==============
@@ -121,12 +122,12 @@ def get_images(template_values):
             'name': 'test_image',
             'scale':4000,
             'crs': 'EPSG:4326',
-            'region': rectangle 
+            'region': rectangle
         }
         #downloadURL = '[['+NELong+','+NELat+'], ['+
-        #               ' ['+SELong+','+NELat+'],['+ 
-        #               ' ['+NELong+','+SELat+'],['+ 
-        #               ' ['+SELong+','+SELat+']]' 
+        #               ' ['+SELong+','+NELat+'],['+
+        #               ' ['+NELong+','+SELat+'],['+
+        #               ' ['+SELong+','+SELat+']]'
         #downloadURL = ee.Export.Image(,'title',{'region': rectangle})
 
     return TV
@@ -135,7 +136,27 @@ def get_images(template_values):
 #    TIME_SERIES
 #===========================================
 def get_time_series(template_values):
-    """"""
+    """
+    Args:
+        template_values -- a dictionary of user and system input
+    Returns:
+        updated template_values with time series data
+    """
+    def worker(collection,points,start,end,threadData,idx):
+        '''
+        Threading worker
+        runs getInfo call on collection filtered by dates and points
+        '''
+        try:
+            threadData[idx] = collection.filterDate(start, end).getRegion(points,1).slice(1).getInfo()
+        except Exception, e:
+            logger.error('EXCEPTION IN THREAD ' + str(idx+1) +  ': '  + str(e))
+    #Logger for debugging purposes
+    logger = logging.getLogger('ts_debug')
+    logger.setLevel(logging.DEBUG)
+    sh = logging.StreamHandler()
+    sh.setLevel(logging.DEBUG)
+    logger.addHandler(sh)
     TV = {}
     for key, val in template_values.iteritems():
         TV[key] = val
@@ -159,6 +180,10 @@ def get_time_series(template_values):
     #Get the collection
     collection, coll_name, coll_desc, var_desc, notes = collectionMethods.get_collection(
         product, var)
+
+    #Filter down to the points
+    collection = collection.filterBounds(points)
+
     #Note: EE has a 2500 img limit per request
     #We need to split up larger data request into 5 year chunks
     #Max's suggestion: work with time and get data in chunks,
@@ -169,52 +194,35 @@ def get_time_series(template_values):
     step = 5 * 365 * 24 * 60 * 60 * 1000
     start = dS_int
     dataList = []
+    threads = [];threadData = [];idx = -1
     while start < dE_int:
+        idx+=1
+        threadData.append([])
         if start + step < dE_int:
             end = start + step
         else:
             end = dE_int + 24 * 60 * 60 * 1000
-        '''
-        #First attempt at task queue, gives error
         #data = collection.filterDate(start, end).getRegion(points,1).slice(1).getInfo()
-        AttributeError: 'unicode' object has no attribute 'filterDate')
-        # Add the task to the default queue.
-        q_params = {
-            'collection':collection,
-            'start':start,
-            'end':end
-        }
-        data = taskqueue.add(url='/worker', params=q_params)
-        '''
-        data = collection.filterDate(start, end).getRegion(points,1).slice(1).getInfo()
-        dataList+=data
+        logger.info('STARTING THREAD %s' %str(idx + 1))
+        t = threading.Thread(target=worker, args =(collection,points,start,end,threadData,idx))
+        threads.append(t)
+        t.start()
+        #dataList+=data
         start+=step
+    #Combine threading results into single list
+    for idx in range(len(threads)):
+        try:
+            threads[idx].join()
+            if threadData[idx -1]:
+                dataList+=threadData[idx -1]
+                logger.info('THREAD %s FINISHED AND DATA APPENDED' %str(idx + 1))
+            else:
+                logger.error('NO DATA RETURNED BY THREAD %s' %str(idx + 1))
+        except Exception, e:
+            logger.error(str(e).upper())
     timeSeriesTextData,timeSeriesGraphData = figureFormatting.set_time_series_data(dataList,TV)
+    logger.info('TIME SERIES DATA FORMATTED')
 
-    '''
-    #Code to get time series data viw getDownloadUrl -->
-    #not working for requests > 6 years
-    collection, coll_name, coll_desc, var_desc, notes = collectionMethods.get_collection(
-        product, var)
-    collection = collection.filterDate(dSUTC,dEUTC);
-    collection = collection.getRegion(points,1);
-
-    #check units
-    #modify_units_in_timeseries(val,var,units):
-    #collection =modify_units(collection, var, 'value', units);
-
-    features = ee.FeatureCollection(
-        ee.Feature(None, {'sample': collection}))
-    downloadUrl = features.getDownloadUrl('json')
-    response = urllib2.urlopen(downloadUrl)
-    json_dict = json.loads(response.read())
-    dataList = json_dict['features'][0]['properties']['sample']
-    dataList.pop(0)
-    timeSeriesTextData = []
-    timeSeriesGraphData = []
-    timeSeriesTextData, timeSeriesGraphData = figureFormatting.set_time_series_data(
-        dataList,TV)
-    '''
     source = coll_desc + ' from ' + dS + '-' + dE + ''
     title = statistic + ' ' + var_desc
     #Update template values
@@ -274,7 +282,7 @@ def get_anomaly(collection, product, variable, dateStart, dateEnd,
         doyStart = dateStart_dt.timetuple().tm_yday
         doyEnd = dateEnd_dt.timetuple().tm_yday
 
-    if statistic == 'Min':  
+    if statistic == 'Min':
         #List sequence is inclusive (i.e. don't advance yearEnd)
         yearListClim = ee.List.sequence(int(yearStartClim),int(yearEndClim))
         def min_climatology_func(year):
