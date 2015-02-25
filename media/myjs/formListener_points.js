@@ -98,7 +98,7 @@ $(function(){
                 var dE = new Date($('#dateEnd').val()).getTime();
                 var message;
                 if (dE - dS >= 5 * 365 * 24 * 60 * 60 * 1000){
-                    p_message = 'You asked for a large amount of data. ' + 
+                    p_message = 'This computation requires a large amount of data. ' + 
                     'Please be patient while we process your request.'
                 }
                 else{
