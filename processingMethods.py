@@ -151,12 +151,17 @@ def get_time_series(template_values):
             threadData[idx] = collection.filterDate(start, end).getRegion(points,1).slice(1).getInfo()
         except Exception, e:
             logger.error('EXCEPTION IN THREAD ' + str(idx+1) +  ': '  + str(e))
+            error_flag = True
+            error = str(e)
     #Logger for debugging purposes
     logger = logging.getLogger('ts_debug')
     logger.setLevel(logging.DEBUG)
     sh = logging.StreamHandler()
     sh.setLevel(logging.DEBUG)
     logger.addHandler(sh)
+    #Keep track of errors occurring while threading
+    error_flag = False
+    #Set variables
     TV = {}
     for key, val in template_values.iteritems():
         TV[key] = val
@@ -166,6 +171,7 @@ def get_time_series(template_values):
     dE = TV['dateEnd']
     statistic = TV['statistic']
     units = TV['units']
+    #Set points
     pointsLongLat = str(TV['pointsLongLat']) #string of comma separates llon,lat pairs
     pointsLongLatList = pointsLongLat.replace(' ','').split(',')
     pointsLongLatTuples = [
@@ -177,11 +183,21 @@ def get_time_series(template_values):
     product = var[:1]
     var = var[1:]
 
-    #Get the collection
+    #Get the collection and set some new template variables
     collection, coll_name, coll_desc, var_desc, notes = collectionMethods.get_collection(
         product, var)
+    source = coll_desc + ' from ' + dS + '-' + dE + ''
+    title = statistic + ' ' + var_desc
+    extra_template_values = {
+        'source_time':source,
+        'title_time':title,
+        'product_time':product,
+        'productLongName_time':coll_desc,
+        'variableShortName_time':var_desc,
+        'notes_time': notes
+    }
 
-    #Filter down to the points
+    #Filter the collection down to the points
     collection = collection.filterBounds(points)
 
     #Note: EE has a 2500 img limit per request
@@ -194,6 +210,9 @@ def get_time_series(template_values):
     step = 5 * 365 * 24 * 60 * 60 * 1000
     start = dS_int
     dataList = []
+
+    #Start a thread for each time chunk and save the results
+    #in a list of lists
     threads = [];threadData = [];idx = -1
     while start < dE_int:
         idx+=1
@@ -202,40 +221,45 @@ def get_time_series(template_values):
             end = start + step
         else:
             end = dE_int + 24 * 60 * 60 * 1000
-        #data = collection.filterDate(start, end).getRegion(points,1).slice(1).getInfo()
         logger.info('STARTING THREAD %s' %str(idx + 1))
         t = threading.Thread(target=worker, args =(collection,points,start,end,threadData,idx))
         threads.append(t)
         t.start()
-        #dataList+=data
         start+=step
-    #Combine threading results into single list
+
+    #Check for errors
+    if error_flag:
+        extra_template_values['timeSeriesData'] = []
+        extra_template_values['timeSeriesGraphData'] = []
+        extra_template_values['ts_error'] = str(error)
+        TV.update(extra_template_values)
+        return TV
+
+    #Combine threading results into single dataList
     for idx in range(len(threads)):
         try:
             threads[idx].join()
-            if threadData[idx -1]:
-                dataList+=threadData[idx -1]
-                logger.info('THREAD %s FINISHED AND DATA APPENDED' %str(idx + 1))
-            else:
-                logger.error('NO DATA RETURNED BY THREAD %s' %str(idx + 1))
+            dataList+=threadData[idx -1]
+            logger.info('THREAD %s FINISHED AND DATA APPENDED' %str(idx + 1))
         except Exception, e:
             logger.error(str(e).upper())
+            error_flag = True
+            error = str(e)
+
+    #Check for errors
+    if error_flag:
+        extra_template_values['timeSeriesData'] = []
+        extra_template_values['timeSeriesGraphData'] = []
+        extra_template_values['ts_error'] = str(error)
+        TV.update(extra_template_values)
+        return TV
     timeSeriesTextData,timeSeriesGraphData = figureFormatting.set_time_series_data(dataList,TV)
+    logger.info(timeSeriesGraphData)
     logger.info('TIME SERIES DATA FORMATTED')
 
-    source = coll_desc + ' from ' + dS + '-' + dE + ''
-    title = statistic + ' ' + var_desc
     #Update template values
-    extra_template_values = {
-        'source_time':source,
-        'title_time':title,
-        'product_time':product,
-        'productLongName_time':coll_desc,
-        'variableShortName_time':var_desc,
-        'timeSeriesData':timeSeriesTextData,
-        'timeSeriesGraphData':json.dumps(timeSeriesGraphData),
-        'notes_time': notes
-    }
+    extra_template_values['timeSeriesData'] = timeSeriesTextData
+    extra_template_values['timeSeriesGraphData'] = json.dumps(timeSeriesGraphData)
     TV.update(extra_template_values)
     return TV
 
