@@ -64,10 +64,26 @@
 	      *    INITIALIZE CALL
 	      *********************************/
 	      function initialize() {
+		/*********************************
+		*    LOAD INITIAL MODAL WINDOW		*
+		*********************************/
               // Load the modal
 	      {% if not mapid and not timeSeriesData and form_error=={}%}
-              $("#droughthome").click();
+                      $("#droughthome").click();
 	       {% endif %}
+
+
+		/*********************************
+		*    FORM HANDLER TO PREVENT HARD RETURNS FROM SUBMITTING FORM*
+		*********************************/
+		$('#form-button-submit-map, #form-button-submit-download, #form-button-submit-timeseries').click(function(){
+		    $('#form_map').submit();
+			setTimeout(function(){},1000);
+			waitingDialog.show('Processing Request', {dialogSize: 'sm', progressType: 'warning'});
+		  });
+
+
+
 		/*********************************
 		*    CLIMO YEARS		*
 		*********************************/

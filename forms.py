@@ -90,7 +90,7 @@ formLayers=[
     ('hucoverlayer','US Hydrologic Unit Code(HUC) Layer'),
     ('climatedivoverlayer','US Climate Divisions Layer'),
     ('psaoverlayer','US Predictive Service Areas Layer'),
-    ('kmloverlayer','Custom KML/KMZ Layer'),
+    ('kmloverlayer','Custom KML/KMZ Layer (Enter URL)'),
 ]
 
 #============================

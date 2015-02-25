@@ -221,8 +221,8 @@
 				The shareLink html element is not visible 
 				-->
 				<input type="hidden" name="sL" id="sL" value="{{ shareLink }}">
-				<input type="submit" class="btn btn-large btn-primary pull-left" value="GET MAP"
-					 form="form_map" onclick="document.getElementById('domainType').value='full'"/>
+				<button type="button" class="btn btn-large btn-primary pull-left"
+					 id="form-button-submit-map" onclick="document.getElementById('domainType').value='full'"/>GET MAP</button>
 			</td>
 			<td>
 				{% if mapid %}

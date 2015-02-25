@@ -17,8 +17,7 @@
 		<!-- TAB WINDOW             -->
 		<!---------------------------->
 		<div id="menu">
-			 <form action="/" id="form_map" method="post"
-				onsubmit="setTimeout(function(){},1000);waitingDialog.show('Processing Request', {dialogSize: 'sm', progressType: 'warning'});">
+			 <form action="/" id="form_map" method="post">
                                 {% include 'includes/tabwindow.html'%}
                         </form>
 		</div>
