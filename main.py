@@ -48,7 +48,7 @@ class DroughtTool(webapp2.RequestHandler):
         return shareLink
 
     def set_initial_template_values(self):
-        tempstart = datetime.date.today()-datetime.timedelta(days=60)
+        tempstart = datetime.date.today()-datetime.timedelta(days=20)
         tempend = datetime.date.today()-datetime.timedelta(days=2)
         template_values = {
             'downloadURL':self.request.get('downloadURL',''),
