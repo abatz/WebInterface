@@ -198,6 +198,14 @@ def get_time_series(template_values):
     }
 
     #Filter the collection down to the points
+    '''
+    NOTE1: This methods is only useful for landsat data
+        because this dataset  is tiled
+        modis, gridmet are not tiled and this call does not
+        have any reducing effect
+    NOTE2: For landsat data requests no performance
+        improvement was observed with this method.
+    '''
     #collection = collection.filterBounds(points)
 
     #Note: EE has a 2500 img limit per request
