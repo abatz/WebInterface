@@ -4,9 +4,38 @@
 	       <!----------------------------->
 	       <!--      OPACITY            -->
 	       <!----------------------------->
+		 <br>Select a Rectangular Region for Data Download:
+                        <table>
+                            <tr>
+                                <td>
+                                        <img src="images/blackrectangle.png">
+                                </td>
+                                <td>
+                                        NE corner:<input id="NELat" name="NELat" value="{{ NELat }}" size=8 />N,
+                                        <input id="NELong" name="NELong" value="{{ NELong }}" size=8>E<br>
+                                        {% if form_error.NELong %}
+                                                <div class="error">{{ form_error.NELong }}</div>
+                                                <br>
+                                        {% endif %}
+                                        {% if form_error.NELat %}
+                                                <div class="error">{{ form_error.NELat }}</div>
+                                                <br>
+                                        {% endif %}
 
+                                        SW corner:<input id="SWLat" name="SWLat" value="{{ SWLat }}" size=8/>N,
+                                                <input id="SWLong" name="SWLong" value="{{ SWLong }}" size=8/>E<br>
+                                        {% if form_error.SWLong %}
+                                                <div class="error">{{ form_error.SWLong }}</div>
+                                                <br>
+                                        {% endif %}
+                                        {% if form_error.NSWLat %}
+                                                <div class="error">{{ form_error.SWLat }}</div>
+                                                <br>
+                                        {% endif %}
 
-
+                             </td>
+                            </tr>
+                    </table>
 	   </td>
 	</tr>
 	<tr>

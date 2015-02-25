@@ -583,7 +583,7 @@ def check_Feb12014(dateStart,dateEnd,product):
         dE = dt.datetime.strptime(dateEnd,'%Y-%m-%d');
         dDate = dt.datetime.strptime('2015-02-01','%Y-%m-%d');
         if(dDate>=dS and dDate<=dE):
-              return 'Currently there is an error with Feb 1,2015 GridMet data. Please select a date range that does not include this date.'
+              return 'Please select date range that does not include Feb 1,2015 for GridMet data as there is error on this date.'
     return err
 
 def check_dateMoreThanYear(dateStart,dateEnd,calculation,domainType):

@@ -37,6 +37,14 @@ $(function(){
 		};
 	});
 
+
+	jQuery('#accordionDOWNMAP').on('hidden.bs.collapse', function (e) {  
+		        rectangle.setMap(null);
+	});
+	jQuery('#accordionDOWNMAP').on('shown.bs.collapse', function (e) {  
+		        rectangle.setMap(window.map);
+	});
+
 	/*--------------------------------------------*/
 	/*--                                         --*/
 	/*--------------------------------------------*/
