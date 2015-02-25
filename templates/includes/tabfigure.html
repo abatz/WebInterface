@@ -18,7 +18,14 @@
 			<!------------------------------------->
 		        <div id="container" style="width:800px;height:700px;">
 			</div>
-			{% include 'includes/js_highchartsfigure.html'%}
+            {% if not ts_error %}
+			    {% include 'includes/js_highchartsfigure.html'%}
+            {% else %}
+                <p style="font-size:4;color:red;">
+                The following error occurred:<br /><br />
+                {{ ts_error }}
+                </p>
+            {% endif %}
 			<!------------------------------------->
 			<!--  SVG Attempt -->
 			<!------------------------------------->
