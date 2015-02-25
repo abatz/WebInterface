@@ -3,24 +3,20 @@
         <!--        NAVIGATION       -->
         <!----------------------------->
         <ul class="nav nav-tabs nav-default" id="dataTab" >
-                <li>
+        <li>
 			<a href="#tabblank" data-toggle="tab"><img src="images/uparrow.png" height="10px"></a>
 		</li>
-                <li {% if not timeSeriesData %}class="active"{% endif %}>
-			<a href="#tabmapoptions" data-toggle="tab">
-			Map</a>
+        <li {% if domainType == "full" %}class="active"{% endif %}>
+			<a href="#tabmapoptions" data-toggle="tab">Map</a>
 		</li>
-		<li>
-			<a href="#tabtimeseriesoptions" data-toggle="tab">
-			Time Series
-			</a>
+		<li {% if domainType == "points" %}class="active"{% endif %}>
+			<a href="#tabtimeseriesoptions" data-toggle="tab">Time Series</a>
 		</li>
 		{% if timeSeriesData %}
-		<li class="active">
-			<a href="#tabtimeseries" data-toggle="tab">Time Series Output 
-			<img src="images/downarrow.png" height="10px"></a>
+        <li class="active">
+			<a href="#tabtimeseries" data-toggle="tab">Time Series Output <img src="images/downarrow.png" height="10px"></a>
 		</li>
-		{% endif %}
+        {% endif %}
         </ul>
 
         <div class="tab-content">
@@ -32,11 +28,15 @@
 		<!----------------------------->
 		<!--  MAP WINDOW 	     -->
 		<!----------------------------->
-		<div class="tab-pane {% if not timeSeriesData %}active{% endif %}" id="tabmapoptions">
+        {% if domainType == "full" %}
+		<div class="tab-pane active" id="tabmapoptions">
+        {% else %}
+        <div class="tab-pane" id="tabmapoptions">
+        {% endif %}
 			<table id="table" class="table" width="100%">
         			<tr style="outline: thin solid">
-            			   <td>
-                                        {% include 'includes/mapoptions.html'%}
+            		<td>
+                    {% include 'includes/mapoptions.html'%}
 				   </td>
         			 </tr>
 			</table>
@@ -44,7 +44,11 @@
                 <!----------------------------->
 		<!--    TIME SERIES WINDOW   -->
                 <!----------------------------->
-		<div class="tab-pane" id="tabtimeseriesoptions">
+        {% if domainType == "full" %}
+		<div class="tab-pane active" id="tabtimeseriesoptions">
+        {% else %}
+        <div class="tab-pane" id="tabtimeseriesoptions">
+        {% endif %}
 			<table id="table" class="table" width="100%">
 				<tr style="outline: thin solid">
 				   <td>
@@ -56,8 +60,12 @@
                 <!----------------------------->
 		<!--    TIME SERIES DATA WINDOW   -->
                 <!----------------------------->
-	 	<div class="tab-pane {% if timeSeriesData %}active{% endif %}" id="tabtimeseries">
-                    {% if timeSeriesGraphData%}
+        {% if domainType == "points" %}
+	 	<div class="tab-pane active" id="tabtimeseries">
+        {% else %}
+        <div class="tab-pane" id="tabtimeseries">
+        {% endif %}
+        {% if timeSeriesGraphData%}
 			<table>
 				<tr>
 					<td width="60%" valign="top">
@@ -78,7 +86,7 @@
 					</td>
 				</tr>
 			</table>
-                    {% endif %}
-                </div>
+        {% endif %}
         </div>
-</div>
+    </div><!--end tab-content-->
+</div><!--end tabbable-->
