@@ -25,27 +25,38 @@ def set_time_series_data(dataList, template_values):
 
     var = template_values['variable'][1:]
     units = template_values['units']
-    marker_colors = template_values['marker_colors']
 
     # Format data for highcharts
     # Group data by point while reading
     ts_dict = defaultdict(list)
     graph_dict = defaultdict(list)
+    #Plot colors should agree with marker colors
+    #Since defaultdicts are not ordered
+    #we need to keep track of the points
+    points = []
+    for i in range(7):
+        lon = float(template_values['p' + str(i+1)].replace(' ','').split(',')[0])
+        lat = float(template_values['p' + str(i+1)].replace(' ','').split(',')[1])
+        points.append((lon,lat))
+    m_colors = defaultdict(list)
     for row in dataList:
         pnt = (float(row[1]), float(row[2]))
-        ##pnt = '{0:0.4f},{1:0.4f}'.format(*pnt)
+        #Set the marker color
+        if pnt not in m_colors.keys():
+            for i, p in enumerate(points):
+                if abs(p[0] - pnt[0]) < 0.00001 and abs(p[1] - pnt[1]) < 0.00001:
+                    m_colors[pnt] = [template_values['marker_colors'][i]]
+                    break
         time_int = int(row[3])
         date_obj = datetime.datetime.utcfromtimestamp(float(time_int) / 1000)
         date_str = date_obj.strftime('%Y-%m-%d')
         try:
-            #val = float(row[4])
             val = processingMethods.modify_units_in_timeseries(float(row[4]),var,units)
             ts_dict[pnt].append([date_str, '{0:0.4f}'.format(val)])
             graph_dict[pnt].append([time_int, val])
         except:
             continue
             ts_dict[pnt].append([date_str, 'None'])
-            #graph_dict[pnt].append([time_int, None])
 
     '''
     Note ee spits out data for points in one list,
@@ -61,7 +72,7 @@ def set_time_series_data(dataList, template_values):
 
     for i, (pnt, graph_data) in enumerate(sorted(graph_dict.items())):
         data_dict_graph = {
-            'MarkerColor':marker_colors[i],
+            'MarkerColor':m_colors[pnt][0],
             'LongLat': '{0:0.4f},{1:0.4f}'.format(*pnt),
             'Data':sorted(graph_data)
         }
