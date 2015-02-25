@@ -231,7 +231,7 @@ def get_time_series(template_values):
     if error_flag:
         extra_template_values['timeSeriesData'] = []
         extra_template_values['timeSeriesGraphData'] = []
-        extra_template_values['error'] = str(error)
+        extra_template_values['ts_error'] = str(error)
         TV.update(extra_template_values)
         return TV
 
@@ -250,7 +250,7 @@ def get_time_series(template_values):
     if error_flag:
         extra_template_values['timeSeriesData'] = []
         extra_template_values['timeSeriesGraphData'] = []
-        extra_template_values['error'] = str(error)
+        extra_template_values['ts_error'] = str(error)
         TV.update(extra_template_values)
         return TV
     timeSeriesTextData,timeSeriesGraphData = figureFormatting.set_time_series_data(dataList,TV)
