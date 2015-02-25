@@ -25,3 +25,8 @@ bounds = new google.maps.LatLngBounds(
   // Add an event listener on the rectangle.
   google.maps.event.addListener(rectangle, 'bounds_changed', showNewRect);
 
+
+  {% if domainType == 'rectangle' %}
+rectangle.setMap(window.map);
+  {% endif %}
+

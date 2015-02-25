@@ -51,6 +51,7 @@ class DroughtTool(webapp2.RequestHandler):
         tempstart = datetime.date.today()-datetime.timedelta(days=60)
         tempend = datetime.date.today()-datetime.timedelta(days=2)
         template_values = {
+            'downloadURL':self.request.get('downloadURL',''),
             'mapid':self.request.get('mapid',''),
             'token':self.request.get('token',''),
             'form_error': {},
@@ -246,8 +247,14 @@ class DroughtTool(webapp2.RequestHandler):
                 #Update template values with mapid or time series data
                 if template_values['domainType'] == 'full':
                     template_values = processingMethods.get_images(template_values)
-                else:  #want ability in future to look at time series for states,etc
+                elif template_values['domainType'] == 'points':
                     template_values = processingMethods.get_time_series(template_values)
+                elif template_values['domainType'] == 'rectangle':
+                    template_values = processingMethods.get_images(template_values)
+                #elif template_values['domainType'] == 'singlemappoint':
+                #    template_values = processingMethods.get_images(template_values)
+                #else: #error
+
         else:
             template_values['form_error'] = {fieldID:input_err}
 
@@ -270,8 +277,10 @@ class DroughtTool(webapp2.RequestHandler):
             #Update template values with mapid or time series data
             if template_values['domainType'] == 'full':
                 template_values = processingMethods.get_images(template_values)
-            else: #want ability in future to do time series of states,etc
+            elif template_values['domainType'] == 'points':
                 template_values = processingMethods.get_time_series(template_values)
+            elif template_values['domainType'] == 'rectangle':
+                template_values = processingMethods.get_images(template_values)
         else:
             #write error message to html
             template_values['form_error'] = {fieldID:input_err}

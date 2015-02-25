@@ -151,6 +151,7 @@ formLocation=[
     ('rectangle','Rectangle'),
     ('states','States'),
     ('points','Points'),
+    ('singlemappoint','Single Map Point'),
 ]
 
 #============================

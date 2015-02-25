@@ -21,7 +21,7 @@ def get_images(template_values):
         TV[key] = val
     var = TV['variable']
     calculation = TV['calculation']
-    dT = TV['domainType']
+    domainType = TV['domainType']
     dS = TV['dateStart']
     dE = TV['dateEnd']
     yearStartClim = TV['yearStartClim']
@@ -105,6 +105,30 @@ def get_images(template_values):
         extra_template_values['mapid'] = mapid['mapid']
         extra_template_values['token'] = mapid['token']
     TV.update(extra_template_values)
+
+    #==============
+    #Rectangle Data Extraction
+    #==============
+    if domainType == 'rectangle':
+        NELat = TV['NELat']
+        NELong = TV['NELong']
+        SWLat = TV['SWLat']
+        SWLong = TV['SWLong']
+        rectangle = ee.Geometry.Rectangle(SWLong, SWLong, NELong, NELat)
+        extra_template_values['downloadURL'] =rectangle
+        TV.update(extra_template_values)
+        downloadOptions ={
+            'name': 'test_image',
+            'scale':4000,
+            'crs': 'EPSG:4326',
+            'region': rectangle 
+        }
+        #downloadURL = '[['+NELong+','+NELat+'], ['+
+        #               ' ['+SELong+','+NELat+'],['+ 
+        #               ' ['+NELong+','+SELat+'],['+ 
+        #               ' ['+SELong+','+SELat+']]' 
+        #downloadURL = ee.Export.Image(,'title',{'region': rectangle})
+
     return TV
 
 #===========================================
