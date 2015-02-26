@@ -9,7 +9,7 @@
         <li {% if domainType == "full" %}class="active"{% endif %}>
 			<a href="#tabmapoptions" data-toggle="tab">Map</a>
 		</li>
-		<li {% if domainType == "points" %}class="active"{% endif %}>
+		<li {% if domainType == "points" and not timeSeriesData %}class="active"{% endif %}>
 			<a href="#tabtimeseriesoptions" data-toggle="tab">Time Series</a>
 		</li>
 		{% if timeSeriesData %}
@@ -44,7 +44,7 @@
                 <!----------------------------->
 		<!--    TIME SERIES WINDOW   -->
                 <!----------------------------->
-        {% if domainType == "points" %}
+        {% if domainType == "points" and not timeSeriesData %}
 		<div class="tab-pane active" id="tabtimeseriesoptions">
         {% else %}
         <div class="tab-pane" id="tabtimeseriesoptions">
