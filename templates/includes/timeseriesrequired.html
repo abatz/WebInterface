@@ -36,6 +36,9 @@
                   <br>
                   End Date:
                   <input type="text" id="dateEndTS" value="{{ dateEnd }}" name="dateEnd" class="dateEnd">
+                  {% if form_error.checkFeb12014 %}
+                  <p class="error">{{ form_error.checkFeb12014 }}</p>
+                  {% endif %}
            </div>
            <div class="seasontimeperiod" style="display:none">
                  Start Day:
