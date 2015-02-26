@@ -83,6 +83,9 @@
 		<div class="points" id="points">
             <input type="hidden" id="pointsLongLat" name="pointsLongLat" value="">
 			<b>Point Location(s):</b><br>
+            {% if form_error.pointsLongLat %}
+            <p class="error">{{ form_error.pointsLongLat }}</p>
+            {% endif %}
             <div id="point1" class="point" style="display:{{p1dislay}}">
                    <!--hidden input to keep track of which markers are displayed-->
                    <input type="hidden" id="p1display" name="p1display" value="{{p1display}}"/>
