@@ -412,6 +412,6 @@ def gridmet_tmean_func(img):
     ##return img.expression("0.5 * (b('tmmx') + b('tmmx'))")\
     ##    .select([0],['tmean']).copyProperties(img, property_list)
     tmax_img = img.select('tmmx')
-    tmin_img = img.select('tmmx')
+    tmin_img = img.select('tmmn')
     return tmax_img.add(tmin_img).multiply(0.5).select([0],['tmean'])\
         .copyProperties(img, property_list)
