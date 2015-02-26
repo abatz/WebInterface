@@ -17,8 +17,12 @@
 		<table width="100%">
 		    <tr>
 			<td>
-				<input type="submit" class="btn btn-large btn-primary pull-left" value="GET TIME SERIES"
-					 form="form_map" onclick="document.getElementById('domainType').value='points';"/>
+				<button type="button" class="btn btn-large btn-primary pull-left"
+					 id="form-button-submit-timeseries" 
+					onclick="document.getElementById('domainType').value='points';"/>
+					GET TIME SERIES</button>
+				<!--<input type="submit" class="btn btn-large btn-primary pull-left" value="GET TIME SERIES"
+					 form="form_map" onclick="document.getElementById('domainType').value='points';"/>-->
 			</td>
 			<td>
 				{% if timeSeriesData %}

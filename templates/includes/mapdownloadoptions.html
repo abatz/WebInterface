@@ -50,8 +50,10 @@
                 <table width="100%">
                     <tr>
                         <td>
-                                <input type="submit" class="btn btn-large btn-primary pull-left" value="DOWNLOAD REGION"
-                                         form="form_map" onclick="document.getElementById('domainType').value='rectangle'"/>
+				    <button type="button" class="btn btn-large btn-primary pull-left"
+					 id="form-button-submit-download" 
+					onclick="document.getElementById('domainType').value='rectangle'"/>
+					DOWNLOAD REGION</button>
                         </td>
                         <td>
                                 {% if mapid %}

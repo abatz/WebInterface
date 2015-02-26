@@ -11,7 +11,6 @@ $(function(){
                   	window.climatedivmarkerOverLayer.setMap(null);
                   	window.psasmarkerOverLayer.setMap(null);
                 	window.kmlmarkerOverLayer.setMap(null);
-
 		};
 		/*-------------------*/
 		/*         STATES    */

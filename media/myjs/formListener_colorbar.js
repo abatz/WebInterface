@@ -1,12 +1,25 @@
 $(function(){
 
-
-
-	 jQuery('#colorbarmap, #colorbarsize').on('change', function(){
+	 jQuery('#colorbarmap').on('change', function(){
                 colorbarmap = document.getElementById('colorbarmap').value;
 		if(colorbarmap == 'USDM' || colorbarmap == 'invUSDM'){
-                	jQuery('#colorbarsize').val('6');
-		}
+
+                        // Remove all options
+                        jQuery('#colorbarsize > option').remove();
+ 
+                        // Add only one option
+                        jQuery('#colorbarsize').append('<option value="6">6</option>');
+
+                	//jQuery('#colorbarsize').val('6');
+		} else {
+
+                        // Remove all options
+                        jQuery('#colorbarsize > option').remove();
+
+                        for (istring=3; istring<10; istring++) {
+                          jQuery('#colorbarsize').append('<option value=' + istring + '>' + istring + '</option>');
+                        }
+                }
 	});
 
 

@@ -234,7 +234,7 @@ class DroughtTool(webapp2.RequestHandler):
     def get(self):
         ppost=0
         ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
-	ee.data.setDeadline(60000);
+	ee.data.setDeadline(180000);
 
         #initialize forms
         #self.set_form_params()
@@ -249,8 +249,8 @@ class DroughtTool(webapp2.RequestHandler):
                     template_values = processingMethods.get_images(template_values)
                 elif template_values['domainType'] == 'points':
                     template_values = processingMethods.get_time_series(template_values)
-                elif template_values['domainType'] == 'rectangle':
-                    template_values = processingMethods.get_images(template_values)
+                #elif template_values['domainType'] == 'rectangle':
+                #    template_values = processingMethods.get_images(template_values)
                 #elif template_values['domainType'] == 'singlemappoint':
                 #    template_values = processingMethods.get_images(template_values)
                 #else: #error
@@ -265,7 +265,7 @@ class DroughtTool(webapp2.RequestHandler):
     #############################################
     def post(self):
         ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
-	ee.data.setDeadline(60000);
+	ee.data.setDeadline(180000);
 
         #self.set_form_params()
         template_values = self.set_initial_template_values()
