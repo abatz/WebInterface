@@ -79,7 +79,16 @@
 		$('#form-button-submit-map, #form-button-submit-download, #form-button-submit-timeseries').click(function(){
 		    $('#form_map').submit();
 			setTimeout(function(){},1000);
-			waitingDialog.show('Processing Request', {dialogSize: 'sm', progressType: 'warning'});
+            var dS = new Date($('#dateStart').val()).getTime();
+            var dE = new Date($('#dateEnd').val()).getTime();
+            var p_message = 'Processing Request';
+            if ( $('#domainType').val() == 'points') {
+                if (dE - dS >= 5 * 365 * 24 * 60 * 60 * 1000){
+                    p_message = 'This computation requires a large amount of data. ' +
+                        'Please be patient while we process your request.'
+                    }
+            }
+			waitingDialog.show(p_message, {dialogSize: 'sm', progressType: 'warning'});
 		  });
 
 
