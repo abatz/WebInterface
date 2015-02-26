@@ -92,6 +92,7 @@ $(function(){
         //templates/includes/timeseriesoptions.html on form_map submit
 	    jQuery('#form_map').submit(function( event ) {
             if ( $('#domainType').val() == 'points') {
+                /*
                 //Show Progress Bar
                 //If large request, show special progress bar
                 var dS = new Date($('#dateStart').val()).getTime();
@@ -106,7 +107,8 @@ $(function(){
                 }
                 waitingDialog.show(p_message,{dialogSize: 'sm', progressType: 'warning'});
                 window.timeoutID =setTimeout(function () {waitingDialog.hide();}, 180000);
-		        //Update LongLat
+		        */
+                //Update LongLat
                 var LongLatStr = '';
 		        $('.point').each(function() {
 			        point_id = parseInt($(this).attr('id').split('point')[1]);
