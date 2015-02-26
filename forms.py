@@ -577,15 +577,15 @@ def format_SWLong(SWLong):
 #   return err = None if no error encountered
 #   else return error message
 #===========================
-def check_Feb12014(dateStart,dateEnd,product):
-    err = None
-    if(product == 'G'):
-        dS = dt.datetime.strptime(dateStart,'%Y-%m-%d');
-        dE = dt.datetime.strptime(dateEnd,'%Y-%m-%d');
-        dDate = dt.datetime.strptime('2015-02-01','%Y-%m-%d');
-        if(dDate>=dS and dDate<=dE):
-              return 'Please select date range that does not include Feb 1,2015 for GridMet data as there is error on this date.'
-    return err
+#def check_Feb12014(dateStart,dateEnd,product):
+#    err = None
+#    if(product == 'G'):
+#        dS = dt.datetime.strptime(dateStart,'%Y-%m-%d');
+#        dE = dt.datetime.strptime(dateEnd,'%Y-%m-%d');
+#        dDate = dt.datetime.strptime('2015-02-01','%Y-%m-%d');
+#        if(dDate>=dS and dDate<=dE):
+#              return 'Please select date range that does not include Feb 1,2015 for GridMet data as there is error on this date.'
+#    return err
 
 def check_dateMoreThanYear(dateStart,dateEnd,calculation,domainType):
     err = None
