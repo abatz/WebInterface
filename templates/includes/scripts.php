@@ -240,46 +240,66 @@
 			});
                  });
 */
+
+
+// Function that updates the map zoom and center for the share map link
+function update_share_map_link(share_map_link){
+ 
+  // Get zoom level
+  document.getElementById('mapzoom').value = map.getZoom();
+  myZoom = map.getZoom();
+
+  // Get coordinates
+  var newCenter = window.map.getCenter();
+  myCenterLat = newCenter.lat().toFixed(4);
+  myCenterLong = newCenter.lng().toFixed(4);
+  var LongLat = String(myCenterLong)+','+String(myCenterLat);
+  var latlong = new google.maps.LatLng(myCenterLat,myCenterLong);
+
+  // Assign the share map link to a variable
+  var sL = share_map_link;
+
+  // Update the map zoom in the share map link
+  var sL_new = sL.replace(/mapzoom=\d+/m,'mapzoom=' + String(myZoom));
+
+  // Update the map center in the share map link
+  sL_new = sL_new.replace(/mapCenterLongLat=([\-\d.]+),([\d.]+)/m,
+                                'mapCenterLongLat=' + LongLat);
+  jQuery('#shareLink').val(sL_new);
+
+  //Update default points location to show at new center
+  $('.point').each(function() {
+      point_id = parseFloat($(this).attr('id').split('point')[1]);
+      //First point is special
+      if (point_id == 1 && $('#tabtimeseriesoptions').css('display') == 'none'){
+          $('#p' + String(point_id)).val(LongLat);
+          window.markers[point_id - 1].position = latlong;
+      }else{
+          if ($(this).css('display') != 'block'){
+              $('#p' + String(point_id)).val(LongLat);
+              window.markers[point_id - 1].position = latlong;
+          }
+     }
+  });
+}
+
 		/*********************************
 		*     ZOOM/CENTER CHANGED                   *
 		*********************************/
 		google.maps.event.addListener(map,'zoom_changed',function(){
-			  //if(map.getZoom()!= myZoom) {
-				document.getElementById('mapzoom').value =map.getZoom();
-				myZoom = map.getZoom();
-			  //}
-			  var newCenter = window.map.getCenter();
-			  myCenterLat = newCenter.lat().toFixed(4);
-			  myCenterLong = newCenter.lng().toFixed(4);
-			  var LongLat = String(myCenterLong)+','+String(myCenterLat);
-			  var latlong = new google.maps.LatLng(myCenterLat,myCenterLong);
-
 			  //Update sharelink
 			  var sL = jQuery('#shareLink').val();
-			  alert(sL);
-			  var sL_new = sL.replace(/mapzoom=\d+/m,'mapzoom=' + String(myZoom));
-			  console.log(sL_new);
-			  sL_new = sL_new.replace(/mapCenterLongLat=([\-\d.]+),([\d.]+)/m,
-				'mapCenterLongLat=' + LongLat);
-			  jQuery('#shareLink').val(sL_new);
-
-			  //Update default points location to show at new center
-			  document.getElementById('mapCenterLongLat').value = LongLat;
-			  $('.point').each(function() {
-				    point_id = parseFloat($(this).attr('id').split('point')[1]);
-				    //First point is special
-				    if (point_id == 1 && $('#tabtimeseriesoptions').css('display') == 'none'){
-					$('#p' + String(point_id)).val(LongLat);
-					window.markers[point_id - 1].position = latlong;
-				    }
-				    else{ 
-					if ($(this).css('display') != 'block'){
-					    $('#p' + String(point_id)).val(LongLat);
-					    window.markers[point_id - 1].position = latlong;
-					}
-				    }
-			  });
+			  update_share_map_link(sL);
 		});
+
+                google.maps.event.addListener(map,'center_changed',function(){
+                          //Update sharelink
+                          var sL = jQuery('#shareLink').val();
+                          update_share_map_link(sL);
+                });
+
+
+/*
 		google.maps.event.addListener(map,'center_changed',function(){
 			var newCenter = window.map.getCenter();
 			myCenterLat = newCenter.lat().toFixed(4);
@@ -310,6 +330,8 @@
 				}
 		        });
 		});
+
+*/
 		/*********************************
 		*     COLORBAR                   *
 		*********************************/
