@@ -15,6 +15,7 @@ import numpy
 import webapp2
 
 import forms
+import formchecks
 import processingMethods
 import collectionMethods
 import figureFormatting
@@ -166,7 +167,7 @@ class DroughtTool(webapp2.RequestHandler):
         template_values['shareLink'] = self.set_share_link(template_values)
 
         #format template values to allow for different date formats etc...
-        #See format_ functions in forms.py
+        #See format_ functions in formchecks.py
         formatted_template_values = {}
         for key, val in template_values.iteritems():
             format_function_name = 'format_' + key
@@ -183,7 +184,7 @@ class DroughtTool(webapp2.RequestHandler):
 
     def check_user_input(self, template_values):
         #Checks for errors in user input
-        #See check_ functions in forms.py
+        #See check_ functions in formchecks.py
         #At first error encountered, spits out error message and exits
         err = None; fieldID = None
 
@@ -203,15 +204,8 @@ class DroughtTool(webapp2.RequestHandler):
                 fieldID = key
                 return fieldID,err
 
-        #special check for Feb 1, 2014 in date range (until this gets fixed!)
-        #err = forms.check_Feb12014(template_values['dateStart'],template_values['dateEnd'],
-        #                           template_values['product'])
-        #if err:
-        #       fieldID = 'checkFeb12014'
-        #       return fieldID,err
-
         #special check for climatology years
-        err = forms.check_climatologyyears(template_values['yearStartClim'],template_values['yearEndClim'],
+        err = formchecks.check_climatologyyears(template_values['yearStartClim'],template_values['yearEndClim'],
               template_values['domainType'])
         if err:
                 fieldID = 'yearStartClim'
@@ -219,13 +213,11 @@ class DroughtTool(webapp2.RequestHandler):
 
         #special check for date range >365 when climatology is needed
         #(someday when we fix this.. we can delete this)
-        err = forms.check_dateMoreThanYear(template_values['dateStart'],template_values['dateEnd'],
+        err = formchecks.check_dateMoreThanYear(template_values['dateStart'],template_values['dateEnd'],
               template_values['calculation'],template_values['domainType'])
         if err:
                 fieldID = 'dateCheckMoreThanYear'
                 return fieldID,err
-
-
 
         return fieldID,err
     #############################################
