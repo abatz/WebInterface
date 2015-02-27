@@ -92,6 +92,34 @@ $(function(){
 	     document.getElementById('unitsT').value =units;
         });
 
+
+/*       jQuery('#mapzoom).on('change',function(){
+
+          //Update sharelink
+          var sL = document.getElementById('sL').value;
+          var sL_new = sL.replace(/mapzoom=\d+/m,'mapzoom=' + String(myZoom));
+          sL_new = sL_new.replace(/mapCenterLongLat=([\-\d.]+),([\d.]+)/m,'mapCenterLongLat=' + LongLat);
+          document.getElementById('shareLink').value = sL_new;
+                google.maps.event.addListener(map,'center_changed',function(){
+                        var newCenter = window.map.getCenter();
+                        myCenterLat = newCenter.lat().toFixed(4);
+                        myCenterLong = newCenter.lng().toFixed(4);
+            var LongLat = String(myCenterLong)+','+String(myCenterLat);
+            var latlong = new google.maps.LatLng(myCenterLat,myCenterLong);
+                        document.getElementById('mapCenterLongLat').value = LongLat;
+            });
+            //Update sharelink
+            var sL = document.getElementById('sL').value;
+            var sL_new = sL.replace(/mapCenterLongLat=([\-\d.]+),([\d.]+)/m,'mapCenterLongLat=' + LongLat);
+
+            document.getElementById('shareLink').value = sL_new;
+
+
+        });
+*/
+
+
+
 	/*--------------------------------------------*/
         /*       DATE PICKER 			      */
 	/*--------------------------------------------*/

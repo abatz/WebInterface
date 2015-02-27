@@ -76,22 +76,20 @@
 		/*********************************
 		*    FORM HANDLER TO PREVENT HARD RETURNS FROM SUBMITTING FORM*
 		*********************************/
-		$('#form-button-submit-map, #form-button-submit-download, #form-button-submit-timeseries').click(function(){
-		    $('#form_map').submit();
-			setTimeout(function(){},1000);
-            var dS = new Date($('#dateStart').val()).getTime();
-            var dE = new Date($('#dateEnd').val()).getTime();
-            var p_message = 'Processing Request';
-            if ( $('#domainType').val() == 'points') {
-                if (dE - dS >= 5 * 365 * 24 * 60 * 60 * 1000){
-                    p_message = 'This computation requires a large amount of data. ' +
-                        'Please be patient while we process your request.'
-                    }
-            }
-			waitingDialog.show(p_message, {dialogSize: 'sm', progressType: 'warning'});
+		$('#form-button-submit-map, #form-button-submit-download,#form-button-submit-timeseries').click(function(){
+		            $('#form_map').submit();
+			    setTimeout(function(){},1000);
+			    var dS = new Date($('#dateStart').val()).getTime();
+			    var dE = new Date($('#dateEnd').val()).getTime();
+			    var p_message = 'Processing Request';
+			    if ( $('#domainType').val() == 'points') {
+				if (dE - dS >= 5 * 365 * 24 * 60 * 60 * 1000){
+				    p_message = 'This computation requires a large amount of data. ' +
+					'Please be patient while we process your request.'
+				    }
+			    }
+			   waitingDialog.show(p_message, {dialogSize: 'sm', progressType: 'warning'});
 		  });
-
-
 
 		/*********************************
 		*    CLIMO YEARS		*
@@ -194,8 +192,11 @@
 			   waitingDialog.hide();
 			}, 30000);
 		{% endif %}
+		/*********************************
+		*     MOUSEOVER EVENT - not implemented yet        *
+		*********************************/
 /*
-        //This is for the potential mouseover event on the google map layer executing a POST call to get value
+        	//This is for the potential mouseover event on the google map layer executing a POST call to get value
 		// Set mouseover event for each feature.
                  google.maps.event.addListener(map,'click', function(event) {
 			var lat = event.latLng.lat().toFixed(4);
@@ -243,65 +244,72 @@
 		*     ZOOM/CENTER CHANGED                   *
 		*********************************/
 		google.maps.event.addListener(map,'zoom_changed',function(){
-		  var newCenter = window.map.getCenter();
-          myCenterLat = newCenter.lat().toFixed(4);
-          myCenterLong = newCenter.lng().toFixed(4);
-          var LongLat = String(myCenterLong)+','+String(myCenterLat);
-          var latlong = new google.maps.LatLng(myCenterLat,myCenterLong);
-          if(map.getZoom()!= myZoom) {
-			document.getElementById('mapzoom').value =map.getZoom();
-			myZoom = map.getZoom();
-		  }
-          //Update default points location to show at new center
-          document.getElementById('mapCenterLongLat').value = LongLat;
-          $('.point').each(function() {
-            point_id = parseFloat($(this).attr('id').split('point')[1]);
-            //First point is special
-            if (point_id == 1 && $('#tabtimeseriesoptions').css('display') == 'none'){
-                $('#p' + String(point_id)).val(LongLat);
-                window.markers[point_id - 1].position = latlong;
-            }
-            else{ 
-                if ($(this).css('display') != 'block'){
-                    $('#p' + String(point_id)).val(LongLat);
-                    window.markers[point_id - 1].position = latlong;
-                }
-            }
-          });
-          //Update sharelink
-          var sL = document.getElementById('sL').value;
-          var sL_new = sL.replace(/mapzoom=\d+/m,'mapzoom=' + String(myZoom));
-          sL_new = sL_new.replace(/mapCenterLongLat=([\-\d.]+),([\d.]+)/m,'mapCenterLongLat=' + LongLat);
-          document.getElementById('shareLink').value = sL_new;
+			  //if(map.getZoom()!= myZoom) {
+				document.getElementById('mapzoom').value =map.getZoom();
+				myZoom = map.getZoom();
+			  //}
+			  var newCenter = window.map.getCenter();
+			  myCenterLat = newCenter.lat().toFixed(4);
+			  myCenterLong = newCenter.lng().toFixed(4);
+			  var LongLat = String(myCenterLong)+','+String(myCenterLat);
+			  var latlong = new google.maps.LatLng(myCenterLat,myCenterLong);
+
+			  //Update sharelink
+			  var sL = jQuery('#shareLink').val();
+			  alert(sL);
+			  var sL_new = sL.replace(/mapzoom=\d+/m,'mapzoom=' + String(myZoom));
+			  console.log(sL_new);
+			  sL_new = sL_new.replace(/mapCenterLongLat=([\-\d.]+),([\d.]+)/m,
+				'mapCenterLongLat=' + LongLat);
+			  jQuery('#shareLink').val(sL_new);
+
+			  //Update default points location to show at new center
+			  document.getElementById('mapCenterLongLat').value = LongLat;
+			  $('.point').each(function() {
+				    point_id = parseFloat($(this).attr('id').split('point')[1]);
+				    //First point is special
+				    if (point_id == 1 && $('#tabtimeseriesoptions').css('display') == 'none'){
+					$('#p' + String(point_id)).val(LongLat);
+					window.markers[point_id - 1].position = latlong;
+				    }
+				    else{ 
+					if ($(this).css('display') != 'block'){
+					    $('#p' + String(point_id)).val(LongLat);
+					    window.markers[point_id - 1].position = latlong;
+					}
+				    }
+			  });
 		});
 		google.maps.event.addListener(map,'center_changed',function(){
 			var newCenter = window.map.getCenter();
 			myCenterLat = newCenter.lat().toFixed(4);
 			myCenterLong = newCenter.lng().toFixed(4);
-            var LongLat = String(myCenterLong)+','+String(myCenterLat);
-            var latlong = new google.maps.LatLng(myCenterLat,myCenterLong);
+			var LongLat = String(myCenterLong)+','+String(myCenterLat);
+			var latlong = new google.maps.LatLng(myCenterLat,myCenterLong);
 			document.getElementById('mapCenterLongLat').value = LongLat;
-            //Update default points location to show at new center
-            $('.point').each(function() {
-                point_id = parseFloat($(this).attr('id').split('point')[1]);
-                //First point is special
-                if (point_id == 1 && $('#tabtimeseriesoptions').css('display') == 'none'){
-                    $('#p' + String(point_id)).val(LongLat);
-                    window.markers[point_id - 1].position = latlong;
-                }
-                else{ 
-                    if ($(this).css('display') != 'block'){
-                        $('#p' + String(point_id)).val(LongLat);
-                        window.markers[point_id - 1].position = latlong;
-                    }
-                }
-            });
-            //Update sharelink
-            var sL = document.getElementById('sL').value;
-            var sL_new = sL.replace(/mapCenterLongLat=([\-\d.]+),([\d.]+)/m,'mapCenterLongLat=' + LongLat);
-            document.getElementById('shareLink').value = sL_new;
-        });
 
+		        //Update sharelink
+			var sL = jQuery('#shareLink').val();
+		        var sL_new = sL.replace(/mapCenterLongLat=([\-\d.]+),([\d.]+)/m,
+			     'mapCenterLongLat=' + LongLat);
+			  jQuery('#shareLink').val(sL_new);
+
+		        //Update default points location to show at new center
+		        $('.point').each(function() {
+				point_id = parseFloat($(this).attr('id').split('point')[1]);
+				//First point is special
+				if (point_id == 1 && $('#tabtimeseriesoptions').css('display') == 'none'){
+				    $('#p' + String(point_id)).val(LongLat);
+				    window.markers[point_id - 1].position = latlong;
+				}
+				else{ 
+				    if ($(this).css('display') != 'block'){
+					$('#p' + String(point_id)).val(LongLat);
+					window.markers[point_id - 1].position = latlong;
+				    }
+				}
+		        });
+		});
 		/*********************************
 		*     COLORBAR                   *
 		*********************************/
@@ -343,7 +351,8 @@
 		*********************************/
 		{% include 'includes/js_points.html'%}    //points
 		{% include 'includes/js_rectangle.html'%} //rectangle
-		window.statemarkerLayer = new google.maps.KmlLayer('http://www.wrcc.dri.edu/monitor/WWDT/KML/states.kmz', {
+		window.statemarkerLayer = new google.maps.KmlLayer(
+			'http://www.wrcc.dri.edu/monitor/WWDT/KML/states.kmz', {
                 map:map,
                     preserveViewport: true,
                     suppressInfoWindows: false
