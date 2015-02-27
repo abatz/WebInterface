@@ -299,11 +299,57 @@ class TimeSeriesWorker(webapp2.RequestHandler):
         data = collection.filterDate(start, end).getRegion(points,1).slice(1).getInfo()
         self.response.out.write(data)#used for get by task queue
 
+class testURLs(webapp2.RequestHandler):
+    #from urllib.request import Reqest, urlopen
+    #from urllib.error import URLError
+
+    def get(self):
+
+	#Here's my plan
+	#get the initial template_values
+        ppost=0
+        ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
+        #template_values = self.set_initial_template_values()
+
+	#get the current shareLink URL 
+        #shareLink = template_values['shareLink'] 
+
+	#loop over a set of variables that are input into shareLink from the current forms in forms.py
+
+
+	#find and replace the variables in shareLink
+         
+        #shareLink = 'blah'
+
+	#test the shareLink 
+        #req=Request(shareLink)
+        #try: 
+        #    response=urlopen(req)
+	#except URLError as e:
+        #    errorCode = e.code
+        #    #print(e.reason) 
+        #else:
+        #    #everything is fine
+
+	#see if get a 404 error or not
+	#print a line on the webpage showing the variable tested and the status of the test (fail/success)
+        #if errorCode ==404:
+        #   errorMesssage = 'failed'
+        #else:
+        #   errorMessage = 'succes'
+        errorMessage = 'succes'
+
+	template_values ={'errorMessage':errorMessage,
+		}
+	template = JINJA_ENVIRONMENT.get_template('testURL.php')
+        self.response.out.write(template.render(template_values))
+
 #############################################
 ##       URL MAPPING                        ##
 #############################################
 app = webapp2.WSGIApplication(
     [
     ('/', DroughtTool),
+    ('/testURLs',testURLs ),
 ],
 debug=True)

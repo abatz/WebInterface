@@ -14,6 +14,8 @@ handlers:
   script: main.app
 - url: /oauth2callback
   script: oauth2client.appengine.application
+- url: /testURLs
+  script: main.app
 - url: /.*
   script: main.app
 libraries:
