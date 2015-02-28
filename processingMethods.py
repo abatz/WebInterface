@@ -328,12 +328,13 @@ def get_time_series(template_values):
     #Set time step
     step = 5 * 365 * 24 * 60 * 60 * 1000
 
-    #Start a thread for each point and  time chunk
-    #save the threads and data in the apporpriate slot in a list
+    #Start a thread for each point and time chunk
+    #Save the threads and data in the apporpriate slot in a list
     threads =[[] for p in pointsLongLatPairs]
     threadData = [[] for p in pointsLongLatPairs];
     t_idx = -1
     for p_idx, p in enumerate(pointsLongLatPairs):
+        point = ee.Geometry.Point(p)
         start = dS_int
         while start < dE_int:
             t_idx+=1
@@ -341,13 +342,11 @@ def get_time_series(template_values):
                 end = start + step
             else:
                 end = dE_int + 24 * 60 * 60 * 1000
-            #Start a thread for each point
-            for p_idx, p in enumerate(pointsLongLatPairs):
-                point = ee.Geometry.Point(p)
-                logger.info('STARTING THREAD FOR TIME SLICE %s, POINT %s' %(str(t_idx+1),str(p_idx + 1)))
-                t = threading.Thread(target=ts_point_worker, args =(collection,point,start,end,threadData,p_idx))
-                threads[p_idx].append(t)
-                t.start()
+            t_args = (collection,point,start,end,threadData,p_idx)
+            logger.info('STARTING THREAD FOR TIME SLICE %s, POINT %s' %(str(t_idx+1),str(p_idx + 1)))
+            t = threading.Thread(target=ts_point_worker, args = t_args)
+            threads[p_idx].append(t)
+            t.start()
             start+=step
 
     #Check for errors in threading
