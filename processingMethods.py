@@ -115,7 +115,10 @@ def get_images(template_values):
         NELong = TV['NELong']
         SWLat = TV['SWLat']
         SWLong = TV['SWLong']
-        rectangle = ee.Geometry.Rectangle(SWLong, SWLong, NELong, NELat)
+        rectangle = ee.Geometry.Rectangle(SWLong, SWLat, NELong, NELat)
+        ## I think Export.image needs a string of coordinates, not a geometry object
+        ## The following should work but there might be a cleaner way
+        ##rectangle = ee.Geometry.Rectangle(SWLong, SWLat, NELong, NELat).toGeoJSON().coordinates
         extra_template_values['downloadURL'] =rectangle
         TV.update(extra_template_values)
         downloadOptions ={
@@ -397,8 +400,8 @@ def modify_units(collection, variable, calculation, units):
     #don't modify if calculation == 'anompercentof' or 'anompercentchange'
     if calculation in ['value', 'clim', 'anom']:
         if variable in ['LST_Day_1km']:
-            collection = collection.multiply(0.02);  #convert from unsigned 16-bit integer
-        if variable in ['tmmx', 'tmmn', 'tmean','LST_Day_1km']:
+            collection = collection.multiply(0.02)  #convert from unsigned 16-bit integer
+        if variable in ['tmmx', 'tmmn', 'tmean', 'LST_Day_1km']:
             if calculation == 'anom' and units == 'english':
                 collection = collection.multiply(1.8)    #convert C anom to F anom
             elif calculation == 'value' or calculation == 'clim':
@@ -414,8 +417,8 @@ def modify_units(collection, variable, calculation, units):
 def modify_units_in_timeseries(val, var, units):
     """"""
     if var in ['LST_Day_1km']:
-        val = val*0.02;  #convert from unsigned 16-bit integer
-    if var in ['tmmx', 'tmmn', 'tmean','LST_Day_1km']:
+        val = val * 0.02  #convert from unsigned 16-bit integer
+    if var in ['tmmx', 'tmmn', 'tmean', 'LST_Day_1km']:
         val = val - 273.15          #convert K to C
         if units == 'english':
             val = 1.8 * val + 32    #convert C to F
