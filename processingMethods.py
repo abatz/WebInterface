@@ -128,7 +128,7 @@ def get_images(template_values):
         #               ' ['+SELong+','+NELat+'],['+
         #               ' ['+NELong+','+SELat+'],['+
         #               ' ['+SELong+','+SELat+']]'
-        #downloadURL = ee.Export.Image(,'title',{'region': rectangle})
+        #downloadURL = ???Export.Image(,'title',{'region': rectangle})
 
     return TV
 
