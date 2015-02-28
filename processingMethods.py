@@ -533,17 +533,18 @@ def modify_units(collection, variable, calculation, units):
 
 def modify_units_in_timeseries(val, var, units):
     """"""
+    new_val = val
     if var in ['LST_Day_1km']:
-        val = val * 0.02  #convert from unsigned 16-bit integer
+        new_val = val * 0.02  #convert from unsigned 16-bit integer
     if var in ['tmmx', 'tmmn', 'tmean', 'LST_Day_1km']:
-        val = val - 273.15          #convert K to C
+        new_val = val - 273.15          #convert K to C
         if units == 'english':
-            val = 1.8 * val + 32    #convert C to F
+            new_val = 1.8 * val + 32    #convert C to F
     elif var in ['pr', 'pet', 'wb'] and units == 'english':
-        val = val / 25.4            #convert mm to inches
+        new_val = val / 25.4            #convert mm to inches
     elif var == 'vs' and units == 'english':
-        val = 2.23694 * val         #convert m/s to mi/h
-    return val
+        new_val = 2.23694 * val         #convert m/s to mi/h
+    return new_val
 
 #===========================================
 #   MAP_COLLECTION
