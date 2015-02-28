@@ -1,15 +1,15 @@
 import datetime as dt
+
+
 import json
-import logging
+import logging, threading
 import urllib2
 
+
 import ee
-from google.appengine.api.labs import taskqueue
 
 import collectionMethods
-import figureFormatting
 
-import logging, threading
 #===========================================
 #   GET_IMAGES
 #===========================================
@@ -138,6 +138,115 @@ def get_images(template_values):
 #===========================================
 #    TIME_SERIES
 #===========================================
+def set_logger(name):
+    '''
+    Logger for debugging purposes
+    Args:
+        name: logger name
+    Returns:
+        python logger object
+    '''
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.DEBUG)
+    sh = logging.StreamHandler()
+    sh.setLevel(logging.DEBUG)
+    logger.addHandler(sh)
+    return logger
+
+def initialize_timeSeriesTextDataDict(point):
+    '''
+    Data for each point in time series
+    is stored in a separate dictionary
+    Args:
+        point: [Lon, Lat]
+    Returns:
+        dictionary with keys: values
+            LonLat: Long, Lat string
+            Data: empty list
+    '''
+    data_dict = {
+        'LongLat': '{0:0.4f},{1:0.4f}'.format(*point),
+        'Data':[]
+    }
+    return data_dict
+
+def initialize_timeSeriesGraphDataDict(point,marker_color):
+    '''
+    Graph data for each point in time series
+    is stored in a separate dictionary
+    Args:
+        point: [Lon, Lat]
+        marker_color: color of marker and plot
+    Returns:
+        dictionary with keys: values
+            MarkerColor: marker_color
+            LonLat: Long, Lat string
+            Data: empty list
+    '''
+
+    data_dict_graph = {
+        'MarkerColor':marker_color,
+        'LongLat': '{0:0.4f},{1:0.4f}'.format(*point),
+        'Data':[]
+    }
+    return data_dict_graph
+
+def process_timeSeriesTextData(row_data,var,units):
+    '''
+    Processes row data returned by ee time series request.
+    Args:
+        row_data: [(long, lat),date,time,value]
+        var: variable short name
+        units: english or metric
+    Returns:
+        formatted data: [date_string, value_string]
+    '''
+    time_int = int(row_data[3])
+    date_obj = dt.datetime.utcfromtimestamp(float(time_int) / 1000)
+    date_str = date_obj.strftime('%Y-%m-%d')
+    try:
+        val = modify_units_in_timeseries(float(row_data[4]),var,units)
+        return [date_str, '{0:0.4f}'.format(val)]
+    except:
+        return [date_str, 'None']
+
+def process_timeSeriesGraphData(row_data,var,units):
+    '''
+    Process row data returned by ee time series request.
+    Args:
+        row_data: [(long, lat),date,time,value]
+        var: variable short name
+        units: english or metric
+    Returns:
+        formatted data: [date_integer, value_float]
+    '''
+
+    time_int = int(row_data[3])
+    try:
+        val = modify_units_in_timeseries(float(row_data[4]),var,units)
+        return [time_int, val]
+    except:
+        return None
+
+def process_threadData(point_data, var, units):
+    '''
+    Args:
+        point_data: unformatted data returned by ee time series request
+        var: variable short name
+        units: english or metric
+    Returns:
+        time series data for text display
+        time series graph data for plotting with highcharts
+    '''
+    ts_data = [];graph_data =[]
+    for row_data in point_data:
+        ts_row_data = process_timeSeriesTextData(row_data,var,units)
+        graph_row_data = process_timeSeriesGraphData(row_data,var,units)
+        if graph_row_data is not None:
+            graph_data.append(graph_row_data)
+        ts_data.append(ts_row_data)
+    return sorted(ts_data), sorted(graph_data)
+
 def get_time_series(template_values):
     """
     Args:
@@ -145,25 +254,35 @@ def get_time_series(template_values):
     Returns:
         updated template_values with time series data
     """
-    def worker(collection,points,start,end,threadData,idx):
+
+    def ts_point_worker(collection,point,start,end,threadData,point_idx):
         '''
-        Threading worker
-        runs getInfo call on collection filtered by dates and points
+        Threading worker for time series.
+        Applies getInfo call on collection filtered by dates and point
+        Args:
+            collection: ee ImageCollection
+            point: ee.GeometryPoint
+            start: integer time of start date
+            end: integer time of end date
+            threadData: list to store thread results
+            point_idx: index to be populated in threaData
+        Returns:
+            error: None if no error was encountered
         '''
         try:
-            threadData[idx] = collection.filterDate(start, end).getRegion(points,1).slice(1).getInfo()
+            p_data = collection.filterDate(start,end).getRegion(point,1).slice(1).getInfo()
+            threadData[point_idx].append(p_data)
         except Exception, e:
-            logger.error('EXCEPTION IN THREAD ' + str(idx+1) +  ': '  + str(e))
-            error_flag = True
+            threadData[point_idx].append([])
+            logger.error('EXCEPTION IN THREAD: '  + str(e))
             error = str(e)
+
     #Logger for debugging purposes
-    logger = logging.getLogger('ts_debug')
-    logger.setLevel(logging.DEBUG)
-    sh = logging.StreamHandler()
-    sh.setLevel(logging.DEBUG)
-    logger.addHandler(sh)
-    #Keep track of errors occurring while threading
-    error_flag = False
+    logger = set_logger('ts_debug')
+
+    #Keep track of errors
+    error = None
+
     #Set variables
     TV = {}
     for key, val in template_values.iteritems():
@@ -174,13 +293,12 @@ def get_time_series(template_values):
     dE = TV['dateEnd']
     statistic = TV['statistic']
     units = TV['units']
+
     #Set points
-    pointsLongLat = str(TV['pointsLongLat']) #string of comma separates llon,lat pairs
-    pointsLongLatList = pointsLongLat.replace(' ','').split(',')
-    pointsLongLatTuples = [
+    pointsLongLatList = str(TV['pointsLongLat']).replace(' ','').split(',')
+    pointsLongLatPairs = [
         [float(pointsLongLatList[i]),float(pointsLongLatList[i+1])]
         for i in range(0, len(pointsLongLatList) - 1, 2)]
-    points = ee.Feature.MultiPoint(pointsLongLatTuples)
 
     # Remove starting character which indicates the product
     product = var[:1]
@@ -200,71 +318,70 @@ def get_time_series(template_values):
         'notes_time': notes
     }
 
-    #Filter the collection down to the points
-    '''
-    NOTE1: This methods is only useful for landsat data
-        because this dataset  is tiled
-        modis, gridmet are not tiled and this call does not
-        have any reducing effect
-    NOTE2: For landsat data requests no performance
-        improvement was observed with this method.
-    '''
-    #collection = collection.filterBounds(points)
 
     #Note: EE has a 2500 img limit per request
-    #We need to split up larger data request into 5 year chunks
+    #We need to split up larger data request into smaller chunks
     #Max's suggestion: work with time and get data in chunks,
     dS_int = ee.Date(dS, 'GMT').millis().getInfo()
     dE_int = ee.Date(dE, 'GMT').millis().getInfo()
-    ##dS_int = 1000 * calendar.timegm(dt.datetime.strptime(dS, '%Y-%m-%d').timetuple())
-    ##dE_int = 1000 * calendar.timegm(dt.datetime.strptime(dE, '%Y-%m-%d').timetuple())
+
+    #Set time step
     step = 5 * 365 * 24 * 60 * 60 * 1000
-    start = dS_int
-    dataList = []
 
-    #Start a thread for each time chunk and save the results
-    #in a list of lists
-    threads = [];threadData = [];idx = -1
-    while start < dE_int:
-        idx+=1
-        threadData.append([])
-        if start + step < dE_int:
-            end = start + step
-        else:
-            end = dE_int + 24 * 60 * 60 * 1000
-        logger.info('STARTING THREAD %s' %str(idx + 1))
-        t = threading.Thread(target=worker, args =(collection,points,start,end,threadData,idx))
-        threads.append(t)
-        t.start()
-        start+=step
+    #Start a thread for each point and  time chunk
+    #save the threads and data in the apporpriate slot in a list
+    threads =[[] for p in pointsLongLatPairs]
+    threadData = [[] for p in pointsLongLatPairs];
+    t_idx = -1
+    for p_idx, p in enumerate(pointsLongLatPairs):
+        start = dS_int
+        while start < dE_int:
+            t_idx+=1
+            if start + step < dE_int:
+                end = start + step
+            else:
+                end = dE_int + 24 * 60 * 60 * 1000
+            #Start a thread for each point
+            for p_idx, p in enumerate(pointsLongLatPairs):
+                point = ee.Geometry.Point(p)
+                logger.info('STARTING THREAD FOR TIME SLICE %s, POINT %s' %(str(t_idx+1),str(p_idx + 1)))
+                t = threading.Thread(target=ts_point_worker, args =(collection,point,start,end,threadData,p_idx))
+                threads[p_idx].append(t)
+                t.start()
+            start+=step
 
-    #Check for errors
-    if error_flag:
+    #Check for errors in threading
+    if error is not None:
         extra_template_values['timeSeriesData'] = []
         extra_template_values['timeSeriesGraphData'] = []
         extra_template_values['ts_error'] = str(error)
         TV.update(extra_template_values)
         return TV
 
-    #Combine threading results into single dataList
-    for idx in range(len(threads)):
-        try:
-            threads[idx].join()
-            dataList+=threadData[idx -1]
-            logger.info('THREAD %s FINISHED AND DATA APPENDED' %str(idx + 1))
-        except Exception, e:
-            logger.error(str(e).upper())
-            error_flag = True
-            error = str(e)
+    #Combine threading results
+    timeSeriesTextData = [];timeSeriesGraphData = []
+    for p_idx,point in enumerate(pointsLongLatPairs):
+        marker_color = mc[p_idx]
+        data_dict_ts = initialize_timeSeriesTextDataDict(point)
+        data_dict_graph = initialize_timeSeriesGraphDataDict(point,marker_color)
+        point_data =[]
+        for t_idx in range(len(threads[p_idx])):
+            try:
+                threads[p_idx][t_idx].join()
+                point_data+=threadData[p_idx][t_idx]
+                logger.info('THREAD FINISHED AND DATA APPENDED')
+            except Exception, e:
+                logger.error(str(e).upper())
+                error = str(e)
+                extra_template_values['timeSeriesData'] = []
+                extra_template_values['timeSeriesGraphData'] = []
+                extra_template_values['ts_error'] = str(error)
+                TV.update(extra_template_values)
+                return TV
+        data_dict_ts['Data'],data_dict_graph['Data'] = process_threadData(point_data, var, units)
+        timeSeriesTextData.append(data_dict_ts)
+        timeSeriesGraphData.append(data_dict_graph)
 
-    #Check for errors
-    if error_flag:
-        extra_template_values['timeSeriesData'] = []
-        extra_template_values['timeSeriesGraphData'] = []
-        extra_template_values['ts_error'] = str(error)
-        TV.update(extra_template_values)
-        return TV
-    timeSeriesTextData,timeSeriesGraphData = figureFormatting.set_time_series_data(dataList,TV)
     #logger.info(timeSeriesGraphData)
     logger.info('TIME SERIES DATA FORMATTED')
 
