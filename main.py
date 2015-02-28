@@ -18,7 +18,6 @@ import forms
 import formchecks
 import processingMethods
 import collectionMethods
-import figureFormatting
 
 from google.appengine.api import urlfetch
 urlfetch.set_default_fetch_deadline(180000)
@@ -279,17 +278,6 @@ class DroughtTool(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('droughttool.php')
         self.response.out.write(template.render(template_values))
 
-#'''
-#First attempt at task queue for time sereis
-#'''
-#class TimeSeriesWorker(webapp2.RequestHandler):
-#    def post(self):
-#        collection = self.request.get('collection')
-#        start = self.request.get('start')
-#        end = self.request.get('end')
-#        points = self.request.get('points')
-#        data = collection.filterDate(start, end).getRegion(points,1).slice(1).getInfo()
-#        self.response.out.write(data)#used for get by task queue
 
 #############################################
 ##      FUNCTIONAL TESTS                   ##
@@ -307,10 +295,10 @@ class testURLs(webapp2.RequestHandler):
         ppost=0
         ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
 
-	#get the current shareLink URL 
+	#get the current shareLink URL
         #dT=DroughtTool()
         #template_values = dT.set_initial_template_values()
-        #shareLink = template_values['shareLink'] 
+        #shareLink = template_values['shareLink']
         #shareLink='http://drought-monitor3.appspot.com?state=California&kmloption=&p6display=none&chartType=column&marker_colors=['blue', 'green', 'orange', 'purple', 'yellow', 'pink', 'red']&SWLat=40&p3=-112,42&p2=-112,42&p1=-112,42&p7=-112,42&p6=-112,42&p5=-112,42&p4=-112,42&opacity=0.7&p7check=checked&pointsLongLat=&statistic=Total&SWLong=-111&palette=f7fcf0,e0f3db,ccebc5,a8ddb5,7bccc4,4eb3d3,2b8cbe,08589e&downloadURL=&maxYear=2015&varUnits=mm&p4check=checked&units=metric&colorbarmap=GnBu&yearEnd=2015&p5display=none&yearStart=1979&p2check=checked&layer=none&colorbarLabel=Total Precipitation (mm)&minColorbar=0&minYear=1979&NELat=45&mapCenterLongLat=-112,42&mapid=&timeSeriesCalc=days&maxDate=2015-02-25&dateEnd=2015-02-25&colorbarsize=8&token=&dateStart=2015-02-07&p1display=block&p3check=checked&maxColorbar=400&mapzoom=5&NELong=-95&p4display=none&domainType=full&p1check=checked&kmlurl=&p5check=checked&product=G&calculation=value&minDate=1979-01-01&variable=Gpr&p6check=checked&yearStartClim=1979&p3display=none&p7display=none&yearEndClim=2010&p2display=none'
 
 	#loop over a set of variables that are input into shareLink from the current forms in forms.py
@@ -318,13 +306,13 @@ class testURLs(webapp2.RequestHandler):
        	#	var = variable[0]
 	#	find and replace the variables in shareLink
         #        sL_new = shareLink.replace(/mapzoom=\d+/m,'variable=' + var);
-	#	#test the shareLink 
+	#	#test the shareLink
         #	req=Request(shareLink)
-        #	try: 
+        #	try:
         #    	    response=urlopen(req)
 	#	except URLError as e:
         #    	    errorCode = e.code
-        #    	#print(e.reason) 
+        #    	#print(e.reason)
         #	else:
         #    		#everything is fine
 
